@@ -4,6 +4,8 @@
 	  related build info.
 	* plugins.c: do not repeatedly search for the main
 	  function. checking once is enough.
+	* core.automake.file_installer: $< is not portable make. replace
+	  it with a more obscure construct.
 
 2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
 
