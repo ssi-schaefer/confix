@@ -325,10 +325,9 @@ class FileInstaller:
                 targetfile = '/'.join([targetdir, f])
                 makefile_am.add_element(
                     Rule(targets=[targetfile],
-                         prerequisites=[f, targetdir],
-                         # I tried with 'cp -fp $< targetdir', but
-                         # this is not portable make.
-                         commands=['set junk $?; shift; cp -fp $$1 '+targetdir,
+                         prerequisites=[f],
+                         commands=['-@$(mkinstalldirs) '+targetdir,
+                                   'cp -fp $? '+' '+targetdir,
                                    'chmod 0444 '+targetfile]))
                 makefile_am.add_element(
                     Rule(targets=[targetfile+'-clean'],

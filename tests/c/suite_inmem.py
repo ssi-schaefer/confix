@@ -25,7 +25,6 @@ from setup_library import LibrarySetupSuite
 from setup_exe import ExecutableSetupSuite
 from setup_cxx import CXXSetupSuite
 from setup_lexyacc import LexYaccSetupSuite
-from main_search import MainSearchSuite
 from name_mangling import NameManglingSuite
 from requires import RequireTestSuite
 from default_installer import DefaultInstallerSuite
@@ -45,7 +44,6 @@ class CTestSuiteInMemory(unittest.TestSuite):
         self.addTest(ExecutableSetupSuite())
         self.addTest(CXXSetupSuite())
         self.addTest(LexYaccSetupSuite())
-        self.addTest(MainSearchSuite())
         self.addTest(NameManglingSuite())
         self.addTest(RequireTestSuite())
         self.addTest(DefaultInstallerSuite())

@@ -71,7 +71,6 @@ class BasicHeaderInstallTest(unittest.TestCase):
         self.failIf(mkdir is None)
         self.failUnless('confix-install-local' in package.rootbuilder().makefile_am().all_local().prerequisites())
         self.failUnless('$(top_builddir)/confix_include/file.h' in confix_install_local.prerequisites())
-        self.failUnless('$(top_builddir)/confix_include' in install_file_h.prerequisites())
 
         # clean-local -> confix-clean-local -> $(top_builddir)/confix_include/file.h-clean
 

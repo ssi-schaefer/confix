@@ -1,11 +1,12 @@
 2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
 
-	* Marshal MD5 sums together with configure.ac and acinclude.m4
-	  related build info.
-	* plugins.c: do not repeatedly search for the main
-	  function. checking once is enough.
 	* core.automake.file_installer: $< is not portable make. replace
 	  it with a more obscure construct.
+	* Performance fixes
+	  * Marshal MD5 sums together with configure.ac and acinclude.m4
+	    related build info.
+	  * plugins.c: do not repeatedly search for the main
+	    function. checking once is enough.
 
 2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
 
