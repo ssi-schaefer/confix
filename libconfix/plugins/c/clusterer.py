@@ -17,6 +17,7 @@
 # USA
 
 import os, re, types
+import profile
 
 from libconfix.core.builder import Builder
 from libconfix.core.setup import Setup
@@ -75,7 +76,7 @@ class CClusterer(Builder):
 
             # main C file. wrap an ExecutableBuilder around
             # it. liquidate a library in favor of the executable.
-            if helper.has_main(b.file()) or b.exename() is not None:
+            if b.is_main():
                 if self.__executables.has_key(b):
                     # already got that one.
                     continue

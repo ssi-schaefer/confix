@@ -104,12 +104,12 @@ class Builder(object):
             for bi in n.buildinfos():
                 if isinstance(bi, BuildInfo_Configure_in):
                     self.package().configure_ac().add_paragraph(
-                        paragraph=Paragraph(lines=bi.lines()),
+                        paragraph=Paragraph(lines=bi.lines(), md5=bi.md5()),
                         order=bi.order())
                     continue
                 if isinstance(bi, BuildInfo_ACInclude_m4):
                     self.package().acinclude_m4().add_paragraph(
-                        paragraph=Paragraph(lines=bi.lines()))
+                        paragraph=Paragraph(lines=bi.lines(), md5=bi.md5()))
                     continue
                 pass
             pass

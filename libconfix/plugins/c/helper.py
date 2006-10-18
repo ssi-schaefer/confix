@@ -16,8 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import libconfix.core.utils.helper
-
 import re
 
 _re_include = re.compile('^\s*#\s*include\s*[<"]\s*(\S+)\s*[>"]')
@@ -27,8 +25,6 @@ _re_befstr_main = re.compile('["`\']main')
 _re_aftstr_main = re.compile('main["`\']')
 _re_main_openparen_after = re.compile('main\s*\\(')
 _re_cpp = re.compile('^s*#')
-
-main_property_name = 'MAIN'
 
 def extract_requires(lines):
 
@@ -43,12 +39,6 @@ def extract_requires(lines):
         reqs.append(m.group(1))
 
     return reqs
-
-def has_main(file):
-    main = file.get_property(main_property_name)
-    if main is None:
-        return search_main(file.lines())
-    return libconfix.core.utils.helper.read_boolean(main)
 
 def search_main(lines):
     for l in lines:

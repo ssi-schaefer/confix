@@ -1,5 +1,12 @@
 2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
 
+	* Marshal MD5 sums together with configure.ac and acinclude.m4
+	  related build info.
+	* plugins.c: do not repeatedly search for the main
+	  function. checking once is enough.
+
+2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
+
 	* core.automake.autoconf_archive: search for archive works when
 	  performed outside of confix's world.
 	* serious fix: configfile's CONFIGURE/ENV settings wreak havoc on

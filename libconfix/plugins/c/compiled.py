@@ -19,6 +19,7 @@
 from libconfix.core.utils import const
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core import readonly_prefixes
+import libconfix.core.utils.helper
 
 from base import CBaseBuilder
 from buildinfo import \
@@ -28,30 +29,53 @@ from buildinfo import \
      BuildInfo_CommandlineMacros, \
      BuildInfo_CFLAGS
 
+import helper
+
 class CompiledCBuilder(CBaseBuilder):
+
+    MAIN_PROPERTY_NAME = 'MAIN'
+    
     def __init__(self, file, parentbuilder, package):
         # FIXME (redesign me?): CBaseBuilder's ctor takes care of
         # executing the interface code, thereby eventually manipulating
         # self's exename_ attribute. we have to take care that that
         # attribute is present before the ctor runs. (this is a major
         # violation of the "never get active in the ctor" principle.)
-        self.exename_ = None
-        
+        self.__exename = None
+
         CBaseBuilder.__init__(
             self,
             file=file,
             parentbuilder=parentbuilder,
             package=package)
         self.__init_buildinfo()
+
+        # tri-state: None - haven't looked yet, True, False
+        self.__is_main = None
         pass
 
     def exename(self):
-        return self.exename_
+        return self.__exename
 
     def set_exename(self, name):
-        assert self.exename_ is None
-        self.exename_ = name
+        assert self.__exename is None
+        self.__exename = name
         pass
+
+    def is_main(self):
+        if self.__is_main is None:
+            while True:
+                if self.__exename is not None:
+                    self.__is_main = True
+                    break
+                prop_main = self.file().get_property(self.MAIN_PROPERTY_NAME)
+                if prop_main is not None:
+                    self.__is_main = libconfix.core.utils.helper.read_boolean(prop_main)
+                    break
+                self.__is_main = helper.search_main(self.file().lines())
+                break
+            pass
+        return self.__is_main
 
     def cmdlinemacros(self):
         return self.cmdlinemacros_
