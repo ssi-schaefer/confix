@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_cxx_have_complex_math2
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_cxx_have_complex_math2.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_cxx_have_complex_math2
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CXX_HAVE_COMPLEX_MATH2</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    If the compiler has the complex math functions acos, asin, atan, atan2 and
+    log10, define HAVE_COMPLEX_MATH2.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Todd Veldhuizen, Luc Maisonobe &lt;luc@spaceroots.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-02-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CXX_HAVE_COMPLEX_MATH2],
+[AC_CACHE_CHECK(whether the compiler has more complex math functions,
+ac_cv_cxx_have_complex_math2,
+[AC_REQUIRE([AC_CXX_NAMESPACES])
+ AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ ac_save_LIBS="$LIBS"
+ LIBS="$LIBS -lm"
+ AC_TRY_LINK([#include &lt;complex&gt;
+#ifdef HAVE_NAMESPACES
+using namespace std;
+#endif],[complex&lt;double&gt; x(1.0, 1.0), y(1.0, 1.0);
+acos(x); asin(x); atan(x); atan2(x,y); atan2(x, double(3.0));
+atan2(double(3.0), x); log10(x); return 0;],
+ ac_cv_cxx_have_complex_math2=yes, ac_cv_cxx_have_complex_math2=no)
+ LIBS="$ac_save_LIBS"
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_have_complex_math2" = yes; then
+  AC_DEFINE(HAVE_COMPLEX_MATH2,,[define if the compiler has more complex math functions])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Todd
+   Veldhuizen</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

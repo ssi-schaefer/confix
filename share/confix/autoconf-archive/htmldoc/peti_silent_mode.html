@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: peti_silent_mode
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/peti_silent_mode.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   peti_silent_mode
+  </h1>
+  <h2>
+   Obsolete Macro
+  </h2>
+  <p class="indent">
+   Renamed to AX_SILENT_MODE.
+  </p>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>PETI_SILENT_MODE(on|off)</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Temporarily disable console output. For example:
+   </p>
+   <pre>
+  PETI_SILENT_MODE(on)    dnl be silent
+  AC_PROG_CXX
+  PETI_SILENT_MODE(off)   dnl talk to me again
+  AC_PROG_RANLIB
+</pre>
+   <p>
+    Many thanks to Paolo Bonzini for proposing this macro.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Peter Simons &lt;simons@cryp.to&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2006-06-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([PETI_SILENT_MODE],
+  [
+  case "$1" in
+    on)
+      exec 6&gt;/dev/null
+      ;;
+    off)
+      exec 6&gt;&amp;1
+      ;;
+    *)
+      AC_MSG_ERROR(Silent mode can only be switched "on" or "off".)
+      ;;
+  esac
+  ])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Peter Simons
+   &lt;simons@cryp.to&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

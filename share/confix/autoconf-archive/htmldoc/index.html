@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <meta name="generator" content=
+  "Docutils 0.3.7: http://docutils.sourceforge.net/" />
+  <title>
+   Autoconf Macro Archive
+  </title>
+<style type="text/css">
+/*<![CDATA[*/
+
+body
+  {
+  margin-left: 1em;
+  margin-right: 1em;
+  }
+
+*.title, *.table
+  {
+  text-align: center;
+  }
+
+table
+  {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em ;
+  }
+
+th.docinfo-name
+  {
+  font-weight: bold;
+  text-align: right;
+  white-space: nowrap;
+  }
+
+td, th
+  {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  vertical-align: top;
+  }
+
+pre.literal-block
+  {
+  margin-left: 1em;
+  }
+
+/*]]>*/
+</style>
+ </head>
+ <body>
+  <div class="document" id="autoconf-macro-archive">
+   <h1 class="title">
+    Autoconf Macro Archive
+   </h1>
+   <table class="docinfo" frame="void" rules="none">
+    <col class="docinfo-name" />
+    <col class="docinfo-content" />
+    <tbody valign="top">
+     <tr class="field">
+      <th class="docinfo-name">
+       Homepage:
+      </th>
+      <td class="field-body">
+       <a class="reference" href=
+       "http://autoconf-archive.cryp.to/">http://autoconf-archive.cryp.to/</a>
+      </td>
+     </tr>
+     <tr class="field">
+      <th class="docinfo-name">
+       Latest Release:
+      </th>
+      <td class="field-body">
+       <a class="reference" href=
+       "http://autoconf-archive.cryp.to/autoconf-archive-2006-08-20.tar.bz2">autoconf-archive-2006-08-20.tar.bz2</a>
+      </td>
+     </tr>
+     <tr class="field">
+      <th class="docinfo-name">
+       Browse Archive:
+      </th>
+      <td class="field-body">
+       <a class="reference" href="macros-by-category.html">Index of available
+       Macros</a>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+   <div class="section" id="synopsis">
+    <h1>
+     <a name="synopsis" id="synopsis">Synopsis</a>
+    </h1>
+    <blockquote>
+     The Autoconf Macro Archive aims to provide a collection of reusable
+     <a class="reference" href=
+     "http://www.gnu.org/software/autoconf/">Autoconf</a> macros as free
+     software. The archive currently features more than 300 macros which
+     perform portability tests ranging from compiler support for weird language
+     extensions to automatic generation of sophisticated <a class="reference"
+     href="http://sources.redhat.com/automake/">Automake</a> rules. However,
+     all these macros have been contributed by friendly supporters of the cause
+     from all over the Internet; the archive really just collects and
+     distributes them.
+    </blockquote>
+   </div>
+   <div class="section" id="how-to-contribute">
+    <h1>
+     <a name="how-to-contribute" id="how-to-contribute">How To Contribute</a>
+    </h1>
+    <blockquote>
+     <p>
+      You have written a macro and would like to share it? Great! Just write up
+      a brief explanation how it can be used, send it off to &lt;<a class=
+      "reference" href="mailto:simons@cryp.to">simons@cryp.to</a>&gt;, and wait
+      for me to get back to you with either an report of success or lots of
+      questions.
+     </p>
+     <p>
+      If you feel like being particularly helpful, you can do me the favor and
+      format the macro in the archive's internal markup before submitting it:
+     </p>
+     <pre class="literal-block">
+dnl @synopsis AX_MY_MACRO(param1 [, param1])
+dnl
+dnl Describe what test the macro performs,
+dnl what the parameters do, and how the result
+dnl is used after that.
+dnl
+dnl Paragraphs are separated by an "dnl" line.
+dnl
+dnl   An indented line is a block quote.
+dnl   That's often nice for giving examples.
+dnl
+dnl @author Joe Doe &lt;joe@example.org&gt;
+dnl @version 2006-08-20
+dnl @license AllPermissive
+
+AC_DEFUN([AX_MY_MACRO],[
+...
+])
+</pre>
+     <p>
+      Please submit <em>one file per macro</em>. If you have a family of macros
+      that depend on each other, denote that by calling <tt class=
+      "docutils literal"><span class="pre">AC_REQUIRE</span></tt>; then
+      <tt class="docutils literal"><span class="pre">aclocal(1)</span></tt>
+      will collect all of them automatically no matter over how many files they
+      are spread.
+     </p>
+     <p>
+      The comprehensive list of all keywords understood by the formatting
+      engine is:
+     </p>
+     <p>
+      <tt class="docutils literal"><span class="pre">@category</span>
+      <span class="pre">keyword</span></tt>
+     </p>
+     <blockquote>
+      <p>
+       The keyword may be any of <tt class="docutils literal"><span class=
+       "pre">Automake</span></tt>, <tt class="docutils literal"><span class=
+       "pre">C</span></tt>, <tt class="docutils literal"><span class=
+       "pre">CrossCompilation</span></tt>, <tt class=
+       "docutils literal"><span class="pre">Cxx</span></tt>, <tt class=
+       "docutils literal"><span class="pre">Fortran</span></tt>, <tt class=
+       "docutils literal"><span class="pre">InstalledPackages</span></tt>,
+       <tt class="docutils literal"><span class="pre">Java</span></tt>,
+       <tt class="docutils literal"><span class="pre">LaTeX</span></tt>, or
+       <tt class="docutils literal"><span class="pre">Misc</span></tt>. You can
+       assign a macro into more than one category by specifying multiple
+       <tt class="docutils literal"><span class="pre">@category</span></tt>
+       lines:
+      </p>
+      <pre class="literal-block">
+@category C
+@category Cxx
+</pre>
+     </blockquote>
+     <p>
+      <tt class="docutils literal"><span class="pre">@synopsis</span>
+      <span class="pre">a</span> <span class="pre">line</span> <span class=
+      "pre">of</span> <span class="pre">free</span> <span class=
+      "pre">text</span></tt>
+     </p>
+     <blockquote>
+      The synopsis line should provide the usual specification of the macro's
+      arguments. If you think it's useful, you can provide more than one
+      <tt class="docutils literal"><span class="pre">@synopsis</span></tt>.
+     </blockquote>
+     <p>
+      <tt class="docutils literal"><span class="pre">@summary</span>
+      <span class="pre">a</span> <span class="pre">line</span> <span class=
+      "pre">of</span> <span class="pre">free</span> <span class=
+      "pre">text</span></tt>
+     </p>
+     <blockquote>
+      Give a one-sentence explanation of what the macro does. This short
+      summary will be displayed on the generated index pages.
+     </blockquote>
+     <p>
+      <tt class="docutils literal"><span class="pre">@version</span>
+      <span class="pre">yyyy-mm-dd</span></tt>
+     </p>
+     <blockquote>
+      Every macro in the archive is versioned with the date of the its last
+      modification. For most macros, that is the day of submission.
+     </blockquote>
+     <p>
+      <tt class="docutils literal"><span class="pre">@author</span>
+      <span class="pre">My</span> <span class="pre">Name</span> <span class=
+      "pre">&lt;my.address@example.net&gt;</span></tt>
+     </p>
+     <blockquote>
+      This tag accepts free text, actually, so you can write whatever you want,
+      but it's good practice to use the common format shown above. Multiple
+      <tt class="docutils literal"><span class="pre">@author</span></tt> lines
+      are permitted.
+     </blockquote>
+     <p>
+      <tt class="docutils literal"><span class="pre">@license</span>
+      <span class="pre">keyword</span></tt>
+     </p>
+     <blockquote>
+      The keyword may be any of <tt class="docutils literal"><span class=
+      "pre">AllPermissive</span></tt>, <tt class=
+      "docutils literal"><span class="pre">GPL2</span></tt>, <tt class=
+      "docutils literal"><span class="pre">GPLWithACException</span></tt>, or
+      <tt class="docutils literal"><span class="pre">BSD</span></tt>. The Free
+      Software Foundation <a class="reference" href=
+      "http://www.gnu.org/prep/maintain/html_node/License-Notices.html">recommends</a>
+      the all-permissive license for Autoconf macros.
+     </blockquote>
+    </blockquote>
+   </div>
+   <div class="section" id="copyleft">
+    <h1>
+     <a name="copyleft" id="copyleft">Copyleft</a>
+    </h1>
+    <blockquote>
+     <p>
+      Compilation Copyright (c) 2006 by Peter Simons &lt;<a class="reference"
+      href="mailto:simons@cryp.to">simons@cryp.to</a>&gt;. The Autoconf Macro
+      Archive is licensed according to the terms of the <a class="reference"
+      href="http://www.gnu.org/licenses/gpl.html">GNU General Public
+      License</a>.
+     </p>
+     <p>
+      All macros are copyrighted by their respective authors. Please refer to
+      the individual files for details.
+     </p>
+    </blockquote>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: merk_sip_devel
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/merk_sip_devel.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   merk_sip_devel
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>MERK_SIP_DEVEL([&lt;min_version&gt;])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Searches for the sip executable and the sip include path. The sip include
+    path consists of two components, one which contains the file qt/qtmod.sip
+    and the other one the path to sip.h, which should be found in the
+    include/pythonX.Y directory.
+   </p>
+   <p>
+    The macro bails out if the executable or the file cannot be located.
+    Otherwise it defines:
+   </p>
+   <pre>
+  SIP           the path to the sip executable
+  SIP_CPPFLAGS  include path: -I&lt;path-to-qt/qtmod.sip&gt; -I&lt;path-to-sip.h-dir&gt;
+</pre>
+   <p>
+    Example:
+   </p>
+   <pre>
+  MERK_SIP_DEVEL
+  MERK_SIP_DEVEL([4.1])
+</pre>
+   <p>
+    Requires: perl (for version string comparison)
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Uwe Mayer &lt;merkosh@hadiko.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-06-03
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([MERK_SIP_DEVEL],[
+#-- provice --with-sip=PATH command line argument
+AC_ARG_WITH([sip],
+        AS_HELP_STRING([--with-sip=PATH], [specify the location of the qt/qtmod.sip file]),
+        [sip_search_dir="$withval"],
+        [sip_search_dir=""])
+
+#-- check for sip executable
+AC_PATH_PROG([SIP], [sip], [no])
+if test x"$SIP" == x"no"; then
+        AC_MSG_ERROR([failed to find required command sip])
+fi
+AC_SUBST([SIP])
+
+#-- check for minimum sip version
+if test x"$1" != x""; then
+        AC_CHECK_PROG([PERL], [perl], [$(which perl)])
+        if test x"$PERL" == x""; then
+                AC_MSG_ERROR([perl required for checking sip version])
+        fi
+        AC_MSG_CHECKING([sip version &gt;= $1])
+        sip_version=$($SIP -V |cut -f 1 -d " ")
+        merk_sip_devel_result=$(echo "$sip_version" |perl -e '("$1" lt &lt;STDIN&gt;) &amp;&amp; print "ok"')
+        if test x"$merk_sip_devel_result" == x""; then
+                AC_MSG_RESULT([$sip_version])
+                AC_MSG_ERROR([a newer version of sip is required])
+        else
+                AC_MSG_RESULT([ok])
+        fi
+fi
+
+#-- Check for SIP include path
+AC_MSG_CHECKING([for sip include path])
+
+# check for qt/qtmod.sip
+for i in "$sip_search_dir" "/usr/share/sip"; do
+        sip_path1=`find $i -type f -name qtmod.sip -print | sed "1q"`
+        if test -n "$sip_path1"; then
+                break
+        fi
+done
+
+sip_path1=`echo "$sip_path1" | sed 's,/qt/qtmod.sip,,'`
+if test -z "$sip_path1" ; then
+        AC_MSG_ERROR([cannot find qt/qtmod.sip; try --with-sip=PATH])
+fi
+
+# check for sip.h
+dnl this part of the code to detect python version and include path
+dnl  was taken from ac_python_devel macro, (rev. 2005-06-03)
+python_path=`echo $PYTHON | sed "s,/bin.*$,,"`
+for i in "$python_path/include/python$PYTHON_VERSION/" "$python_path/include/python/" "$python_path/" ; do
+        python_path=`find $i -type f -name Python.h -print | sed "1q"`
+        if test -n "$python_path" ; then
+                break
+        fi
+done
+sip_path2=`echo $python_path | sed "s,/Python.h$,,"`
+if ! test -f "$sip_path2/sip.h"; then
+        AC_MSG_ERROR([cannot find include path to sip.h])
+fi
+
+AC_MSG_RESULT([$sip_path1,$sip_path2])
+
+AC_SUBST([SIP_CPPFLAGS],["-I$sip_path1 -I$sip_path2"])
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Uwe Mayer
+   &lt;merkosh@hadiko.de&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

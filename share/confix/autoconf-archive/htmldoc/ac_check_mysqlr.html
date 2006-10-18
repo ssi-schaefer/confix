@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_check_mysqlr
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_check_mysqlr.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_check_mysqlr
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CHECK_MYSQLR</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    First check if mysqlconfig exists. It fails if mysqlconfig is not in path.
+    Then it checks for the libraries and replaces -lmysqlclient statement with
+    -lmysqlclient_r statement, to enable threaded client library.
+   </p>
+   <p>
+    The following are exported environment variables:
+   </p>
+   <pre>
+  MYSQL_LIBS
+  MYSQL_CFLAGS
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Can Bican &lt;bican@yahoo.com&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2003-05-21
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CHECK_MYSQLR],[
+AC_PATH_PROG(mysqlconfig,mysql_config)
+if test [ -z "$mysqlconfig" ]
+then
+    AC_MSG_ERROR([mysql_config executable not found])
+else
+    AC_MSG_CHECKING(mysql libraries)
+    MYSQL_LIBS=`${mysqlconfig} --libs | sed -e \
+    's/-lmysqlclient /-lmysqlclient_r /' -e 's/-lmysqlclient$/-lmysqlclient_r/'`
+    AC_MSG_RESULT($MYSQL_LIBS)
+    AC_MSG_CHECKING(mysql includes)
+    MYSQL_CFLAGS=`${mysqlconfig} --cflags`
+    AC_MSG_RESULT($MYSQL_CFLAGS)
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2003 Can Bican
+   &lt;bican@yahoo.com&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

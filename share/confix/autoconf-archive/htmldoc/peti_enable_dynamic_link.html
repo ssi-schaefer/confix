@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: peti_enable_dynamic_link
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/peti_enable_dynamic_link.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   peti_enable_dynamic_link
+  </h1>
+  <h2>
+   Obsolete Macro
+  </h2>
+  <p class="indent">
+   Deprecated with the advent of GNU Libtool.
+  </p>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>PETI_ENABLE_DYNAMIC_LINK</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Add a command-line flag to enable/disable dynamic linking.
+   </p>
+   <p>
+    Calling this macro adds the flag "--enable-dynamic-link" to command-line.
+    When disabled, the compiler/linker flag "-static" is added to "$LDFLAGS".
+    The default is dynamic linkage.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Peter Simons &lt;simons@cryp.to&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2006-06-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([PETI_ENABLE_DYNAMIC_LINK], [
+AC_MSG_CHECKING(what kind of binaries we shall create)
+AC_ARG_ENABLE(dynamic-link,
+[  --enable-dynamic-link   Create dynamically-linked binaries (default)],
+if test "$enableval" = "yes"; then
+    AC_MSG_RESULT(dynamically linked)
+else
+    LDFLAGS="$LDFLAGS -static"
+    AC_MSG_RESULT(statically linked)
+fi,
+AC_MSG_RESULT(dynamically linked))
+])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Peter Simons
+   &lt;simons@cryp.to&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

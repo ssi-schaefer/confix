@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_install_files
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_install_files.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_install_files
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_INSTALL_FILES</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Adds target for creating a install_files file, which contains the list of
+    files that will be installed.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Tom Howard &lt;tomhoward@users.sf.net&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-14
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_INSTALL_FILES],
+[
+AC_MSG_NOTICE([adding install_files support])
+AC_ARG_VAR(GAWK, [gawk executable to use])
+if test "x$GAWK" = "x"; then
+   AC_CHECK_PROGS(GAWK,[gawk])
+fi
+
+if test "x$GAWK" != "x"; then
+   AC_MSG_NOTICE([install_files support enabled])
+   AX_HAVE_INSTALL_FILES=true
+   AX_ADD_AM_MACRO([[
+CLEANFILES += \\
+\$(top_builddir)/install_files
+
+\$(top_builddir)/install_files: do-mfstamp-recursive
+        @if test \"\$(top_builddir)/mfstamp\" -nt \"\$(top_builddir)/install_files\"; then \\
+        cd \$(top_builddir) &amp;&amp; STAGING=\"\$(PWD)/staging\"; \\
+        \$(MAKE) \$(AM_MAKEFLAGS) DESTDIR=\"\$\$STAGING\" install; \\
+        cd \"\$\$STAGING\" &amp;&amp; find "." ! -type d -print | \\
+        $GAWK \' \\
+            /^\\.\\/usr\\/local\\/lib/ { \\
+                sub( /\\.\\/usr\\/local\\/lib/, \"%%{_libdir}\" ); } \\
+            /^\\.\\/usr\\/local\\/bin/ { \\
+                sub( /\\.\\/usr\\/local\\/bin/, \"%%{_bindir}\" ); } \\
+            /^\\.\\/usr\\/local\\/include/ { \\
+                sub( /\\.\\/usr\\/local\\/include/, \"%%{_includedir}\" ); } \\
+            /^\\.\\/usr\\/local\\/share/ { \\
+                sub( /\\.\\/usr\\/local\\/share/, \"%%{_datadir}\" ); } \\
+            /^\\.\\/usr\\/local/ { \\
+                sub( /\\.\\/usr\\/local/, \"%%{_prefix}\" ); } \\
+            /^\\./ { sub( /\\./, \"\" ); } \\
+            /./ { print; }\' &gt; ../install_files; \\
+        rm -rf \"\$\$STAGING\"; \\
+        else \\
+            echo \"\\\`\$(top_builddir)/install_files\' is up to date.\"; \\
+        fi
+
+]])
+    AX_ADD_RECURSIVE_AM_MACRO([do-mfstamp],[[
+\$(top_builddir)/mfstamp:  do-mfstamp-recursive
+
+do-mfstamp-am do-mfstamp: Makefile.in
+        @echo \"timestamp for all Makefile.in files\" &gt; \$(top_builddir)/mfstamp
+        @touch ${AX_DOLLAR}@
+
+]])
+else
+    AX_HAVE_INSTALL_FILES=false;
+    AC_MSG_WARN([install_files support disable... gawk not found])
+fi
+])# AX_INSTALL_FILES
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Tom Howard
+   &lt;tomhoward@users.sf.net&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,24 @@
+recursive-include libconfix *.py
+include scripts/*.py
+include ChangeLog*
+
+recursive-include share *
+
+recursive-include tests *
+
+include doc/Makefile
+
+include doc/index.html
+include doc/RELEASE*
+
+include doc/confix.texi
+include doc/*.fig
+include doc/*.png
+include doc/confix.ps
+include doc/confix.html
+
+include README
+include INSTALL
+include LICENSE
+include COPYING
+include ChangeLog

@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: peti_with_dmalloc
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/peti_with_dmalloc.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   peti_with_dmalloc
+  </h1>
+  <h2>
+   Obsolete Macro
+  </h2>
+  <p class="indent">
+   Renamed to AX_WITH_DMALLOC.
+  </p>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>PETI_WITH_DMALLOC</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Let the user enable/disable dmalloc library support. See
+    &lt;http://www.dmalloc.org/&gt; for further details.
+   </p>
+   <p>
+    Calling this macro defines a user command-line flag "--with-dmalloc".
+    Furthermore, "-IPREFIX/include" will be added to "$CPPFLAGS",
+    "-LPREFIX/lib" to "$LDFLAGS", and "-DDEBUG_DMALLOC" and
+    "-DDMALLOC_FUNC_CHECK" to "$CPPFLAGS".
+   </p>
+   <p>
+    To enable dmalloc support in your code, add this snippet to tho appropriate
+    header files:
+   </p>
+   <pre>
+  #ifdef DEBUG_DMALLOC
+  #  include &lt;dmalloc.h&gt;
+  #endif
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Peter Simons &lt;simons@cryp.to&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2006-06-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([PETI_WITH_DMALLOC], [
+AC_MSG_CHECKING(whether to use the dmalloc library)
+AC_ARG_WITH(dmalloc,
+[  --with-dmalloc[=PREFIX]  Compile with dmalloc library],
+if test "$withval" = "" -o "$withval" = "yes"; then
+    ac_cv_dmalloc="/usr/local"
+else
+    ac_cv_dmalloc="$withval"
+fi
+AC_MSG_RESULT(yes)
+CPPFLAGS="$CPPFLAGS -DDEBUG_DMALLOC -DDMALLOC_FUNC_CHECK -I$ac_cv_dmalloc/include"
+LDFLAGS="$LDFLAGS -L$ac_cv_dmalloc/lib"
+LIBS="$LIBS -ldmalloc"
+,AC_MSG_RESULT(no))
+])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Peter Simons
+   &lt;simons@cryp.to&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

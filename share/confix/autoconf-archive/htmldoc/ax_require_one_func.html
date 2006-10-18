@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_require_one_func
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_require_one_func.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_require_one_func
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_REQUIRE_ONE_FUNC (FUNCTION..., [ACTION-IF-ANY-FOUND],
+   [ACTION-IF-NONE-FOUND])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    AX_REQUIRE_ONE_FUNC is a simple wrapper for AC_CHECK_FUNCS. It calls
+    AC_CHECK_FUNCS on the list of functions named in the first argument, then
+    invokes ACTION-IF-ANY-FOUND if at least one of the functions exists or
+    ACTION-IF-NONE-FOUND if none of the functions exist.
+   </p>
+   <p>
+    Here's an example:
+   </p>
+   <pre>
+    AX_REQUIRE_ONE_FUNC([posix_memalign memalign valloc], ,
+      [AC_MSG_ERROR([unable to allocate page-aligned memory])])
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Scott Pakin &lt;pakin@uiuc.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-22
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_REQUIRE_ONE_FUNC],
+[m4_define([ax_1func_cv], [AS_TR_SH(ax_cv_func_any_$1)])
+AC_CACHE_VAL([ax_1func_cv],
+  [ax_1func_cv=no
+   AC_CHECK_FUNCS([$1], [ax_1func_cv="$ax_1func_cv $ac_func"])])
+AS_IF([test "$ax_1func_cv" = "no"],
+  [$3],
+  [ax_1func_cv=`echo $ax_1func_cv | sed 's/^no //'`
+   $2])
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Scott Pakin
+   &lt;pakin@uiuc.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

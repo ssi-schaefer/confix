@@ -1,0 +1,1835 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="EN">
+ <head>
+  <title>
+   Autoconf Macro Archive: Macro Index
+  </title>
+  <link href="ac-archive.css" type="text/css" rel="stylesheet">
+ </head>
+ <body>
+  <table summary="table used as formatting mechanism" width="100%">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center" valign="top">
+      <a href="mailto:simons@cryp.to">Contact Maintainer</a>
+     </td>
+     <td style="width:50%;" align="center" valign="top">
+      <a href="index.html">Main Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   Autoconf Macros by Category
+  </h1>
+  <p>
+   All available macros are assigned into one of those categorys:
+  </p>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="#AUTOMAKE" rev="section">Automake</a>
+    </dt>
+    <dd>
+     Generating Automake rules from Autoconf macros.
+    </dd>
+    <dt>
+     <a href="#C" rev="section">C Language</a>
+    </dt>
+    <dd>
+     Testing the C compiler and standard library.
+    </dd>
+    <dt>
+     <a href="#CROSSCOMPILATION" rev="section">Cross-Compilation</a>
+    </dt>
+    <dd>
+     Cross-compilation support.
+    </dd>
+    <dt>
+     <a href="#CXX" rev="section">C++ Language</a>
+    </dt>
+    <dd>
+     Testing the C++ compiler, libraries, and headers.
+    </dd>
+    <dt>
+     <a href="#FORTRAN" rev="section">Fortran Language</a>
+    </dt>
+    <dd>
+     Testing the Fortran compiler.
+    </dd>
+    <dt>
+     <a href="#INSTALLEDPACKAGES" rev="section">Installed Packages</a>
+    </dt>
+    <dd>
+     Finding 3rd-party software, headers, and libraries.
+    </dd>
+    <dt>
+     <a href="#JAVA" rev="section">Java Language</a>
+    </dt>
+    <dd>
+     Testing the Java compiler and libraries.
+    </dd>
+    <dt>
+     <a href="#LATEX" rev="section">LaTeX Support</a>
+    </dt>
+    <dd>
+     Testing the LaTeX installation.
+    </dd>
+    <dt>
+     <a href="#MISC" rev="section">Miscellaneous</a>
+    </dt>
+    <dd>
+     Everything that didn't fit into any other category.
+    </dd>
+    <dt>
+     <a href="#OBSOLETE" rev="section">Obsolete Macros</a>
+    </dt>
+    <dd>
+     Expect these macros to disappear from the archive after a while.
+    </dd>
+   </dl>
+  </div>
+  <p>
+   Following the links below will show you the actual macro and a (more or
+   less) detailed description of it.
+  </p>
+  <hr>
+  <h2 id="AUTOMAKE">
+   Automake:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="ax_add_am_macro.html">ax_add_am_macro</a>
+    </dt>
+    <dt>
+     <a href="ax_add_recursive_am_macro.html">ax_add_recursive_am_macro</a>
+    </dt>
+    <dt>
+     <a href="ax_am_macros.html">ax_am_macros</a>
+    </dt>
+    <dt>
+     <a href="ax_append_to_file.html">ax_append_to_file</a>
+    </dt>
+    <dt>
+     <a href="ax_cvs.html">ax_cvs</a>
+    </dt>
+    <dt>
+     <a href="ax_dist_msi.html">ax_dist_msi</a>
+    </dt>
+    <dt>
+     <a href="ax_dist_rpm.html">ax_dist_rpm</a>
+    </dt>
+    <dt>
+     <a href="ax_extra_dist.html">ax_extra_dist</a>
+    </dt>
+    <dt>
+     <a href="ax_file_escapes.html">ax_file_escapes</a>
+    </dt>
+    <dt>
+     <a href="ax_install_files.html">ax_install_files</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_maintainer_mode_auto_silent.html">ax_maintainer_mode_auto_silent</a>
+    </dt>
+    <dt>
+     <a href="ax_print_to_file.html">ax_print_to_file</a>
+    </dt>
+    <dt>
+     <a href="ax_split_version.html">ax_split_version</a>
+    </dt>
+    <dt>
+     <a href="ax_upload.html">ax_upload</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_warning_default_aclocaldir.html">ax_warning_default_aclocaldir</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="C">
+   C:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="ac_c_long_long.html">ac_c_long_long</a>
+    </dt>
+    <dt>
+     <a href="ac_c_long_long_.html">ac_c_long_long_</a>
+    </dt>
+    <dt>
+     <a href="ac_c_printf_thsep.html">ac_c_printf_thsep</a>
+    </dt>
+    <dd>
+     check compiler support for printf apostrophe flag
+    </dd>
+    <dt>
+     <a href="ac_c_var_func.html">ac_c_var_func</a>
+    </dt>
+    <dt>
+     <a href="ac_check_symbol.html">ac_check_symbol</a>
+    </dt>
+    <dt>
+     <a href="ac_check_typedef.html">ac_check_typedef</a>
+    </dt>
+    <dt>
+     <a href="ac_create_stdint_h.html">ac_create_stdint_h</a>
+    </dt>
+    <dt>
+     <a href="ac_func_memmove.html">ac_func_memmove</a>
+    </dt>
+    <dt>
+     <a href="ac_func_mkdir.html">ac_func_mkdir</a>
+    </dt>
+    <dt>
+     <a href="ac_func_snprintf.html">ac_func_snprintf</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_cc_char_subscripts.html">ac_prog_cc_char_subscripts</a>
+    </dt>
+    <dt>
+     <a href="ag_check_allocated_ctime.html">ag_check_allocated_ctime</a>
+    </dt>
+    <dt>
+     <a href="ag_check_pathfind.html">ag_check_pathfind</a>
+    </dt>
+    <dt>
+     <a href="ag_check_posix_regcomp.html">ag_check_posix_regcomp</a>
+    </dt>
+    <dt>
+     <a href="ag_check_posix_sysinfo.html">ag_check_posix_sysinfo</a>
+    </dt>
+    <dt>
+     <a href="ag_check_strcspn.html">ag_check_strcspn</a>
+    </dt>
+    <dt>
+     <a href="ag_check_strftime.html">ag_check_strftime</a>
+    </dt>
+    <dt>
+     <a href="ag_check_sys_siglist.html">ag_check_sys_siglist</a>
+    </dt>
+    <dt>
+     <a href="ag_check_uname_syscall.html">ag_check_uname_syscall</a>
+    </dt>
+    <dt>
+     <a href="ax_c___attribute__.html">ax_c___attribute__</a>
+    </dt>
+    <dt>
+     <a href="ax_cc_maxopt.html">ax_cc_maxopt</a>
+    </dt>
+    <dd>
+     turn on optimization flags for the C compiler
+    </dd>
+    <dt>
+     <a href="ax_cflags_aix_option.html">ax_cflags_aix_option</a>
+    </dt>
+    <dt>
+     <a href="ax_cflags_gcc_option.html">ax_cflags_gcc_option</a>
+    </dt>
+    <dt>
+     <a href="ax_cflags_hpux_option.html">ax_cflags_hpux_option</a>
+    </dt>
+    <dt>
+     <a href="ax_cflags_irix_option.html">ax_cflags_irix_option</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_cflags_no_writable_strings.html">ax_cflags_no_writable_strings</a>
+    </dt>
+    <dt>
+     <a href="ax_cflags_strict_prototypes.html">ax_cflags_strict_prototypes</a>
+    </dt>
+    <dt>
+     <a href="ax_cflags_sun_option.html">ax_cflags_sun_option</a>
+    </dt>
+    <dt>
+     <a href="ax_cflags_warn_all.html">ax_cflags_warn_all</a>
+    </dt>
+    <dt>
+     <a href="ax_cflags_warn_all_ansi.html">ax_cflags_warn_all_ansi</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_check_page_aligned_malloc.html">ax_check_page_aligned_malloc</a>
+    </dt>
+    <dt>
+     <a href="ax_compiler_vendor.html">ax_compiler_vendor</a>
+    </dt>
+    <dd>
+     find the vendor (gnu, intel, etc.) of the C/C++ compiler
+    </dd>
+    <dt>
+     <a href="ax_create_stdint_h.html">ax_create_stdint_h</a>
+    </dt>
+    <dt>
+     <a href="ax_func_posix_memalign.html">ax_func_posix_memalign</a>
+    </dt>
+    <dt>
+     <a href="ax_gcc_install_dir.html">ax_gcc_install_dir</a>
+    </dt>
+    <dt>
+     <a href="ax_gcc_option.html">ax_gcc_option</a>
+    </dt>
+    <dt>
+     <a href="ax_not_enable_frame_pointer.html">ax_not_enable_frame_pointer</a>
+    </dt>
+    <dt>
+     <a href="ax_subst_with.html">ax_subst_with</a>
+    </dt>
+    <dt>
+     <a href="dps_snprintf_oflow.html">dps_snprintf_oflow</a>
+    </dt>
+    <dt>
+     <a href="etr_string_strcasecmp.html">etr_string_strcasecmp</a>
+    </dt>
+    <dt>
+     <a href="etr_strings_strcasecmp.html">etr_strings_strcasecmp</a>
+    </dt>
+    <dt>
+     <a href=
+     "patch_libtool_to_add_host_cc.html">patch_libtool_to_add_host_cc</a>
+    </dt>
+    <dt>
+     <a href="vl_check_sign.html">vl_check_sign</a>
+    </dt>
+    <dt>
+     <a href="vl_decl_wchar_max.html">vl_decl_wchar_max</a>
+    </dt>
+    <dt>
+     <a href="vl_prog_cc_warnings.html">vl_prog_cc_warnings</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="CROSSCOMPILATION">
+   Cross-Compilation:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="ac_c_bigendian_cross.html">ac_c_bigendian_cross</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_cc_for_build.html">ac_prog_cc_for_build</a>
+    </dt>
+    <dt>
+     <a href="compile_value.html">compile_value</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="CXX">
+   C++:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="ac_cxx_bool.html">ac_cxx_bool</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_compiler_vendor.html">ac_cxx_compiler_vendor</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_complex_math_in_namespace_std.html">ac_cxx_complex_math_in_namespace_std</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_const_cast.html">ac_cxx_const_cast</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_cppflags_std_lang.html">ac_cxx_cppflags_std_lang</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_cxxflags_std_lang.html">ac_cxx_cxxflags_std_lang</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_default_template_parameters.html">ac_cxx_default_template_parameters</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_dtor_after_atexit.html">ac_cxx_dtor_after_atexit</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_dynamic_cast.html">ac_cxx_dynamic_cast</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_enum_computations.html">ac_cxx_enum_computations</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_enum_computations_with_cast.html">ac_cxx_enum_computations_with_cast</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_exceptions.html">ac_cxx_exceptions</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_explicit.html">ac_cxx_explicit</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_explicit_instantiations.html">ac_cxx_explicit_instantiations</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_explicit_template_function_qualification.html">ac_cxx_explicit_template_function_qualification</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_extern_template.html">ac_cxx_extern_template</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_full_specialization_syntax.html">ac_cxx_full_specialization_syntax</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_function_nontype_parameters.html">ac_cxx_function_nontype_parameters</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_gnucxx_hashmap.html">ac_cxx_gnucxx_hashmap</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_complex.html">ac_cxx_have_complex</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_complex_math1.html">ac_cxx_have_complex_math1</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_complex_math2.html">ac_cxx_have_complex_math2</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_empty_iostream.html">ac_cxx_have_empty_iostream</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_ext_hash_map.html">ac_cxx_have_ext_hash_map</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_ext_hash_set.html">ac_cxx_have_ext_hash_set</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_ext_slist.html">ac_cxx_have_ext_slist</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_freeze_sstream.html">ac_cxx_have_freeze_sstream</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_ieee_math.html">ac_cxx_have_ieee_math</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_have_long_long_for_iostream.html">ac_cxx_have_long_long_for_iostream</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_numeric_limits.html">ac_cxx_have_numeric_limits</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_sstream.html">ac_cxx_have_sstream</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_std.html">ac_cxx_have_std</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_stl.html">ac_cxx_have_stl</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_have_string_push_back.html">ac_cxx_have_string_push_back</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_system_v_math.html">ac_cxx_have_system_v_math</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_valarray.html">ac_cxx_have_valarray</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_have_vector_at.html">ac_cxx_have_vector_at</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_ldflags_std_lang.html">ac_cxx_ldflags_std_lang</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_member_constants.html">ac_cxx_member_constants</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_member_templates.html">ac_cxx_member_templates</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_member_templates_outside_class.html">ac_cxx_member_templates_outside_class</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_mutable.html">ac_cxx_mutable</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_namespaces.html">ac_cxx_namespaces</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_nceg_restrict.html">ac_cxx_nceg_restrict</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_new_for_scoping.html">ac_cxx_new_for_scoping</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_old_for_scoping.html">ac_cxx_old_for_scoping</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_partial_ordering.html">ac_cxx_partial_ordering</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_partial_specialization.html">ac_cxx_partial_specialization</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_reinterpret_cast.html">ac_cxx_reinterpret_cast</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_rtti.html">ac_cxx_rtti</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_static_cast.html">ac_cxx_static_cast</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_stlport_hashmap.html">ac_cxx_stlport_hashmap</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_template_keyword_qualifier.html">ac_cxx_template_keyword_qualifier</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_template_qualified_base_class.html">ac_cxx_template_qualified_base_class</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_template_qualified_return_type.html">ac_cxx_template_qualified_return_type</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_template_scoped_argument_matching.html">ac_cxx_template_scoped_argument_matching</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_templates.html">ac_cxx_templates</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_templates_as_template_arguments.html">ac_cxx_templates_as_template_arguments</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_typename.html">ac_cxx_typename</a>
+    </dt>
+    <dt>
+     <a href="ac_cxx_use_numtrait.html">ac_cxx_use_numtrait</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_cxx_verbose_terminate_handler.html">ac_cxx_verbose_terminate_handler</a>
+    </dt>
+    <dt>
+     <a href="ax_boost.html">ax_boost</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_base.html">ax_boost_base</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_date_time.html">ax_boost_date_time</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_filesystem.html">ax_boost_filesystem</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_iostreams.html">ax_boost_iostreams</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_program_options.html">ax_boost_program_options</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_python.html">ax_boost_python</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_regex.html">ax_boost_regex</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_serialization.html">ax_boost_serialization</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_signals.html">ax_boost_signals</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_thread.html">ax_boost_thread</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_boost_unit_test_framework.html">ax_boost_unit_test_framework</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_wserialization.html">ax_boost_wserialization</a>
+    </dt>
+    <dt>
+     <a href="ax_compiler_vendor.html">ax_compiler_vendor</a>
+    </dt>
+    <dd>
+     find the vendor (gnu, intel, etc.) of the C/C++ compiler
+    </dd>
+    <dt>
+     <a href="ax_cxx_gcc_abi_demangle.html">ax_cxx_gcc_abi_demangle</a>
+    </dt>
+    <dt>
+     <a href="ax_dll_string.html">ax_dll_string</a>
+    </dt>
+    <dd>
+     Tests for a bug currently in g++ 3.4.4 on Cygwin where passing an empty
+     std::string to a dll will cause a crash on destruction.
+    </dd>
+    <dt>
+     <a href="ax_lib_mysql.html">ax_lib_mysql</a>
+    </dt>
+    <dt>
+     <a href="ax_lib_oracle_oci.html">ax_lib_oracle_oci</a>
+    </dt>
+    <dt>
+     <a href="ax_lib_postgresql.html">ax_lib_postgresql</a>
+    </dt>
+    <dt>
+     <a href="ax_lib_sqlite3.html">ax_lib_sqlite3</a>
+    </dt>
+    <dt>
+     <a href="mdl_cxx_function_try_blocks.html">mdl_cxx_function_try_blocks</a>
+    </dt>
+    <dt>
+     <a href="mni_cxx_have_koenig_lookup.html">mni_cxx_have_koenig_lookup</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="FORTRAN">
+   Fortran:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="ax_f90_header.html">ax_f90_header</a>
+    </dt>
+    <dt>
+     <a href="ax_f90_internal_headmod.html">ax_f90_internal_headmod</a>
+    </dt>
+    <dt>
+     <a href="ax_f90_library.html">ax_f90_library</a>
+    </dt>
+    <dt>
+     <a href="ax_f90_library_setup.html">ax_f90_library_setup</a>
+    </dt>
+    <dt>
+     <a href="ax_f90_module.html">ax_f90_module</a>
+    </dt>
+    <dt>
+     <a href="ax_f90_module_extension.html">ax_f90_module_extension</a>
+    </dt>
+    <dt>
+     <a href="ax_f90_module_flag.html">ax_f90_module_flag</a>
+    </dt>
+    <dd>
+     Find Fortran 90 modules inclusion flag.
+    </dd>
+   </dl>
+  </div>
+  <h2 id="INSTALLEDPACKAGES">
+   Installed Packages:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="ac_auto_include_headers.html">ac_auto_include_headers</a>
+    </dt>
+    <dt>
+     <a href="ac_caolan_check_package.html">ac_caolan_check_package</a>
+    </dt>
+    <dt>
+     <a href="ac_caolan_search_package.html">ac_caolan_search_package</a>
+    </dt>
+    <dt>
+     <a href="ac_check_curl.html">ac_check_curl</a>
+    </dt>
+    <dd>
+     check for curl of sufficient version by looking at curl-config
+    </dd>
+    <dt>
+     <a href="ac_check_icu.html">ac_check_icu</a>
+    </dt>
+    <dd>
+     check for ICU of sufficient version by looking at icu-config
+    </dd>
+    <dt>
+     <a href="ac_check_java_home.html">ac_check_java_home</a>
+    </dt>
+    <dt>
+     <a href="ac_check_mysql_db.html">ac_check_mysql_db</a>
+    </dt>
+    <dt>
+     <a href="ac_check_mysqlr.html">ac_check_mysqlr</a>
+    </dt>
+    <dt>
+     <a href="ac_check_taglib.html">ac_check_taglib</a>
+    </dt>
+    <dd>
+     check for taglib of sufficient version by looking at taglib-config
+    </dd>
+    <dt>
+     <a href="ac_jni_include_dir.html">ac_jni_include_dir</a>
+    </dt>
+    <dt>
+     <a href="ac_lib_id3.html">ac_lib_id3</a>
+    </dt>
+    <dt>
+     <a href="ac_lib_upnp.html">ac_lib_upnp</a>
+    </dt>
+    <dt>
+     <a href="ac_perl_module_version.html">ac_perl_module_version</a>
+    </dt>
+    <dd>
+     Checks if the given list of 'Module Version' are avaiable
+    </dd>
+    <dt>
+     <a href="ac_pkg_mico.html">ac_pkg_mico</a>
+    </dt>
+    <dt>
+     <a href="ac_pkg_swig.html">ac_pkg_swig</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_apache.html">ac_prog_apache</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_cp_s.html">ac_prog_cp_s</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_crontab.html">ac_prog_crontab</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_httpd.html">ac_prog_httpd</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_modprobe.html">ac_prog_modprobe</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_mysql.html">ac_prog_mysql</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_mysqladmin.html">ac_prog_mysqladmin</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_mysqld.html">ac_prog_mysqld</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_mysqlimport.html">ac_prog_mysqlimport</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_mysqlshow.html">ac_prog_mysqlshow</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_perl_modules.html">ac_prog_perl_modules</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_perl_version.html">ac_prog_perl_version</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_scp.html">ac_prog_scp</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_ssh.html">ac_prog_ssh</a>
+    </dt>
+    <dt>
+     <a href="ac_python_devel.html">ac_python_devel</a>
+    </dt>
+    <dt>
+     <a href="ac_python_module.html">ac_python_module</a>
+    </dt>
+    <dt>
+     <a href="acx_blas.html">acx_blas</a>
+    </dt>
+    <dt>
+     <a href="acx_lapack.html">acx_lapack</a>
+    </dt>
+    <dt>
+     <a href="acx_mpi.html">acx_mpi</a>
+    </dt>
+    <dd>
+     figure out how to compile/link code with MPI
+    </dd>
+    <dt>
+     <a href="acx_pthread.html">acx_pthread</a>
+    </dt>
+    <dd>
+     figure out how to build C programs using POSIX threads
+    </dd>
+    <dt>
+     <a href="adl_func_getopt_long.html">adl_func_getopt_long</a>
+    </dt>
+    <dt>
+     <a href="am_rpm_init.html">am_rpm_init</a>
+    </dt>
+    <dt>
+     <a href="am_with_mpatrol.html">am_with_mpatrol</a>
+    </dt>
+    <dt>
+     <a href="ax_boost.html">ax_boost</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_base.html">ax_boost_base</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_date_time.html">ax_boost_date_time</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_filesystem.html">ax_boost_filesystem</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_iostreams.html">ax_boost_iostreams</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_program_options.html">ax_boost_program_options</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_python.html">ax_boost_python</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_regex.html">ax_boost_regex</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_serialization.html">ax_boost_serialization</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_signals.html">ax_boost_signals</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_thread.html">ax_boost_thread</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_boost_unit_test_framework.html">ax_boost_unit_test_framework</a>
+    </dt>
+    <dt>
+     <a href="ax_boost_wserialization.html">ax_boost_wserialization</a>
+    </dt>
+    <dt>
+     <a href="ax_check_gd.html">ax_check_gd</a>
+    </dt>
+    <dt>
+     <a href="ax_check_gl.html">ax_check_gl</a>
+    </dt>
+    <dt>
+     <a href="ax_check_glu.html">ax_check_glu</a>
+    </dt>
+    <dt>
+     <a href="ax_check_glut.html">ax_check_glut</a>
+    </dt>
+    <dt>
+     <a href="ax_create_pkgconfig_info.html">ax_create_pkgconfig_info</a>
+    </dt>
+    <dt>
+     <a href="ax_ext_check_header.html">ax_ext_check_header</a>
+    </dt>
+    <dt>
+     <a href="ax_ext_have_lib.html">ax_ext_have_lib</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_func_which_gethostbyname_r.html">ax_func_which_gethostbyname_r</a>
+    </dt>
+    <dt>
+     <a href="ax_gcc_install_dir.html">ax_gcc_install_dir</a>
+    </dt>
+    <dt>
+     <a href="ax_lang_compiler_ms.html">ax_lang_compiler_ms</a>
+    </dt>
+    <dt>
+     <a href="ax_lib_mysql.html">ax_lib_mysql</a>
+    </dt>
+    <dt>
+     <a href="ax_lib_oracle_oci.html">ax_lib_oracle_oci</a>
+    </dt>
+    <dt>
+     <a href="ax_lib_postgresql.html">ax_lib_postgresql</a>
+    </dt>
+    <dt>
+     <a href="ax_lib_sqlite3.html">ax_lib_sqlite3</a>
+    </dt>
+    <dt>
+     <a href="ax_openmp.html">ax_openmp</a>
+    </dt>
+    <dd>
+     determine how to compile programs using OpenMP
+    </dd>
+    <dt>
+     <a href="ax_path_bdb.html">ax_path_bdb</a>
+    </dt>
+    <dt>
+     <a href="ax_path_lib_pcre.html">ax_path_lib_pcre</a>
+    </dt>
+    <dt>
+     <a href="ax_path_milter.html">ax_path_milter</a>
+    </dt>
+    <dt>
+     <a href="ax_python.html">ax_python</a>
+    </dt>
+    <dt>
+     <a href="ax_python_config_var.html">ax_python_config_var</a>
+    </dt>
+    <dt>
+     <a href="ax_sys_perlsharpbang.html">ax_sys_perlsharpbang</a>
+    </dt>
+    <dt>
+     <a href="ax_with_apxs.html">ax_with_apxs</a>
+    </dt>
+    <dt>
+     <a href="ax_with_dmalloc.html">ax_with_dmalloc</a>
+    </dt>
+    <dd>
+     Enable/disable dmalloc library support.
+    </dd>
+    <dt>
+     <a href="ax_with_python.html">ax_with_python</a>
+    </dt>
+    <dt>
+     <a href="az_python.html">az_python</a>
+    </dt>
+    <dd>
+     New and revised Python support.
+    </dd>
+    <dt>
+     <a href="berkeley_db.html">berkeley_db</a>
+    </dt>
+    <dt>
+     <a href="bnv_have_qt.html">bnv_have_qt</a>
+    </dt>
+    <dd>
+     Search for Trolltech's Qt GUI framework.
+    </dd>
+    <dt>
+     <a href="check_gnu_make.html">check_gnu_make</a>
+    </dt>
+    <dt>
+     <a href="check_ssl.html">check_ssl</a>
+    </dt>
+    <dt>
+     <a href="check_zlib.html">check_zlib</a>
+    </dt>
+    <dt>
+     <a href="ct_check_postgres_db.html">ct_check_postgres_db</a>
+    </dt>
+    <dt>
+     <a href="immdx_lib_metis.html">immdx_lib_metis</a>
+    </dt>
+    <dt>
+     <a href="mdl_have_opengl.html">mdl_have_opengl</a>
+    </dt>
+    <dt>
+     <a href="merk_prog_tcl.html">merk_prog_tcl</a>
+    </dt>
+    <dt>
+     <a href="merk_sip_devel.html">merk_sip_devel</a>
+    </dt>
+    <dt>
+     <a href="mp_with_curses.html">mp_with_curses</a>
+    </dt>
+    <dt>
+     <a href="ms_check_pgsql_db.html">ms_check_pgsql_db</a>
+    </dt>
+    <dt>
+     <a href="ms_pgsql_priv_root.html">ms_pgsql_priv_root</a>
+    </dt>
+    <dt>
+     <a href="ms_prog_pgclient.html">ms_prog_pgclient</a>
+    </dt>
+    <dt>
+     <a href="rssh_check_sunpro_c.html">rssh_check_sunpro_c</a>
+    </dt>
+    <dt>
+     <a href="sg_afs.html">sg_afs</a>
+    </dt>
+    <dt>
+     <a href="smr_with_build_path.html">smr_with_build_path</a>
+    </dt>
+    <dt>
+     <a href="vl_lib_readline.html">vl_lib_readline</a>
+    </dt>
+    <dt>
+     <a href="vl_prog_fig2dev.html">vl_prog_fig2dev</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="JAVA">
+   Java:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="ac_check_class.html">ac_check_class</a>
+    </dt>
+    <dt>
+     <a href="ac_check_classpath.html">ac_check_classpath</a>
+    </dt>
+    <dt>
+     <a href="ac_check_junit.html">ac_check_junit</a>
+    </dt>
+    <dt>
+     <a href="ac_check_rqrd_class.html">ac_check_rqrd_class</a>
+    </dt>
+    <dt>
+     <a href="ac_java_options.html">ac_java_options</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_jar.html">ac_prog_jar</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_java.html">ac_prog_java</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_java_cc.html">ac_prog_java_cc</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_java_works.html">ac_prog_java_works</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_javac.html">ac_prog_javac</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_javac_works.html">ac_prog_javac_works</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_javadoc.html">ac_prog_javadoc</a>
+    </dt>
+    <dt>
+     <a href="ac_prog_javah.html">ac_prog_javah</a>
+    </dt>
+    <dt>
+     <a href="ac_try_compile_java.html">ac_try_compile_java</a>
+    </dt>
+    <dt>
+     <a href="ac_try_run_javac.html">ac_try_run_javac</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="LATEX">
+   LaTeX:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="_acltx_test.html">_acltx_test</a>
+    </dt>
+    <dt>
+     <a href="acltx_class.html">acltx_class</a>
+    </dt>
+    <dt>
+     <a href="acltx_class_article.html">acltx_class_article</a>
+    </dt>
+    <dt>
+     <a href="acltx_class_book.html">acltx_class_book</a>
+    </dt>
+    <dt>
+     <a href="acltx_class_report.html">acltx_class_report</a>
+    </dt>
+    <dt>
+     <a href="acltx_classes.html">acltx_classes</a>
+    </dt>
+    <dt>
+     <a href="acltx_compress_eps.html">acltx_compress_eps</a>
+    </dt>
+    <dt>
+     <a href="acltx_converting_fig.html">acltx_converting_fig</a>
+    </dt>
+    <dt>
+     <a href="acltx_converting_jpg_eps.html">acltx_converting_jpg_eps</a>
+    </dt>
+    <dt>
+     <a href="acltx_converting_png_eps.html">acltx_converting_png_eps</a>
+    </dt>
+    <dt>
+     <a href="acltx_default_class.html">acltx_default_class</a>
+    </dt>
+    <dt>
+     <a href="acltx_dvips_o_stdout.html">acltx_dvips_o_stdout</a>
+    </dt>
+    <dt>
+     <a href="acltx_dvips_t.html">acltx_dvips_t</a>
+    </dt>
+    <dt>
+     <a href="acltx_dvips_t_a4.html">acltx_dvips_t_a4</a>
+    </dt>
+    <dt>
+     <a href="acltx_dvips_t_a4_landscape.html">acltx_dvips_t_a4_landscape</a>
+    </dt>
+    <dt>
+     <a href="acltx_dvips_t_letter.html">acltx_dvips_t_letter</a>
+    </dt>
+    <dt>
+     <a href=
+     "acltx_dvips_t_letter_landscape.html">acltx_dvips_t_letter_landscape</a>
+    </dt>
+    <dt>
+     <a href="acltx_package.html">acltx_package</a>
+    </dt>
+    <dt>
+     <a href="acltx_package_amsmath.html">acltx_package_amsmath</a>
+    </dt>
+    <dt>
+     <a href="acltx_package_babel.html">acltx_package_babel</a>
+    </dt>
+    <dt>
+     <a href=
+     "acltx_package_babel_language.html">acltx_package_babel_language</a>
+    </dt>
+    <dt>
+     <a href="acltx_package_fontenc.html">acltx_package_fontenc</a>
+    </dt>
+    <dt>
+     <a href="acltx_package_input.html">acltx_package_input</a>
+    </dt>
+    <dt>
+     <a href="acltx_package_listings.html">acltx_package_listings</a>
+    </dt>
+    <dt>
+     <a href=
+     "acltx_package_listings_language.html">acltx_package_listings_language</a>
+    </dt>
+    <dt>
+     <a href="acltx_package_location.html">acltx_package_location</a>
+    </dt>
+    <dt>
+     <a href="acltx_package_opt.html">acltx_package_opt</a>
+    </dt>
+    <dt>
+     <a href="acltx_packages.html">acltx_packages</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_bibtex.html">acltx_prog_bibtex</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_dvibook.html">acltx_prog_dvibook</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_dvipdf.html">acltx_prog_dvipdf</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_dvips.html">acltx_prog_dvips</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_fig2dev.html">acltx_prog_fig2dev</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_gnuplot.html">acltx_prog_gnuplot</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_gunzip.html">acltx_prog_gunzip</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_gzip.html">acltx_prog_gzip</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_jpeg2ps.html">acltx_prog_jpeg2ps</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_jpegtopnm.html">acltx_prog_jpegtopnm</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_kpsewhich.html">acltx_prog_kpsewhich</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_latex.html">acltx_prog_latex</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_latex2html.html">acltx_prog_latex2html</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_latex2man.html">acltx_prog_latex2man</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_latex2png.html">acltx_prog_latex2png</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_latex2rtf.html">acltx_prog_latex2rtf</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_makeindex.html">acltx_prog_makeindex</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_mf.html">acltx_prog_mf</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_mktexpk.html">acltx_prog_mktexpk</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_pdflatex.html">acltx_prog_pdflatex</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_pngtopnm.html">acltx_prog_pngtopnm</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_pnmtops.html">acltx_prog_pnmtops</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_ps2pdf.html">acltx_prog_ps2pdf</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_psbook.html">acltx_prog_psbook</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_psnup.html">acltx_prog_psnup</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_psresize.html">acltx_prog_psresize</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_psselect.html">acltx_prog_psselect</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_pstops.html">acltx_prog_pstops</a>
+    </dt>
+    <dt>
+     <a href="acltx_prog_texhash.html">acltx_prog_texhash</a>
+    </dt>
+    <dt>
+     <a href="acltx_texmf_path.html">acltx_texmf_path</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="MISC">
+   Miscellaneous:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="_ac_c_ifdef.html">_ac_c_ifdef</a>
+    </dt>
+    <dt>
+     <a href="ac_arg_with_path_style.html">ac_arg_with_path_style</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_caolan_func_which_gethostbyname_r.html">ac_caolan_func_which_gethostbyname_r</a>
+    </dt>
+    <dt>
+     <a href="ac_check_func_in.html">ac_check_func_in</a>
+    </dt>
+    <dt>
+     <a href="ac_check_struct_for.html">ac_check_struct_for</a>
+    </dt>
+    <dt>
+     <a href="ac_check_user.html">ac_check_user</a>
+    </dt>
+    <dt>
+     <a href="ac_compile_check_sizeof.html">ac_compile_check_sizeof</a>
+    </dt>
+    <dt>
+     <a href="ac_compile_warnings.html">ac_compile_warnings</a>
+    </dt>
+    <dt>
+     <a href="ac_cond_with_level.html">ac_cond_with_level</a>
+    </dt>
+    <dt>
+     <a href="ac_create_generic_config.html">ac_create_generic_config</a>
+    </dt>
+    <dt>
+     <a href="ac_create_target_h.html">ac_create_target_h</a>
+    </dt>
+    <dt>
+     <a href="ac_define_dir.html">ac_define_dir</a>
+    </dt>
+    <dt>
+     <a href="ac_define_integer_bits.html">ac_define_integer_bits</a>
+    </dt>
+    <dt>
+     <a href="ac_define_path_style.html">ac_define_path_style</a>
+    </dt>
+    <dt>
+     <a href="ac_define_sub_path.html">ac_define_sub_path</a>
+    </dt>
+    <dt>
+     <a href="ac_define_versionlevel.html">ac_define_versionlevel</a>
+    </dt>
+    <dt>
+     <a href="ac_echo_n.html">ac_echo_n</a>
+    </dt>
+    <dt>
+     <a href="ac_func_accept_argtypes.html">ac_func_accept_argtypes</a>
+    </dt>
+    <dt>
+     <a href="ac_libtoolize_cflags.html">ac_libtoolize_cflags</a>
+    </dt>
+    <dt>
+     <a href="ac_numeric_namedlevel.html">ac_numeric_namedlevel</a>
+    </dt>
+    <dt>
+     <a href="ac_path_generic.html">ac_path_generic</a>
+    </dt>
+    <dt>
+     <a href="ac_prompt_user.html">ac_prompt_user</a>
+    </dt>
+    <dt>
+     <a href="ac_prompt_user_no_define.html">ac_prompt_user_no_define</a>
+    </dt>
+    <dt>
+     <a href="ac_prototype.html">ac_prototype</a>
+    </dt>
+    <dt>
+     <a href="ac_prototype_accept.html">ac_prototype_accept</a>
+    </dt>
+    <dt>
+     <a href="ac_prototype_getsockname.html">ac_prototype_getsockname</a>
+    </dt>
+    <dt>
+     <a href="ac_prototype_setsockopt.html">ac_prototype_setsockopt</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_raf_func_which_getservbyname_r.html">ac_raf_func_which_getservbyname_r</a>
+    </dt>
+    <dt>
+     <a href="ac_set_default_paths_system.html">ac_set_default_paths_system</a>
+    </dt>
+    <dt>
+     <a href=
+     "ac_set_releaseinfo_versioninfo.html">ac_set_releaseinfo_versioninfo</a>
+    </dt>
+    <dt>
+     <a href="ac_set_versionlevel.html">ac_set_versionlevel</a>
+    </dt>
+    <dt>
+     <a href="ac_subdir_files.html">ac_subdir_files</a>
+    </dt>
+    <dt>
+     <a href="ac_sys_dev_poll.html">ac_sys_dev_poll</a>
+    </dt>
+    <dt>
+     <a href="ac_sys_largefile_sensitive.html">ac_sys_largefile_sensitive</a>
+    </dt>
+    <dt>
+     <a href="ac_var_timezone_externals.html">ac_var_timezone_externals</a>
+    </dt>
+    <dt>
+     <a href="ac_very_nice.html">ac_very_nice</a>
+    </dt>
+    <dt>
+     <a href="acx_check_dos_filesys.html">acx_check_dos_filesys</a>
+    </dt>
+    <dt>
+     <a href="acx_check_pathname_style.html">acx_check_pathname_style</a>
+    </dt>
+    <dt>
+     <a href="acx_f77_cmain_fflags.html">acx_f77_cmain_fflags</a>
+    </dt>
+    <dt>
+     <a href="acx_func_fork.html">acx_func_fork</a>
+    </dt>
+    <dt>
+     <a href="ax_auto_include_headers.html">ax_auto_include_headers</a>
+    </dt>
+    <dt>
+     <a href="ax_check_compiler_flags.html">ax_check_compiler_flags</a>
+    </dt>
+    <dd>
+     check whether FLAGS are accepted by the compiler
+    </dd>
+    <dt>
+     <a href="ax_check_define.html">ax_check_define</a>
+    </dt>
+    <dt>
+     <a href="ax_compare_version.html">ax_compare_version</a>
+    </dt>
+    <dt>
+     <a href="ax_config_feature.html">ax_config_feature</a>
+    </dt>
+    <dt>
+     <a href="ax_dirname.html">ax_dirname</a>
+    </dt>
+    <dt>
+     <a href="ax_enable_builddir.html">ax_enable_builddir</a>
+    </dt>
+    <dt>
+     <a href="ax_expand_prefix.html">ax_expand_prefix</a>
+    </dt>
+    <dt>
+     <a href="ax_gcc_archflag.html">ax_gcc_archflag</a>
+    </dt>
+    <dd>
+     find target architecture name for gcc -march/-mtune flags
+    </dd>
+    <dt>
+     <a href="ax_gcc_x86_cpuid.html">ax_gcc_x86_cpuid</a>
+    </dt>
+    <dd>
+     run x86 cpuid instruction OP using gcc inline assembler
+    </dd>
+    <dt>
+     <a href=
+     "ax_maintainer_mode_auto_silent.html">ax_maintainer_mode_auto_silent</a>
+    </dt>
+    <dt>
+     <a href="ax_prefix_config_h.html">ax_prefix_config_h</a>
+    </dt>
+    <dt>
+     <a href="ax_require_one_func.html">ax_require_one_func</a>
+    </dt>
+    <dt>
+     <a href="ax_set_version_info.html">ax_set_version_info</a>
+    </dt>
+    <dt>
+     <a href="ax_silent_mode.html">ax_silent_mode</a>
+    </dt>
+    <dd>
+     Temporarily disable console output.
+    </dd>
+    <dt>
+     <a href="ax_spec_file.html">ax_spec_file</a>
+    </dt>
+    <dt>
+     <a href="ax_spec_package_version.html">ax_spec_package_version</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_warning_default_aclocaldir.html">ax_warning_default_aclocaldir</a>
+    </dt>
+    <dt>
+     <a href=
+     "ax_warning_default_pkgconfig.html">ax_warning_default_pkgconfig</a>
+    </dt>
+    <dt>
+     <a href="cf_ebcdic.html">cf_ebcdic</a>
+    </dt>
+    <dt>
+     <a href="etr_short_sleep.html">etr_short_sleep</a>
+    </dt>
+    <dt>
+     <a href="etr_struct_semun.html">etr_struct_semun</a>
+    </dt>
+    <dt>
+     <a href="etr_sysv_ipc.html">etr_sysv_ipc</a>
+    </dt>
+    <dt>
+     <a href="lib_socket_nsl.html">lib_socket_nsl</a>
+    </dt>
+    <dt>
+     <a href="normpath.html">normpath</a>
+    </dt>
+    <dt>
+     <a href=
+     "patch_libtool_changing_cmds_ifs.html">patch_libtool_changing_cmds_ifs</a>
+    </dt>
+    <dt>
+     <a href=
+     "patch_libtool_on_darwin_pass_all.html">patch_libtool_on_darwin_pass_all</a>
+    </dt>
+    <dt>
+     <a href=
+     "patch_libtool_on_darwin_zsh_overquoting.html">patch_libtool_on_darwin_zsh_overquoting</a>
+    </dt>
+    <dt>
+     <a href=
+     "patch_libtool_sys_lib_search_path_spec.html">patch_libtool_sys_lib_search_path_spec</a>
+    </dt>
+    <dt>
+     <a href=
+     "patch_libtool_to_add_host_cc.html">patch_libtool_to_add_host_cc</a>
+    </dt>
+    <dt>
+     <a href="relpaths.html">relpaths</a>
+    </dt>
+    <dt>
+     <a href="stdrelpaths.html">stdrelpaths</a>
+    </dt>
+    <dt>
+     <a href="type_socklen_t.html">type_socklen_t</a>
+    </dt>
+   </dl>
+  </div>
+  <h2 id="OBSOLETE">
+   Obsolete:
+  </h2>
+  <div class="indent">
+   <dl>
+    <dt>
+     <a href="_ac_latex_test.html">_ac_latex_test</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_as_dirname.html">ac_as_dirname</a>
+    </dt>
+    <dd>
+     Autoconf 2.5x makes this unnecessary.
+    </dd>
+    <dt>
+     <a href="ac_as_mkdir_p.html">ac_as_mkdir_p</a>
+    </dt>
+    <dd>
+     Autoconf 2.5x makes this unnecessary.
+    </dd>
+    <dt>
+     <a href="ac_check_cc_opt.html">ac_check_cc_opt</a>
+    </dt>
+    <dd>
+     Use CFLAGS/CXXFLAGS related macros as soon as possible.
+    </dd>
+    <dt>
+     <a href="ac_cond_with.html">ac_cond_with</a>
+    </dt>
+    <dd>
+     Use AX_SUBST_WITH or AM_CONDITIONAL.
+    </dd>
+    <dt>
+     <a href="ac_config_libconfig_in.html">ac_config_libconfig_in</a>
+    </dt>
+    <dd>
+     Deprecated with the advent of pkg-config.
+    </dd>
+    <dt>
+     <a href="ac_config_pkgconfig_in.html">ac_config_pkgconfig_in</a>
+    </dt>
+    <dd>
+     Deprecated with the advent of pkg-config.
+    </dd>
+    <dt>
+     <a href="ac_create_prefix_config_h.html">ac_create_prefix_config_h</a>
+    </dt>
+    <dd>
+     Use AX_PREFIX_CONFIG_H.
+    </dd>
+    <dt>
+     <a href="ac_cxx_template_objs.html">ac_cxx_template_objs</a>
+    </dt>
+    <dd>
+     Unnecessary with recent versions of libtool.
+    </dd>
+    <dt>
+     <a href="ac_define_dir_.html">ac_define_dir_</a>
+    </dt>
+    <dd>
+     Use AC_DEFINE_DIR instead.
+    </dd>
+    <dt>
+     <a href="ac_func_vsnprintf.html">ac_func_vsnprintf</a>
+    </dt>
+    <dd>
+     Use AC_FUNC_SNPRINTF.
+    </dd>
+    <dt>
+     <a href="ac_latex_class.html">ac_latex_class</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_class_article.html">ac_latex_class_article</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_class_book.html">ac_latex_class_book</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_class_report.html">ac_latex_class_report</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_classes.html">ac_latex_classes</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_dvips_o_stdout.html">ac_latex_dvips_o_stdout</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_dvips_t.html">ac_latex_dvips_t</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_dvips_t_a4.html">ac_latex_dvips_t_a4</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href=
+     "ac_latex_dvips_t_a4_landscape.html">ac_latex_dvips_t_a4_landscape</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_dvips_t_letter.html">ac_latex_dvips_t_letter</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href=
+     "ac_latex_dvips_t_letter_landscape.html">ac_latex_dvips_t_letter_landscape</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_package.html">ac_latex_package</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_package_amsmath.html">ac_latex_package_amsmath</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_package_fontenc.html">ac_latex_package_fontenc</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_package_input.html">ac_latex_package_input</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_package_opt.html">ac_latex_package_opt</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_latex_packages.html">ac_latex_packages</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_lib_readline.html">ac_lib_readline</a>
+    </dt>
+    <dd>
+     Renamed to VL_LIB_READLINE.
+    </dd>
+    <dt>
+     <a href="ac_need_stdint_h.html">ac_need_stdint_h</a>
+    </dt>
+    <dd>
+     Superseded by AC_CREATE_STDINT_H.
+    </dd>
+    <dt>
+     <a href="ac_need_target_h.html">ac_need_target_h</a>
+    </dt>
+    <dd>
+     Superseded by AC_CREATE_TARGET_H.
+    </dd>
+    <dt>
+     <a href="ac_path_lib.html">ac_path_lib</a>
+    </dt>
+    <dd>
+     Deprecated with the advent of pkg-config.
+    </dd>
+    <dt>
+     <a href="ac_prefix_config_h.html">ac_prefix_config_h</a>
+    </dt>
+    <dd>
+     Use AX_PREFIX_CONFIG_H.
+    </dd>
+    <dt>
+     <a href="ac_prog_bibtex.html">ac_prog_bibtex</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href=
+     "ac_prog_cc_no_writeable_strings.html">ac_prog_cc_no_writeable_strings</a>
+    </dt>
+    <dd>
+     Use AX_CFLAGS_NO_WRITABLE_STRINGS.
+    </dd>
+    <dt>
+     <a href=
+     "ac_prog_cc_strict_prototypes.html">ac_prog_cc_strict_prototypes</a>
+    </dt>
+    <dd>
+     Use AX_CFLAGS_STRICT_PROTOTYPES.
+    </dd>
+    <dt>
+     <a href="ac_prog_cc_warnings.html">ac_prog_cc_warnings</a>
+    </dt>
+    <dd>
+     Renamed to VL_PROG_CC_WARNINGS, or use AX_CFLAGS_WARN_ALL.
+    </dd>
+    <dt>
+     <a href="ac_prog_dvipdf.html">ac_prog_dvipdf</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_dvips.html">ac_prog_dvips</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_fig2dev.html">ac_prog_fig2dev</a>
+    </dt>
+    <dd>
+     Replaced by VL_PROG_FIG2DEV.
+    </dd>
+    <dt>
+     <a href="ac_prog_gnuplot.html">ac_prog_gnuplot</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_gunzip.html">ac_prog_gunzip</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_gzip.html">ac_prog_gzip</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_jpeg2ps.html">ac_prog_jpeg2ps</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_latex.html">ac_prog_latex</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_latex2html.html">ac_prog_latex2html</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_latex2man.html">ac_prog_latex2man</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_makeindex.html">ac_prog_makeindex</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_mf.html">ac_prog_mf</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_mktexpk.html">ac_prog_mktexpk</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_pdflatex.html">ac_prog_pdflatex</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href="ac_prog_ps2pdf.html">ac_prog_ps2pdf</a>
+    </dt>
+    <dd>
+     Replaced by the newer ACLTX_XXX set of macros.
+    </dd>
+    <dt>
+     <a href=
+     "ac_set_default_paths_dllsystem.html">ac_set_default_paths_dllsystem</a>
+    </dt>
+    <dd>
+     AC_SET_DEFAULT_PATHS_SYSTEM is even more intelligent.
+    </dd>
+    <dt>
+     <a href="ac_spec_package_3version.html">ac_spec_package_3version</a>
+    </dt>
+    <dd>
+     Use AX_SPEC_PACKAGE_VERSION.
+    </dd>
+    <dt>
+     <a href="ac_spec_package_version.html">ac_spec_package_version</a>
+    </dt>
+    <dd>
+     Use AX_SPEC_PACKAGE_VERSION.
+    </dd>
+    <dt>
+     <a href="ac_subst_dir.html">ac_subst_dir</a>
+    </dt>
+    <dd>
+     The macro AC_DEFINE_DIR provides this functionality directly now.
+    </dd>
+    <dt>
+     <a href="ac_subst_prefix_subpaths.html">ac_subst_prefix_subpaths</a>
+    </dt>
+    <dd>
+     Renamed to AC_DEFINE_SUB_PATH.
+    </dd>
+    <dt>
+     <a href="acx_restrict.html">acx_restrict</a>
+    </dt>
+    <dd>
+     Replaced by AC_C_RESTRICT in Autoconf 2.58
+    </dd>
+    <dt>
+     <a href="etr_socket_nsl.html">etr_socket_nsl</a>
+    </dt>
+    <dd>
+     Use LIB_SOCKET_NSL instead.
+    </dd>
+    <dt>
+     <a href="peti_enable_dynamic_link.html">peti_enable_dynamic_link</a>
+    </dt>
+    <dd>
+     Deprecated with the advent of GNU Libtool.
+    </dd>
+    <dt>
+     <a href="peti_silent_mode.html">peti_silent_mode</a>
+    </dt>
+    <dd>
+     Renamed to AX_SILENT_MODE.
+    </dd>
+    <dt>
+     <a href="peti_with_dmalloc.html">peti_with_dmalloc</a>
+    </dt>
+    <dd>
+     Renamed to AX_WITH_DMALLOC.
+    </dd>
+    <dt>
+     <a href="qef_c_noreturn.html">qef_c_noreturn</a>
+    </dt>
+    <dd>
+     Test "__GNUC__+0 &gt;= 2 &amp;&amp; __GNUC_MINOR__+0 &gt;= 5" instead.
+    </dd>
+   </dl>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_extra_dist
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_extra_dist.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_extra_dist
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_EXTRA_DIST</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Allow support for custom dist targets.
+   </p>
+   <p>
+    To add custom dist targets, you must create a dist-&lt;TYPE&gt; target
+    within your Makefile.am, where &lt;TYPE&gt; is the name of the dist and
+    then add &lt;TYPE&gt; to EXTRA_SRC_DISTS or EXTRA_BIN_DISTS. For example:
+   </p>
+   <pre>
+   dist-foobar:
+        &lt;rules for making the foobar dist&gt;
+
+   EXTRA_BIN_DISTS += foobar
+</pre>
+   <p>
+    You can then build all the src dist targets by running:
+   </p>
+   <pre>
+   make dist-src
+</pre>
+   <p>
+    You can build all the binary dist targets by running:
+   </p>
+   <pre>
+   make dist-bin
+</pre>
+   <p>
+    and you can build both the src and dist targets by running:
+   </p>
+   <pre>
+   make all-dist
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Tom Howard &lt;tomhoward@users.sf.net&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-14
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_EXTRA_DIST],
+[
+AC_MSG_NOTICE([adding custom dist support])
+AM_CONDITIONAL(USING_AX_EXTRA_DIST, [true])
+AX_ADD_AM_MACRO([[
+EXTRA_SRC_DISTS =
+EXTRA_BIN_DISTS =
+dist-src-extra:
+        @echo \"Making custom src targets...\"
+        @cd \$(top_builddir); \\
+        list='\$(EXTRA_SRC_DISTS)'; \\
+        for dist in \$\$list; do \\
+            \$(MAKE) \$(AM_MAKEFLAGS) dist-\$\$dist; \\
+        done
+
+dist-src: dist-all dist-src-extra
+
+
+dist-bin:
+        @echo \"Making custom binary targets...\"
+        @cd \$(top_builddir); \\
+        list='\$(EXTRA_BIN_DISTS)'; \\
+        for dist in \$\$list; do \\
+            \$(MAKE) \$(AM_MAKEFLAGS) dist-\$\$dist; \\
+        done
+
+all-dist dist2 dist-all2: dist-src dist-bin
+
+all-dist-check dist2-check dist-all-check: dist-check dist-src-extra dist-bin
+]])
+])# AX_EXTRA_DIST
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Tom Howard
+   &lt;tomhoward@users.sf.net&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

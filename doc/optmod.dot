@@ -1,0 +1,98 @@
+digraph Optmods {
+   
+   node[shape=record];
+
+   AC_ModuleNecessity
+      [label="{AC_ModuleNecessity|defines:\nnecessity(M4)|hooked in by:\nPackage}"];
+
+   AC_ModuleBuiltDecl
+      [label="{AC_ModuleBuiltDecl|uses:|defines:\nmodbuilt_init(M4)\nmodbuilt(sh)|hooked in by:\nPackage}"];
+
+   AC_ModuleUsedDecl
+      [label="{AC_ModuleUsedDecl|uses:|defines:\nmodused_init(M4)\nmodused(sh)|hooked in by:\nPackage}"];
+
+   AC_ModuleFeatureMacros
+      [label="{AC_ModuleFeatureMacros|uses:\nmodswitch|hooked in by:\nModuleInterface}"];
+
+   AC_LocalModuleDefaultSetup
+      [label="{AC_LocalModuleDefaultSetup|uses:\nmodbuilt_init|defines:\nhs_enable_option(M4)\nhs_enable_desc(M4)|hooked in by:\nPackage}"];
+
+   AC_NativeInstalledSetup
+      [label="{AC_NativeInstalledSetup|uses:\nmodused_init|defines:\nhs_with_option(M4)\nhs_with_desc(M4)|hooked in by:\nModuleContent_C_NativeInstalled}"];
+
+   AC_ExternalLibrary_Setup
+      [label="{AC_ExternalLibrary_Setup|uses:\nmodused\nmodbuilt|affects:\nmodused(based on EXTERNAL_LIBRARY/enabled)|defines:\nhs_enable_option(M4)\nhs_enable_desc(M4)\nhs_with_option(M4)\nhs_with_desc(M4)\n\ndefroot(sh)\nenvroot(sh)\nenvinclude(sh)\nenvlib(sh)\n|hooked in by:\nModuleContent_C_External}"];
+
+   AC_ExternalLibrary_Precious
+      [label="{AC_ExternalLibrary_Precious|affects:\nenvroot\nenvinclude\nenvlib|hooked in by:\nModuleContent_C_External}"];
+   
+   AC_ModuleWith
+      [label="{AC_ModuleWith|uses:\nnecessity\nhs_with_option\nhs_with_desc\n|defines:\noption_arg|hooked in by:\nPackage}"];
+
+   AC_ModuleEnable
+      [label="{AC_ModuleEnable|uses:\nnecessity\nhs_enable_option\nhs_enable_desc\n|defines:\noption_arg|hooked in by:\nPackage}"];
+   
+   AC_NativeModuleUsed
+      [label="{AC_NativeModuleUsed|uses:\noption_arg|affects:\nmodused|hooked in by:\nPackage}"];
+
+   AC_NativeModuleBuilt
+      [label="{AC_NativeModuleBuilt|uses:\noption_arg|affect:\nmodbuilt|hooked in by:\nBuildableModule}"];
+
+   AC_ExternalLibrary_Switch
+      [label="{AC_ExternalLibrary_Switch|uses:\noption_arg\nenvroot\nenvinclude\nenvlib|affects:\nmodswitch|hooked in by:\nModuleContent_C_External}"];
+   
+   AC_LocalModule_SUBDIRS
+      [label="{AC_LocalModule_SUBDIRS|uses:\nmodswitch|hooked in by:\nPackage}"];
+
+   AC_ModuleUsedAssert
+      [label="{AC_ModuleUsedAssert|uses:\nnecessity\nmodused|hooked in by:\nPackage}"];
+   
+   AC_ModuleBuiltAssert
+      [label="{AC_ModuleBuiltAssert|uses:\nnecessity\nmodbuilt|hooked in by:\nPackage}"];
+   
+   AC_NativeLocalCollect
+      [label="{AC_NativeLocalCollect|uses:\nmodswitch|hooked in by:\nModuleContent_C_NativeLocal}"];
+
+   AC_NativeInstalledCollect
+      [label="{AC_NativeInstalledCollect|uses:\nmodswitch|hooked in by:\nModuleContent_C_NativeInstalled}"];
+
+   AC_ExternalLibrary_Collect
+      [label="{AC_ExternalLibrary_Collect|uses:\nmodswitch\nenvroot\nenvinclude\nenvlib\ndefroot\noption_arg|hooked in by:\nModuleContent_C_External}"];
+
+   AC_ModuleNecessity -> AC_ModuleEnable;
+   AC_ModuleNecessity -> AC_ModuleWith;
+   
+   AC_ModuleBuiltDecl -> AC_LocalModuleDefaultSetup;
+   AC_ModuleBuiltDecl -> AC_ExternalLibrary_Setup;
+   AC_ModuleUsedDecl -> AC_NativeInstalledSetup;
+   AC_ModuleUsedDecl -> AC_ExternalLibrary_Setup;
+
+   AC_LocalModuleDefaultSetup -> AC_ModuleEnable;
+   AC_LocalModuleDefaultSetup -> AC_ModuleWith;
+   AC_LocalModuleDefaultSetup -> AC_ExternalLibrary_Setup;
+   AC_NativeInstalledSetup -> AC_ModuleEnable;
+   AC_NativeInstalledSetup -> AC_ModuleWith;
+   AC_ExternalLibrary_Setup -> AC_ModuleEnable;
+   AC_ExternalLibrary_Setup -> AC_ModuleWith;
+
+   AC_ModuleEnable -> AC_NativeModuleUsed;
+   AC_ModuleEnable -> AC_NativeModuleBuilt;
+   AC_ModuleWith   -> AC_NativeModuleUsed;
+   AC_ModuleWith   -> AC_NativeModuleBuilt;
+   AC_ModuleEnable -> AC_ExternalLibrary_Switch;
+   AC_ModuleWith   -> AC_ExternalLibrary_Switch;
+   
+   AC_ExternalLibrary_Precious -> AC_ExternalLibrary_Switch;
+
+   AC_NativeModuleUsed -> AC_ModuleUsedAssert;
+   AC_NativeModuleBuilt -> AC_ModuleBuiltAssert;
+   AC_NativeModuleBuilt -> AC_LocalModule_SUBDIRS;
+   AC_NativeModuleBuilt -> AC_NativeLocalCollect;
+   AC_NativeModuleUsed -> AC_NativeInstalledCollect;
+
+   AC_ModuleUsedAssert -> AC_ModuleFeatureMacros;
+
+   AC_ExternalLibrary_Switch -> AC_ModuleUsedAssert;
+   AC_ExternalLibrary_Switch -> AC_ModuleBuiltAssert;
+   AC_ExternalLibrary_Switch -> AC_ExternalLibrary_Collect;
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: check_ssl
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/check_ssl.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   check_ssl
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>CHECK_SSL</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro will check various standard spots for OpenSSL including a
+    user-supplied directory. The user uses '--with-ssl' or
+    '--with-ssl=/path/to/ssl' as arguments to configure.
+   </p>
+   <p>
+    If OpenSSL is found the include directory gets added to CFLAGS and CXXFLAGS
+    as well as '-DHAVE_SSL', '-lssl' &amp; '-lcrypto' get added to LIBS, and
+    the libraries location gets added to LDFLAGS. Finally 'HAVE_SSL' gets set
+    to 'yes' for use in your Makefile.in I use it like so (valid for gmake):
+   </p>
+   <pre>
+    HAVE_SSL = @HAVE_SSL@
+    ifeq ($(HAVE_SSL),yes)
+        SRCS+= @srcdir@/my_file_that_needs_ssl.c
+    endif
+</pre>
+   <p>
+    For bsd 'bmake' use:
+   </p>
+   <pre>
+    .if ${HAVE_SSL} == "yes"
+        SRCS+= @srcdir@/my_file_that_needs_ssl.c
+    .endif
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Mark Ethan Trostler &lt;trostler@juniper.net&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2003-01-28
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([CHECK_SSL],
+[AC_MSG_CHECKING(if ssl is wanted)
+AC_ARG_WITH(ssl,
+[  --with-ssl enable ssl [will check /usr/local/ssl
+                            /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr ]
+],
+[   AC_MSG_RESULT(yes)
+    for dir in $withval /usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr; do
+        ssldir="$dir"
+        if test -f "$dir/include/openssl/ssl.h"; then
+            found_ssl="yes";
+            CFLAGS="$CFLAGS -I$ssldir/include/openssl -DHAVE_SSL";
+            CXXFLAGS="$CXXFLAGS -I$ssldir/include/openssl -DHAVE_SSL";
+            break;
+        fi
+        if test -f "$dir/include/ssl.h"; then
+            found_ssl="yes";
+            CFLAGS="$CFLAGS -I$ssldir/include/ -DHAVE_SSL";
+            CXXFLAGS="$CXXFLAGS -I$ssldir/include/ -DHAVE_SSL";
+            break
+        fi
+    done
+    if test x_$found_ssl != x_yes; then
+        AC_MSG_ERROR(Cannot find ssl libraries)
+    else
+        printf "OpenSSL found in $ssldir\n";
+        LIBS="$LIBS -lssl -lcrypto";
+        LDFLAGS="$LDFLAGS -L$ssldir/lib";
+        HAVE_SSL=yes
+    fi
+    AC_SUBST(HAVE_SSL)
+],
+[
+    AC_MSG_RESULT(no)
+])
+])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2003 Mark Ethan Trostler
+   &lt;trostler@juniper.net&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

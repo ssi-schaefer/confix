@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_cxx_enum_computations
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_cxx_enum_computations.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_cxx_enum_computations
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CXX_ENUM_COMPUTATIONS</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    If the compiler handle computations inside an enum, define
+    HAVE_ENUM_COMPUTATIONS.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Todd Veldhuizen, Luc Maisonobe &lt;luc@spaceroots.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-02-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CXX_ENUM_COMPUTATIONS],
+[AC_CACHE_CHECK(whether the compiler handle computations inside an enum,
+ac_cv_cxx_enum_computations,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([
+struct A { enum { a = 5, b = 7, c = 2 }; };
+struct B { enum { a = 1, b = 6, c = 9 }; };
+template&lt;class T1, class T2&gt; struct Z
+{ enum { a = (T1::a &gt; T2::a) ? T1::a : T2::b,
+         b = T1::b + T2::b,
+         c = (T1::c * T2::c + T2::a + T1::a)
+       };
+};],[
+return (((int)Z&lt;A,B&gt;::a == 5)
+     &amp;&amp; ((int)Z&lt;A,B&gt;::b == 13)
+     &amp;&amp; ((int)Z&lt;A,B&gt;::c == 24)) ? 0 : 1;],
+ ac_cv_cxx_enum_computations=yes, ac_cv_cxx_enum_computations=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_enum_computations" = yes; then
+  AC_DEFINE(HAVE_ENUM_COMPUTATIONS,,
+            [define if the compiler handle computations inside an enum])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Todd
+   Veldhuizen</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

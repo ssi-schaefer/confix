@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ct_check_postgres_db
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ct_check_postgres_db.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ct_check_postgres_db
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>CT_CHECK_POSTGRES_DB</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro tries to find the headers and librarys for the PostgreSQL
+    database to build client applications.
+   </p>
+   <p>
+    If includes are found, the variable PQINCPATH will be set. If librarys are
+    found, the variable PQLIBPATH will be set. if no check was successful, the
+    script exits with a error message.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Christian Toepp &lt;c.toepp@gmail.com&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-12-30
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([CT_CHECK_POSTGRES_DB], [
+
+AC_ARG_WITH(pgsql,
+        [  --with-pgsql=PREFIX          Prefix of your PostgreSQL installation],
+        [pg_prefix=$withval], [pg_prefix=])
+AC_ARG_WITH(pgsql-inc,
+        [  --with-pgsql-inc=PATH                Path to the include directory of PostgreSQL],
+        [pg_inc=$withval], [pg_inc=])
+AC_ARG_WITH(pgsql-lib,
+        [  --with-pgsql-lib=PATH                Path to the librarys of PostgreSQL],
+        [pg_lib=$withval], [pg_lib=])
+
+
+AC_SUBST(PQINCPATH)
+AC_SUBST(PQLIBPATH)
+
+if test "$pg_prefix" != ""; then
+   AC_MSG_CHECKING([for PostgreSQL includes in $pg_prefix/include])
+   if test -f "$pg_prefix/include/libpq-fe.h" ; then
+      PQINCPATH="-I$pg_prefix/include"
+      AC_MSG_RESULT([yes])
+   else
+      AC_MSG_ERROR(libpq-fe.h not found)
+   fi
+   AC_MSG_CHECKING([for PostgreSQL librarys in $pg_prefix/lib])
+   if test -f "$pg_prefix/lib/libpq.so" ; then
+      PQLIBPATH="-L$pg_prefix/lib"
+      AC_MSG_RESULT([yes])
+   else
+      AC_MSG_ERROR(libpq.so not found)
+   fi
+else
+  if test "$pg_inc" != ""; then
+    AC_MSG_CHECKING([for PostgreSQL includes in $pg_inc])
+    if test -f "$pg_inc/libpq-fe.h" ; then
+      PQINCPATH="-I$pg_inc"
+      AC_MSG_RESULT([yes])
+    else
+      AC_MSG_ERROR(libpq-fe.h not found)
+    fi
+  fi
+  if test "$pg_lib" != ""; then
+    AC_MSG_CHECKING([for PostgreSQL librarys in $pg_lib])
+    if test -f "$pg_lib/libpq.so" ; then
+      PQLIBPATH="-L$pg_lib"
+      AC_MSG_RESULT([yes])
+    else
+      AC_MSG_ERROR(libpq.so not found)
+    fi
+  fi
+fi
+
+if test "$PQINCPATH" = "" ; then
+  AC_CHECK_HEADER([libpq-fe.h], [], AC_MSG_ERROR(libpq-fe.h not found))
+fi
+if test "$PQLIBPATH" = "" ; then
+  AC_CHECK_LIB(pq, PQconnectdb, [], AC_MSG_ERROR(libpq.so not found))
+fi
+
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Christian Toepp
+   &lt;c.toepp@gmail.com&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

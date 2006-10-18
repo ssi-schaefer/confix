@@ -1,0 +1,178 @@
+Confix 1.3.0 Released
+---------------------
+
+Confix does what is otherwise the job of the package maintainer: write
+input files for Automake and Autoconf. By examining the package
+source, it determines how to shape configure.in and the different
+Makefile.am files in the package in order to perform a clean build.
+
+Homepage, Download
+------------------
+
+Confix is hosted by Sourceforge. The home page is
+http://confix.sf.net, where you can find a link to the project summary
+and download pages. Note that it may take some time until the packages
+have reached the mirror sites, so you may have to wait a bit, or try
+out several mirrors.
+
+Incompatibilities in 1.3
+------------------------
+
+As always, the module description file format has changed, so it is
+necessary that the user remove the files in ${prefix}/repo and
+re-bootstrap and re-install all packages.
+
+New features in 1.3
+-------------------
+
+- Documentation
+
+  - The documentation contains references to sample code in the
+    'utils' package. The 'utils' package was pulled out from the
+    Confix distribution, and made a separate package which has to be
+    downloaded separately (this is mainly because it is maintained
+    independently from Confix).
+
+  - "Using Third Party Libraries" has been filled with meaningful
+    text. It referes to sample code from the 'utils' package,
+    explaining what is going on there, and why. (The sample code
+    covers linking the Python library for embedding and extending
+    Python.)
+
+- GNU Libtool support has been improved. Aside from bug fixes (no, we
+  don't distribute stale copies of Libtool M4 macros anymore), Confix
+  now creates dlopen()'able shared libraries.
+
+- There is a good chance now that packages build under Cygwin, even
+  when building shared libraries (DLLs, sorry) using GNU Libtool. The
+  ultimate goal is to build JNI Java plugins under Cygwin.
+
+- Re-imported the GNU Autoconf Macro Archive
+  (http://www.gnu.org/software/ac-archive/), and moved its
+  installation location to ${prefix}/share/confix.
+
+- New interface functions
+
+  - CONFIGURE_IN(): pass arbitrary code through to the generated
+    configure.in file. Available in Buildable, Module, Package.
+
+  - ACINCLUDE_M4(): pass arbitrary code into acinclude.m4. Available
+    in Buildable, Module, Package.
+
+  - FILE_PROPERTIES(): explicitly control properties of a source file;
+    for example, whether or not it contains the definition of the
+    main() function (there are shortcuts available for every property;
+    MAIN() is one). Available in Buildable and Module.
+
+  - EXTERNAL_LIBRARY2(): similar to EXTERNAL_LIBRARY(), but much more
+    raw and thus much more flexible. Available in Module.
+
+  - MODULE_PROPERTIES(): explicitly control properties of a module.
+    The first (and only so far) property is 'LIBNAME', the base name
+    of a library (for example, 'foo' for 'libfoo.a'). Available in
+    Module.
+
+  - EXTRA_DIST(): add a file to Automake's EXTRA_DIST
+    variable. Available in Module, Package.
+
+- Developer visible changes
+
+  - Plugin interface is almost done; we have a framework that allows
+    us to easily integrate generated files (see buildable_mgr.py).
+
+  - Unittest/PyUnit testsuite. See confix/tests.
+
+Bugs fixed in 1.3
+-----------------
+
+- [ 770157 ] C++ namespaces considered even if explicit install dir
+  given (reported against 1.2, fixed in 1.3.pre4)
+
+- [ 770151 ] Explicit provide and require objects inhibit module build
+  (reported against 1.2, fixed in 1.3.pre4)
+  
+- [ 786518 ] Config file: type mismatch messages are too sparse
+  (reported against 1.2, fixed in 1.3.pre5)
+
+- [ 783591 ] Toplevel Makefile.py not added to EXTRA_DIST (reported
+  against 1.2, fixed in 1.3.pre5)
+
+- [ 803138 ] Wrong libtool M4 stuff taken (reported against 1.2, fixed
+  in 1.3.pre6)
+
+- [ 807702 ] Libtool libraries not dlopen()able (reported against 1.2,
+  fixed in 1.3.pre7)
+
+- [ 944277 ] repo directory does not use $(prefix) (reported against
+  1.2, fixed in 1.3.pre22)
+
+Incompatibilities in 1.2
+------------------------
+
+As always, the module description file format has changed, so it is
+necessary that the user remove the files in ${prefix}/repo and
+re-bootstrap and re-install all packages.
+
+New features in 1.2
+-------------------
+
+- Arbitrary multiline Confix/Python code in source files
+
+  You can put arbitrary Python code, supposedly peppered with Confix
+  statements, into comments in the C/C++ source files. See "B.3 The
+  Buildable Interface".
+
+- Dependency resolving speedup (by roughly 70% (!)).
+
+  This was partly a bug fix ("[ 668591 ] repo files contain requires
+  that are resolved internally") which happened to have an enormous
+  positive performance impact. I also applied a few caches here and
+  there, which makes this a feature formally.
+
+- Pass-through of Makefile.am pieces.
+
+  You can now add code to a module's Makefile.py which is passed
+  through to the generated Makefile.am. While this should not be
+  overused, it can be helpful in certain situations where bloody
+  Confix lacks functionality. See "B.2 The Module Makefile.py
+  Interface".
+
+- New require and provide object type: symbols.
+
+  In previous releases dependency calculation was only done by
+  including C header files and providing them. Now we can do the same
+  symbolically. You need this, for example, when you want to link the
+  crypt library: that library defines the symbol 'crypt', but it
+  certainly doesn't provide the header file, <unistd.h>, which
+  declares that symbol.
+
+  The module and buildable interfaces were extended to make such
+  requires and/or provides easily specified. See "B.2 The Module
+  Makefile.py Interface", and "B.3 The Buildable Interface".
+
+- Optional modules
+
+  Every module is now optional. You can switch off the usage of an
+  installed module with the corresponding --with-<modulename>
+  configure option. Likewise, during package build you can exclude
+  modules selectively by using the --disable-<modulename> option.
+
+  The handling of external modules (those which use the
+  EXTERNAL_LIBRARY() function in their Makefile.py) has been modified
+  to fit into this scheme. This means that the configure --with/enable
+  options of these modules have changed.
+
+  Feature macros are defined so that user code can determine if a
+  module has been switched off. One feature macro is defined
+  automatically by Confix, and the maintainer can specify additional
+  feature macros.
+
+  Not yet documented, but try `configure --help` for a quick overview
+  of which --enable/--with options are available.
+
+- Multiple configuration files.
+
+  It is possible to pass a list of configuration files on the
+  commandline. This way one can have one basic configuration, and
+  construct overlays and additions in separate files. See "A.2
+  Parameters".

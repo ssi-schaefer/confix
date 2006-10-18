@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: acx_restrict
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/acx_restrict.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   acx_restrict
+  </h1>
+  <h2>
+   Obsolete Macro
+  </h2>
+  <p class="indent">
+   Replaced by AC_C_RESTRICT in Autoconf 2.58
+  </p>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>ACX_C_RESTRICT</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro determines whether the C compiler supports the "restrict"
+    keyword introduced in ANSI C99, or an equivalent. Does nothing if the
+    compiler accepts the keyword. Otherwise, if the compiler supports an
+    equivalent (like gcc's __restrict__) defines "restrict" to be that.
+    Otherwise, defines "restrict" to be empty.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Steven G. Johnson &lt;stevenj@alum.mit.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-05-31
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([ACX_C_RESTRICT],
+[AC_CACHE_CHECK([for C restrict keyword], acx_cv_c_restrict,
+[acx_cv_c_restrict=unsupported
+ AC_LANG_SAVE
+ AC_LANG_C
+ # Try the official restrict keyword, then gcc's __restrict__, then
+ # SGI's __restrict.  __restrict has slightly different semantics than
+ # restrict (it's a bit stronger, in that __restrict pointers can't
+ # overlap even with non __restrict pointers), but I think it should be
+ # okay under the circumstances where restrict is normally used.
+ for acx_kw in restrict __restrict__ __restrict; do
+   AC_TRY_COMPILE([], [float * $acx_kw x;], [acx_cv_c_restrict=$acx_kw; break])
+ done
+ AC_LANG_RESTORE
+])
+ if test "$acx_cv_c_restrict" != "restrict"; then
+   acx_kw="$acx_cv_c_restrict"
+   if test "$acx_kw" = unsupported; then acx_kw=""; fi
+   AC_DEFINE_UNQUOTED(restrict, $acx_kw, [Define to equivalent of C99 restrict keyword, or to nothing if this is not supported.  Do not define if restrict is supported directly.])
+ fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Steven G. Johnson
+   &lt;stevenj@alum.mit.edu&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

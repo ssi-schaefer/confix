@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_cxx_template_qualified_return_type
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_cxx_template_qualified_return_type.m4">
+      Download M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_cxx_template_qualified_return_type
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CXX_TEMPLATE_QUALIFIED_RETURN_TYPE</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    If the compiler supports template-qualified return types, define
+    HAVE_TEMPLATE_QUALIFIED_RETURN_TYPE.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Todd Veldhuizen, Luc Maisonobe &lt;luc@spaceroots.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-02-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CXX_TEMPLATE_QUALIFIED_RETURN_TYPE],
+[AC_CACHE_CHECK(whether the compiler supports template-qualified return types,
+ac_cv_cxx_template_qualified_return_type,
+[AC_REQUIRE([AC_CXX_TYPENAME])
+ AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([
+#ifndef HAVE_TYPENAME
+ #define typename
+#endif
+template&lt;class X, class Y&gt; struct promote_trait             { typedef X T; };
+template&lt;&gt;                 struct promote_trait&lt;int, float&gt; { typedef float T; };
+template&lt;class T&gt; class A { public : A () {} };
+template&lt;class X, class Y&gt;
+A&lt;typename promote_trait&lt;X,Y&gt;::T&gt; operator+ (const A&lt;X&gt;&amp;, const A&lt;Y&gt;&amp;)
+{ return A&lt;typename promote_trait&lt;X,Y&gt;::T&gt;(); }
+],[A&lt;int&gt; x; A&lt;float&gt; y; A&lt;float&gt; z = x + y; return 0;],
+ ac_cv_cxx_template_qualified_return_type=yes, ac_cv_cxx_template_qualified_return_type=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_template_qualified_return_type" = yes; then
+  AC_DEFINE(HAVE_TEMPLATE_QUALIFIED_RETURN_TYPE,,
+            [define if the compiler supports template-qualified return types])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Todd
+   Veldhuizen</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

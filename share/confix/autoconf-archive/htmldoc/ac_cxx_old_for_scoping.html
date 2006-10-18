@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_cxx_old_for_scoping
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_cxx_old_for_scoping.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_cxx_old_for_scoping
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CXX_OLD_FOR_SCOPING</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    If the compiler accepts the old for scoping rules (the scope of a variable
+    declared inside the parentheses extends outside the for-body), define
+    HAVE_OLD_FOR_SCOPING. Note that some compilers (notably g++ and egcs)
+    support both new and old rules since they accept the old rules and only
+    generate a warning.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Todd Veldhuizen, Luc Maisonobe &lt;luc@spaceroots.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-02-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CXX_OLD_FOR_SCOPING],
+[AC_CACHE_CHECK(whether the compiler accepts the old for scoping rules,
+ac_cv_cxx_old_for_scoping,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE(,[int z;for (int i=0; i &lt; 10; ++i)z=z+i;z=i;return z;],
+ ac_cv_cxx_old_for_scoping=yes, ac_cv_cxx_old_for_scoping=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_old_for_scoping" = yes; then
+  AC_DEFINE(HAVE_OLD_FOR_SCOPING,,[define if the compiler accepts the old for scoping rules])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Todd
+   Veldhuizen</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

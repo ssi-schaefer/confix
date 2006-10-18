@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_check_junit
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_check_junit.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_check_junit
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CHECK_JUNIT</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    AC_CHECK_JUNIT tests the availability of the Junit testing framework, and
+    set some variables for conditional compilation of the test suite by
+    automake.
+   </p>
+   <p>
+    If available, JUNIT is set to a command launching the text based user
+    interface of Junit, @JAVA_JUNIT@ is set to $JAVA_JUNIT and @TESTS_JUNIT@ is
+    set to $TESTS_JUNIT, otherwise they are set to empty values.
+   </p>
+   <p>
+    You can use these variables in your Makefile.am file like this :
+   </p>
+   <pre>
+ # Some of the following classes are built only if junit is available
+ JAVA_JUNIT  = Class1Test.java Class2Test.java AllJunitTests.java
+
+ noinst_JAVA = Example1.java Example2.java @JAVA_JUNIT@
+
+ EXTRA_JAVA  = $(JAVA_JUNIT)
+
+ TESTS_JUNIT = AllJunitTests
+
+ TESTS       = StandaloneTest1 StandaloneTest2 @TESTS_JUNIT@
+
+ EXTRA_TESTS = $(TESTS_JUNIT)
+
+ AllJunitTests :
+    echo "#! /bin/sh" &gt; $@
+    echo "exec @JUNIT@ my.package.name.AllJunitTests" &gt;&gt; $@
+    chmod +x $@
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Luc Maisonobe &lt;luc@spaceroots.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2001-03-02
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CHECK_JUNIT],[
+AC_CACHE_VAL(ac_cv_prog_JUNIT,[
+AC_CHECK_CLASS(junit.textui.TestRunner)
+if test x"`eval 'echo $ac_cv_class_junit_textui_TestRunner'`" != xno ; then
+  ac_cv_prog_JUNIT='$(CLASSPATH_ENV) $(JAVA) $(JAVAFLAGS) junit.textui.TestRunner'
+fi])
+AC_MSG_CHECKING([for junit])
+if test x"`eval 'echo $ac_cv_prog_JUNIT'`" != x ; then
+  JUNIT="$ac_cv_prog_JUNIT"
+  JAVA_JUNIT='$(JAVA_JUNIT)'
+  TESTS_JUNIT='$(TESTS_JUNIT)'
+else
+  JUNIT=
+  JAVA_JUNIT=
+  TESTS_JUNIT=
+fi
+AC_MSG_RESULT($JAVA_JUNIT)
+AC_SUBST(JUNIT)
+AC_SUBST(JAVA_JUNIT)
+AC_SUBST(TESTS_JUNIT)])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2001 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_sys_perlsharpbang
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ax_sys_perlsharpbang.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_sys_perlsharpbang
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_SYS_PERLSHARPBANG</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Determine how the perl interpreter is located by the OS kernel and make
+    substitution variable PERL_SHEBANG available. Does AC_PATH_PROG to find the
+    path to perl. As a side-effect, that sets PERLINTERP and makes it available
+    as a substitution variable.
+   </p>
+   <p>
+    Note: The macro allows for the possibility (expected to be seldom used) of
+    an explicit user override (the "user" being the operator executing the
+    final 'configure' script, in this context) by making the option argument
+    like:
+   </p>
+   <pre>
+   --with-perl-shebang='#! /my/funky/perlpath' # OR
+   --with-perl-shebang='/my/funky/perlpath'  # we just throw away the #! anyway
+                                             # bec it must be absent in Makefile
+</pre>
+   <p>
+    Rationale: The are various ways of starting an interpreter on different
+    *nix-like systems. Many use the simple
+   </p>
+   <pre>
+  #!/usr/bin/perl
+</pre>
+   <p>
+    but it could be instead
+   </p>
+   <pre>
+  #!/usr/local/bin/perl
+</pre>
+   <p>
+    and there is even the possibility that the user wants
+   </p>
+   <pre>
+  #!/usr/bin/env perl
+</pre>
+   <p>
+    to find whichever perl comes first in the current $PATH. This is preferred
+    by some of us because we run multiple perl installations on the same box.
+    Adjusting our $PATH then allows us to set precedence over other perls, even
+    whatever the "house" version is.
+   </p>
+   <p>
+    Users on very non-unix systems like MS Windows do not have a kernel that
+    does this kind of thing from the first line of script files, but instead
+    the perl on their machine is started and merely notices whatever comes
+    after the interpreter path on this first line of the script (options like
+    "-w").
+   </p>
+   <p>
+    Acknowledgement: this macro was inspired in part by
+    &lt;ac_prog_perl_version&gt; authored by Dean Povey, see the AC-Archive
+    (ac-archive.sf.net).
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Soren Andersen &lt;somian *AT* pobox |DOT| com&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-02-21
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_SYS_PERLSHARPBANG],[dnl
+
+   AC_PATH_PROG(PERLINTERP,perl,perl)
+   ac_cv_path_perlinterp="$PERLINTERP"
+   _sHpB='#!'
+
+   AC_ARG_WITH(perl-shebang,
+                AC_HELP_STRING([--with-perl-shebang],
+           [override what perl thinks is the way for the kernel to start it (seldom needed)]dnl
+                           ),
+                [opt_perl_shebang="$withval"]dnl
+                            ,dnl
+                [opt_perl_shebang="not_set"]dnl
+    )dnl
+
+   AC_CACHE_CHECK([whether explicit instead of detected sharpbang is to be used],
+                   ax_cv_opt_perl_shebang,
+                  [ case "$opt_perl_shebang" in
+                      not_set  ) ax_cv_opt_perl_shebang=''
+                               ;;
+                         *     )
+        ax_cv_opt_perl_shebang=`echo "$opt_perl_shebang" | sed -e's|^#!\s*\(.*\)$|\1|'`
+                    esac
+                  ]dnl
+    )dnl
+
+   if test "A$ax_cv_opt_perl_shebang" != "A"
+     then
+       ac_cv_sys_kernshrpbang_perl="$ax_cv_opt_perl_shebang"
+       PERL_SHEBANG="$ac_cv_sys_kernshrpbang_perl"
+       AC_SUBST(PERL_SHEBANG)dnl
+       AC_MSG_NOTICE([OK - PERL_SHEBANG is $_sHpB$PERL_SHEBANG.])
+
+# Automatic detection of sharpbang formula starts here
+     else dnl
+
+   _somian_shbangperl=`$PERLINTERP -V:startperl`
+   negclass="[[^']]"; dnl
+# must leave this comment:  m4 will remove the outer brackets for us, heheh
+   AC_CACHE_CHECK([for kernel sharpbang invocation to start perl],
+                  ac_cv_sys_kernshrpbang_perl,
+        [_somian_kspb_perl=`echo "$_somian_shbangperl" | sed -ne"s|.*='\($negclass*\)';$|\1|p"`
+        if test "x$_somian_kspb_perl" == x
+          then _somian_ksbp_warn_empty='durnit'
+          else
+          case "A$_somian_kspb_perl" in
+                 A#!*perl* )
+           ac_cv_sys_kernshrpbang_perl=`echo "$_somian_kspb_perl" | sed -e's|#!\(.*\)$|\1|'`
+                        ;;
+                     A*    )  _somian_ksbp_warn_defau='trouble'
+                              ac_cv_sys_kernshrpbang_perl="$PERLINTERP"
+          esac
+        fi
+])dnl Done with testing sharpbang
+
+# The above prints Checking ... result message to user.
+   PERL_SHEBANG="$ac_cv_sys_kernshrpbang_perl"
+   AC_SUBST(PERL_SHEBANG)
+    if test A${_somian_ksbp_warn_empty+set} == Aset
+      then   AC_MSG_WARN([dnl
+In last check, doing $PERLINTERP -V:startperl yielded empty result! That should not happen.])
+    fi
+# Inform user after printing result value
+    if test A${_somian_ksbp_warn_defau+set} == Aset
+      then AC_MSG_NOTICE([Maybe Not good -])
+           AC_MSG_WARN([dnl
+In last check perl's Config query did not work so we bunted: $_sHpB$PERLINTERP])
+      else AC_MSG_NOTICE([OK Good result - ])
+           AC_MSG_NOTICE([dnl
+In last check we got a proper-looking answer from perl's Config: $_somian_shbangperl])
+dnl Done with user info messages
+    fi
+dnl Outer loop checked for user override term here
+  fi dnl
+
+])dnl EOMACRO DEF
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Soren Andersen
+   &lt;somian *AT* pobox |DOT| com&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: vl_prog_fig2dev
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/vl_prog_fig2dev.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   vl_prog_fig2dev
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>VL_PROG_FIG2DEV</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    If `fig2dev' is found, sets the output variable `FIG2DEV' to `fig2dev', and
+    `FIG2DEV_ESPLANG' to the graphics language which can be used to produce
+    Encapsulated PostScript. Older versions of `fig2dev' produce EPS with
+    `-Lps' and new versions with `-Leps', this macro finds out the correct
+    language option automatically.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Ville Laurikari &lt;vl@iki.fi&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-04-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([VL_PROG_FIG2DEV], [
+  AC_CHECK_PROG(FIG2DEV, fig2dev, fig2dev)
+  if test "x$FIG2DEV" != "x"; then
+    AC_CACHE_CHECK(how to produce EPS with fig2dev,
+                   vl_cv_sys_fig2dev_epslang, [
+      if "$FIG2DEV" -Leps /dev/null 2&gt;&amp;1 | grep Unknown &gt; /dev/null; then
+        vl_cv_sys_fig2dev_epslang=ps
+      else
+        vl_cv_sys_fig2dev_epslang=eps
+      fi
+    ])
+    FIG2DEV_EPSLANG=$vl_cv_sys_fig2dev_epslang
+    AC_SUBST(FIG2DEV_EPSLANG)
+  fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 Ville Laurikari
+   &lt;vl@iki.fi&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

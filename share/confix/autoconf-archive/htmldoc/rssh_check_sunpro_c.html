@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: rssh_check_sunpro_c
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/rssh_check_sunpro_c.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   rssh_check_sunpro_c
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>RSSH_CHECK_SUNPRO_C([ACTION-IF-YES],[ACTION-IF-NOT])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Check whether we are using SUN workshop C compiler. The corresponding cache
+    values is rssh_cv_check_sunpro_c, which is set to "yes" or "no"
+    respectively.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Ruslan Shevchenko &lt;Ruslan@Shevchenko.Kiev.UA&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2000-07-19
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([RSSH_CHECK_SUNPRO_C],
+[AC_CACHE_CHECK([whether using Sun Worckshop C compiler],
+                [rssh_cv_check_sunpro_c],
+
+[AC_LANG_SAVE
+ AC_LANG_C
+ AC_TRY_COMPILE([],
+[#ifndef __SUNPRO_C
+# include "error: this is not Sun Workshop."
+#endif
+],
+               rssh_cv_check_sunpro_c=yes,
+                rssh_cv_check_sunpro_c=no)
+AC_LANG_RESTORE])
+if test ${rssh_cv_check_sunpro_c} = yes
+then
+  $2
+else
+  $3
+fi
+])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2000 Ruslan Shevchenko
+   &lt;Ruslan@Shevchenko.Kiev.UA&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

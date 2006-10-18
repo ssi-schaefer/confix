@@ -1,0 +1,62 @@
+2006-06-13 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Make it backward compatible to serve 1.4 users (albeit a bit
+	  loud)
+	* Release 1.5.2
+
+2006-06-01 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Add dump-repofile.py program, plus a few changes here and there
+	  to make its output prettier.
+
+2006-05-23 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Bug fix: locally bulk-installed public headers only (should have
+	  been public and private headers)
+	* Release 1.5.1
+
+2006-05-16 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Bulk-install: no need to use AC_CONFIG_FILES as bulk-install.py
+	  input files as we're not using substitutions anymore (we're
+	  passing the variables from the commandline).
+	* Bulk-install: install from a list of files, rather than only one
+	  file. This is to be able to handle built sources just like
+	  automake does.
+	* plugin_idl.py: use BuildableModule.file_installer()
+	* plugin_plainfile.py: creator gets explicit
+	  tunnel-/prefix-/data-dir (interface changed)
+	* several minor changes
+
+2006-05-09 Joerg Faschingbauer <jfasch@salomon.at>
+
+        * Apply KDE hack if user wants it. KDE use to patch their
+	  configure script to replace ~1 Billion parallel sed instances
+	  with one singe perl call.
+	* remove debug output I have forgotten
+
+2006-05-08 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* add confix-admin/bulk-install.py to the distribution package by
+	  putting a Makefile.am into confix-admin, containing EXTRA_DIST.
+	* do not scan the whole package with --make and
+	  --configure. rather, read only the top-level Makefile.py to
+	  retrieve the package name and version
+	
+2006-05-05 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* branched from release-1_4-branch
+	* AC_CONFIG_AUX_DIR([confix-admin])
+	* bulk install: depending on .confix's USE_BULK_INSTALL, offer the
+	  option --enable-bulk-install, and make use of that feature. that is
+	  * populate the aux-dir with the helper program
+	    bulk-install.py. files will be installed using this program,
+	    instead of automake's (slow) install-sh and friends.
+	  * generate .bulk-install-{local,public}.in files in every directory
+	    where something is installed
+	  * generate conditional Makefile.am code - bulk-install and regular
+	    automake install - switchable with --enable-bulk-install
+	  * to accomplish all this, install code had to be slightly modified:
+	    make everyone install files through the new FileInstaller class
+	* fix spurios error when calling libtool --version ("Broken pipe")
+	* Release 1.5.0

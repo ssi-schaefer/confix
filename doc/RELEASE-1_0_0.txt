@@ -1,0 +1,27 @@
+The Confix 1.0.0 Release is the first public release, so summarizing
+the changes from previous versions is somewhat academic. However, a
+handful of people already use it, and these are the intended
+audience. Here we go.
+
+- The interface of a module's Makefile.py has changed
+  significantly. It should be easier to use now. Most of all, it is
+  documented in the manual (which has become 50 pages). See "4.6 Using
+  Third Party Libraries" and "B.3 The Module Makefile.py
+  Interface". Makefile.py files which use the old interface won't
+  compile anymore, so manual adjustment is necessary. This only
+  concerns wrapper modules for third party libraries, so the impact
+  isn't expected to be that deep.
+
+  This change has led to an increment in the major version which is
+  now 1. (The minor and bugfix versions have been reset to 0 which
+  does not mean that there are no new features and bugfixes.)
+
+- The interface of the package's Makefile.py has been defined and
+  implemented. It only contains 2 functions, setting the package name
+  and version, but that's a beginning.
+
+- Several bugs were fixed. I had no formal track of these before, so
+  excuse me if I cannot give a detailed list.
+
+Have fun,
+Joerg

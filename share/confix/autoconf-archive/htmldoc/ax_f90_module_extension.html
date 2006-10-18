@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_f90_module_extension
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ax_f90_module_extension.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_f90_module_extension
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_F90_MODULE_EXTENSION</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Find Fortran 90 modules file extension. The module extension is stored in
+    the cached variable ax_f90_modext, or "unknown" if the extension cannot be
+    found.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Luc Maisonobe &lt;luc@spaceroots.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-06-17
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_F90_MODULE_EXTENSION],[
+AC_CACHE_CHECK([fortran 90 modules extension],
+ax_f90_modext,
+[AC_LANG_PUSH(Fortran)
+i=0
+while test \( -f tmpdir_$i \) -o \( -d tmpdir_$i \) ; do
+  i=`expr $i + 1`
+done
+mkdir tmpdir_$i
+cd tmpdir_$i
+AC_COMPILE_IFELSE([module conftest_module
+   contains
+   subroutine conftest_routine
+   write(*,'(a)') 'gotcha!'
+   end subroutine conftest_routine
+   end module conftest_module
+  ],
+  [ax_f90_modext=`ls | sed -n 's,conftest_module\.,,p'`
+   if test x$ax_f90_modext = x ; then
+dnl Some F90 compilers put module filename in uppercase letters
+     ax_f90_modext=`ls | sed -n 's,CONFTEST_MODULE\.,,p'`
+     if test x$ax_f90_modext = x ; then
+       ax_f90_modext=unknown
+     fi
+   fi
+  ],
+  [ax_f90_modext=unknown])
+cd ..
+rm -fr tmpdir_$i
+AC_LANG_POP(Fortran)
+])])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

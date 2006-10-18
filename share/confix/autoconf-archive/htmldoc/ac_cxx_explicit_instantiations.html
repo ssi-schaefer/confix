@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_cxx_explicit_instantiations
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_cxx_explicit_instantiations.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_cxx_explicit_instantiations
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CXX_EXPLICIT_INSTANTIATIONS</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    If the C++ compiler supports explicit instanciations syntax, define
+    HAVE_INSTANTIATIONS.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Todd Veldhuizen, Luc Maisonobe &lt;luc@spaceroots.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-02-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CXX_EXPLICIT_INSTANTIATIONS],
+[AC_CACHE_CHECK(whether the compiler supports explicit instantiations,
+ac_cv_cxx_explinst,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([template &lt;class T&gt; class A { T t; }; template class A&lt;int&gt;;],
+ [], ac_cv_cxx_explinst=yes, ac_cv_cxx_explinst=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_explinst" = yes; then
+  AC_DEFINE(HAVE_INSTANTIATIONS,,
+            [define if the compiler supports explicit instantiations])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Todd
+   Veldhuizen</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

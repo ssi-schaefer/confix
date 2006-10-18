@@ -1,0 +1,247 @@
+%include "default.mgp"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+%nodefault
+%size 10
+%center
+
+
+
+Confix und Automake
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Autoconf
+
+
+	M4 Macrosammlung
+		Verfuegbarkeit von Programmen, Libraries, Headers, ...
+		Optionale Features (z.B. POSIX-Optionen)
+		...
+	M4 Macros werden zu Bourne Shell Code
+
+	Input
+		configure.in: top level, Input fuer M4
+		(Makefile.in: Makefile Templates)
+	Output
+		configure: Bourne Shell Script
+		(Makefiles)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Autoconf: Projektstruktur
+
+%center, newimage -zoom 300 "drawings/autoconf.eps"
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Autoconf: Schritte
+
+
+	Maintainer
+		Schreibt configure.in, Makefile.in's
+		Startet autoconf (-> configure)
+		Macht Source-Release
+
+	User
+		Startet configure (-> Makefiles)
+		make, etc.
+%pause
+
+	Es geht ab:
+		Standard Targets (install, clean, ...)
+		Oft wiederholter Code
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Automake
+
+
+	Schicht ueber Autoconf
+	Verbesserungen
+		Standard make Targets
+		Zusaetzliche M4 Macros
+
+	Input
+		configure.in
+		Makefile.am (Makefile.in Templates)
+	Output
+		Makefile.in
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Automake: Projektstruktur
+
+%center, newimage -zoom 300 "drawings/automake.eps"
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Automake: Schritte
+
+
+	Maintainer
+		Schreibt configure.in, Makefile.am's
+		Startet automake (Makefile.am's -> Makefile.in's)
+		Startet autoconf (configure.in -> configure)
+		Macht Source-Release (make dist)
+
+	User
+		Freut sich ueber die vielen Targets
+		Startet configure (-> Makefiles)
+		make, etc.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Automake: Was fehlt noch?
+
+
+	Pmm Automatismen
+		Inter-Module Dependencies (im Package)
+		Inter-Package Dependencies (zu und zwischen installierten Packages)
+%pause
+%center, newimage -zoom 200 "drawings/packdep.eps"
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Noch eine Schicht
+
+
+%center, newimage -zoom 200 "drawings/confix.eps"
+
+%left
+
+	Verbesserungen
+		Automatische Dependency-Berechnung
+		Vom User programmierbar (Makefile.py)
+		Package-Beschreibungen
+		...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Schritte
+
+
+	Maintainer
+		Hackt herum
+		Markiert zu bauende Directories mit Makefile.py
+		Startet confix.py --bootstrap
+		Macht Source-Release (make dist)
+
+	User
+		Wie immer
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Require, Provide, Resolve
+
+%center, newimage -zoom 180 "drawings/provreq.eps"
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Require
+
+
+	C,C++
+		#include <mod1.h>
+		#include <ns1/ns2/ns.h>
+
+	Python
+		import
+		from ... import ...
+
+	Java
+		keine Ahnung
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Provide
+
+
+	C++: namespaces
+		mod1.h hat keine Namespaces: provided/installed als mod1.h
+		ns.h hat nested Namespaces, ns2 in ns1: provided/installed als ns1/ns2/ns.h
+
+	Python: keine Ahnung
+
+	Java: keine Ahnung
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Resolve
+
+
+	Sucht zu jedem "Require" ein "Resolve"
+	Schreit bei Kreisen
+	Ordnet Build-Reihenfolge im Package
+	Include-Path beim Compilieren
+	Libraries und ihre Reihenfolge beim Linken
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Makefile.py
+
+
+	Idealerweise leer
+	Python-Code
+	Hooks vor und nach Ereignissen
+		Typ eines Moduls (C, Java, Python)
+		Erraten von zu bauenden Einheiten
+			Library
+			Executable
+			(Shared Library)
+		Provide/Require
+		...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Einschraenkungen
+
+
+	Packagetiefe 1
+	Namespaces
+	...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Confix: Offene Sachen
+
+
+	Package-Beschreibungen (Versionen, Flags, ...)
+	Mehr Sprachen (als C,C++,Lex,Yacc)
+	Autoconf checks, z.B. fuer verschiedene ORBs
+	Generierte Files
+	Library-Namen: libwx<package-name>-<module-name>.a
+	Bugs
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+
+Zu diskutieren ...
+
+
+	Package Granularitaet
+	Standard Directories
+		Installierte Packages
+		Package-Beschreibungen
+	CVS-Struktur (Package = CVS-Modul)

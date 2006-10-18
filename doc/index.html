@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>Confix: A Build Tool on Top of GNU Automake</title>
+</head>
+
+<body>
+
+<h1>Confix: A Build Tool on Top of GNU Automake</h1>
+
+<H2>Introduction</H2>
+
+<P>Confix does what is otherwise the job of the package maintainer:
+write input files for <a
+href="http://www.gnu.org/software/automake/">Automake</a> and <a
+href="http://www.gnu.org/software/autoconf/">Autoconf</a>. By
+examining the package source, it determines how to shape
+<code>configure.in</code> and the different <code>Makefile.am</code>
+files in the package in order to perform a clean build.
+
+<P>The main features of Confix include
+
+<UL>
+
+  <LI><I>Dependency calculation</I>. A correct build order of the
+      package's modules is automatically determined. Furthermore,
+      installed packages integrate into dependency calculation by
+      means of a global "repository".
+  </LI>
+
+  <LI><I>Propagation of Autoconf checks between packages</I>. When one
+      package uses another package, there often is the problem that
+      the using package needs to apply the same Autoconf checks (or a
+      subset thereof) that were applied when the other package was
+      built. Not doing so can lead to subtle bugs; for example,
+      disagreement about member offsets in structures. Confix tries to
+      solve that problem by propagating checks into the using package.
+  </LI>
+
+  <LI><I>Mapping of C++ namespaces to include paths</I>. As Confix
+      examines the source code, it can detect C++ namespaces, and map
+      that hierarchy to the install location of the respective header
+      files. (This feature can be suppressed though.)
+  </LI>
+
+  <LI><I>Interfaces for custom build instructions</I>. The plan is
+      that a package maintainer need not write any build instructions
+      at all, but to let Confix do that task by scanning the source
+      code. However, should Confix need help from the maintainer, this
+      can be done using a Python interface to modify build
+      properties. One can place arbitrary Python code into source
+      files, for example, or into dedicated configuration files.
+      </LI>
+      
+</UL>
+
+<p>Confix is licensed under the <a
+href="http://www.gnu.org/licensing/licenses/lesser.html">GNU
+{Lesser,Library} General Public License</a>.
+
+<h2>Releases and Download</H2>
+
+<p>You can download releases from the <a
+href="http://sourceforge.net/projects/confix">project summary page at
+Sourceforge</a>. The most recent stable release is 1.4. If no release
+is recent enough, you may always checkout a <a
+href="http://sourceforge.net/cvs/?group_id=68975">development version
+from CVS</a> (follow the instructions found on that page, substituting
+<code>confix</code> for <code><i>modulename</i></code>). You can also
+<a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/confix">browse
+the CVS repository without using CVS</a>.
+
+<p>We have tried to define a numbering scheme for releases which may
+help you decide if you should install a particular version. See <a
+href="#numbers">below</a> for the numbers and more.
+
+<h2>Documentation</h2>
+
+<p>There is already a bunch of it, but, as always, there cannot be
+enough for any project. The manual is written in <a
+href="http://www.gnu.org/software/texinfo/">Texinfo</a>, if it
+matters, and is part of the packages and, of course, the CVS
+repository. You can view the manual here as <a
+href="confix.html">HTML</a> and <a href="confix.ps">Postscript</a>.
+
+Developers might be interested in the <a
+href="epydoc/index.html">implementation documentation</a> which is
+automatically extracted from the source. This is done by the extremely
+cool <a href="http://epydoc.sourceforge.net">Epydoc</a>.
+
+<h2>Installation</h2>
+
+<p>So far, Confix is only available as a source package (which is
+better than nothing though). Confix uses Python's <a
+href="http://docs.python.org/lib/module-distutils.html">Distutils</a>
+for distribution and setup. If you're not already familiar, here's how
+to do it.
+
+<ul>
+  <li>Unpack the file.<br>
+<pre>
+$ pwd
+/home/jfasch
+$ tar zxplf Confix-x.y.z.tar.gz
+</pre></li>
+
+  <li>Install the package using Distutils.<br>
+<pre>
+$ cd Confix-x.y.z
+$ pwd
+/home/jfasch/Confix-x.y.z
+$ python setup.py install --prefix=${HOME}/sandbox
+</pre></li>
+
+  <li>Modify your environment accordingly. For example, given the above prefix,
+  add the following to your <code>.bashrc</code>.<br>
+<pre>
+PREFIX=${HOME}/sandbox
+export PYTHONPATH=${PYTHONPATH}:${PREFIX}/lib/python2.2/site-packages
+export PATH=${PATH}:${PREFIX}/bin
+</pre></li>
+
+</ul>
+
+<p>You can find more detailed installation instructions in the <a
+href="confix.html">documentation</a>.
+
+<h2>Mailing Lists</h2>
+
+<p>There are <a
+href="http://sourceforge.net/mail/?group_id=68975">three Confix
+mailing lists at Sourceforge</a>.
+
+<ul>
+  <li>The announcements list, <a
+      href="mailto:confix-announce@lists.sourceforge.net">confix-announce@lists.sourceforge.net</a>. Release
+      announcements and the like are posted
+      there. (Un)subscribe <a
+      href="http://lists.sourceforge.net/lists/listinfo/confix-announce">here</a>.
+  </li>
+
+  <li>The users list, <a
+      href="mailto:confix-help@lists.sourceforge.net">confix-help@lists.sourceforge.net</a>. End
+      user questions are answered there. (Un)subscribe <a
+      href="http://lists.sourceforge.net/lists/listinfo/confix-help">here</a>.
+  </li>
+
+  <li>The developers list, <a
+      href="mailto:confix-devel@lists.sourceforge.net">confix-devel@lists.sourceforge.net</a>. Developers
+      communicate there. (Un)subscribe <a
+      href="http://lists.sourceforge.net/lists/listinfo/confix-devel">here</a>.
+  </li>
+
+</ul>
+
+<h2>Release Numbering, CVS</h2>
+
+<p>We try not to roll dice when we release a new version, but adhere
+to the following <a name="numbers">numbering scheme.</a>
+
+<ul>
+  <li>Release numbers are
+      <code>&lt;major&gt;.&lt;minor&gt;.&lt;bugfix&gt;</code>.
+  </li>
+
+  <li>The <code>&lt;bugfix&gt;</code> version is incremented when
+      there have been bug fixes from previous releases with the same
+      <code>&lt;major&gt;.&lt;minor&gt;</code> version. Of the three
+      parts of the version, the bugfix part is supposed to change most
+      often. It is considered safe to upgrade to a release that is
+      only higher in its bugfix version as there are no differences in
+      any generated files (except for differences that are the target
+      of one particular bug fix, of course).
+  </li>
+
+  <li>The <code>&lt;minor&gt;</code> version is incremented with a
+      release which contains significant new features, or when there
+      <i>are</i> differences in generated files that make them
+      incompatible with previous versions of Confix. The emphasis here
+      is on the word <i>generated</i>, as a minor version increment
+      does not require you to modify any source files. The most
+      user-visible incompatibility will probably be that of the module
+      description files. (See the documentation for what this is.)
+  </li>
+
+  <li>The <code>&lt;major&gt;</code> version is incremented when users
+      are required to modify source code. You are encouraged to check
+      the release notes of that release before you decide to switch.
+  </li>
+
+</ul>
+
+<p>The connection between releases and CVS is as follows.
+
+<ul>
+  <li>Every release is tagged. The name of the release tag is
+      <code>RELEASE-&lt;major&gt;_&lt;minor&gt;_&lt;bugfix&gt;</code>.
+  </li>
+
+  <li>New features and incompatible changes are developed on the main
+      trunk, and this is where the release is made from. (What follows
+      is that all zero-bugfix releases are made from the trunk.)
+  </li>
+
+  <li>Bugfixes to a zero-bugfix release make for a
+      <i>bugfix branch</i>. That branch is rooted at the release tag
+      of that release, and is named
+      <code>RELEASE-&lt;major&gt;_&lt;minor&gt;_0-bugfix</code>. All
+      bugfix releases to the &lt;major&gt;.&lt;minor&gt; release are
+      done on that branch.
+  </li>
+
+</ul>
+
+<h2>Acknowledgments</h2>
+
+<p>Most of all I'd like to thank the handful of people that are using
+Confix, and who continue to provide valuable input. Most of these
+people are good colleagues of mine.
+
+<p>I also express my thanks to my employer, <a
+href="http://www.salomon.at">Salomon Automation</a>, who made it
+possible to go open source with Confix. I have spent a considerable
+amount of working hours on it, and appreciate that it is not
+selfunderstood for a company to take that step.
+
+<p><A href="http://sourceforge.net"> <IMG src="http://sourceforge.net/sflogo.php?group_id=68975&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo"></A>
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Thu Feb  6 08:47:28 CET 2003 <!-- hhmts end -->
+
+<p>$Id: index.html,v 1.19 2006/01/31 07:34:47 jfasch Exp $
+</body> </html>

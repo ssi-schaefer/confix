@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ms_pgsql_priv_root
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ms_pgsql_priv_root.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ms_pgsql_priv_root
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>MS_PGSQL_PRIV_ROOT(DB, USER, [HOST], [PASSWORD], [ACTION_IF_FAILED],
+   [ACTION_IF_OK])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro checks wether the given PostgreSQL user has root privileges (can
+    create and drop databases) It is recommended to first call
+    MS_CHECK_PGSQL_DB, this makes it easier to locate the cause of error. The
+    macro MS_PROG_PGCLIENT is required by this one.
+   </p>
+   <p>
+    The variable $pgclient_root_call is set for later use in Makefiles, if
+    you'd like to make use of this, you must do
+   </p>
+   <pre>
+    AC_SUBST(pgclient_root_call)
+</pre>
+   <p>
+    after having called MS_CHECK_PGSQL_PRIV_ROOT. You can then do something
+    like the following in your Makefile.am:
+   </p>
+   <pre>
+    @pgclient_root_call@ -f file.sql
+</pre>
+   <p>
+    If you want the user to set the data, you should support something like
+    these configure options:
+   </p>
+   <pre>
+    AC_ARG_WITH(pgsql-host,
+            [  --with-pgsql-host=HOST               server is running on HOST @&lt;:@local socket@:&gt;@],
+            [pg_host=$withval], [pg_host=])
+
+    AC_ARG_WITH(pgsql-db,
+            [  --with-pgsql-db=DBNAME               use database DBNAME @&lt;:@test@:&gt;@],
+            [pg_db=$withval], [pg_db=test])
+
+    AC_ARG_WITH(pgsql-root-user,
+            [  --with-pgsql-root-user=USER          use user USER, must have root (all) privileges @&lt;:@postgres@:&gt;@],
+            [pg_root_user=$withval], [pg_root_user=postgres])
+
+    AC_ARG_WITH(pgsql-password,
+            [  --with-pgsql-password=PASSWORD       use password PASSWORD @&lt;:@none@:&gt;@],
+            [pg_password=$withval], [pg_password=""])
+</pre>
+   <p>
+    You can then call the macro like this:
+   </p>
+   <pre>
+    MS_CHECK_PGSQL_PRIV_ROOT([$pg_db], [$pg_root_user], [$pg_host], [$pg_password], [AC_MSG_ERROR([We need root privileges on database!])])
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Moritz Sinn &lt;moritz@freesources.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-09-25
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([MS_CHECK_PGSQL_PRIV_ROOT], [
+AC_REQUIRE([MS_PROG_PGCLIENT])dnl
+AC_REQUIRE([MS_CHECK_PGSQL_DB])dnl
+AC_MSG_CHECKING([if PostgreSQL user $2 has root privileges])
+
+pgclient_root_call="$pgclient"
+
+if test "x$1" != "x"; then
+        pgclient_root_call="$pgclient_root_call dbname=$1";
+fi
+if test "x$2" != "x"; then
+        pgclient_root_call="$pgclient_root_call user=$2";
+fi
+if test "x$3" != "x"; then
+        pgclient_root_call="$pgclient_root_call host=$3";
+fi
+if test "x$4" != "x"; then
+        pgclient_root_call="$pgclient_root_call password=$4";
+fi
+
+testdb="test`date +%s`"
+echo "CREATE DATABASE $testdb; DROP DATABASE $testdb;" | $pgclient_root_call  &gt; /dev/null 2&gt;&amp;1
+if test "x$?" = "x0"; then
+        AC_MSG_RESULT([yes])
+        $6
+else
+        AC_MSG_RESULT([no])
+        $5
+fi;
+])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 Moritz Sinn
+   &lt;moritz@freesources.org&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

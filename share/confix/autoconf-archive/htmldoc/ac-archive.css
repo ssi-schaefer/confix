@@ -1,0 +1,30 @@
+body
+    {
+    margin-left:1em;
+    margin-right:2em;
+    }
+
+h1
+    {
+    text-align:center;
+    }
+
+dt
+    {
+    margin-top:0.3ex;
+    }
+
+address
+    {
+    text-align:right;
+    }
+
+.indent
+    {
+    margin-left:1em;
+    }
+
+.m4source
+    {
+    font-size:small;
+    }

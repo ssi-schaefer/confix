@@ -1,0 +1,379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_dist_rpm
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_dist_rpm.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_dist_rpm
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_DIST_RPM([SPEC])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Adds support for a rpm dist target.
+   </p>
+   <p>
+    You will need to create a spec template with everything except the files
+    and the Changlog. @NAME@ will be replaced with the value of @PACKAGE@ and
+    @VER@ will be replaced with the value of @VERSION@. The files and ChangeLog
+    will be filled in automatically. For instance:
+   </p>
+   <pre>
+    Summary: Foobar
+    Name: @NAME@
+    Version: @VER@
+    Release: 0
+    Copyright: GPL
+    Group: Productivity/Networking
+    Source0: http://somewhere/Foobar/%{name}-%{version}.tar.gz
+    URL: http://somewhere
+    BuildRoot: %{_tmppath}/%{name}-root
+    Prefix: %{_prefix}
+
+    %description
+    Foobar does something
+
+    %prep
+    %setup
+
+    %build
+    %configure
+    make
+
+    %install
+    %makeinstall
+
+    %clean
+    rm -rf $RPM_BUILD_ROOT
+
+    %files
+    %defattr(-,root,root)
+
+    %doc AUTHORS BUGS COPYING INSTALL NEWS README
+
+    %changelog
+</pre>
+   <p>
+    Make sure ax_upload.am is added to aminclude.am and you have 'include
+    aminclude.am' in your toplevel Makefile.am
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Tom Howard &lt;tomhoward@users.sf.net&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-14
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_DIST_RPM],
+[
+AC_REQUIRE([AX_INSTALL_FILES])
+AC_MSG_NOTICE([adding rpm support])
+if test "x$AX_HAVE_INSTALL_FILES" = "xtrue"; then
+    AX_ADD_AM_MACRO([[
+
+CLEAN_FILES += \$(top_builddir)/RPMChangeLog
+
+\$(top_builddir)/RPMChangeLog: \$(top_srcdir)/ChangeLog
+        $GAWK \'/^[^0-9]/ { \\
+                    if( \$${AX_DOLLAR}1 == \"*\" ) \$${AX_DOLLAR}1 = \"-\"; print; } \\
+                /^\$\$/ { \\
+                    print; } \\
+                /^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { \\
+                    if( stop ) exit; \\
+                    split( \$${AX_DOLLAR}1, date, \"-\" ); \\
+                    \$${AX_DOLLAR}1 = strftime( \"%%a %%b %%d %%Y\", \\
+                                    mktime( date[ 1 ] \" \" date[ 2 ] \" \" date [ 3 ] \" 00 00 00\" ) ); \\
+                    print \"* \" \$${AX_DOLLAR}0; } \\
+                /Released $PACKAGE-/ { \\
+                    gsub( /$PACKAGE-/, \"\", \$${AX_DOLLAR}2 ); \\
+                    split( \$${AX_DOLLAR}2, ver, \".\" ); \\
+                    split( "$VERSION", curr_ver, \".\" ); \\
+                    if( ver[ 1 ] != curr_ver[ 1 ] || ver[ 2 ] != curr_ver[ 2 ] ) stop = 1; } \\
+                END { \\
+                    print \"[Please see the ChangeLog file for older changes] - Ed.\"; }\' \\
+                \$(top_srcdir)/ChangeLog &gt; \$(top_builddir)/RPMChangeLog
+
+]])
+    AC_MSG_CHECKING([rpm spec template])
+    if test -f "$1.in"; then
+        AC_MSG_RESULT([$1.in])
+        AX_RPM_SPEC_FILE="$1";
+        AC_SUBST(AX_RPM_SPEC_FILE)
+        AC_CONFIG_FILES([spec.tmpl])
+        AX_ADD_AM_MACRO([[
+
+CLEAN_FILES += \$(top_builddir)/$PACKAGE-$VERSION.spec
+EXTRA_DIST += \$(top_builddir)/$PACKAGE-$VERSION.spec \$(top_builddir)/$AX_RPM_SPEC_FILE.in
+
+spec: \$(top_builddir)/$PACKAGE-$VERSION.spec
+
+\$(top_builddir)/$PACKAGE-$VERSION.spec:        \$(top_builddir)/$AX_RPM_SPEC_FILE \$(top_builddir)/install_files \$(top_builddir)/RPMChangeLog
+        @cat \"\$(top_builddir)/$AX_RPM_SPEC_FILE\" \\
+        | $GAWK -v files=\"\$\$files\" \\
+            \'{ print; } \\
+            /%%defattr/ { while((getline &lt; \"install_files\" ) &gt; 0 ) { print; } }\' \\
+            &gt; \"\$(top_builddir)/$PACKAGE-$VERSION.spec\"
+        @cat \"\$(top_builddir)/RPMChangeLog\" &gt;&gt; \"\$(top_builddir)/$PACKAGE-$VERSION.spec\"
+
+]])
+
+        AC_ARG_VAR(EDITOR, [default text editor])
+        if test "x$EDITOR" = "x"; then
+            AC_CHECK_PROGS(EDITOR,[vim vi emacs])
+        fi
+        AC_ARG_VAR(RPM, [rpm executable to use])
+        if test "x$RPM" = "x"; then
+            AC_CHECK_PROGS(RPM,[rpmbuild rpm echo])
+        fi
+        if test "x$RPM" != "x"; then
+            AC_ARG_VAR(PLATFORM_SUFFIX, [A short name for your platform that will be added to the name of the the binary RPMs you may choose to create (by running make rpm).  e.g. rh71 for RedHat 7.1, lsb1.3 for a LSB 1.3 compliant system (SuSE 8.2 or RedHat 9), osx103 for OS X 10.3.x, etc])
+            AC_MSG_CHECKING([rpm platform suffix])
+            if test "x$PLATFORM_SUFFIX" != "x"; then
+                AC_MSG_RESULT([$PLATFORM_SUFFIX])
+                AX_ADD_AM_MACRO([[
+CLEANFILES += \\
+\$(top_builddir)/*.rpm \\
+\$(top_builddir)/rpmmacros
+
+~/.rpmmacros:
+        @echo \"~/.rpmmacros not found.  Creating one like the following:\"; \\
+        echo \"\"; \\
+        echo \"%%packager       &lt;YOUR NAME&gt;\"; \\
+        echo \"\"; \\
+        echo \"%%distribution   &lt;YOUR_DISTRIBUTION&gt;\"; \\
+        echo \"%%vendor         &lt;YOUR_ORGANISATION&gt;\"; \\
+        echo \"\"; \\
+        echo \"%%_topdir        \$\$HOME/\"; \\
+        echo \"%%_tmppath       /tmp/\"; \\
+        echo \"\"; \\
+        echo \"%%_rpmtopdir     %%{_topdir}rpm/\"; \\
+        echo \"%%_builddir      %%{_tmppath}\"; \\
+        echo \"%%_rpmdir        %%{_rpmtopdir}RPMS/\"; \\
+        echo \"%%_sourcedir     %%{_rpmtopdir}SOURCES/\"; \\
+        echo \"%%_specdir       %%{_rpmtopdir}SPECS/\"; \\
+        echo \"%%_srcrpmdir     %%{_rpmtopdir}SRPMS/\"; \\
+        echo \"\"; \\
+        echo \"Where &lt;YOUR_NAME&gt; is your name and &lt;YOUR_DISTRIBUTION&gt; is the\"; \\
+        echo \"distribution you are building on (e.g. SuSE Linux 8.2 or\"; \\
+        echo \"RedHat Linux 7.1). and &lt;YOUR_ORGANISATION&gt; is the organisation\"; \\
+        echo \"you are associated with.\"; \\
+        echo \"\"; \\
+        echo \"Running \'make create-rpmmacros\' will create a ~/.rpmmacros file\"; \\
+        echo \"for you and try to open it in an editor\"; \\
+        exit -1
+
+create-rpmmacros:
+        @if test -e ~/.rpmmacros; then \\
+            echo \"Error: ~/.rpmmacros already exists\"; \\
+            echo \"Please remove it if you want to use\"; \\
+            echo \"this command to replace it\"; \\
+            exit -1; \\
+        else \\
+            echo \"%%packager       &lt;YOUR NAME&gt;\" &gt; ~/.rpmmacros; \\
+            echo \"\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%distribution   &lt;YOUR_DISTRIBUTION&gt;\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%vendor         &lt;YOUR_ORGANISATION&gt;\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_topdir        \$\$HOME/\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_tmppath       /tmp/\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_rpmtopdir     %%{_topdir}rpm/\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_builddir      %%{_tmppath}\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_rpmdir        %%{_rpmtopdir}RPMS/\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_sourcedir     %%{_rpmtopdir}SOURCES/\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_specdir       %%{_rpmtopdir}SPECS/\" &gt;&gt; ~/.rpmmacros; \\
+            echo \"%%_srcrpmdir     %%{_rpmtopdir}SRPMS/\" &gt;&gt; ~/.rpmmacros; \\
+            if test \"x$EDITOR\" = "x"; then \\
+                echo \"Error: no editor specified or found.\"; \\
+                echo \"Please edit ~/.rpmmacros manually\"; \\
+            else \\
+                $EDITOR ~/.rpmmacros; \\
+                exit \$\$?; \\
+            fi \\
+        fi
+
+rpmmacros: ~/.rpmmacros
+        @cp -f ~/.rpmmacros rpmmacros;
+
+dist-rpm: rpm
+dist-srpm: srpm
+
+rpm: $PACKAGE-$VERSION-0.i*.$PLATFORM_SUFFIX.rpm
+srpm: $PACKAGE-$VERSION-0.src.rpm
+
+\$(top_builddir)/$PACKAGE-$VERSION-0.i*.$PLATFORM_SUFFIX.rpm:   \$(top_builddir)/rpmmacros \$(top_builddir)/$PACKAGE-$VERSION.tar.gz
+        @$RPM -tb \$(top_builddir)/$PACKAGE-$VERSION.tar.gz
+        @RPMDIR=\`cat \$(top_builddir)/rpmmacros | $GAWK \'/%%_rpmdir/ { print \$${AX_DOLLAR}2; }\'\`; \\
+        echo \"\$\$RPMDIR\" | $EGREP \"%%{.*}\" &gt; /dev/null 2&gt;&amp;1; \\
+        EXIT=\$\$?; \\
+        while test \"\$\$EXIT\" == \"0\"; do \\
+                RPMDIR=\`echo \"\$\$RPMDIR\" | $GAWK \'/%%{.*}/ \\
+                { match( \$${AX_DOLLAR}0, /%%{.*}/, macro ); \\
+                  suffix = substr( \$${AX_DOLLAR}0, RSTART + RLENGTH ); \\
+                  gsub( /{|}/, \"\", macro[ 0 ] ); \\
+                  while( ( getline &lt; \"\$(top_builddir)/rpmmacros\" ) &gt; 0 ) \\
+                  { if( \$${AX_DOLLAR}1 == macro[ 0 ] ) { print \$${AX_DOLLAR}2 suffix; exit; } } \\
+                  exit 1; \\
+                }\'\`; \\
+                if test \"\$${AX_DOLLAR}?\" == \"0\"; then \\
+                        echo \"\$\$RPMDIR\" | $EGREP \"%%{.*}\" &gt; /dev/null 2&gt;&amp;1; \\
+                        EXIT=\"\$${AX_DOLLAR}?\"; \\
+                else \\
+                        EXIT=\"1\"; \\
+                fi; \\
+        done; \\
+        if test -d \"\$\$RPMDIR\"; then \\
+            for dir in \`ls \"\$\$RPMDIR\"\`; do \\
+                ls \"\$\${RPMDIR}\$\${dir}/$PACKAGE-$VERSION-0.\$\${dir}.rpm\" &gt; /dev/null 2&gt;&amp;1; \\
+                if test \"\$${AX_DOLLAR}?\" == \"0\"; then \\
+                    cp \"\$\${RPMDIR}\$\${dir}/$PACKAGE-$VERSION-0.\$\${dir}.rpm\" \"\$(top_builddir)/$PACKAGE-$VERSION-0.\$\${dir}.$PLATFORM_SUFFIX.rpm\"; \\
+                    found=true; \\
+                fi; \\
+            done; \\
+            if ! \$\$found; then \\
+                echo \"RPM built but not found.\"; \\
+                echo \"Please copy it to \$(top_builddir) manually.\"; \\
+                exit 1; \\
+            fi; \\
+        else \\
+            echo \"RPM built but I cannot find RPM directory.\"; \\
+            echo \"Please copy it to \$(top_builddir) manually.\"; \\
+            exit 1; \\
+        fi;
+
+\$(top_builddir)/$PACKAGE-$VERSION.tar.gz: \$(top_builddir)/install_files
+        cd \"\$(top_builddir)\" &amp;&amp; \$(MAKE) \$(AM_MAKEFLAGS) dist-gzip
+
+
+
+
+$PACKAGE-$VERSION-0.src.rpm:    \$(top_builddir)/rpmmacros \$(top_builddir)/$PACKAGE-$VERSION.tar.gz
+        @$RPM -ts \$(top_builddir)/$PACKAGE-$VERSION.tar.gz
+        @SRPMDIR=\`cat rpmmacros | $GAWK \'/%%_srcrpmdir/ { print ${AX_DOLLAR}${AX_DOLLAR}2; }\'\`; \\
+        echo \"${AX_DOLLAR}${AX_DOLLAR}SRPMDIR\" | $EGREP \"%%{.*}\" &gt; /dev/null 2&gt;&amp;1; \\
+        EXIT=${AX_DOLLAR}${AX_DOLLAR}?; \\
+        while test \"${AX_DOLLAR}${AX_DOLLAR}EXIT\" == \"0\"; do \\
+            SRPMDIR=\`echo \"${AX_DOLLAR}${AX_DOLLAR}SRPMDIR\" | $GAWK \'/%%{.*}/ \\
+                { match( ${AX_DOLLAR}${AX_DOLLAR}0, /%%{.*}/, macro ); \\
+                  suffix = substr( ${AX_DOLLAR}${AX_DOLLAR}0, RSTART + RLENGTH ); \\
+                  gsub( /{|}/, \"\", macro[ 0 ] ); \\
+                  while( ( getline &lt; \"rpmmacros\" ) &gt; 0 ) \\
+                  { if( ${AX_DOLLAR}${AX_DOLLAR}1 == macro[ 0 ] ) { print ${AX_DOLLAR}${AX_DOLLAR}2 suffix; exit; } } \\
+                  exit 1; \\
+                }\'\`; \\
+                if test \"${AX_DOLLAR}${AX_DOLLAR}?\" == \"0\"; then \\
+                        echo \"${AX_DOLLAR}${AX_DOLLAR}SRPMDIR\" | $EGREP \"%%{.*}\" &gt; /dev/null 2&gt;&amp;1; \\
+                        EXIT=\"${AX_DOLLAR}${AX_DOLLAR}?\"; \\
+                else \\
+                        EXIT=\"1\"; \\
+                fi; \\
+        done; \\
+        if test -d \"${AX_DOLLAR}${AX_DOLLAR}SRPMDIR\"; then \\
+            ls \"${AX_DOLLAR}${AX_DOLLAR}{SRPMDIR}/$PACKAGE-$VERSION-0.src.rpm\" &gt; /dev/null 2&gt;&amp;1; \\
+            if test \"${AX_DOLLAR}${AX_DOLLAR}?\" == \"0\"; then \\
+                cp \"\$${AX_DOLLAR}{SRPMDIR}/$PACKAGE-$VERSION-0.src.rpm\" \"${AX_DOLLAR}(top_builddir)/.\"; \\
+                found=true; \\
+            fi; \\
+            if ! ${AX_DOLLAR}${AX_DOLLAR}found; then \\
+                echo \"SRPM built but not found.\"; \\
+                echo \"Please copy it to ${AX_DOLLAR}(top_builddir) manually.\"; \\
+                exit 1; \\
+            fi; \\
+        else \\
+             echo \"SRPM built but I cannot find SRPM directory.\"; \\
+             echo \"Please copy it to ${AX_DOLLAR}(top_builddir) directory manually.\"; \\
+             exit 1; \\
+        fi;
+
+
+]])
+
+                if test "x$USING_AX_EXTRA_DIST" != "x"; then
+                    AX_ADD_AM_MACRO([[
+
+EXTRA_BIN_DISTS += rpm
+EXTRA_SRC_DISTS += srpm
+
+]])
+                fi
+
+                if test "x$USING_AX_UPLOAD" != "x"; then
+                    AX_ADD_AM_MACRO([[
+
+UPLOAD_BIN += upload-rpm
+UPLOAD_SRC += upload-srpm
+
+UPLOAD_TARGETS += \\
+{rpm=&gt;$PACKAGE-$VERSION-0.i*.$PLATFORM_SUFFIX.rpm} \\
+{srpm=&gt;$PACKAGE-$VERSION-0.src.rpm}
+
+]])
+                fi
+            else
+                AC_MSG_RESULT([$PLATFORM_SUFFIX])
+                AC_MSG_WARN([rpm support disabled... PLATFORM_SUFFIX not set])
+            fi
+        else
+            AC_MSG_NOTICE([rpm support disabled... neither rpmbuild or rpm was found])
+        fi
+    else
+        AC_MSG_RESULT([not found])
+        AC_MSG_ERROR([rpm spec template "$1.in" could not be found])
+    fi
+else
+    AC_MSG_NOTICE([rpm support disabled... install_files not available])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Tom Howard
+   &lt;tomhoward@users.sf.net&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

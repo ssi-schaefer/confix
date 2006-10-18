@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_prog_jar
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_prog_jar.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_prog_jar
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_PROG_JAR</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    AC_PROG_JAR tests for an existing jar program. It uses the environment
+    variable JAR then tests in sequence various common jar programs.
+   </p>
+   <p>
+    If you want to force a specific compiler:
+   </p>
+   <p>
+    - at the configure.in level, set JAR=yourcompiler before calling
+    AC_PROG_JAR
+   </p>
+   <p>
+    - at the configure level, setenv JAR
+   </p>
+   <p>
+    You can use the JAR variable in your Makefile.in, with @JAR@.
+   </p>
+   <p>
+    Note: This macro depends on the autoconf M4 macros for Java programs. It is
+    VERY IMPORTANT that you download that whole set, some macros depend on
+    other. Unfortunately, the autoconf archive does not support the concept of
+    set of macros, so I had to break it for submission.
+   </p>
+   <p>
+    The general documentation of those macros, as well as the sample
+    configure.in, is included in the AC_PROG_JAVA macro.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Egon Willighagen &lt;e.willighagen@science.ru.nl&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2000-07-19
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_PROG_JAR],[
+AC_REQUIRE([AC_EXEEXT])dnl
+if test "x$JAVAPREFIX" = x; then
+        test "x$JAR" = x &amp;&amp; AC_CHECK_PROGS(JAR, jar$EXEEXT)
+else
+        test "x$JAR" = x &amp;&amp; AC_CHECK_PROGS(JAR, jar, $JAVAPREFIX)
+fi
+test "x$JAR" = x &amp;&amp; AC_MSG_ERROR([no acceptable jar program found in \$PATH])
+AC_PROVIDE([$0])dnl
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2000 Egon Willighagen
+   &lt;e.willighagen@science.ru.nl&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

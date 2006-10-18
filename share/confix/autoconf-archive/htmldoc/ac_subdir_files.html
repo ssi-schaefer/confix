@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_subdir_files
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_subdir_files.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_subdir_files
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_SUBDIR_FILES [(SUBDIRS [, CASEPATTERN])]</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    look into subdirs and copy the (real) files that match pattern into the
+    local directory. Preferably we use a symbolic link of course. existing
+    local files are not overwritten.
+   </p>
+   <p>
+    the default casepattern is "*.?|*.cc|*.cpp" the default subdir-list
+    contains all subdirs available
+   </p>
+   <p>
+    (requires AC_PROG_CP_S)
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Guido Draheim &lt;guidod@gmx.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2003-10-29
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_SUBDIR_FILES],
+[AC_BEFORE($0,[AC_CP_S])
+  for ac_subdir in ifelse([$1], , *, $1) ; do
+    if test -d $ac_subdir ; then
+      AC_MSG_CHECKING(subdir $ac_subdir)
+      for ac_file in $ac_subdir/* ; do
+        if test -f $ac_file ; then
+          if test ! -e `basename $ac_file` ; then
+            case `basename $ac_file` in
+              ifelse([$2], , *.?|*.cc|*.cpp,[$1]))
+                AC_ECHO_N($ac_file,) ;
+                $CP_S $ac_file . ;;
+            esac
+          fi
+        fi
+      done
+      AC_MSG_RESULT(;)
+    fi
+  done
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2003 Guido Draheim
+   &lt;guidod@gmx.de&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

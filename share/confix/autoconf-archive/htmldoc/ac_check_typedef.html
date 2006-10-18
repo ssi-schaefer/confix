@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_check_typedef
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_check_typedef.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_check_typedef
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CHECK_TYPEDEF_(TYPEDEF, HEADER [, ACTION-IF-FOUND [,
+   ACTION-IF-NOT-FOUND ]])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    check if the given typedef-name is recognized as a type. The trick is to
+    use a sizeof(TYPEDEF) and see if the compiler is happy with that.
+   </p>
+   <p>
+    this can be thought of as a mixture of AC_CHECK_TYPE(TYPEDEF,DEFAULT) and
+    AC_CHECK_LIB(LIBRARY,FUNCTION,ACTION-IF-FOUND,ACTION-IF-NOT-FOUND)
+   </p>
+   <p>
+    a convenience macro AC_CHECK_TYPEDEF_ is provided that will not emit any
+    message to the user - it just executes one of the actions.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Guido Draheim &lt;guidod@gmx.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-12-18
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CHECK_TYPEDEF_],
+[dnl
+ac_lib_var=`echo $1['_']$2 | sed 'y%./+-%__p_%'`
+AC_CACHE_VAL(ac_cv_lib_$ac_lib_var,
+[ eval "ac_cv_type_$ac_lib_var='not-found'"
+  ac_cv_check_typedef_header=`echo ifelse([$2], , stddef.h, $2)`
+  AC_TRY_COMPILE( [#include &lt;$ac_cv_check_typedef_header&gt;],
+        [int x = sizeof($1); x = x;],
+        eval "ac_cv_type_$ac_lib_var=yes" ,
+        eval "ac_cv_type_$ac_lib_var=no" )
+  if test `eval echo '$ac_cv_type_'$ac_lib_var` = "no" ; then
+     ifelse([$4], , :, $4)
+  else
+     ifelse([$3], , :, $3)
+  fi
+])])
+
+dnl AC_CHECK_TYPEDEF(TYPEDEF, HEADER [, ACTION-IF-FOUND,
+dnl    [, ACTION-IF-NOT-FOUND ]])
+AC_DEFUN([AC_CHECK_TYPEDEF],
+[dnl
+ AC_MSG_CHECKING([for $1 in $2])
+ AC_CHECK_TYPEDEF_($1,$2,AC_MSG_RESULT(yes),AC_MSG_RESULT(no))dnl
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Guido Draheim
+   &lt;guidod@gmx.de&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

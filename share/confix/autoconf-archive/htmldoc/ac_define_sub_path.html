@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_define_sub_path
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_define_sub_path.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_define_sub_path
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_DEFINE_SUB_PATH(DEFNAME, varname, description)</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Look at varname and detect the subpath that it contains relative to
+    $prefix/$exec_prefix. If the path is indeed relative to
+    $prefix/$exec_prefix, then a single "./" (dotslash) is prepended, otherwise
+    it can be seen as an absolute path that can not be moved, which you
+    possibly do for "/etc" files, or even those ending up in "/lib/modules" or
+    "/winnt/system".
+   </p>
+   <p>
+    This macro is not very intelligent, it's just a first try in this
+    direction. It does currently just look into the current patterns, and
+    replaces a ${prefix} with a simple dot. Amazingly, it works quite well for
+    most packages.
+   </p>
+   <p>
+    Example (configure.ac):
+   </p>
+   <pre>
+   AC_DEFINE_DIR([EPREFIX], [exec_prefix], [--exec-prefix or default])
+   AC_DEFINE_SUB_PATH([PATH_LIBDIR], [libdir], [--bindir subdir])
+   AC_DEFINE_UNQUOTED([PACKAGE],"$PACKAGE", [Name of package])
+</pre>
+   <p>
+    Example (in C):
+   </p>
+   <pre>
+   static const char _libdir[] = PATH_LIBDIR; /* configure default */
+   char* libdir;
+   char* eprefix = getenv (PACKAGE "DIR");
+   if (! eprefix) eprefix = EPREFIX; /* default */
+   if (*_libdir != '.') libdir = strdup(_libdir);
+   else {
+      libdir = malloc(strlen(eprefix) + strlen(_libdir) + 2);
+      strcpy(libdir, eprefix);
+      strcat(libdir, PATH_DELIMITER_STRING);
+      strcat(libdir, _libdir);
+   }
+   ...
+   free (libdir);
+</pre>
+   <p>
+    The AC_DEFINE_SUB_PATHS(varnames) macro looks for the given various
+    install-paths that largely depend on either ${prefix} or ${exec_prefix}.
+    Just cut out the prefix and ac_define the value. The value is uppercased
+    and PATH_ prepended ie. ac_define_sub_paths(bindir libdir pkgdatadir) will
+    create the defines PATH_BINDIR PATH_LIBDIR PATH_PKGDATADIR - see posix'
+    include/paths.h that creates _PATH_DEV and friends.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Guido Draheim &lt;guidod@gmx.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2001-07-26
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_DEFINE_SUB_PATH],
+[dnl
+  test "_$prefix" = _NONE &amp;&amp; prefix="$ac_default_prefix"
+  test "_$exec_prefix" = _NONE &amp;&amp; exec_prefix='${prefix}'
+  P=`echo ifelse( $2, , [$]$1, [$]$2) | sed -e 's:^\${[a-z_]*prefix}:.:'`
+  ifelse ($3, ,
+    AC_DEFINE($1, $P, [sub path $2]),
+    AC_DEFINE($1, $P, $3))
+])
+
+AC_DEFUN([AC_DEFINE_SUB_PATHS],
+[dnl
+  test "_$prefix" = _NONE &amp;&amp; prefix="$ac_default_prefix"
+  test "_$exec_prefix" = _NONE &amp;&amp; exec_prefix='${prefix}'
+  for i in $1 ; do
+  P=`echo \$$i | sed -e 's:^\${[a-z_]*prefix}:.:'`
+  V=`echo path_$i | sed -e 'y:abcdefghijklmnopqrstuvwxyz:ABCDEFGHIJKLMNOPQRSTUVWXYZ:'`
+    AC_DEFINE($V, $P, [sub path $i]),
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2001 Guido Draheim
+   &lt;guidod@gmx.de&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

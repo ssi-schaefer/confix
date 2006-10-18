@@ -1,0 +1,21 @@
+- sdist
+
+  python setup.py sdist --force-manifest --formats=bztar
+
+  python setup.py sdist --help-formats
+
+- Upload
+
+  ftp upload.sourceforge.net
+  anonymous, email addr.
+  bin
+  cd /incoming
+  put file
+
+- File release
+
+  project page, admin, blah
+
+- index.html, release notes
+
+- news item

@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_define_integer_bits
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_define_integer_bits.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_define_integer_bits
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_DEFINE_INTEGER_BITS (TYPE [, CANDIDATE-TYPE]...)</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Given a TYPE of the form "int##_t" or "uint##_t", see if the datatype TYPE
+    is predefined. If not, then define TYPE -- both with AC_DEFINE and as a
+    shell variable -- to the first datatype of exactly ## bits in a list of
+    CANDIDATE-TYPEs. If none of the CANDIDATE-TYPEs contains exactly ## bits,
+    then set the TYPE shell variable to "no".
+   </p>
+   <p>
+    For example, the following ensures that uint64_t is defined as a 64-bit
+    datatype:
+   </p>
+   <pre>
+    AC_DEFINE_INTEGER_BITS(uint64_t, unsigned long long, unsigned __int64, long)
+    if test "$uint64_t" = no; then
+      AC_MSG_ERROR([unable to continue without a 64-bit datatype])
+    fi
+</pre>
+   <p>
+    You should then put the following in your C code to ensure that all
+    datatypes defined by AC_DEFINE_INTEGER_BITS are visible to your program:
+   </p>
+   <pre>
+    #include "config.h"
+
+    #if HAVE_INTTYPES_H
+    # include &lt;inttypes.h&gt;
+    #else
+    # if HAVE_STDINT_H
+    #  include &lt;stdint.h&gt;
+    # endif
+    #endif
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Scott Pakin &lt;pakin@uiuc.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-01-31
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_DEFINE_INTEGER_BITS],
+[m4_define([ac_datatype_bits], [m4_translit($1, [a-zA-Z_])])
+m4_define([ac_datatype_bytes], [m4_eval(ac_datatype_bits/8)])
+AC_CHECK_TYPE($1, ,
+ [
+  AC_MSG_NOTICE([trying to find a suitable ]ac_datatype_bytes[-byte replacement for $1])
+  $1=no
+  find_$1 ()
+  {
+    _AC_DEFINE_INTEGER_BITS_HELPER($@)
+    :
+  }
+  find_$1
+  AC_DEFINE_UNQUOTED($1, $$1,
+    [If not already defined, then define as a datatype of *exactly* ]ac_datatype_bits[ bits.])
+ ])
+])
+
+dnl Iterate over arguments $2..$N, trying to find a good match for $1.
+m4_define([_AC_DEFINE_INTEGER_BITS_HELPER],
+[ifelse($2, , ,
+ [m4_define([ac_datatype_bits], [m4_translit($1, [a-zA-Z_])])
+  m4_define([ac_datatype_bytes], [m4_eval(ac_datatype_bits/8)])
+  AC_CHECK_SIZEOF($2)
+  if test "$AS_TR_SH(ac_cv_sizeof_$2)" -eq ac_datatype_bytes; then
+    $1="$2"
+    return
+  fi
+  _AC_DEFINE_INTEGER_BITS_HELPER($1, m4_shift(m4_shift($@)))
+ ])
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 Scott Pakin
+   &lt;pakin@uiuc.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>
