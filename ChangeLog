@@ -1,5 +1,10 @@
 2006-10-19 Joerg Faschingbauer <jfasch@salomon.at>
 
+	* Confix2.dir: new method RESCAN_CURRENT_DIRECTORY()
+	* Release 2.0.0pre11
+
+2006-10-19 Joerg Faschingbauer <jfasch@salomon.at>
+
 	* Put Confix2.pkg in EXTRA_DIST
 	* Release 2.0.0pre10
 

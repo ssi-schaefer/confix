@@ -21,6 +21,7 @@ import types
 from libconfix.core.builder import Builder
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.utils.error import Error
+from libconfix.core.filesys import scan
 
 class DirectoryBuilderInterfaceProxy(InterfaceProxy):
     def __init__(self, directory_builder):
@@ -33,6 +34,7 @@ class DirectoryBuilderInterfaceProxy(InterfaceProxy):
         self.add_global('IGNORE_FILE', getattr(self, 'IGNORE_FILE'))
         self.add_global('FIND_ENTRY', getattr(self, 'FIND_ENTRY'))
         self.add_global('GET_ENTRIES', getattr(self, 'GET_ENTRIES'))
+        self.add_global('RESCAN_CURRENT_DIRECTORY', getattr(self, 'RESCAN_CURRENT_DIRECTORY'))
         self.add_global('ADD_EXTRA_DIST', getattr(self, 'ADD_EXTRA_DIST'))
         self.add_global('MAKEFILE_AM', getattr(self, 'MAKEFILE_AM'))
         self.add_global('ADD_BUILDER', getattr(self, 'ADD_BUILDER'))
@@ -67,6 +69,9 @@ class DirectoryBuilderInterfaceProxy(InterfaceProxy):
         return None
     def GET_ENTRIES(self):
         return self.directory_builder_.entries()
+    def RESCAN_CURRENT_DIRECTORY(self):
+        scan.rescan_dir(self.directory_builder_.directory())
+        pass
     def ADD_EXTRA_DIST(self, filename):
         self.directory_builder_.makefile_am().add_extra_dist(filename)
         pass

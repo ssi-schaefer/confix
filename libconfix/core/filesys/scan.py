@@ -30,7 +30,7 @@ def scan_filesystem(path):
 def scan_dir(path):
     ret = Directory(state=DirectoryState.SYNC)
     for entry in os.listdir(os.sep.join(path)):
-        if entry == '.' or entry == '..':
+        if entry in ['.', '..']:
             continue
         next_path = path + [entry]
         next_path_str = os.sep.join(next_path)
@@ -43,6 +43,38 @@ def scan_dir(path):
             continue
         raise Error(next_path_str+' has unknown type')
     return ret
+
+def rescan_dir(dir):
+    if dir.state() != DirectoryState.SYNC:
+        raise Error('Cannot rescan directory: not yet in sync')
+    abspath = os.sep.join(dir.abspath())
+    for name in os.listdir(abspath):
+        if name in ['.', '..']:
+            continue
+        absname = os.path.join(abspath, name)
+        existing_entry = dir.get(name)
+        # <paranoia>
+        if existing_entry is not None:
+            if os.path.isfile(absname):
+                if not isinstance(existing_entry, File):
+                    raise Error('Cannot convert existing entry '+name+' to a file')
+                continue
+            if os.path.isdir(absname):
+                if not isinstance(existing_entry, Directory):
+                    raise Error('Cannot convert existing entry '+name+' to a directory')
+                continue
+            raise Error(absname+' has unknown type')
+        # </paranoia>
+
+        # go add the new entry
+        if os.path.isfile(absname):
+            dir.add(name=name, entry=File(state=FileState.SYNC_CLEAR))
+        elif os.path.isdir(absname):
+            dir.add(name=name, entry=scan_dir(dir.abspath()+name))
+        else:
+            raise Error(absname+' has unknown type')
+        pass
+    pass
 
 def print_filesys(fs, indent):
     print ' '*indent + os.sep.join(fs.path())
