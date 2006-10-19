@@ -215,6 +215,9 @@ class LocalPackage(Package):
 
     def output(self):
 
+        # distribute the package configuration file
+        self.rootbuilder_.makefile_am().add_extra_dist(const.CONFIX2_PKG)
+
         # we will be writing two files in the package's root
         # directory. configure.ac is our responsbility - we will have
         # to create it etc.. the other file, Makefile.am, is not our
@@ -229,9 +232,6 @@ class LocalPackage(Package):
 
         # recursively write the package's output
         self.rootbuilder_.output()
-
-        # distribute the package configuration file
-        self.rootbuilder_.makefile_am().add_extra_dist(const.CONFIX2_PKG)
 
         # write my configure.ac and acinclude.m4
         

@@ -1,3 +1,8 @@
+2006-10-19 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Put Confix2.pkg in EXTRA_DIST
+	* Release 2.0.0pre10
+
 2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
 
 	* core.automake.file_installer: $< is not portable make. replace

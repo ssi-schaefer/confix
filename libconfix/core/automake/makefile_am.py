@@ -541,7 +541,7 @@ class CompoundListManager:
         if list:
             return list.list()
         else:
-            return []
+            return None
         pass
     def lines(self):
         ret = []
