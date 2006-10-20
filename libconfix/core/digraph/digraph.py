@@ -18,13 +18,13 @@
 
 from libconfix.core.utils.error import Error
 
-class EdgeFinder:
+class EdgeFinder(object):
 
     def __init__(self): pass
     def find_out_edges(self, node): assert 0, 'abstract'
     pass
 
-class DirectedGraph:
+class DirectedGraph(object):
 
     def __init__(self, nodes, edges=None, edgefinder=None):
 
@@ -91,7 +91,7 @@ class DirectedGraph:
         pass
     pass
 
-class Edge:
+class Edge(object):
 
     def __init__(self, tail, head, annotations=None):
         assert tail is not head
@@ -104,7 +104,7 @@ class Edge:
     def annotations(self): return self.annotations_
     pass
 
-class EdgeSet:
+class EdgeSet(object):
 
     def __init__(self, edges=[]):
 
@@ -120,9 +120,9 @@ class EdgeSet:
         by_tail = self.by_tail_.get(edge.tail())
         by_head = self.by_head_.get(edge.head())
 
-        assert by_tail is None or by_head is None or len(by_tail&by_head) == 0, \
-               'duplicate edge '+str(edge.tail())+'->'+str(edge.head())
-
+        if self.find_edge(edge.tail(), edge.head()):
+            return
+        
         if by_tail is None:
             by_tail = set()
             self.by_tail_[edge.tail()] = by_tail
@@ -140,7 +140,11 @@ class EdgeSet:
 
     def find_edge(self, tail, head):
         by_tail = self.by_tail_.get(tail)
+        if by_tail is None:
+            return None
         by_head = self.by_head_.get(head)
+        if by_head is None:
+            return None
         found_edges = by_tail & by_head
         if len(found_edges) == 0:
             return None

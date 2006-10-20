@@ -23,6 +23,7 @@ from libconfix.plugins.c.setup import DefaultCSetup
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 from libconfix.plugins.script.setup import ScriptSetup
 from libconfix.plugins.idl.setup import IDLSetup
+from libconfix.plugins.make.setup import MakeSetup
 
 class ConfixSetup(Setup):
     def __init__(self,
@@ -33,7 +34,8 @@ class ConfixSetup(Setup):
                         DefaultCSetup(short_libnames=short_libnames, use_libtool=use_libtool),
                         ScriptSetup(),
                         IDLSetup(),
-                        PlainFileInterfaceSetup()]
+                        PlainFileInterfaceSetup(),
+                        MakeSetup()]
         pass
 
     def setup_directory(self, directory_builder):

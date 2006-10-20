@@ -18,7 +18,8 @@
 
 import types
 
-from composite_setup import CompositeSetup
+from libconfix.core.setup import CompositeSetup
+
 from creator import CreatorSetup
 from clusterer import CClustererSetup
 from default_installer import DefaultInstallerSetup

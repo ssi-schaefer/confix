@@ -16,25 +16,24 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-class Setup(object):
-    def __init__(self):
-        pass
-    def setup_directory(self, directory_builder):
-        pass
-    pass
+import os
 
-class CompositeSetup(Setup):
-    def __init__(self, setups):
-        Setup.__init__(self)
-        self.setups_ = setups
+from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.filesys import scan
+from libconfix.core.utils.error import Error
+
+class CALL_MAKE_AND_RESCAN_InterfaceProxy(InterfaceProxy):
+    def __init__(self, directory_builder):
+        InterfaceProxy.__init__(self)
+        self.__directory_builder = directory_builder
+        self.add_global('CALL_MAKE_AND_RESCAN', getattr(self, 'CALL_MAKE_AND_RESCAN'))
         pass
-
-    def setup_directory(self, directory_builder):
-        super(CompositeSetup, self).setup_directory(directory_builder)
-
-        for s in self.setups_:
-            s.setup_directory(directory_builder)
-            pass
+    def CALL_MAKE_AND_RESCAN(self, filename='Makefile', args=[]):
+        args = ['make', '-f', filename] + args
+        if os.spawnvp(os.P_WAIT, 'make', args) != 0:
+            raise Error(
+                'Error calling make in '+\
+                os.sep.join(self.__directory_builder.directory().abspath()))
+        scan.rescan_dir(self.__directory_builder.directory())
         pass
-
     pass

@@ -16,25 +16,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-class Setup(object):
-    def __init__(self):
-        pass
+from libconfix.core.setup import Setup
+
+from iface import CALL_MAKE_AND_RESCAN_InterfaceProxy
+
+class MakeSetup(Setup):
     def setup_directory(self, directory_builder):
-        pass
-    pass
-
-class CompositeSetup(Setup):
-    def __init__(self, setups):
-        Setup.__init__(self)
-        self.setups_ = setups
-        pass
-
-    def setup_directory(self, directory_builder):
-        super(CompositeSetup, self).setup_directory(directory_builder)
-
-        for s in self.setups_:
-            s.setup_directory(directory_builder)
+        super(MakeSetup, self).setup_directory(directory_builder)
+        if directory_builder.configurator() is not None:
+            directory_builder.configurator().add_method(
+                CALL_MAKE_AND_RESCAN_InterfaceProxy(directory_builder=directory_builder))
             pass
         pass
-
     pass

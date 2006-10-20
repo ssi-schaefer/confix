@@ -16,33 +16,20 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from c import CSuite
-from library import LibrarySuite
-from exe import ExecutableSuite
-from default_installer import DefaultInstallerSuite
-from libtool_version import LibtoolVersionSuite
-from libtool_linking import LibtoolLinkingSuite
-from intra_package_inmem import IntraPackageInMemorySuite
-from check_inmem import CheckProgramInMemorySuite
-from external_library import ExternalLibraryInMemorySuite
-
 import unittest
 
-class AutomakeCSuiteInMemory(unittest.TestSuite):
+from algorithm import AlgorithmSuite
+from nearest_property import NearestPropertySuite
+
+class DiGraphSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CSuite())
-        self.addTest(LibrarySuite())
-        self.addTest(LibtoolVersionSuite())
-        self.addTest(LibtoolLinkingSuite())
-        self.addTest(ExecutableSuite())
-        self.addTest(DefaultInstallerSuite())
-        self.addTest(IntraPackageInMemorySuite())
-        self.addTest(CheckProgramInMemorySuite())
-        self.addTest(ExternalLibraryInMemorySuite())
+        self.addTest(AlgorithmSuite())
+        self.addTest(NearestPropertySuite())
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeCSuiteInMemory())
+    unittest.TextTestRunner().run(DiGraphSuite())
     pass
+

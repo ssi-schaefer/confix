@@ -1,3 +1,10 @@
+2006-10-20 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libtool linking now works correctly (pass only directly referenced
+	  libraries as commandline arguments)
+	* new plugin: make (simple codegenerator wrapper)
+	* moved CompositeSetup from plugins.c to core.setup
+
 2006-10-19 Joerg Faschingbauer <jfasch@salomon.at>
 
 	* Confix2.dir: new method RESCAN_CURRENT_DIRECTORY()
@@ -38,7 +45,7 @@
 
 2006-10-16 Joerg Faschingbauer <jfasch@salomon.at>
 
-	* plugins.c.linked: add full grapoh to te linker commandline,
+	* plugins.c.linked: add full graph to te linker commandline,
 	  regardless of libtool usage (see the comment there).
 	* 2.0.0pre7
 

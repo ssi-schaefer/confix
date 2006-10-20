@@ -184,7 +184,7 @@ class LIBADD(unittest.TestCase):
         package.output()
 
         hidir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['hi'])
-        self.failIf(len(hidir_builder.makefile_am().compound_libadd('libLIBADD_hi_a')))
+        self.failUnless(hidir_builder.makefile_am().compound_libadd('libLIBADD_hi_a') is None)
         pass
 
     pass

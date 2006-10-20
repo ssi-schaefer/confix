@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from digraph.suite import DiGraphSuite
 from package_iface import PackageInterfaceSuite
 from dependencyset import DependencySetSuite
 from depinfo import DependencyInformationSuite
@@ -39,6 +40,7 @@ class BasicTestSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
 
+        self.addTest(DiGraphSuite())
         self.addTest(PackageInterfaceSuite())
         self.addTest(DependencySetSuite())
         self.addTest(DependencyInformationSuite())

@@ -21,6 +21,7 @@ from libconfix.core.filebuilder import FileBuilder
 from libconfix.core.builder import Builder, BuilderSet
 from libconfix.core.automake.configure_ac import Configure_ac
 from libconfix.core import readonly_prefixes
+from libconfix.core.digraph import algorithm
 
 from buildinfo import \
      BuildInfo_CLibrary_NativeLocal, \
@@ -65,15 +66,16 @@ class LinkedBuilder(Builder):
         self.__init_buildinfo()
 
         # of the native (confix-built) libraries we remember both the
-        # direct successors (for libtool, which does topological
-        # sorting by itself) and the toposorted list (if we do not use
-        # libtool).
+        # next successors that have a library (for libtool, which does
+        # topological sorting by itself) and the toposorted list (if
+        # we do not use libtool).
 
         # we do not know if an external library was built with
         # libtool, so we have to pass the full topolist in either
         # case.
-        
-        for n in digraph.successors(node):
+
+        nodes_with_library = algorithm.nearest_property(digraph=digraph, entrypoint=node, property=HaveLibraryProperty())
+        for n in nodes_with_library:
             for bi in n.buildinfos():
                 if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                     self.buildinfo_direct_dependent_native_libs_.append(bi)
@@ -121,23 +123,16 @@ class LinkedBuilder(Builder):
         external_linkline = []
         using_installed_library = False
 
-        # arghh. if the direct dependent nodes do not have a library,
-        # but rather only header files, I don't see indirect libraries
-        # this way.
-
-        # THIS NEEDS FIXING BADLY.
-
-##         if self.use_libtool_:
-##             # when linking anything with libtool, we don't need to
-##             # specify the whole topologically sorted list of
-##             # dependencies - libtool does that by itself. we only
-##             # specify the direct dependencies.
-##             native_libs_to_use = self.buildinfo_direct_dependent_native_libs_
-##         else:
-##             # not using libtool; have to toposort ourselves
-##             native_libs_to_use = self.buildinfo_topo_dependent_native_libs_
-##             pass
-        native_libs_to_use = self.buildinfo_topo_dependent_native_libs_
+        if self.use_libtool_:
+            # when linking anything with libtool, we don't need to
+            # specify the whole topologically sorted list of
+            # dependencies - libtool does that by itself. we only
+            # specify the direct dependencies.
+            native_libs_to_use = self.buildinfo_direct_dependent_native_libs_
+        else:
+            # not using libtool; have to toposort ourselves
+            native_libs_to_use = self.buildinfo_topo_dependent_native_libs_
+            pass
 
         for bi in native_libs_to_use:
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
@@ -174,4 +169,15 @@ class LinkedBuilder(Builder):
         self.external_libraries_ = []
         pass
 
+    pass
+
+class HaveLibraryProperty:
+    def have(self, node):
+        for bi in node.buildinfos():
+            if isinstance(bi, BuildInfo_CLibrary_NativeLocal) or \
+               isinstance(bi, BuildInfo_CLibrary_NativeInstalled) or \
+               isinstance(bi, BuildInfo_CLibrary_External):
+                return True
+            pass
+        return False
     pass

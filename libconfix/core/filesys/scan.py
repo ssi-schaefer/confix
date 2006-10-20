@@ -70,7 +70,7 @@ def rescan_dir(dir):
         if os.path.isfile(absname):
             dir.add(name=name, entry=File(state=FileState.SYNC_CLEAR))
         elif os.path.isdir(absname):
-            dir.add(name=name, entry=scan_dir(dir.abspath()+name))
+            dir.add(name=name, entry=scan_dir(dir.abspath()+[name]))
         else:
             raise Error(absname+' has unknown type')
         pass
