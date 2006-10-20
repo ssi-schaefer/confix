@@ -4,6 +4,7 @@
 	  libraries as commandline arguments)
 	* new plugin: make (simple codegenerator wrapper)
 	* moved CompositeSetup from plugins.c to core.setup
+	* Release 2.0.0pre12
 
 2006-10-19 Joerg Faschingbauer <jfasch@salomon.at>
 
