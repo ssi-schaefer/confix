@@ -1,5 +1,11 @@
 2006-10-23 Joerg Faschingbauer <jfasch@salomon.at>
 
+	* libconfix/plugins/idl/builder.py: argh. renamed IDLBuilder to
+	  Builder, but forgot to ...
+	* Release 2.0.0pre14
+
+2006-10-23 Joerg Faschingbauer <jfasch@salomon.at>
+
 	* Removed 'parentbuilder' and 'package' from Builder ctor (and all
 	  derived)
 	* Rudimentary 'debug' facility (a plugin localized in

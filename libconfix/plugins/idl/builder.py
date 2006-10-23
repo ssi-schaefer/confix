@@ -73,7 +73,7 @@ class Builder(FileBuilder):
 
     def dependency_info(self):
         ret = DependencyInformation()
-        ret.add(super(IDLBuilder, self).dependency_info())
+        ret.add(super(Builder, self).dependency_info())
 
         external_name = '/'.join(self.install_path_ + [self.file().name()])
         internal_name = self.file().name()
@@ -94,7 +94,7 @@ class Builder(FileBuilder):
         return self.install_path_
 
     def output(self):
-        super(IDLBuilder, self).output()
+        super(Builder, self).output()
 
         self.parentbuilder().makefile_am().add_extra_dist(self.file().name())
         self.parentbuilder().file_installer().add_private_header(
@@ -118,15 +118,15 @@ class Builder(FileBuilder):
         lineno = 0
         for l in lines:
             lineno = lineno + 1
-            m = IDLBuilder.re_beg_mod_.search(l)
+            m = Builder.re_beg_mod_.search(l)
             if m:
-                n = IDLBuilder.re_beg_mod_named_.search(m.group(1))
+                n = Builder.re_beg_mod_named_.search(m.group(1))
                 mod_name = n and n.group(1) or ''
                 stack.append(mod_name)
                 stack_growth = 1
                 continue
 
-            m = IDLBuilder.re_end_mod_.search(l)            
+            m = Builder.re_end_mod_.search(l)            
             if m:
                 if len(stack) == 0:
                     raise Error(self.fullname() + ':' + str(lineno) + ': error: '
