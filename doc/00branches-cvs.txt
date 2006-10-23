@@ -1,0 +1,140 @@
+The figure reflects the now-dead CVS Repository. Be careful to not
+accidentally edit here. The current Subversion figure is in
+00branches.txt.
+        
+
+               +
+               |
+               |
+   optional-modules
+               +------------------------------------------+
+               |                                          |
+               |                                          |
+               |                                          |
+               |                                          |
+               |                                          |
+               |                                          |
+   release-1_3 +------------------------------+           |
+   2005-08-26  |                              |           |
+               |                              |           |
+               |                              |           |
+   optional-modules2                          |           |
+   2005-08-26  +-------------+                |           |
+               |             |                |           |
+               |             |                |           |
+               |             |                |           |
+               |             |                |           |
+               |             |<-------------- | ----------+ merge-optional-modules-2005-08-26
+               |             |                |           |
+               |             |   release-1_3_0+           |
+               |             |   2005-09-01   |           v
+               |             |                |         optional-modules-branch
+               |             |                |         (development branch)
+               |             |                |         (dead)
+               |             |   release-1_3_1+
+               |             |   release-1_3_2+
+               |             |   release-1_3_3+
+               |             |                |
+               |             |   release-1_3_4+ 2005-10-25
+               |             |                |
+               |             |                |
+               |             |                |
+               |      merge-optional-         |
+               |      modules2-2005-10-31     |
+               |<------------+                |
+               |             |                |
+               |             v                |
+               |    optional-modules2-branch  |
+               |    (dead)                    |
+               |                              |
+               |<-----------------------------+merge-release-1_3-2005-11-22
+               |                              |
+               |                              +release-1_3_7
+               |                              |2006-03-10
+               |                              +release-1_3_8
+               |                              |2006-03-13
+               |                              +release-1_3_9
+               |                              |2006-03-16
+               |                              |
+               |                              |
+               |                              |
+               |                              |
+               |                              v
+               |                        release-1_3-branch
+               |                        (for Salomon)
+               |
+               |
+               |
+   release-1_4 +------------------+ release-1_4_0
+   2005-12-09  |                  | 2005-12-09
+               |                  + release-1_4_1
+               |                  | 2006-01-29
+               |                  |
+   depgraph    +-----+            |
+   2006-01-31  |     |            |
+               |     |            |
+               |<----+ 2006-02-06 |
+               |     v            |
+               | depgraph-branch  |
+               | (development,    |
+               |  dead)           |
+               |                  |
+               |<-----------------+ merge-release-1_4-2006-02-06
+               |                  |
+               |                  + release-1_4_2
+               |                  | 2006-02-09
+               |                  |
+               |                  + (a few releases forgotten)
+               |                  |
+               |                  + release-1_4_6
+               |                  | 2006-03-02
+               |                  + release-1_4_7
+               |                  | 2006-03-16
+               |                  + release-1_4_8
+               |                  | 2006-04-18
+               |                  + release-1_4_9
+               |                  | 2006-04-21
+               |                  |
+               |     bulk-install +----------------+
+               |     2006-04-21   |                |
+               |                  + release-1_4_10 |
+               |                  | 2006-04-21     |
+               |                  |                |
+               |      release-1_5 +-------+        |
+               |      2006-05-05  |       |<-------+ merge-bulk-install-2006-05-05
+               |                  |       |        |
+               |<-----------------+       |        v
+               |       merge-release-1_4- |        bulk-install-branch
+               |       2006-06-21 |       |        (development, dead)
+               |                  |       |
+               |                  V       + release-1_5_0
+               |   release-1_4-branch     + release-1_5_1
+               |   (hopefully dead)       | 2006-05-24
+               |                          + release-1_5_2
+               |                          | 2006-06-13
+               |                          |
+               |<-------------------------+ merge-release-1_5-2006-06-21
+               |                          |
+               |                          + release-1_5_3
+               |                          | 2006-06-26
+               |                          + release-1_5_4
+               |                          | 2006-06-29
+               |                          + release-1_5_5
+               |                          | 2006-07-04
+               |                          + release-1_5_6
+               |                          | 2006-07-09
+               |                          + release-1_5_7
+               |                          | 2006-07-17
+               |                          |
+               |                          |
+               |                          |
+               |                          |
+               |                          |
+               |                          |
+               |                          |
+               |                          v
+               |                   release-1_5-branch
+               |
+               v
+             HEAD (dead; migrated to 
+             https://svn.sourceforge.net/svnroot/confix/trunks/confix)
