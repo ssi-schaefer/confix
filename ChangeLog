@@ -2,6 +2,7 @@
 
 	* libconfix/plugins/idl/builder.py: argh. renamed IDLBuilder to
 	  Builder, but forgot to ...
+	* autoconf-archive/ac_jni_include_dir: += interix
 	* Release 2.0.0pre14
 
 2006-10-23 Joerg Faschingbauer <jfasch@salomon.at>
