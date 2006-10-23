@@ -1,0 +1,39 @@
+This is our configuration management map. Be careful to only maintain
+it in the trunk: it reflects all branches, tags, and whatnot, and
+therefore it should be maintained outside of version control. At least
+theoretically; in practice, we need to put it somewhere -- and that's
+the trunk.
+
+The nomenclature of CM artifacts is taken from the book "Pragmatic
+Version Control Using Subversion" by Mike Mason, and it reads as
+follows.
+
+Release Branch            RB-<rel>
+
+Release                   REL-<rel>
+
+Bug fix branch            BUG-<track>
+
+Pre-bug fix               PRE-<track>
+
+Post-bug fix              POST-<track>
+
+Developer experiments     TRY-<developer>-<short-desc>
+
+
+
+
+    (subversion migration)
+                 +
+                 |
+REL-2.0.0pre13   +
+                 |
+                 |
+                 |
+                 |
+                 |
+                 |
+                 |
+                 |
+                 v
+               trunk
