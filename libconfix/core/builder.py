@@ -39,10 +39,9 @@ from require_callable import Require_Callable
 from buildinfoset import BuildInformationSet
 
 class Builder(object):
-    def __init__(self, id, parentbuilder, package):
-        self.__id = id
-        self.__parentbuilder = parentbuilder
-        self.__package = package
+    def __init__(self):
+        self.__parentbuilder = None
+        self.__package = None
 
         self.__dependency_info = DependencyInformation()
 
@@ -58,10 +57,29 @@ class Builder(object):
         self.__base_output_called = False
         
         pass
-    
-    def id(self): return self.__id
 
-    def __str__(self): return self.__id
+    def __str__(self):
+        ret = str(self.__class__)
+        if self.__parentbuilder is None:
+            ret += '(no parent, id='+str(id(self))+')'
+        else:
+            ret += '('+str(self.__parentbuilder)+')'
+            pass
+        return ret
+
+    def shortname(self):
+        return str(self)
+
+    def unique_id(self):
+        assert self.__package
+        return str(self.__class__)+'('+self.__parentbuilder.unique_id()+')'
+    
+    def set_owners(self, parentbuilder, package):
+        assert self.__parentbuilder is None
+        assert self.__package is None
+        self.__parentbuilder = parentbuilder
+        self.__package = package
+        pass
 
     def parentbuilder(self):
         return self.__parentbuilder
@@ -303,7 +321,7 @@ class BuilderSet(object):
         return self.builders_.itervalues()
 
     def __contains__(self, b):
-        return self.builders_.has_key(b.id())
+        return self.builders_.has_key(b.unique_id())
 
     def __len__(self):
         return len(self.builders_)
@@ -312,15 +330,15 @@ class BuilderSet(object):
         return self.builders_.values()
 
     def add(self, b):
-        have = self.builders_.get(b.id())
+        have = self.builders_.get(b.unique_id())
         if have:
-            raise Error('Duplicate builder id "'+b.id()+'"; have: '+str(have)+', new: '+str(b))
-        self.builders_[b.id()] = b
+            raise Error('Duplicate builder id "'+b.unique_id()+'"; have: '+str(have)+', new: '+str(b))
+        self.builders_[b.unique_id()] = b
         pass
 
     def remove(self, b):
-        assert self.builders_.has_key(b.id()), str(b)
-        del self.builders_[b.id()]
+        assert self.builders_.has_key(b.unique_id()), str(b)
+        del self.builders_[b.unique_id()]
         pass
 
     def is_equal(self, other):

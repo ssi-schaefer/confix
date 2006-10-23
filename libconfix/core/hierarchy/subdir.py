@@ -26,18 +26,13 @@ from dirbuilder import DirectoryBuilder
 from confix2_dir import Confix2_dir
 
 class SubdirectoryRecognizer(Builder):
-    def __init__(self, parentbuilder, package):
-        assert isinstance(parentbuilder, DirectoryBuilder)
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
-        self.recognized_directories_ = set()
+    def __init__(self):
+        Builder.__init__(self)
+        self.__recognized_directories = set()
         pass
 
-    def relate(self, node, digraph, topolist):
-        Builder.relate(self, node, digraph, topolist)
+    def shortname(self):
+        return 'Hierarchy.SubdirectoryRecognizer'
 
     def enlarge(self):
         Builder.enlarge(self)
@@ -46,7 +41,7 @@ class SubdirectoryRecognizer(Builder):
         for name, entry in self.parentbuilder().entries():
             if not isinstance(entry, Directory):
                 continue
-            if entry in self.recognized_directories_:
+            if entry in self.__recognized_directories:
                 continue
             confix2_dir_file = entry.get(const.CONFIX2_DIR)
             if confix2_dir_file is None:
@@ -55,19 +50,14 @@ class SubdirectoryRecognizer(Builder):
                 errors.append(Error(confix2_dir_file.relpath()+' is not a file'))
                 continue
             try:
-                dirbuilder = DirectoryBuilder(
-                    directory=entry,
-                    parentbuilder=self.parentbuilder(),
-                    package=self.package())
-                confix2_dir = Confix2_dir(file=confix2_dir_file,
-                                          parentbuilder=dirbuilder,
-                                          package=self.package())
+                dirbuilder = DirectoryBuilder(directory=entry)
+                self.parentbuilder().add_builder(dirbuilder)
+                confix2_dir = Confix2_dir(file=confix2_dir_file)
                 dirbuilder.set_configurator(confix2_dir)
                 for setup in self.package().setups():
                     setup.setup_directory(directory_builder=dirbuilder)
                     pass
-                self.recognized_directories_.add(entry)
-                self.parentbuilder().add_builder(dirbuilder)
+                self.__recognized_directories.add(entry)
             except Error, e:
                 errors.append(Error('Error executing '+os.sep.join(confix2_dir_file.relpath()), [e]))
                 pass

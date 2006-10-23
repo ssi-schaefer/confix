@@ -42,6 +42,7 @@ class CompositeConfiguration(Configuration):
     def use_kde_hack(self): return self.search_param_('use_kde_hack')
     def verbosity(self): return self.search_param_('use_kde_hack')
     def trace(self): return self.search_param_('trace')
+    def debug(self): return self.search_param_('debug')
     def print_timings(self): return self.search_param_('print_timings')
     def message_prefix(self): return self.search_param_('message_prefix')
     def advanced(self): return self.search_param_('advanced')

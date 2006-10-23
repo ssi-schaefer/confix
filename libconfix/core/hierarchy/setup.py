@@ -26,8 +26,6 @@ class DirectorySetup(Setup):
         pass
     def setup_directory(self, directory_builder):
         Setup.setup_directory(self, directory_builder)
-        directory_builder.add_builder(
-            SubdirectoryRecognizer(parentbuilder=directory_builder,
-                                   package=directory_builder.package()))
+        directory_builder.add_builder(SubdirectoryRecognizer())
         pass
     pass

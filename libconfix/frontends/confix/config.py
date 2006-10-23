@@ -38,6 +38,7 @@ class Configuration:
     def print_timings(self): assert 0, str(self.__class__)
     def verbosity(self): assert 0, str(self.__class__)
     def trace(self): assert 0, str(self.__class__)
+    def debug(self): assert 0, str(self.__class__)
     def message_prefix(self): assert 0, str(self.__class__)
     def advanced(self): assert 0, str(self.__class__)
 

@@ -25,42 +25,41 @@ from libconfix.core.filesys.file import File
 from builder import PlainFileBuilder
 
 class PlainFileCreator(Builder):
-    def __init__(self, parentbuilder, package, regex, prefixdir, datadir):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+regex+')'+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self, regex, prefixdir, datadir):
+        assert (datadir is None or prefixdir is None and \
+                datadir is not None or prefixdir is not None), \
+                'prefixdir: '+str(prefixdir) + ', datadir: '+str(datadir)
+        
+        Builder.__init__(self)
+
+        self.__regex = regex
+        self.__datadir = datadir
+        self.__prefixdir = prefixdir
+        self.__handled_entries = set()
         
         try:
             self.compiled_regex_ = re.compile(regex)
         except Exception, e:
             raise Error('Error compiling regex "'+regex+'"', [e])
 
-        self.datadir_ = datadir
-        self.prefixdir_ = prefixdir
-        assert (datadir is None or prefixdir is None and \
-                datadir is not None or prefixdir is not None), \
-                'prefixdir: '+str(prefixdir) + ', datadir: '+str(datadir)
-
-        self.handled_entries_ = set()
         pass
+
+    def unique_id(self):
+        return str(self.__class__)+'('+self.parentbuilder().unique_id()+','+self.__regex+')'
 
     def enlarge(self):
         super(PlainFileCreator, self).enlarge()
         for name, entry in self.parentbuilder().entries():
             if not isinstance(entry, File):
                 continue
-            if name in self.handled_entries_:
+            if name in self.__handled_entries:
                 continue
             if self.compiled_regex_.search(name):
                 self.parentbuilder().add_builder(
                     PlainFileBuilder(file=entry,
-                                     parentbuilder=self.parentbuilder(),
-                                     package=self.package(),
-                                     datadir=self.datadir_,
-                                     prefixdir=self.prefixdir_))
-                self.handled_entries_.add(name)
+                                     datadir=self.__datadir,
+                                     prefixdir=self.__prefixdir))
+                self.__handled_entries.add(name)
                 break
             pass
         pass

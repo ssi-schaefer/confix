@@ -35,11 +35,7 @@ class IgnoredEntriesSuite(unittest.TestSuite):
 
 class FileWatcher(Builder):
     def __init__(self, parentbuilder, package):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+        Builder.__init__(self)
         self.seen_names_ = set()
         pass
 

@@ -21,14 +21,8 @@ import types
 from libconfix.core.filebuilder import FileBuilder
 
 class ScriptBuilder(FileBuilder):
-    def __init__(self,
-                 file,
-                 parentbuilder,
-                 package):
-        FileBuilder.__init__(self,
-                             file=file,
-                             parentbuilder=parentbuilder,
-                             package=package)
+    def __init__(self, file):
+        FileBuilder.__init__(self, file=file)
         pass
 
     def output(self):

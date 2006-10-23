@@ -73,10 +73,8 @@ class LocalPackage(Package):
             raise Error(const.CONFIX2_PKG+': package version has not been set')
 
         # setup rootbuilder.
-        self.rootbuilder_ = DirectoryBuilder(
-            directory=rootdirectory,
-            parentbuilder=None,
-            package=self)
+        self.rootbuilder_ = DirectoryBuilder(directory=rootdirectory)
+        self.rootbuilder_.set_owners(parentbuilder=None, package=self)
         
         # slurp in Confix2.dir which will act as the rootbuilder's
         # configurator object. the setup objects will be asked to
@@ -87,7 +85,7 @@ class LocalPackage(Package):
                 raise Error(const.CONFIX2_DIR+' missing in '+os.sep.join(rootdirectory.abspath()))
             if not isinstance(confix2_dir_file, File):
                 raise Error(os.sep.join(confix2_dir_file.abspath())+' is not a file')
-            confix2_dir = Confix2_dir(file=confix2_dir_file, parentbuilder=self.rootbuilder_, package=self)
+            confix2_dir = Confix2_dir(file=confix2_dir_file)
             self.rootbuilder_.set_configurator(confix2_dir)
         except Error, e:
             raise Error('Cannot initialize package in '+'/'.join(rootdirectory.abspath()), [e])
@@ -107,7 +105,7 @@ class LocalPackage(Package):
             dir = Directory()
             self.rootdirectory_.add(name=const.AUXDIR, entry=dir)
             pass
-        self.auxdir_ = AutoconfAuxDir(directory=dir, parentbuilder=self.rootbuilder_, package=self)
+        self.auxdir_ = AutoconfAuxDir(directory=dir)
         self.rootbuilder_.add_builder(self.auxdir_)
         pass
 

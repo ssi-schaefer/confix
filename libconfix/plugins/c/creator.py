@@ -29,14 +29,13 @@ from lex import LexBuilder
 from yacc import YaccBuilder
 
 class Creator(Builder):
-    def __init__(self, parentbuilder, package):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self):
+        Builder.__init__(self)
         self.handled_entries_ = set()
         pass
+
+    def shortname(self):
+        return 'C.Creator'
     
     def enlarge(self):
         super(Creator, self).enlarge()
@@ -45,10 +44,7 @@ class Creator(Builder):
                 continue
             if name in self.handled_entries_:
                 continue
-            builder = do_create_builder(name=name,
-                                        entry=entry,
-                                        parentbuilder=self.parentbuilder(),
-                                        package=self.package())
+            builder = do_create_builder(name=name, entry=entry)
             if builder is None:
                 continue
             self.handled_entries_.add(name)
@@ -57,35 +53,24 @@ class Creator(Builder):
         pass
     pass
 
-def do_create_builder(name, entry, parentbuilder, package):
+def do_create_builder(name, entry):
     root, ext = os.path.splitext(name)
     if ext in ['.h', '.hh', '.hpp']:
-        return HeaderBuilder(file=entry,
-                             parentbuilder=parentbuilder,
-                             package=package)
+        return HeaderBuilder(file=entry)
     if ext in ['.c']:
-        return CBuilder(file=entry,
-                        parentbuilder=parentbuilder,
-                        package=package)
+        return CBuilder(file=entry)
     if ext in ['.cpp', '.cc', '.cxx']:
-        return CXXBuilder(file=entry,
-                          parentbuilder=parentbuilder,
-                          package=package)
+        return CXXBuilder(file=entry)
     if ext in ['.l', '.ll']:
-        return LexBuilder(file=entry,
-                          parentbuilder=parentbuilder,
-                          package=package)
+        return LexBuilder(file=entry)
     if ext in ['.y', '.yy']:
-        return YaccBuilder(file=entry,
-                           parentbuilder=parentbuilder,
-                           package=package)
+        return YaccBuilder(file=entry)
     return None
 
 class CreatorSetup(Setup):
     def setup_directory(self, directory_builder):
         super(CreatorSetup, self).setup_directory(directory_builder)
 
-        directory_builder.add_builder(Creator(parentbuilder=directory_builder,
-                                              package=directory_builder.package()))
+        directory_builder.add_builder(Creator())
         pass
     pass

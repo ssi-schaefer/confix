@@ -22,12 +22,8 @@ from libconfix.core.utils.paragraph import Paragraph, OrderedParagraphSet
 from libconfix.core.automake.configure_ac import Configure_ac
 
 class CBuilder(CompiledCBuilder):
-    def __init__(self, file, parentbuilder, package):
-        CompiledCBuilder.__init__(
-            self,
-            file=file,
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self, file):
+        CompiledCBuilder.__init__(self, file=file)
         pass
 
     def output(self):

@@ -35,7 +35,7 @@ class CompiledCBuilder(CBaseBuilder):
 
     MAIN_PROPERTY_NAME = 'MAIN'
     
-    def __init__(self, file, parentbuilder, package):
+    def __init__(self, file):
         # FIXME (redesign me?): CBaseBuilder's ctor takes care of
         # executing the interface code, thereby eventually manipulating
         # self's exename_ attribute. we have to take care that that
@@ -43,11 +43,7 @@ class CompiledCBuilder(CBaseBuilder):
         # violation of the "never get active in the ctor" principle.)
         self.__exename = None
 
-        CBaseBuilder.__init__(
-            self,
-            file=file,
-            parentbuilder=parentbuilder,
-            package=package)
+        CBaseBuilder.__init__(self, file=file)
         self.__init_buildinfo()
 
         # tri-state: None - haven't looked yet, True, False

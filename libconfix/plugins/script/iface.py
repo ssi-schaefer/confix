@@ -40,8 +40,5 @@ class ADD_SCRIPT_InterfaceProxy(InterfaceProxy):
         if not isinstance(file, File):
             raise Error('ADD_SCRIPT('+filename+'): not a file')
 
-        self.object_.add_builder(
-            ScriptBuilder(file=file,
-                          parentbuilder=self.object_,
-                          package=self.object_.package()))
+        self.object_.add_builder(ScriptBuilder(file=file))
         pass

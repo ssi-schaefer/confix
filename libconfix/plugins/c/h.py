@@ -28,19 +28,18 @@ import os
 class HeaderBuilder(CBaseBuilder):
     PROPERTY_INSTALLPATH = 'INSTALLPATH_CINCLUDE'
     
-    def __init__(self, file, parentbuilder, package):
+    def __init__(self, file):
         # we exec the iface in the ctor, so the relevant members have
         # to be available before this.
         self.iface_install_path_ = None
         
-        CBaseBuilder.__init__(
-            self,
-            file=file,
-            parentbuilder=parentbuilder,
-            package=package)
+        CBaseBuilder.__init__(self, file=file)
 
         self.namespace_install_path_ = None
         pass
+
+    def shortname(self):
+        return 'C.HeaderBuilder('+self.file().name()+')'
 
     def iface_install_path(self):
         return self.iface_install_path_

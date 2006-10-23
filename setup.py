@@ -72,6 +72,7 @@ setup(
               'libconfix.plugins.idl',
               'libconfix.plugins.plainfile',
               'libconfix.plugins.script',
+              'libconfix.plugins.make',
               'libconfix.testutils',
               ],
     data_files=datafiles,

@@ -31,6 +31,7 @@ from libconfix.core.automake.repo_automake import AutomakePackageRepository
 from libconfix.plugins.c.setup import DefaultCSetup
 
 from confix_setup import ConfixSetup
+from debug import DebugSetup
 
 TODO = []
 CONFIG = None
@@ -60,10 +61,15 @@ def PACKAGE():
     debug.message("scanning package in %s ..." % CONFIG.packageroot(),
                   CONFIG.verbosity())
 
-    setups = CONFIG.setups()
-    if setups is None:
+    if CONFIG.setups() is None:
         setups = [ConfixSetup(use_libtool=CONFIG.use_libtool(),
                               short_libnames=CONFIG.short_libnames())]
+    else:
+        setups = CONFIG.setups()[:]
+        pass
+
+    if CONFIG.debug() is not None:
+        setups.append(DebugSetup(CONFIG.debug()))
         pass
 
     filesystem = scan_filesystem(path=CONFIG.packageroot().split(os.sep))
@@ -302,6 +308,7 @@ def SETTINGS():
     if trace is not None:
         debug.set_trace(trace)
         pass
+
     pass
 
 def deduce_builddir():

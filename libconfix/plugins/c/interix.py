@@ -23,28 +23,30 @@ from libconfix.core.automake import helper_automake
 class InterixSetup(Setup):
     def setup_directory(self, directory_builder):
         super(InterixSetup, self).setup_directory(directory_builder)
-        directory_builder.add_builder(
-            InterixMacroDefiner(parentbuilder=directory_builder,
-                                package=directory_builder.package()))
+        directory_builder.add_builder(InterixMacroDefiner())
         pass
     pass
 
 class InterixMacroDefiner(Builder):
-    def __init__(self, parentbuilder, package):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
-        self.macroname_ = '_COMPILING_'+helper_automake.automake_name('_'.join(
-            [self.package().name()]+\
-            self.parentbuilder().directory().relpath(self.package().rootdirectory())))
+    def __init__(self):
+        Builder.__init__(self)
         # tell everyone who's interested
-        self.parentbuilder().directory().set_property('INTERIX_SHARED_COMPILING_MACRO', self.macroname_)
+        pass
+
+    def shortname(self):
+        return 'C.InterixMacroDefiner'
+
+    def enlarge(self):
+        self.parentbuilder().directory().set_property('INTERIX_SHARED_COMPILING_MACRO', self.__macroname())
         pass
 
     def output(self):
         super(InterixMacroDefiner, self).output()
-        self.parentbuilder().makefile_am().add_cmdlinemacro(self.macroname_, '1')
+        self.parentbuilder().makefile_am().add_cmdlinemacro(self.__macroname(), '1')
         pass
+
+    def __macroname(self):
+        return '_COMPILING_'+helper_automake.automake_name('_'.join(
+            [self.package().name()]+\
+            self.parentbuilder().directory().relpath(self.package().rootdirectory())))
     pass

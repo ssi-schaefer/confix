@@ -30,19 +30,13 @@ class FileInterfaceTestSetup(Setup):
         pass
     def setup_directory(self, directory_builder):
         Setup.setup_directory(self, directory_builder)
-        directory_builder.add_builder(
-            FileInterfaceTestCreator(parentbuilder=directory_builder,
-                                     package=directory_builder.package()))
+        directory_builder.add_builder(FileInterfaceTestCreator())
         pass
     pass
 
 class FileInterfaceTestCreator(Builder):
-    def __init__(self, parentbuilder, package):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self):
+        Builder.__init__(self)
         self.handled_entries_ = set()
         pass
 
@@ -54,10 +48,7 @@ class FileInterfaceTestCreator(Builder):
             if entry in self.handled_entries_:
                 continue
             if name.endswith('.iface'):
-                self.parentbuilder().add_builder(FileInterfaceTestBuilder(
-                    file=entry,
-                    parentbuilder=self.parentbuilder(),
-                    package=self.package()))
+                self.parentbuilder().add_builder(FileInterfaceTestBuilder(file=entry))
                 self.handled_entries_.add(entry)
                 continue
             pass
@@ -65,8 +56,8 @@ class FileInterfaceTestCreator(Builder):
     pass
 
 class FileInterfaceTestBuilder(FileBuilder):
-    def __init__(self, parentbuilder, package, file):
-        FileBuilder.__init__(self, parentbuilder=parentbuilder, package=package, file=file)
+    def __init__(self, file):
+        FileBuilder.__init__(self, file=file)
         lines=file.lines()
         if len(lines):
             execer = InterfaceExecutor(iface_pieces=self.iface_pieces())

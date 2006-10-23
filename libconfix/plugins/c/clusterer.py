@@ -32,22 +32,20 @@ from namefinder import ShortNameFinder, LongNameFinder
 import helper
 
 class CClusterer(Builder):
-    def __init__(self, parentbuilder, package, namefinder, use_libtool):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self, namefinder, use_libtool):
+        Builder.__init__(self)
         self.__namefinder = namefinder
         self.__use_libtool = use_libtool
         self.__libname = None
         self.__libtool_version_info = None
-        self.__libtool_release_info = self.package().version()
 
         self.__library = None
         # ExecutableBuilder objects, indexed by their center builders
         self.__executables = {}
         pass
+
+    def shortname(self):
+        return 'C.Clusterer'
 
     def set_libname(self, name):
         self.__libname = name
@@ -96,8 +94,6 @@ class CClusterer(Builder):
                         centername=center_stem)
                     pass
                 exe = ExecutableBuilder(
-                    parentbuilder=self.parentbuilder(),
-                    package=self.package(),
                     center=b,
                     exename=exename,
                     use_libtool=self.__use_libtool,
@@ -125,12 +121,10 @@ class CClusterer(Builder):
                     pass
                 
                 self.__library = LibraryBuilder(
-                    parentbuilder=self.parentbuilder(),
-                    package=self.package(),
                     basename=libname,
                     use_libtool=self.__use_libtool,
                     libtool_version_info=self.__libtool_version_info,
-                    libtool_release_info=self.__libtool_release_info)
+                    libtool_release_info=self.package().version())
                 self.parentbuilder().add_builder(self.__library)
                 pass
             if self.__library is not None:
@@ -191,8 +185,6 @@ class CClustererSetup(Setup):
         super(CClustererSetup, self).setup_directory(directory_builder)
         
         clusterer = CClusterer(
-            parentbuilder=directory_builder,
-            package=directory_builder.package(),
             namefinder=self.__namefinder,
             use_libtool=self.__use_libtool)
 

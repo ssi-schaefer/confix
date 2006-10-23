@@ -24,12 +24,8 @@ from libconfix.core.iface.proxy import InterfaceProxy
 from entrybuilder import EntryBuilder
 
 class FileBuilder(EntryBuilder):
-    def __init__(self, file, parentbuilder, package):
-        EntryBuilder.__init__(self,
-                              id=str(self.__class__)+'('+'/'.join(file.relpath(package.rootdirectory()))+')',
-                              entry=file,
-                              parentbuilder=parentbuilder,
-                              package=package)
+    def __init__(self, file):
+        EntryBuilder.__init__(self, entry=file)
         pass
     def file(self):
         return self.entry()

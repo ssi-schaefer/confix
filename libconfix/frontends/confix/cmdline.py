@@ -90,6 +90,9 @@ def parse(args):
     parser.add_option('--trace',
                       metavar='STRING1,STRING2,...',
                       help='Turn on debugging for the given trace levels.')
+    parser.add_option('--debug',
+                      metavar='LIST',
+                      help='Specifiy parameters for the debug plugin')
     parser.add_option('--short-libnames',
                       action='store_true',
                       help='Generate library names that are as short as possible '
@@ -134,6 +137,10 @@ def parse(args):
     if opts.trace is not None:
         trace = opts.trace.split(',')
         pass
+    debug = None
+    if opts.debug is not None:
+        debug = opts.debug.split(',')
+        pass
 
     # collect parameters
     config = CommandlineConfiguration(
@@ -154,6 +161,7 @@ def parse(args):
         print_timings=opts.print_timings,
         verbosity=opts.verbosity,
         trace=trace,
+        debug=debug,
         message_prefix=opts.message_prefix,
         advanced=opts.advanced,
         make_args=make_args,

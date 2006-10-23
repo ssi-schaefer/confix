@@ -26,32 +26,32 @@ from libconfix.core.filebuilder import FileBuilder
 from iface import DirectoryBuilderInterfaceProxy
 
 class Confix2_dir(FileBuilder):
-    def __init__(self, file, parentbuilder, package):
-        FileBuilder.__init__(self,
-                             file=file,
-                             parentbuilder=parentbuilder,
-                             package=package)
-        self.executed_ = False
-        self.external_ifaces_ = []
+    def __init__(self, file):
+        FileBuilder.__init__(self, file=file)
+        self.__executed = False
+        self.__external_ifaces = []
         pass
 
+    def shortname(self):
+        return 'Hierarchy.Confix2_dir'
+
     def add_method(self, method):
-        self.external_ifaces_.append(method)
+        self.__external_ifaces.append(method)
         pass
 
     def enlarge(self):
         super(Confix2_dir, self).enlarge()
 
-        if self.executed_:
+        if self.__executed:
             return
-        self.executed_ = True
+        self.__executed = True
         
         try:
             # take the externally provided methods, plus our
             # directory's (don't take our own -- we're here to
             # interface our directory, after all), provide them to our
             # user-file, and execute the user-file.
-            iface_pieces = self.external_ifaces_ + self.parentbuilder().iface_pieces()
+            iface_pieces = self.__external_ifaces + self.parentbuilder().iface_pieces()
             execer = InterfaceExecutor(iface_pieces=iface_pieces)
             execer.execute_file(file=self.file())
         except Error, e:

@@ -1,3 +1,11 @@
+2006-10-23 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Removed 'parentbuilder' and 'package' from Builder ctor (and all
+	  derived)
+	* Rudimentary 'debug' facility (a plugin localized in
+	  frontends.confix, for the time being)
+	* Release 2.0.0pre13
+
 2006-10-20 Joerg Faschingbauer <jfasch@salomon.at>
 
 	* libtool linking now works correctly (pass only directly referenced

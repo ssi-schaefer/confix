@@ -39,18 +39,15 @@ class DefaultInstaller(Builder):
             pass
         pass
                            
-    def __init__(self,
-                 parentbuilder,
-                 package):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self):
+        Builder.__init__(self)
         self.global_installdir_ = None
         self.files_installed_as_ = {}
         self.buildinfo_passed_ = False
         pass
+
+    def shortname(self):
+        return 'C.DefaultInstaller'
 
     def set_installdir(self, dir):
         assert type(dir) is list
@@ -179,10 +176,7 @@ class DefaultInstallerSetup(Setup):
     def setup_directory(self, directory_builder):
         super(DefaultInstallerSetup, self).setup_directory(directory_builder)
 
-        installer = DefaultInstaller(
-            parentbuilder=directory_builder,
-            package=directory_builder.package())
-
+        installer = DefaultInstaller()
         directory_builder.add_builder(installer)
         
         if directory_builder.configurator() is not None:

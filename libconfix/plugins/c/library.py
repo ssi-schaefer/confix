@@ -27,8 +27,6 @@ from buildinfo import BuildInfo_CLibrary_NativeLocal
 
 class LibraryBuilder(LinkedBuilder):
     def __init__(self,
-                 parentbuilder,
-                 package,
                  basename,
                  use_libtool,
                  libtool_version_info,
@@ -44,21 +42,26 @@ class LibraryBuilder(LinkedBuilder):
         assert libtool_release_info is None or \
                type(libtool_release_info) is types.StringType
         
-        LinkedBuilder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+','+basename+')',
-            parentbuilder=parentbuilder,
-            package=package,
-            use_libtool=use_libtool)
+        LinkedBuilder.__init__(self, use_libtool=use_libtool)
 
         self.__basename = basename
         self.__libtool_version_info = libtool_version_info
         self.__libtool_release_info = libtool_release_info
+
+        self.__buildinfo_added = False
         
-        self.add_buildinfo(BuildInfo_CLibrary_NativeLocal(
-            dir=self.parentbuilder().directory().relpath(package.rootdirectory()),
-            name=self.__basename))
         pass
+
+    def unique_id(self):
+        # careful: we cannot have basename as part of the builder's
+        # id. basename can be manipulated at will by the user during
+        # the lifetime of the object. but we can be sure that there's
+        # only one library being built in one directory, so it is
+        # sufficient to have our parentbuilder's id to distinguish.
+        return str(self.__class__)+'('+self.parentbuilder().unique_id()+')'
+
+    def shortname(self):
+        return 'C.LibraryBuilder('+self.basename()+')'
 
     def basename(self):
         return self.__basename
@@ -68,6 +71,16 @@ class LibraryBuilder(LinkedBuilder):
             return 'lib'+self.__basename+'.la'
         else:
             return 'lib'+self.__basename+'.a'
+        pass
+
+    def enlarge(self):
+        super(LibraryBuilder, self).enlarge()
+        if self.__buildinfo_added:
+            return
+        self.__buildinfo_added = True
+        self.add_buildinfo(BuildInfo_CLibrary_NativeLocal(
+            dir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+            name=self.__basename))
         pass
 
     def libtool_version_info(self):

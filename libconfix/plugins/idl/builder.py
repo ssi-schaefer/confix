@@ -22,6 +22,7 @@ import os
 from libconfix.core.utils.error import Error
 from libconfix.core.filebuilder import FileBuilder
 from libconfix.core.require import Require
+from libconfix.core.depinfo import DependencyInformation
 
 import libconfix.plugins.c.helper
 
@@ -32,13 +33,9 @@ from buildinfo import \
      BuildInfo_IDL_NativeLocal, \
      BuildInfo_IDL_NativeInstalled
 
-class IDLBuilder(FileBuilder):
-    def __init__(self, file, parentbuilder, package):
-        FileBuilder.__init__(
-            self,
-            file=file,
-            parentbuilder=parentbuilder,
-            package=package)
+class Builder(FileBuilder):
+    def __init__(self, file):
+        FileBuilder.__init__(self, file=file)
 
         lines = file.lines()
 
@@ -50,15 +47,15 @@ class IDLBuilder(FileBuilder):
 
         self.includes_ = libconfix.plugins.c.helper.extract_requires(lines)
 
-        # search lines for a namespace. if one is found, our
-        # install path is the namespace (or the concatenation of
-        # nested namespaces). if none is found, the file is
-        # installed directly into <prefix>/include.
+        # search lines for a namespace. if one is found, our install
+        # path is the namespace (or the concatenation of nested
+        # namespaces). if none is found, the file is installed
+        # directly into <prefix>/include.
         
         self.install_path_ = []
         paths = self.parse_modules_(lines)
         if len(paths) > 1:
-            raise Error(os.sep.join(file.relpath(package.rootdirectory())) + ': error: '
+            raise Error(os.sep.join(file.abspath()) + ': error: '
                         'found multiple modules, ' + ', '.join(['::'.join(p) for p in paths]))
         if len(paths):
             for p in paths[0]:
@@ -66,24 +63,32 @@ class IDLBuilder(FileBuilder):
                 pass
             pass
 
-        external_name = '/'.join(self.install_path_ + [file.name()])
-        internal_name = file.name()
-
-        self.add_provide(Provide_IDL(external_name))
-        if external_name != internal_name:
-            self.add_internal_provide(Provide_IDL(internal_name))
-            pass
-            
-        for inc in self.includes_:
-            self.add_require(Require_IDL(filename=inc,
-                                         found_in='/'.join(file.relpath(package.rootdirectory())),
-                                         urgency=Require.URGENCY_WARN))
-            pass
-
         self.add_buildinfo(
             BuildInfo_IDL_NativeLocal(filename='/'.join(self.install_path_ + [file.name()]),
                                       includes=self.includes_))
         pass
+
+    def shortname(self):
+        return 'IDL.Builder'
+
+    def dependency_info(self):
+        ret = DependencyInformation()
+        ret.add(super(IDLBuilder, self).dependency_info())
+
+        external_name = '/'.join(self.install_path_ + [self.file().name()])
+        internal_name = self.file().name()
+
+        ret.add_provide(Provide_IDL(external_name))
+        if external_name != internal_name:
+            ret.add_internal_provide(Provide_IDL(internal_name))
+            pass
+            
+        for inc in self.includes_:
+            ret.add_require(Require_IDL(filename=inc,
+                                         found_in='/'.join(self.file().relpath(self.package().rootdirectory())),
+                                         urgency=Require.URGENCY_WARN))
+            pass
+        return ret
 
     def install_path(self):
         return self.install_path_

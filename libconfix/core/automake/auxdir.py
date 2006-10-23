@@ -1,6 +1,5 @@
-# $Id: auxdir.py,v 1.1 2006/07/04 14:36:48 jfasch Exp $
-
-# Copyright (C) 2005 Salomon Automation
+# Copyright (C) 2002-2006 Salomon Automation
+# Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+
 from makefile_am import Makefile_am
 
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
@@ -27,12 +27,8 @@ from libconfix.core.utils import helper
 import os
 
 class AutoconfAuxDir(DirectoryBuilder):
-    def __init__(self, directory, parentbuilder, package):
-        DirectoryBuilder.__init__(
-            self,
-            directory=directory,
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self, directory):
+        DirectoryBuilder.__init__(self, directory=directory)
 
         mf_am = self.directory().find(['Makefile.am'])
         if mf_am:

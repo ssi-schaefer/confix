@@ -37,6 +37,7 @@ class CommandlineConfiguration(Configuration):
                  print_timings,
                  verbosity,
                  trace,
+                 debug,
                  message_prefix,
                  advanced,
                  make_args
@@ -58,6 +59,7 @@ class CommandlineConfiguration(Configuration):
         self.print_timings_ = print_timings
         self.verbosity_ = verbosity
         self.trace_ = trace
+        self.debug_ = debug
         self.message_prefix_ = message_prefix
         self.advanced_ = advanced
         self.make_args_ = make_args
@@ -68,6 +70,7 @@ class CommandlineConfiguration(Configuration):
     def configdir(self): return self.configdir_
     def configfile(self): return self.configfile_
     def profile(self): return self.profile_
+    def debug(self): return self.debug_
 
     # Configuration interface
     def setups(self): return None

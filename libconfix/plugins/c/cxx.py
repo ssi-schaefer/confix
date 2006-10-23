@@ -23,14 +23,13 @@ from compiled import CompiledCBuilder
 from buildinfo import BuildInfo_CXXFLAGS
 
 class CXXBuilder(CompiledCBuilder):
-    def __init__(self, file, parentbuilder, package):
-        CompiledCBuilder.__init__(
-            self,
-            file=file,
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self, file):
+        CompiledCBuilder.__init__(self, file=file)
         self.__init_buildinfo()
         pass
+
+    def shortname(self):
+        return 'C.CXXBuilder('+self.file().name()+')'
 
     def cxxflags(self):
         return self.cxxflags_

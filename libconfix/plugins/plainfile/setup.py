@@ -41,9 +41,7 @@ class PlainFileCreatorSetup(Setup):
     def setup_directory(self, directory_builder):
         Setup.setup_directory(self, directory_builder)
         directory_builder.add_builder(
-            PlainFileCreator(parentbuilder=directory_builder,
-                             package=directory_builder.package(),
-                             regex=self.regex_,
+            PlainFileCreator(regex=self.regex_,
                              prefixdir=self.prefixdir_,
                              datadir=self.datadir_))
         pass

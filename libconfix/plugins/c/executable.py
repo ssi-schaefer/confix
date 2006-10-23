@@ -28,8 +28,6 @@ class ExecutableBuilder(LinkedBuilder):
     NOINST = 2
     
     def __init__(self,
-                 parentbuilder,
-                 package,
                  center,
                  exename,
                  what,
@@ -39,47 +37,51 @@ class ExecutableBuilder(LinkedBuilder):
                         ExecutableBuilder.CHECK,
                         ExecutableBuilder.NOINST]
 
-        LinkedBuilder.__init__(
-            self,
-            id=str(self.__class__)+':'+str(center)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package,
-            use_libtool=use_libtool)
+        LinkedBuilder.__init__(self, use_libtool=use_libtool)
 
         LinkedBuilder.add_member(self, center)
 
-        self.center_ = center
-        self.exename_ = exename
-        self.what_ = what
+        self.__center = center
+        self.__exename = exename
+        self.__what = what
         pass
 
+    def unique_id(self):
+        # careful: we cannot have exename as part of the builder's
+        # id. exename can be manipulated at will by the user during
+        # the lifetime of the object.
+        return str(self.__class__)+'('+self.parentbuilder().unique_id()+','+self.center().unique_id()+')'
+
+    def shortname(self):
+        return 'C.ExecutableBuilder('+self.exename()+',center='+self.__center.file().name()+')'
+
     def center(self):
-        return self.center_
+        return self.__center
     def exename(self):
-        return self.exename_
+        return self.__exename
     def what(self):
-        return self.what_
+        return self.__what
 
     def output(self):
         LinkedBuilder.output(self)
 
         mf_am = self.parentbuilder().makefile_am()
 
-        if self.what_ == ExecutableBuilder.BIN:
-            mf_am.add_bin_program(self.exename_)
-        elif self.what_ == ExecutableBuilder.CHECK:
-            mf_am.add_check_program(self.exename_)
-        elif self.what_ == ExecutableBuilder.NOINST:
-            mf_am.add_noinst_program(self.exename_)
+        if self.__what == ExecutableBuilder.BIN:
+            mf_am.add_bin_program(self.__exename)
+        elif self.__what == ExecutableBuilder.CHECK:
+            mf_am.add_check_program(self.__exename)
+        elif self.__what == ExecutableBuilder.NOINST:
+            mf_am.add_noinst_program(self.__exename)
         else: assert 0
 
         for m in self.members():
-            mf_am.add_compound_sources(self.exename_, m.file().name())
+            mf_am.add_compound_sources(self.__exename, m.file().name())
             pass
 
         for fragment in LinkedBuilder.get_linkline(self):
             mf_am.add_compound_ldadd(
-                compound_name=self.exename_,
+                compound_name=self.__exename,
                 lib=fragment)
             pass
         pass

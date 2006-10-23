@@ -16,6 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import os
+
 from libconfix.core.entrybuilder import EntryBuilder
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -41,17 +43,12 @@ from iface import DirectoryBuilderInterfaceProxy
 
 class DirectoryBuilder(EntryBuilder, LocalNode):
     def __init__(self,
-                 directory,
-                 parentbuilder,
-                 package):
+                 directory):
         assert isinstance(directory, Directory)
 
         EntryBuilder.__init__(
             self,
-            id=str(self.__class__) + '(' + '/'.join(directory.relpath(package.rootdirectory())) + ')',
-            entry=directory,
-            parentbuilder=parentbuilder,
-            package=package)
+            entry=directory)
         
         self.__directory = directory
         self.__configurator = None
@@ -74,6 +71,16 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         self.__init_dep_info()
 
         pass
+
+    def shortname(self):
+        ret = 'Hierarchy.DirectoryBuilder('
+        if self.directory().parent():
+            ret += self.directory().name()
+        else:
+            ret += '<root>'
+            pass
+        ret += ')'
+        return ret
 
     def directory(self):
         return self.entry()
@@ -102,9 +109,11 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
     def add_builder(self, b):
         try:
+            b.set_owners(parentbuilder=self, package=self.package())
             self.__builders.add(b)
         except Error, e:
-            raise Error('Cannot add builder "'+str(b), [e])
+            raise Error('In directory '+'/'.join(self.__directory.relpath(self.package().rootdirectory()))+': '
+                        'cannot add builder '+str(b), [e])
         pass
 
     def add_builders(self, builderlist):

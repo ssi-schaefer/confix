@@ -31,12 +31,8 @@ from h import HeaderBuilder
 from dependency import Provide_CInclude
 
 class GraphInstaller(Builder):
-    def __init__(self, parentbuilder, package):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self):
+        Builder.__init__(self)
 
         # dictionary filename -> installdir
         self.entry_points_ = {}
@@ -142,8 +138,7 @@ class GraphInstallerSetup(Setup):
     def setup_directory(self, directory_builder):
         super(GraphInstallerSetup, self).setup_directory(directory_builder)
 
-        installer = GraphInstaller(parentbuilder=directory_builder,
-                                   package=directory_builder.package())
+        installer = GraphInstaller()
 
         directory_builder.add_builder(installer)
 

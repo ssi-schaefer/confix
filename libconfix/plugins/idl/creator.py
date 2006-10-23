@@ -19,20 +19,19 @@
 from libconfix.core.builder import Builder
 from libconfix.core.filesys.file import File
 
-from builder import IDLBuilder
+import builder
 
-class IDLCreator(Builder):
-    def __init__(self, parentbuilder, package):
-        Builder.__init__(
-            self,
-            id=str(self.__class__)+'('+str(parentbuilder)+')',
-            parentbuilder=parentbuilder,
-            package=package)
+class Creator(Builder):
+    def __init__(self):
+        Builder.__init__(self)
         self.handled_entries_ = set()
         pass
 
+    def shortname(self):
+        return 'IDL.Creator'
+
     def enlarge(self):
-        super(IDLCreator, self).enlarge()
+        super(Creator, self).enlarge()
         for name, entry in self.parentbuilder().entries():
             if not isinstance(entry, File):
                 continue
@@ -42,10 +41,7 @@ class IDLCreator(Builder):
                 continue
 
             self.handled_entries_.add(name)
-            self.parentbuilder().add_builder(IDLBuilder(
-                file=entry,
-                parentbuilder=self.parentbuilder(),
-                package=self.package()))
+            self.parentbuilder().add_builder(builder.Builder(file=entry))
             pass
         pass
     pass

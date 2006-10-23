@@ -53,7 +53,8 @@ class ScanTest(unittest.TestCase):
                               '   #include <inc5>',
                               ]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
-        builder = CBuilder(file=file, parentbuilder=None, package=package)
+        builder = CBuilder(file=file)
+        package.rootbuilder().add_builder(builder)
         self.assertEqual(len(builder.dependency_info().requires()), 5)
         inc1 = None
         inc2 = None
@@ -110,7 +111,8 @@ class IfaceTest(unittest.TestCase):
                               "// CONFIX:REQUIRE_H(filename='inc3', urgency=URGENCY_WARN)",
                               "// CONFIX:REQUIRE_H(filename='inc4', urgency=URGENCY_ERROR)"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
-        builder = CBuilder(file=file, parentbuilder=None, package=package)
+        builder = CBuilder(file=file)
+        package.rootbuilder().add_builder(builder)
         self.assertEqual(len(builder.dependency_info().requires()), 4)
         inc1 = None
         inc2 = None

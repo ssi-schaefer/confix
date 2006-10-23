@@ -18,12 +18,10 @@
 
 from libconfix.core.setup import Setup
 
-from creator import IDLCreator
+from creator import Creator
 
 class IDLSetup(Setup):
     def setup_directory(self, directory_builder):
-        directory_builder.add_builder(
-            IDLCreator(parentbuilder=directory_builder,
-                       package=directory_builder.package()))
+        directory_builder.add_builder(Creator())
         pass
     pass

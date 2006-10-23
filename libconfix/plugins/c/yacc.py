@@ -24,12 +24,8 @@ from libconfix.core.automake.configure_ac import Configure_ac
 from compiled import CompiledCBuilder
 
 class YaccBuilder(CompiledCBuilder):
-    def __init__(self, file, parentbuilder, package):
-        CompiledCBuilder.__init__(
-            self,
-            file=file,
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self, file):
+        CompiledCBuilder.__init__(self, file=file)
         pass
         
     def output(self):

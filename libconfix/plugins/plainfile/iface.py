@@ -61,8 +61,6 @@ class ADD_PLAINFILE_InterfaceProxy(InterfaceProxy):
 
         self.object_.add_builder(
             PlainFileBuilder(file=file,
-                             parentbuilder=self.object_,
-                             package=self.object_.package(),
                              datadir=the_datadir,
                              prefixdir=the_prefixdir))
         pass

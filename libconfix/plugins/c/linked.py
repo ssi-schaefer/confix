@@ -29,12 +29,8 @@ from buildinfo import \
      BuildInfo_CLibrary_External
 
 class LinkedBuilder(Builder):
-    def __init__(self, id, parentbuilder, package, use_libtool):
-        Builder.__init__(
-            self,
-            id=id,
-            parentbuilder=parentbuilder,
-            package=package)
+    def __init__(self, use_libtool):
+        Builder.__init__(self)
 
         self.__init_buildinfo()
         self.members_ = BuilderSet()

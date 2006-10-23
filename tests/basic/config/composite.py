@@ -52,6 +52,7 @@ class CompositeConfigTest(unittest.TestCase):
             use_kde_hack=None,
             verbosity=1,
             trace=None,
+            debug=None,
             print_timings=None,
             message_prefix=None,
             advanced=None,

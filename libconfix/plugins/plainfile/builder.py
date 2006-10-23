@@ -25,16 +25,11 @@ from libconfix.core.utils import helper
 class PlainFileBuilder(FileBuilder):
     def __init__(self,
                  file,
-                 parentbuilder,
-                 package,
                  datadir=None,
                  prefixdir=None):
         assert (datadir is not None and prefixdir is None) or \
                (datadir is None and prefixdir is not None)
-        FileBuilder.__init__(self,
-                             file=file,
-                             parentbuilder=parentbuilder,
-                             package=package)
+        FileBuilder.__init__(self, file=file)
         self.datadir_ = None
         self.prefixdir_ = None
         

@@ -55,15 +55,12 @@ class BuilderInterface(unittest.TestCase):
             entry=File(lines=["SET_FILE_PROPERTY(name='XXX', value=666)",
                               "SET_FILE_PROPERTIES({'YYY': 777})"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
-        builder = FileInterfaceTestBuilder(file=file,
-                                           parentbuilder=None,
-                                           package=package)
+        package.rootbuilder().add_builder(FileInterfaceTestBuilder(file=file))
 
         self.assertNotEqual(file.get_property(name='XXX'), None)
         self.assertEqual(file.get_property(name='XXX'), 666)
         self.assertNotEqual(file.get_property(name='YYY'), None)
         self.assertEqual(file.get_property(name='YYY'), 777)
-        
         pass
     
     def testRequires(self):
@@ -86,9 +83,7 @@ class BuilderInterface(unittest.TestCase):
                               "                       found_in=['xxx'], ",
                               "                       urgency=URGENCY_ERROR))"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
-        builder = FileInterfaceTestBuilder(file=file,
-                                           parentbuilder=None,
-                                           package=package)
+        builder = FileInterfaceTestBuilder(file=file)
         self.assertEqual(len(builder.dependency_info().requires()), 5)
         sym1 = None
         sym2 = None
@@ -143,9 +138,8 @@ class BuilderInterface(unittest.TestCase):
                               "PROVIDE_SYMBOL(symbol='sym4', match=GLOB_MATCH)",
                               "PROVIDE(Provide_Symbol(symbol='sym5'))"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
-        builder = FileInterfaceTestBuilder(file=file,
-                                           parentbuilder=None,
-                                           package=package)
+        builder = FileInterfaceTestBuilder(file=file)
+        package.rootbuilder().add_builder(builder)
         self.assertEqual(len(builder.dependency_info().provides()), 5)
         sym1 = None
         sym2 = None

@@ -26,6 +26,7 @@ from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.iface.code_piece import CodePiece
 from libconfix.core.require import Require
 from libconfix.core.utils.error import Error
+from libconfix.core.depinfo import DependencyInformation
 
 from dependency import Require_CInclude
 from iface import \
@@ -39,22 +40,22 @@ import helper
 _re_confix = re.compile('//\s*CONFIX:([^\r\n]*)')
 
 class CBaseBuilder(FileBuilder):
-    def __init__(self, file, parentbuilder, package):
-        FileBuilder.__init__(
-            self,
-            file=file,
-            parentbuilder=parentbuilder,
-            package=package)
-
-        for h_file in helper.extract_requires(file.lines()):
-            self.add_require(
-                Require_CInclude(filename=h_file,
-                                 found_in='/'.join(self.file().relpath(package.rootdirectory()))))
-            pass
+    def __init__(self, file):
+        FileBuilder.__init__(self, file=file)
 
         self.eval_iface_()
         
         pass
+
+    def dependency_info(self):
+        ret = DependencyInformation()
+        ret.add(super(CBaseBuilder, self).dependency_info())
+        for h_file in helper.extract_requires(self.file().lines()):
+            ret.add_require(
+                Require_CInclude(filename=h_file,
+                                 found_in='/'.join(self.file().relpath(self.package().rootdirectory()))))
+            pass
+        return ret
 
     def iface_pieces(self):
         return FileBuilder.iface_pieces(self) + \

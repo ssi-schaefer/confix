@@ -30,6 +30,7 @@ class ProfileConfiguration(Configuration):
     USE_KDE_HACK = 'USE_KDE_HACK'
     VERBOSITY = 'VERBOSITY'
     TRACE = 'TRACE'
+    DEBUG = 'DEBUG'
     PRINT_TIMINGS = 'PRINT_TIMINGS'
     MESSAGE_PREFIX = 'MESSAGE_PREFIX'
     ADVANCED = 'ADVANCED'
@@ -62,6 +63,8 @@ class ProfileConfiguration(Configuration):
         return self.dictionary_.get(ProfileConfiguration.VERBOSITY)
     def trace(self):
         return self.dictionary_.get(ProfileConfiguration.TRACE)
+    def debug(self):
+        return self.dictionary_.get(ProfileConfiguration.DEBUG)
     def print_timings(self):
         return self.dictionary_.get(ProfileConfiguration.PRINT_TIMINGS)
     def message_prefix(self):
