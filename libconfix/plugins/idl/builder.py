@@ -19,10 +19,10 @@
 import re
 import os
 
+from libconfix.core.machinery.depinfo import DependencyInformation
+from libconfix.core.machinery.filebuilder import FileBuilder
+from libconfix.core.machinery.require import Require
 from libconfix.core.utils.error import Error
-from libconfix.core.filebuilder import FileBuilder
-from libconfix.core.require import Require
-from libconfix.core.depinfo import DependencyInformation
 
 import libconfix.plugins.c.helper
 

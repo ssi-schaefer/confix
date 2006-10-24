@@ -18,9 +18,9 @@
 
 import unittest
 
-from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
 class PseudoHandwrittenSuite(unittest.TestSuite):

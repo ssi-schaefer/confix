@@ -18,9 +18,9 @@
 
 import unittest
 
-from libconfix.core.depinfo import DependencyInformation
-from libconfix.core.provide_string import Provide_String
-from libconfix.core.require_string import Require_String
+from libconfix.core.machinery.depinfo import DependencyInformation
+from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.machinery.require_string import Require_String
 
 class DependencyInformationSuite(unittest.TestSuite):
     def __init__(self):

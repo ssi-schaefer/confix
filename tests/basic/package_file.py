@@ -16,16 +16,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.installed_package import InstalledPackage
-from libconfix.core.installed_node import InstalledNode
-from libconfix.core.provide_symbol import Provide_Symbol
-from libconfix.core.require_symbol import Require_Symbol
-from libconfix.core.installed_node import InstalledNode
+import unittest
+
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.installed_node import InstalledNode
+from libconfix.core.machinery.installed_node import InstalledNode
+from libconfix.core.machinery.installed_package import InstalledPackage
+from libconfix.core.machinery.provide_symbol import Provide_Symbol
+from libconfix.core.machinery.require_symbol import Require_Symbol
 from libconfix.core.repo.package_file import PackageFile
-
-import unittest
 
 class PackageFileSuite(unittest.TestSuite):
     def __init__(self):

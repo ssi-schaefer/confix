@@ -18,7 +18,7 @@
 
 import types
 
-from libconfix.core.builder import Builder
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.utils.error import Error
 from libconfix.core.filesys import scan

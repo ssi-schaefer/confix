@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.setup import Setup
+from libconfix.core.machinery.setup import Setup
 from libconfix.core.hierarchy.setup import DirectorySetup
 
 from libconfix.plugins.c.setup import DefaultCSetup

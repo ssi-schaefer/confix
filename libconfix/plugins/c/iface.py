@@ -18,11 +18,11 @@
 
 import os, types
 
-from libconfix.core.builder import Builder
-from libconfix.core.setup import Setup
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.require import Require
-from libconfix.core.provide_string import Provide_String
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.machinery.require import Require
+from libconfix.core.machinery.setup import Setup
 from libconfix.core.utils.error import Error
 
 from dependency import Provide_CInclude, Require_CInclude

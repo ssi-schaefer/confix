@@ -16,14 +16,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.testutils import dirhier, find
+import unittest
+
 from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
+from libconfix.core.machinery.local_package import LocalPackage
+
 from libconfix.plugins.c.setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 
-import unittest
+from libconfix.testutils import dirhier, find
 
 class InterPackageInMemorySuite(unittest.TestSuite):
     def __init__(self):

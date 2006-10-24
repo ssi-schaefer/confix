@@ -104,6 +104,10 @@ class Builder(object):
         self.__buildinfos.add(b)
         pass
 
+    def configure(self):
+        self.__base_configure_called = True
+        pass
+    
     def buildinfos(self):
         return self.__buildinfos
     

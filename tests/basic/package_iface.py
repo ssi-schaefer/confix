@@ -18,10 +18,10 @@
 
 import unittest
 
-from libconfix.core.setup import Setup
-from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.setup import Setup
 from libconfix.core.utils import const
 
 class PackageInterfaceSuite(unittest.TestSuite):
@@ -37,7 +37,7 @@ class PackageInterfaceTest(unittest.TestCase):
         fs = FileSystem(path=['dont\'t', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=["from libconfix.core.setup import Setup",
+            entry=File(lines=["from libconfix.core.machinery.setup import Setup",
                               "class DummySetup2(Setup): pass",
                               "PACKAGE_NAME('PackageInterfaceTest')",
                               "PACKAGE_VERSION('1.2.3')",

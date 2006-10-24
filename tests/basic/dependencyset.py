@@ -18,9 +18,9 @@
 
 import unittest
 
-from libconfix.core.provide import Provide
-from libconfix.core.provide_string import Provide_String
-from libconfix.core.dependencyset import DependencySet
+from libconfix.core.machinery.dependencyset import DependencySet
+from libconfix.core.machinery.provide import Provide
+from libconfix.core.machinery.provide_string import Provide_String
 
 class DependencySetSuite(unittest.TestSuite):
     def __init__(self):

@@ -18,13 +18,13 @@
 
 import os
 
-from libconfix.core.builder import Builder
-from libconfix.core.setup import Setup
 from libconfix.core.filesys.file import File
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.setup import Setup
 
-from h import HeaderBuilder
 from c import CBuilder
 from cxx import CXXBuilder
+from h import HeaderBuilder
 from lex import LexBuilder
 from yacc import YaccBuilder
 

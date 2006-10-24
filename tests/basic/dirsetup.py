@@ -16,9 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.local_package import LocalPackage
-from libconfix.core.filebuilder import FileBuilder
 from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.machinery.filebuilder import FileBuilder
+from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.testutils import dirhier
 from libconfix.testutils import find

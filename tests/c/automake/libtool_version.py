@@ -18,14 +18,14 @@
 
 import unittest
 
-from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
+from libconfix.core.filesys.file import File
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
-from libconfix.core.local_package import LocalPackage
 
-from libconfix.plugins.c.setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
+from libconfix.plugins.c.setup import DefaultCSetup
 
 class LibtoolVersionSuite(unittest.TestSuite):
     def __init__(self):

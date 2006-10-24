@@ -16,21 +16,22 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.testutils import dirhier
-from libconfix.testutils.ifacetestbuilder import FileInterfaceTestBuilder
-from libconfix.core.local_package import LocalPackage
-from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.filesys.file import File
+import unittest
+
 from libconfix.core.filesys.directory import Directory
-from libconfix.core.filebuilder import FileBuilder
-from libconfix.core.require import Require
-from libconfix.core.require_symbol import Require_Symbol
-from libconfix.core.provide import Provide
-from libconfix.core.provide_string import Provide_String
-from libconfix.core.provide_symbol import Provide_Symbol
+from libconfix.core.filesys.file import File
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.filebuilder import FileBuilder
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.provide import Provide
+from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.machinery.provide_symbol import Provide_Symbol
+from libconfix.core.machinery.require import Require
+from libconfix.core.machinery.require_symbol import Require_Symbol
 from libconfix.core.utils import const
 
-import unittest
+from libconfix.testutils import dirhier
+from libconfix.testutils.ifacetestbuilder import FileInterfaceTestBuilder
 
 class BuilderInterfaceTestSuite(unittest.TestSuite):
     def __init__(self):
@@ -74,7 +75,7 @@ class BuilderInterface(unittest.TestCase):
             entry=File())
         file = fs.rootdirectory().add(
             name='file',
-            entry=File(lines=["from libconfix.core.require_symbol import Require_Symbol",
+            entry=File(lines=["from libconfix.core.machinery.require_symbol import Require_Symbol",
                               "REQUIRE_SYMBOL(symbol='sym1')",
                               "REQUIRE_SYMBOL(symbol='sym2', urgency=URGENCY_IGNORE)",
                               "REQUIRE_SYMBOL(symbol='sym3', urgency=URGENCY_WARN)",
@@ -131,7 +132,7 @@ class BuilderInterface(unittest.TestCase):
             entry=File())
         file = fs.rootdirectory().add(
             name='file',
-            entry=File(lines=['from libconfix.core.provide_symbol import Provide_Symbol',
+            entry=File(lines=['from libconfix.core.machinery.provide_symbol import Provide_Symbol',
                               "PROVIDE_SYMBOL(symbol='sym1')",
                               "PROVIDE_SYMBOL(symbol='sym2', match=EXACT_MATCH)",
                               "PROVIDE_SYMBOL(symbol='sym3', match=PREFIX_MATCH)",

@@ -18,16 +18,16 @@
 
 import os, sys, profile
 
-from libconfix.core.local_package import LocalPackage
+from libconfix.core.automake import bootstrap, configure, make
+from libconfix.core.automake.kde_hack import KDEHackSetup
+from libconfix.core.automake.repo_automake import AutomakePackageRepository
+from libconfix.core.digraph.cycle import CycleError
+from libconfix.core.filesys.scan import scan_filesystem
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.repo.repo_composite import CompositePackageRepository
 from libconfix.core.utils import debug
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
-from libconfix.core.filesys.scan import scan_filesystem
-from libconfix.core.repo.repo_composite import CompositePackageRepository
-from libconfix.core.digraph.cycle import CycleError
-from libconfix.core.automake import bootstrap, configure, make
-from libconfix.core.automake.repo_automake import AutomakePackageRepository
-from libconfix.core.automake.kde_hack import KDEHackSetup
 
 from libconfix.plugins.c.setup import DefaultCSetup
 

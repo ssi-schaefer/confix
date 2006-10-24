@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.builder import Builder
 from libconfix.core.filesys.file import File
+from libconfix.core.machinery.builder import Builder
 
 import builder
 

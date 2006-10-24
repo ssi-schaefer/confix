@@ -20,10 +20,10 @@ import os
 import sys
 import re
 
-from libconfix.core.setup import Setup
-from libconfix.core.utils.error import Error
-from libconfix.core.utils import helper
 from libconfix.core.automake.auxdir import AutoconfAuxDirBuilder
+from libconfix.core.machinery.setup import Setup
+from libconfix.core.utils import helper
+from libconfix.core.utils.error import Error
 
 class KDEHackSetup(Setup):
     def setup_directory(self, directory_builder):

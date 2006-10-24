@@ -20,13 +20,13 @@ import os
 import re
 import types
 
-from libconfix.core.filebuilder import FileBuilder
+from libconfix.core.iface.code_piece import CodePiece
 from libconfix.core.iface.executor import InterfaceExecutor
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.iface.code_piece import CodePiece
-from libconfix.core.require import Require
+from libconfix.core.machinery.depinfo import DependencyInformation
+from libconfix.core.machinery.filebuilder import FileBuilder
+from libconfix.core.machinery.require import Require
 from libconfix.core.utils.error import Error
-from libconfix.core.depinfo import DependencyInformation
 
 from dependency import Require_CInclude
 from iface import \

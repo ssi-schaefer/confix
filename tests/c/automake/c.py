@@ -16,13 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.testutils import dirhier
+import unittest
+
 from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
 from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.machinery.local_package import LocalPackage
+
 from libconfix.plugins.c.setup import DefaultCSetup
 
-import unittest
+from libconfix.testutils import dirhier
 
 class CSuite(unittest.TestSuite):
     def __init__(self):

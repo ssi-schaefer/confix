@@ -16,16 +16,3 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.setup import Setup
-
-from iface import ADD_SCRIPT_InterfaceProxy
-
-class ScriptSetup(Setup):
-    def setup_directory(self, directory_builder):
-        Setup.setup_directory(self, directory_builder)
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                ADD_SCRIPT_InterfaceProxy(object=directory_builder))
-            pass
-        pass
-    pass

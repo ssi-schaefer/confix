@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.buildinfo import BuildInformation
+from libconfix.core.machinery.buildinfo import BuildInformation
 from libconfix.core.utils import helper
 from libconfix.core.repo.marshalling import \
      update_marshalling_data, \

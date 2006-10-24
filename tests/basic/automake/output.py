@@ -16,16 +16,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.testutils import dirhier, find
-from libconfix.core.utils import const
+import unittest
+
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
 from libconfix.core.hierarchy.setup import DirectorySetup
-from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.plugins.c.executable import ExecutableBuilder
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.utils import const
 
-import unittest
+from libconfix.plugins.c.executable import ExecutableBuilder
+from libconfix.plugins.c.library import LibraryBuilder
+
+from libconfix.testutils import dirhier, find
 
 class AutomakeOutputSuite(unittest.TestSuite):
     def __init__(self):

@@ -16,17 +16,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os, re, types
+import os
 import profile
+import re
+import types
 
-from libconfix.core.builder import Builder
-from libconfix.core.setup import Setup
 from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.setup import Setup
 
 from base import CBaseBuilder
 from compiled import CompiledCBuilder
-from h import HeaderBuilder
 from executable import ExecutableBuilder
+from h import HeaderBuilder
 from library import LibraryBuilder
 from namefinder import ShortNameFinder, LongNameFinder
 import helper

@@ -18,24 +18,24 @@
 
 import os
 
-from libconfix.core.entrybuilder import EntryBuilder
+from libconfix.core.automake.file_installer import FileInstaller
+from libconfix.core.automake.makefile_am import Makefile_am
+from libconfix.core.digraph import toposort
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
-from libconfix.core.builder import BuilderSet
-from libconfix.core.automake.makefile_am import Makefile_am
-from libconfix.core.automake.file_installer import FileInstaller
-from libconfix.core.local_node import LocalNode
-from libconfix.core.node import Node
-from libconfix.core.dependencyset import DependencySet
-from libconfix.core.depindex import ProvideMap
-from libconfix.core.provide import Provide
-from libconfix.core.require import Require
-from libconfix.core.provide_string import Provide_String
-from libconfix.core.require_string import Require_String
-from libconfix.core.buildinfoset import BuildInformationSet
-from libconfix.core.digraph import toposort
-from libconfix.core.installed_node import InstalledNode
-from libconfix.core.pseudo_handwritten import PseudoHandWrittenFileManager
+from libconfix.core.machinery.builder import BuilderSet
+from libconfix.core.machinery.buildinfoset import BuildInformationSet
+from libconfix.core.machinery.dependencyset import DependencySet
+from libconfix.core.machinery.depindex import ProvideMap
+from libconfix.core.machinery.entrybuilder import EntryBuilder
+from libconfix.core.machinery.installed_node import InstalledNode
+from libconfix.core.machinery.local_node import LocalNode
+from libconfix.core.machinery.node import Node
+from libconfix.core.machinery.provide import Provide
+from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileManager
+from libconfix.core.machinery.require import Require
+from libconfix.core.machinery.require_string import Require_String
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 

@@ -19,10 +19,11 @@
 import unittest
 
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.local_package import LocalPackage
-from libconfix.testutils import find
+from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.plugins.script.setup import ScriptSetup
+
+from libconfix.testutils import find
 
 from package import make_package
 

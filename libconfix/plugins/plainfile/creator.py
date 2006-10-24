@@ -18,9 +18,9 @@
 
 import re
 
-from libconfix.core.utils.error import Error
-from libconfix.core.builder import Builder
 from libconfix.core.filesys.file import File
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.utils.error import Error
 
 from builder import PlainFileBuilder
 

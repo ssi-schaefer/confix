@@ -16,17 +16,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import unittest
+
 from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
-from libconfix.core.filebuilder import FileBuilder
-from libconfix.plugins.c.setup import DefaultCSetup
-from libconfix.plugins.c.h import HeaderBuilder
+from libconfix.core.machinery.filebuilder import FileBuilder
+from libconfix.core.machinery.local_package import LocalPackage
+
 from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
+from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.testutils import dirhier
+from libconfix.plugins.c.setup import DefaultCSetup
 
-import unittest
+from libconfix.testutils import dirhier
 
 class ExecutableSetupSuite(unittest.TestSuite):
     def __init__(self):

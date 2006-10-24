@@ -19,7 +19,7 @@
 from linked import LinkedBuilder
 from buildinfo import BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled
 
-from libconfix.core.builder import BuilderSet
+from libconfix.core.machinery.builder import BuilderSet
 
 class ExecutableBuilder(LinkedBuilder):
 

@@ -16,9 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.setup import Setup
-from libconfix.core.builder import Builder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.setup import Setup
 
 class DebugSetup(Setup):
     def __init__(self, parameters):

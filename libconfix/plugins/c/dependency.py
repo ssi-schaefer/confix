@@ -16,12 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-
-from libconfix.core.utils import helper
-from libconfix.core.require_string import Require_String
-from libconfix.core.provide_string import Provide_String
-from libconfix.core.require import Require
+from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.machinery.require import Require
+from libconfix.core.machinery.require_string import Require_String
 from libconfix.core.repo.marshalling import Marshallable, MarshalledVersionUnknownError, update_marshalling_data
+from libconfix.core.utils import helper
 
 class Require_CInclude(Require_String):
     def get_marshalling_data(self):

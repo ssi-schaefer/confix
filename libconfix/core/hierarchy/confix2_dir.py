@@ -20,8 +20,8 @@ import os
 
 from libconfix.core.iface.executor import InterfaceExecutor
 from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils.error import Error
-from libconfix.core.filebuilder import FileBuilder
 
 from iface import DirectoryBuilderInterfaceProxy
 

@@ -16,12 +16,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.utils.paragraph import Paragraph, OrderedParagraphSet
-from libconfix.core.filebuilder import FileBuilder
-from libconfix.core.builder import Builder, BuilderSet
 from libconfix.core.automake.configure_ac import Configure_ac
-from libconfix.core import readonly_prefixes
 from libconfix.core.digraph import algorithm
+from libconfix.core.machinery import readonly_prefixes
+from libconfix.core.machinery.builder import Builder, BuilderSet
+from libconfix.core.machinery.filebuilder import FileBuilder
+from libconfix.core.utils.paragraph import Paragraph, OrderedParagraphSet
 
 from buildinfo import \
      BuildInfo_CLibrary_NativeLocal, \

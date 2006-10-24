@@ -16,15 +16,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
-from libconfix.core.utils import const
-from libconfix.plugins.c.setup import DefaultCSetup
-from libconfix.plugins.c.default_installer import DefaultInstaller
-from libconfix.testutils import dirhier, makefileparser
-
 import unittest
+
+from libconfix.core.filesys.file import File
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.utils import const
+
+from libconfix.plugins.c.default_installer import DefaultInstaller
+from libconfix.plugins.c.setup import DefaultCSetup
+
+from libconfix.testutils import dirhier, makefileparser
 
 class DefaultInstallerSuite(unittest.TestSuite):
     def __init__(self):

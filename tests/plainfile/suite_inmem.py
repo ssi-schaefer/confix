@@ -18,14 +18,15 @@
 
 import unittest
 
-from libconfix.core.local_package import LocalPackage
-from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
-from libconfix.testutils import find
 
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
+
+from libconfix.testutils import find
 
 from package import make_package
 

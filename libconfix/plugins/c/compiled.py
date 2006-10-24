@@ -16,9 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.utils import const
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core import readonly_prefixes
+from libconfix.core.machinery import readonly_prefixes
+from libconfix.core.utils import const
 import libconfix.core.utils.helper
 
 from base import CBaseBuilder

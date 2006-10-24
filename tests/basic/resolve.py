@@ -16,17 +16,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import unittest
+
+from libconfix.core.digraph.cycle import CycleError
+from libconfix.core.filesys.file import File
+from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.machinery.edgefinder import EdgeFinder
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.require_symbol import Require_Symbol
+
 from libconfix.testutils import dirhier
 from libconfix.testutils import find
 from libconfix.testutils.ifacetestbuilder import FileInterfaceTestSetup
-
-from libconfix.core.edgefinder import EdgeFinder
-from libconfix.core.require_symbol import Require_Symbol
-from libconfix.core.filesys.file import File
-from libconfix.core.local_package import LocalPackage
-from libconfix.core.hierarchy.setup import DirectorySetup
-from libconfix.core.digraph.cycle import CycleError
-import unittest
 
 class ResolveTestSuite(unittest.TestSuite):
     def __init__(self):

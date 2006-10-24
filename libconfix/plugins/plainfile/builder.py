@@ -16,11 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import types
-
-from libconfix.core.filebuilder import FileBuilder
-from libconfix.core.utils.error import Error
+from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils import helper
+from libconfix.core.utils.error import Error
 
 class PlainFileBuilder(FileBuilder):
     def __init__(self,

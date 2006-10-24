@@ -18,14 +18,14 @@
 
 import types
 
-from libconfix.core.builder import Builder
-from libconfix.core.depinfo import DependencyInformation
-from libconfix.core.depindex import ProvideMap
-from libconfix.core.setup import Setup
-from libconfix.core.utils.error import Error
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.digraph.digraph import Edge, DirectedGraph
 from libconfix.core.digraph import reached_from
+from libconfix.core.digraph.digraph import Edge, DirectedGraph
+from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.depindex import ProvideMap
+from libconfix.core.machinery.depinfo import DependencyInformation
+from libconfix.core.machinery.setup import Setup
+from libconfix.core.utils.error import Error
 
 from h import HeaderBuilder
 from dependency import Provide_CInclude

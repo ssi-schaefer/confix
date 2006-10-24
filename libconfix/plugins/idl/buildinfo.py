@@ -18,7 +18,7 @@
 
 import types
 
-from libconfix.core.buildinfo import BuildInformation
+from libconfix.core.machinery.buildinfo import BuildInformation
 from libconfix.core.repo.marshalling import Marshallable, update_marshalling_data
 
 class BuildInfo_IDL_Native(BuildInformation):

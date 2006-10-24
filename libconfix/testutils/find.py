@@ -16,13 +16,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import types
+
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
-from libconfix.core.filebuilder import FileBuilder
+from libconfix.core.machinery.filebuilder import FileBuilder
 
 from libconfix.plugins.c.default_installer import DefaultInstaller
 from libconfix.plugins.c.graph_installer import GraphInstaller
-
-import types
 
 def find_entrybuilder(rootbuilder, path):
     assert type(path) is types.ListType

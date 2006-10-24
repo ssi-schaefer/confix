@@ -18,11 +18,11 @@
 
 import unittest
 
-from libconfix.core.require import Require
-from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.require import Require
 from libconfix.core.utils import const
-from libconfix.core.local_package import LocalPackage
 
 from libconfix.plugins.c.dependency import \
      Require_CInclude, \

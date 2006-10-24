@@ -16,12 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import types
+from libconfix.core.machinery.setup import CompositeSetup
 
-from libconfix.core.setup import CompositeSetup
-
-from creator import CreatorSetup
 from clusterer import CClustererSetup
+from creator import CreatorSetup
 from default_installer import DefaultInstallerSetup
 from graph_installer import GraphInstallerSetup
 from iface import InterfaceSetup

@@ -16,15 +16,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import os
+import shutil
+import sys
+import unittest
+
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.local_package import LocalPackage
 from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils.error import Error
 
 from libconfix.plugins.c.setup import DefaultCSetup
-from libconfix.testutils import packages, find
 
-import unittest, os, sys, shutil
+from libconfix.testutils import packages, find
 
 class IntraPackageInMemorySuite(unittest.TestSuite):
     def __init__(self):

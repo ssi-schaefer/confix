@@ -18,7 +18,7 @@
 
 import types
 
-from libconfix.core.filebuilder import FileBuilder
+from libconfix.core.machinery.filebuilder import FileBuilder
 
 class ScriptBuilder(FileBuilder):
     def __init__(self, file):
