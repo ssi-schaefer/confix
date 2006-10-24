@@ -1,5 +1,9 @@
 2006-10-24 Joerg Faschingbauer <jfasch@salomon.at>
 
+	* Moved everything from core to machinery.core
+
+2006-10-24 Joerg Faschingbauer <jfasch@salomon.at>
+
 	* Re-enabled KDE-Hack (y'know, "fast creating dir/Makefile")
 	* Release 2.0.0pre15
 
