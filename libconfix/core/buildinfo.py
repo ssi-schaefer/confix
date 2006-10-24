@@ -16,29 +16,4 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.repo.marshalling import Marshallable
-
-class BuildInformation(Marshallable):
-    def get_marshalling_data(self):
-        return {Marshallable.GENERATING_CLASS: BuildInformation,
-                Marshallable.VERSIONS: {'BuildInformation': 1},
-                Marshallable.ATTRIBUTES: {}}
-    def set_marshalling_data(self, data):
-        version = data[Marshallable.VERSIONS]['BuildInformation']
-        if version != 1:
-            raise MarshalledVersionUnknownError(
-                klass=self.__class__,
-                marshalled_version=version,
-                current_version=1)
-        pass
-    
-    def __init__(self): pass
-    def install(self): assert 0, self.__class__
-
-    def unique_key(self):
-        
-        """ Unique key to easily determine object equivalence. Used to
-        index BuildInformation objects, and to eventually sort out
-        duplicates. """
-
-        assert 0, self.__class__
+from machinery.buildinfo import BuildInformation
