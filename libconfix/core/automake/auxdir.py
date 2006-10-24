@@ -26,33 +26,30 @@ from libconfix.core.utils import helper
 
 import os
 
-class AutoconfAuxDir(DirectoryBuilder):
+class AutoconfAuxDirBuilder(DirectoryBuilder):
     def __init__(self, directory):
         DirectoryBuilder.__init__(self, directory=directory)
-
-        mf_am = self.directory().find(['Makefile.am'])
-        if mf_am:
-            mf_am.truncate()
-        else:
-            mf_am = File()
-            self.directory().add(name='Makefile.am', entry=mf_am)
-            pass
-        self.makefile_am_ = Makefile_am()
         pass
 
     def output(self):
-        DirectoryBuilder.output(self)
+        super(AutoconfAuxDirBuilder, self).output()
         self.package().configure_ac().set_ac_config_aux_dir(
             '/'.join(self.directory().relpath(self.package().rootdirectory())))
         pass
 
     def eat_file(self, sourcename, mode):
-        assert 0, 'how do we copy_file_if_changed() when we sail up in the air?'
         basename = os.path.basename(sourcename)
-        helper.copy_file_if_changed(sourcename=sourcename,
-                                    targetname=os.path.join(self.abspath_, basename),
-                                    mode=mode)
-        self.makefile_am_.add_extra_dist(basename)
+        lines = helper.lines_of_file(sourcename)
+        destfile = self.directory().find([basename])
+        if destfile is None:
+            destfile = self.directory().add(
+                name=basename,
+                entry=File(mode=mode, lines=lines))
+        else:
+            destfile.truncate()
+            destfile.add_lines(lines)
+            pass
+        self.makefile_am().add_extra_dist(basename)
         pass
 
     pass

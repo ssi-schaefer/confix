@@ -22,7 +22,7 @@ import types
 from libconfix.core.digraph import algorithm
 from libconfix.core.digraph import toposort
 from libconfix.core.automake import repo_automake
-from libconfix.core.automake.auxdir import AutoconfAuxDir
+from libconfix.core.automake.auxdir import AutoconfAuxDirBuilder
 from libconfix.core.automake.configure_ac import Configure_ac 
 from libconfix.core.automake.acinclude_m4 import ACInclude_m4 
 from libconfix.core.digraph.digraph import DirectedGraph
@@ -90,13 +90,6 @@ class LocalPackage(Package):
         except Error, e:
             raise Error('Cannot initialize package in '+'/'.join(rootdirectory.abspath()), [e])
 
-        # setup the rootbuilder. be careful to use self.setups_
-        # instead of the __init__ parameter setups -- the config file
-        # may have changed it under the hood.
-        for setup in self.setups_:
-            setup.setup_directory(directory_builder=self.rootbuilder_)
-            pass
-
         # setup our autoconf auxiliary directory. this a regular
         # builder by itself, but plays a special role for us because
         # we use it to put, well, auxiliary files in.
@@ -105,8 +98,18 @@ class LocalPackage(Package):
             dir = Directory()
             self.rootdirectory_.add(name=const.AUXDIR, entry=dir)
             pass
-        self.auxdir_ = AutoconfAuxDir(directory=dir)
+        self.auxdir_ = AutoconfAuxDirBuilder(directory=dir)
         self.rootbuilder_.add_builder(self.auxdir_)
+
+        # setup the rootbuilder and auxdir. be careful to use
+        # self.setups_ instead of the __init__ parameter setups -- the
+        # config file may have changed it under the hood.
+        for dir in [self.rootbuilder_, self.auxdir_]:
+            for setup in self.setups_:
+                setup.setup_directory(directory_builder=dir)
+                pass
+            pass
+        
         pass
 
     def __str__(self):

@@ -40,6 +40,7 @@ class CheckProgramBuildBase(CheckProgramBase):
             packageroot=self.source_.abspath(),
             path=None,
             use_libtool=self.use_libtool(),
+            use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(
             packageroot=self.source_.abspath(),

@@ -16,13 +16,49 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from error import Error
-
-from libconfix.core.digraph.cycle import CycleError
-
 import types
 import md5
 import os
+
+from libconfix.core.digraph.cycle import CycleError
+
+from error import Error
+import external_cmd
+
+def find_confix_root(argv0):
+    dir = os.path.dirname(argv0)
+    
+    # accommodate for relative paths.
+    if not os.path.isabs(dir):
+        dir = os.path.normpath(os.path.join(os.getcwd(), dir))
+        pass
+
+    # first the uninstalled case. (we know programs to be either in
+    # the tests subdirectory or in the scripts subdirectory.)
+    idx = dir.find(os.path.join('confix', 'tests'))
+    if idx == -1:
+        idx = dir.find(os.path.join('confix', 'scripts'))
+        pass
+
+    if idx >= 0:
+        confixroot = os.path.join(dir[0:idx], 'confix')
+        installfile = os.path.join(confixroot, 'INSTALL')
+        if not os.path.isfile(installfile):
+            raise Error('Cannot find (uninstalled) Confix root: file '+installfile+' missing')
+        return confixroot
+
+    # ... and then the installed case. this is a pretty big hack, but
+    # it ought to work as long as people don't go around messing with
+    # the relative locations of installation dirs.
+    if dir.endswith('bin'):
+        return os.path.dirname(dir)
+    
+    # we seem to be running completely outside confix's world.
+    confix2_py = external_cmd.search_program(program='confix2.py', path=None)
+    if confix2_py is None:
+        raise Error('Cannot find Confix root: cannot find confix2.py in $PATH at all')
+
+    return find_confix_root(confix2_py)
 
 def format_cycle_error(error):
 

@@ -58,6 +58,7 @@ class AutoConfArchiveTest(PersistentTestCase):
         bootstrap.bootstrap(packageroot=fs.rootdirectory().abspath(),
                             path=None,
                             use_libtool=False,
+                            use_kde_hack=False,
                             argv0=sys.argv[0])
         pass
     pass

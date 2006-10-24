@@ -73,6 +73,7 @@ class IntraPackageBuildBase(PersistentTestCase):
                 packageroot=self.sourcerootpath_,
                 path=None,
                 use_libtool=self.use_libtool(),
+                use_kde_hack=False,
                 argv0=sys.argv[0])
             os.makedirs(os.sep.join(self.buildrootpath_))
             configure.configure(
@@ -171,6 +172,7 @@ class LocalIncludeDirTest(PersistentTestCase):
             packageroot=source.abspath(),
             path=None,
             use_libtool=False,
+            use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(
             packageroot=source.abspath(),

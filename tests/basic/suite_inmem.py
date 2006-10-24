@@ -35,7 +35,7 @@ from misc import MiscellaneousSuite
 
 import unittest
 
-class BasicTestSuite(unittest.TestSuite):
+class BasicTestSuiteInMemory(unittest.TestSuite):
 
     def __init__(self):
         unittest.TestSuite.__init__(self)
@@ -60,5 +60,5 @@ class BasicTestSuite(unittest.TestSuite):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BasicTestSuite())
+    unittest.TextTestRunner().run(BasicTestSuiteInMemory())
     pass

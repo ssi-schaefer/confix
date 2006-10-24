@@ -18,22 +18,17 @@
 
 import unittest
 
-from basic.suite_inmem import BasicTestSuiteInMemory
-from c.suite_inmem import CTestSuiteInMemory
-from plainfile.suite_inmem import PlainFileSuiteInMemory
-from script.suite_inmem import ScriptSuiteInMemory
-from idl.suite_inmem import IDLSuiteInMemory
+from kde_hack import KDEHackTestSuiteBuild
+
+class BasicTestSuiteBuild(unittest.TestSuite):
+
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+
+        self.addTest(KDEHackTestSuiteBuild())
+        pass
+    pass
 
 if __name__ == '__main__':
-
-    suite = unittest.TestSuite()
-
-    suite.addTest(BasicTestSuiteInMemory())
-    suite.addTest(CTestSuiteInMemory())
-    suite.addTest(PlainFileSuiteInMemory())
-    suite.addTest(ScriptSuiteInMemory())
-    suite.addTest(IDLSuiteInMemory())
-
-    runner = unittest.TextTestRunner()
-    runner.run(suite)
+    unittest.TextTestRunner().run(BasicTestSuiteBuild())
     pass

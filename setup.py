@@ -40,7 +40,14 @@ def recdir(dir, suffix, result):
         pass
     return result
 
-datafiles = recdir('share', '.m4', [])
+datafiles = []
+datafiles.extend(recdir('share/confix/autoconf-archive/m4src', '.m4', []))
+datafiles.extend(recdir('share/confix/autoconf-archive/htmldoc', '.html', []))
+
+# scripts to put in the auxdir.
+datafiles.extend([('share/confix/kde-hack',
+                   ['share/confix/kde-hack/conf.change.pl',
+                    'share/confix/kde-hack/config.pl'])])
 
 # this should be imported from the current directory ...
 from libconfix.core.utils import const
@@ -79,14 +86,5 @@ setup(
     scripts=['scripts/confix2.py',
              'scripts/writedot.py',
              'scripts/print_module.py',
-
-             # scripts to put in the auxdir. ideally we should not
-             # install them as scripts, but rather as regular data
-             # files which we accidentally put in auxdir -- but it's
-             # simpler this way for the time being.
-             
-             'scripts/bulk-install.py',
-             'scripts/conf.change.pl',
-             'scripts/config.pl',
              ],
     )

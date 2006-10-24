@@ -145,6 +145,7 @@ class InterPackageBuildBase(PersistentTestCase):
             bootstrap.bootstrap(
                 packageroot=self.lo_sourcedir_,
                 use_libtool=self.use_libtool(),
+                use_kde_hack=False,
                 path=None,
                 argv0=sys.argv[0])
             os.makedirs(os.sep.join(self.lo_builddir_))
@@ -172,6 +173,7 @@ class InterPackageBuildBase(PersistentTestCase):
             bootstrap.bootstrap(
                 packageroot=self.hi_sourcedir_,
                 use_libtool=self.use_libtool(),
+                use_kde_hack=False,
                 path=None,
                 argv0=sys.argv[0])
             os.makedirs(os.sep.join(self.hi_builddir_))
@@ -274,6 +276,7 @@ class InstalledIncludeDirTest(PersistentTestCase):
             packageroot=lo_source.abspath(),
             path=None,
             use_libtool=False,
+            use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(
             packageroot=lo_source.abspath(),
@@ -304,6 +307,7 @@ class InstalledIncludeDirTest(PersistentTestCase):
             packageroot=hi_source.abspath(),
             path=None,
             use_libtool=False,
+            use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(
             packageroot=hi_source.abspath(),

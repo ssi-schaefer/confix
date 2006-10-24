@@ -27,6 +27,7 @@ from libconfix.core.repo.repo_composite import CompositePackageRepository
 from libconfix.core.digraph.cycle import CycleError
 from libconfix.core.automake import bootstrap, configure, make
 from libconfix.core.automake.repo_automake import AutomakePackageRepository
+from libconfix.core.automake.kde_hack import KDEHackSetup
 
 from libconfix.plugins.c.setup import DefaultCSetup
 
@@ -70,6 +71,10 @@ def PACKAGE():
 
     if CONFIG.debug() is not None:
         setups.append(DebugSetup(CONFIG.debug()))
+        pass
+
+    if CONFIG.use_kde_hack():
+        setups.append(KDEHackSetup())
         pass
 
     filesystem = scan_filesystem(path=CONFIG.packageroot().split(os.sep))
@@ -185,6 +190,7 @@ def BOOTSTRAP():
     debug.message('bootstrapping in '+CONFIG.packageroot()+' ...')
     bootstrap.bootstrap(packageroot=CONFIG.packageroot().split(os.sep),
                         use_libtool=CONFIG.use_libtool(),
+                        use_kde_hack=CONFIG.use_kde_hack(),
                         path=None,
                         argv0=sys.argv[0])
 

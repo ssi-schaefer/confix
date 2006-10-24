@@ -39,6 +39,7 @@ class FileSystemTestSuite(unittest.TestSuite):
         self.addTest(Sync('test_file_truncate_persistent'))
         self.addTest(Sync_RootMoreThanOneDirectoryDeep('test'))
         self.addTest(VirtualFile('test'))
+        self.addTest(ExplicitMode('test'))
         pass
     pass
 
@@ -234,6 +235,19 @@ class Sync_RootMoreThanOneDirectoryDeep(PersistentTestCase):
         fs = FileSystem(path=self.rootpath())
         fs.sync()
         self.failUnless(os.path.isdir(os.sep.join(self.rootpath())))
+        pass
+    pass
+
+class ExplicitMode(PersistentTestCase):
+    def test(self):
+        fs = FileSystem(path=self.rootpath())
+        file_with_0755 = fs.rootdirectory().add(
+            name='file_with_0755',
+            entry=File(mode=0755))
+        fs.sync()
+
+        self.failUnless(os.path.isfile(os.sep.join(file_with_0755.abspath())))
+        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(file_with_0755.abspath())).st_mode), 0755)
         pass
     pass
 

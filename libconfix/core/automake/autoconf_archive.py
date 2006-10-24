@@ -20,6 +20,7 @@ import os
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import external_cmd
+from libconfix.core.utils import helper
 
 def find_archive_root(argv0):
     dir = os.path.dirname(argv0)
@@ -29,37 +30,15 @@ def find_archive_root(argv0):
         dir = os.path.normpath(os.path.join(os.getcwd(), dir))
         pass
 
-    # first the uninstalled case. (we know programs to be either in
-    # the tests subdirectory or in the scripts subdirectory.)
-    idx = dir.find(os.path.join('confix', 'tests'))
-    if idx == -1:
-        idx = dir.find(os.path.join('confix', 'scripts'))
-        pass
-    if idx != -1:
-        retdir = os.path.join(dir[0:idx], 'confix', 'share', 'confix', 'autoconf-archive')
-        if not os.path.isdir(retdir):
-            raise Error('"'+retdir+'" is not a directory '
-                        '(searching the autoconf macro archive the uninstalled way)')
-        return retdir
+    try:
+        confix_root = helper.find_confix_root(dir)
+    except Error, e:
+        raise Error('Cannot find autoconf archive: cannot find confix installation', [e])
 
-    # ... and then the installed case. this is a pretty big hack, but
-    # it ought to work as long as people don't go around messing with
-    # the relative locations of installation dirs.
-    if dir.endswith('bin'):
-        prefixdir = os.path.dirname(dir)
-        retdir = os.path.join(prefixdir, 'share', 'confix', 'autoconf-archive')
-        if not os.path.isdir(retdir):
-            raise Error('"'+retdir+'" is not a directory '
-                        '(searching the autoconf macro archive the installed way)')
-        return retdir
-
-    # we seem to be running completely outside confix's world.
-    confix2_py = external_cmd.search_program(program='confix2.py', path=None)
-    if confix2_py is None:
-        raise Error('Autoconf macro archive not found (no confix2.py in $PATH)')
-    return find_archive_root(argv0=confix2_py)
-
-    raise Error('Autoconf macro archive not found (installation error?)')
+    autoconf_dir = os.path.join(confix_root, 'share', 'confix', 'autoconf-archive')
+    if not os.path.isdir(autoconf_dir):
+        raise Error(autoconf_dir+' is not a directory (Confix installation error?)')
+    return autoconf_dir
 
 def include_path(argv0):
     return os.path.join(find_archive_root(argv0), 'm4src')

@@ -84,6 +84,7 @@ class SimpleBuildBase(PersistentTestCase):
                 packageroot=self.sourcerootpath_,
                 path=None,
                 use_libtool=self.use_libtool(),
+                use_kde_hack=False,
                 argv0=sys.argv[0])
             os.makedirs(os.sep.join(self.buildrootpath_))
             configure.configure(

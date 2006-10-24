@@ -23,17 +23,17 @@ Developer experiments     TRY-<developer>-<short-desc>
 
 
 
-    (subversion migration)
-                 +
+    
+                 + (subversion migration)
                  |
   REL-2.0.0pre13 +
                  |
                  +131---+
                  |      |
   REL-2.0.0pre14 +134   |
+                 |  <---138 
+                 |      |
                  |      v TRY-jfasch-kde-hack
-                 |
-                 |
-                 |
+                 |      
                  v
                trunk

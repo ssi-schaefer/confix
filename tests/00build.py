@@ -18,6 +18,7 @@
 
 import unittest
 
+from basic.suite_build import BasicTestSuiteBuild
 from c.suite_build import CTestSuiteBuild
 from plainfile.suite_build import PlainFileSuiteBuild
 
@@ -25,6 +26,7 @@ if __name__ == '__main__':
 
     suite = unittest.TestSuite()
 
+    suite.addTest(BasicTestSuiteBuild())
     suite.addTest(CTestSuiteBuild())
     suite.addTest(PlainFileSuiteBuild())
 

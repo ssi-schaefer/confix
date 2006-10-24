@@ -93,6 +93,7 @@ class ReadonlyPrefixesBuildBase(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=lo_sourcedir,
             use_libtool=self.use_libtool(),
+            use_kde_hack=False,
             path=None,
             argv0=sys.argv[0])
         os.makedirs(os.sep.join(lo_builddir))
@@ -178,6 +179,7 @@ class ReadonlyPrefixesBuildBase(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=hi_sourcedir,
             use_libtool=self.use_libtool(),
+            use_kde_hack=False,
             path=None,
             argv0=sys.argv[0])
         os.makedirs(os.sep.join(hi_builddir))
