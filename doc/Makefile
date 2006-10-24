@@ -22,15 +22,9 @@ html-clean:
 	-rm -f $(BASEDOC).html
 
 epydoc:
-	epydoc -o epydoc ../libconfix/*.py
+	epydoc --verbose --graph=all --docformat=restructuredtext -o epydoc ../libconfix/core ../libconfix/plugins ../libconfix/frontends
 epydoc-clean:
 	-rm -rf epydoc
-
-optmod.ps: optmod.dot
-	dot -Tps -Gpage=8.27,11.7 -Gsize=8.27,11.7 -Gconcentrate=true -Gratio=fill -Gmargin=0 -Gcenter=true $< -o $@
-
-optmod.gif: optmod.dot
-	dot -Tgif -Gsize=8.27,11.7 -Gconcentrate=true -Gratio=fill -Gmargin=0 -Gcenter=true $< -o $@
 
 $(BASEDOC).dvi: $(BASEDOC).texi $(EPS)
 	texi2dvi --clean --texinfo=@setcontentsaftertitlepage --output=$@ $<

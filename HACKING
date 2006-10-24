@@ -22,8 +22,8 @@ VersionControl
         
 * Release Management
 
-  The file doc/00branches.txt is our planning and documentation tool
-  for release management. Best to edit with Emacs M-x picture-mode.
+  The file 00branches.txt is our planning and documentation tool for
+  release management. Best to edit with Emacs M-x picture-mode.
 
 Test Suite
 ==========
@@ -63,3 +63,36 @@ feature if tests are written consequently.
 Source Code Roadmap
 ===================
 
+(waiting for epydoc)
+
+Distributions
+=============
+
+Making distribution packages
+----------------------------
+
+Source distributions are generally the only kinds of releases made.
+
+$ python setup.py sdist --force-manifest --formats=bztar,gztar
+
+Other formats are unusual (who needs .zip?), but are nevertheless
+supported by distutils.
+
+$ python setup.py sdist --help-formats
+
+Uploading packages
+------------------
+
+$ ftp upload.sourceforge.net
+# Give username: anonymous, password: <email address>
+$ bin
+$ cd /incoming
+$ put Confix-2.0.0.tar.bz2
+
+Creating file releases
+----------------------
+
+On the project page, http://sourceforge.net/projects/confix, navigate
+a bit to find the "File Releases" section (logging in helps a
+lot). Once you have found it, follow the instructions and make your
+release.

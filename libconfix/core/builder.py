@@ -106,10 +106,6 @@ class Builder(object):
 
     def buildinfos(self):
         return self.__buildinfos
-
-    def configure(self):
-        self.__base_configure_called = True
-        pass
     
     def enlarge(self):
         self.__base_enlarge_called = True
