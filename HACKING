@@ -1,0 +1,66 @@
+VersionControl
+==============
+
+* The Subversion repository is
+  https://svn.sourceforge.net/svnroot/confix
+
+* The structure and nomenclature is roughly taken from the book
+  "Pragmatic Version Control Using Subversion" by Mike Mason.
+
+  +
+  |
+  |-- confix
+  |   |-- branches
+  |   |   `-- RB-2.0
+  |   |-- tags
+  |   |   |-- REL-2.0.0
+  |   |   |-- REL-2.0.1
+  |   |   `-- REL-2.1.0
+  |   `---trunk
+  `-- vendor
+      `-- autoconf-archive
+        
+* Release Management
+
+  The file doc/00branches.txt is our planning and documentation tool
+  for release management. Best to edit with Emacs M-x picture-mode.
+
+Test Suite
+==========
+
+There's an extensive test suite in the tests directory. A primary
+design criterion of confix's internals is to be able to test in memory
+as much as possible, and not having to worry much about file system
+cleanup and such. Hence, the great majority of tests is written this
+way. For the rest, though, we have to take care of all those nasty
+issues. So, we have two entry points into the test suite,
+
+* tests/00inmem.py
+
+  A test suite that covers all tests that can run in memory. It is
+  easy to run this suite as there are no dependencies on the autotools
+  and such. In fact, this should be done frequently during
+  development.
+
+* tests/00build.py
+
+  A test suite that covers all tests that run the autotools and other
+  external tools such as a compiler. These tests should also be run as
+  often as possible. They are expected to take much longer than the
+  in-memory tests, however, so you won't possibly bother to run them
+  after every single change. They must of course be run before commit.
+
+Write a test for every single feature
+-------------------------------------
+
+Most of the tests can be written in a fire-and-forget way (you don't
+need to clean up memory), and in fact it is quite easy to write
+tests. So, no feature should ever be implemented without writing a
+test first. Yes, Kent Beck's "Test Driven Development" really works,
+and it gives a real good feeling as no feature won't break any other
+feature if tests are written consequently.
+
+Source Code Roadmap
+===================
+
+
