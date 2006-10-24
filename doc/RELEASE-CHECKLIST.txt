@@ -1,21 +1,31 @@
-- sdist
+Distributions
+=============
 
-  python setup.py sdist --force-manifest --formats=bztar
+Making distribution packages
+----------------------------
 
-  python setup.py sdist --help-formats
+Source distributions are generally the only kinds of releases made.
 
-- Upload
+$ python setup.py sdist --force-manifest --formats=bztar,gztar
 
-  ftp upload.sourceforge.net
-  anonymous, email addr.
-  bin
-  cd /incoming
-  put file
+Other formats are unusual (who needs .zip?), but are nevertheless
+supported by distutils.
 
-- File release
+$ python setup.py sdist --help-formats
 
-  project page, admin, blah
+Uploading packages
+------------------
 
-- index.html, release notes
+$ ftp upload.sourceforge.net
+# Give username: anonymous, password: <email address>
+$ bin
+$ cd /incoming
+$ put Confix-2.0.0.tar.bz2
 
-- news item
+Creating file releases
+----------------------
+
+On the project page, http://sourceforge.net/projects/confix, navigate
+a bit to find the "File Releases" section (logging in helps a
+lot). Once you have found it, follow the instructions and make your
+release.
