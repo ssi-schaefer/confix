@@ -2,6 +2,7 @@
 
 	* IDL: install files with modules that are not properly terminated
 	  flat, into $(includedir)
+	* Release 2.0.0pre16
  
 2006-10-24 Joerg Faschingbauer <jfasch@salomon.at>
 

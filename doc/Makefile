@@ -22,7 +22,8 @@ html-clean:
 	-rm -f $(BASEDOC).html
 
 epydoc:
-	epydoc --verbose --graph=all --docformat=restructuredtext -o epydoc ../libconfix/core ../libconfix/plugins ../libconfix/frontends
+	epydoc --verbose --graph=all --docformat=restructuredtext -o epydoc ../libconfix/core 
+	#../libconfix/plugins ../libconfix/frontends
 epydoc-clean:
 	-rm -rf epydoc
 
