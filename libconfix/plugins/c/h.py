@@ -35,7 +35,7 @@ class HeaderBuilder(CBaseBuilder):
         
         CBaseBuilder.__init__(self, file=file)
 
-        self.namespace_install_path_ = None
+        self.__namespace_install_path = None
         pass
 
     def shortname(self):
@@ -48,10 +48,10 @@ class HeaderBuilder(CBaseBuilder):
         pass
 
     def namespace_install_path(self):
-        if self.namespace_install_path_ is None:
-            self.namespace_install_path_ = namespace.find_unique_namespace(self.file().lines())
+        if self.__namespace_install_path is None:
+            self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
             pass
-        return self.namespace_install_path_
+        return self.__namespace_install_path
 
     def property_install_path(self):
         if self.file() is not None:
@@ -65,10 +65,10 @@ class HeaderBuilder(CBaseBuilder):
 class HeaderBuilderInterfaceProxy(InterfaceProxy):
     def __init__(self, object):
         InterfaceProxy.__init__(self)
-        self.object_ = object
+        self.__object = object
         self.add_global('INSTALLPATH', getattr(self, 'INSTALLPATH'))
         pass
     def INSTALLPATH(self, path):
-        self.object_.set_iface_install_path(helper.make_path(path))
+        self.__object.set_iface_install_path(helper.make_path(path))
         pass
     pass

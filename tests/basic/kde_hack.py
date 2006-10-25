@@ -23,7 +23,7 @@ from libconfix.core.utils import const
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
-from libconfix.core.local_package import LocalPackage
+from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.automake.kde_hack import KDEHackSetup
 from libconfix.core.automake.auxdir import AutoconfAuxDirBuilder
 from libconfix.core.automake import bootstrap, configure, make

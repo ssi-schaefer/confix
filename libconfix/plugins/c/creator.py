@@ -31,7 +31,7 @@ from yacc import YaccBuilder
 class Creator(Builder):
     def __init__(self):
         Builder.__init__(self)
-        self.handled_entries_ = set()
+        self.__handled_entries = set()
         pass
 
     def shortname(self):
@@ -42,12 +42,12 @@ class Creator(Builder):
         for name, entry in self.parentbuilder().entries():
             if not isinstance(entry, File):
                 continue
-            if name in self.handled_entries_:
+            if name in self.__handled_entries:
                 continue
             builder = do_create_builder(name=name, entry=entry)
             if builder is None:
                 continue
-            self.handled_entries_.add(name)
+            self.__handled_entries.add(name)
             self.parentbuilder().add_builder(builder)
             pass
         pass

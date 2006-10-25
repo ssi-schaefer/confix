@@ -43,7 +43,7 @@ class LongNameFinder(NameFinder):
 class ShortNameFinder(NameFinder):
     def __init__(self):
         NameFinder.__init__(self)
-        self.assigned_libnames_ = set()
+        self.__assigned_libnames = set()
         pass
 
     def find_exename(self, packagename, path, centername):
@@ -51,7 +51,7 @@ class ShortNameFinder(NameFinder):
 
     def find_libname(self, packagename, path):
         if len(path) == 0:
-            if packagename in self.assigned_libnames_:
+            if packagename in self.__assigned_libnames:
                 raise Error('Name '+packagename+' has already been assigned')
             return packagename
         
@@ -62,8 +62,8 @@ class ShortNameFinder(NameFinder):
         for i in iter:
             candidate.insert(0, path[i])
             name = '_'.join([packagename]+candidate)
-            if name not in self.assigned_libnames_:
-                self.assigned_libnames_.add(name)
+            if name not in self.__assigned_libnames:
+                self.__assigned_libnames.add(name)
                 return name
             pass
 

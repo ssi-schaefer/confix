@@ -41,9 +41,9 @@ class DefaultInstaller(Builder):
                            
     def __init__(self):
         Builder.__init__(self)
-        self.global_installdir_ = None
-        self.files_installed_as_ = {}
-        self.buildinfo_passed_ = False
+        self.__global_installdir = None
+        self.__files_installed_as = {}
+        self.__buildinfo_passed = False
         pass
 
     def shortname(self):
@@ -51,12 +51,12 @@ class DefaultInstaller(Builder):
 
     def set_installdir(self, dir):
         assert type(dir) is list
-        self.global_installdir_ = dir
+        self.__global_installdir = dir
         pass
 
     def installpath_of_headerfile(self, filename):
         # for testing
-        return self.files_installed_as_[filename]
+        return self.__files_installed_as[filename]
 
     def enlarge(self):
         super(DefaultInstaller, self).enlarge()
@@ -65,10 +65,10 @@ class DefaultInstaller(Builder):
             if not isinstance(b, HeaderBuilder):
                 continue
             new_instdir = self.__calc_install_path(b)
-            old_instdir = self.files_installed_as_.get(b.file().name())
+            old_instdir = self.__files_installed_as.get(b.file().name())
             if old_instdir is None:
                 # seeing it for the first time.
-                self.files_installed_as_[b.file().name()] = new_instdir
+                self.__files_installed_as[b.file().name()] = new_instdir
                 
                 # provide it.
 
@@ -101,17 +101,17 @@ class DefaultInstaller(Builder):
                 assert old_instdir == new_instdir
                 pass
             pass
-        if not self.buildinfo_passed_:
-            if len(self.files_installed_as_):
+        if not self.__buildinfo_passed:
+            if len(self.__files_installed_as):
                 self.add_buildinfo(buildinfo.singleton_buildinfo_cincludepath_nativelocal)
-                self.buildinfo_passed_ = True
+                self.__buildinfo_passed = True
                 pass
             pass
         pass
 
     def output(self):
         super(DefaultInstaller, self).output()
-        for filename, instdir in self.files_installed_as_.iteritems():
+        for filename, instdir in self.__files_installed_as.iteritems():
             # fixme: is it right to not distinguish between public and
             # private?
             self.parentbuilder().file_installer().add_public_header(filename=filename, dir=instdir)
@@ -124,7 +124,7 @@ class DefaultInstaller(Builder):
         defined_in = []
 
         iface = b.iface_install_path()
-        glob = self.global_installdir_
+        glob = self.__global_installdir
         property = b.property_install_path()
 
         if iface is not None:
@@ -159,7 +159,7 @@ class DefaultInstaller(Builder):
 class DefaultInstallerInterfaceProxy(InterfaceProxy):
     def __init__(self, object):
         InterfaceProxy.__init__(self)
-        self.object_ = object
+        self.__object = object
         self.add_global('INSTALLDIR_H', getattr(self, 'INSTALLDIR_H'))
         pass
     def INSTALLDIR_H(self, dir):
@@ -168,7 +168,7 @@ class DefaultInstallerInterfaceProxy(InterfaceProxy):
         except Error, e:
             raise Error('INSTALLDIR_H(): dir argument must either '
                         'be a string or a list of path components', [e])
-        self.object_.set_installdir(the_dir)
+        self.__object.set_installdir(the_dir)
         pass
     pass
 

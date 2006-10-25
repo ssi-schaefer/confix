@@ -90,15 +90,15 @@ class BuildInfo_CLibrary_NativeLocal(BuildInformation):
     def __init__(self, dir, name):
         BuildInformation.__init__(self)
         assert type(dir) is types.ListType
-        self.dir_ = dir
-        self.name_ = name
-        self.unique_key_ = self.__class__.__name__ + ':' + '.'.join(self.dir_) + ':' + self.name_
+        self.__dir = dir
+        self.__name = name
+        self.__unique_key = self.__class__.__name__ + ':' + '.'.join(self.__dir) + ':' + self.__name
         pass
     def __str__(self): return self.unique_key()
     def unique_key(self):
-        return self.unique_key_
-    def dir(self): return self.dir_
-    def name(self): return self.name_
+        return self.__unique_key
+    def dir(self): return self.__dir
+    def name(self): return self.__name
     def install(self):
         return BuildInfo_CLibrary_NativeInstalled(self.name())
     pass
@@ -108,7 +108,7 @@ class BuildInfo_CLibrary_NativeInstalled(BuildInformation):
         return update_marshalling_data(
             marshalling_data=BuildInformation.get_marshalling_data(self),
             generating_class=BuildInfo_CLibrary_NativeInstalled,
-            attributes={'name': self.name_},
+            attributes={'name': self.__name},
             version={'BuildInfo_CLibrary_NativeInstalled': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['BuildInfo_CLibrary_NativeInstalled']
@@ -117,18 +117,18 @@ class BuildInfo_CLibrary_NativeInstalled(BuildInformation):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.name_ = data[Marshallable.ATTRIBUTES]['name']
+        self.__name = data[Marshallable.ATTRIBUTES]['name']
         BuildInformation.set_marshalling_data(self, data)
         pass
 
     def __init__(self, name):
         BuildInformation.__init__(self)
-        self.name_ = name
+        self.__name = name
         pass
     def __str__(self): return self.unique_key()
     def unique_key(self):
-        return self.__class__.__name__ + ':' + self.name_
-    def name(self): return self.name_
+        return self.__class__.__name__ + ':' + self.__name
+    def name(self): return self.__name
     def install(self): assert 0
     pass
 
@@ -137,8 +137,8 @@ class BuildInfo_CLibrary_External(BuildInformation):
         return update_marshalling_data(
             marshalling_data=BuildInformation.get_marshalling_data(self),
             generating_class=BuildInfo_CLibrary_External,
-            attributes={'libpath': self.libpath_,
-                        'libs': self.libs_},
+            attributes={'libpath': self.__libpath,
+                        'libs': self.__libs},
             version={'BuildInfo_CLibrary_External': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['BuildInfo_CLibrary_External']
@@ -147,20 +147,20 @@ class BuildInfo_CLibrary_External(BuildInformation):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.libpath_ = data[Marshallable.ATTRIBUTES]['libpath']
-        self.libs_ = data[Marshallable.ATTRIBUTES]['libs']
+        self.__libpath = data[Marshallable.ATTRIBUTES]['libpath']
+        self.__libs = data[Marshallable.ATTRIBUTES]['libs']
         BuildInformation.set_marshalling_data(self, data)
         pass
 
     def __init__(self, libpath, libs):
         BuildInformation.__init__(self)
-        self.libpath_ = libpath
-        self.libs_ = libs
+        self.__libpath = libpath
+        self.__libs = libs
         pass
     def unique_key(self):
-        return self.__class__.__name__ + ':' + ','.join(self.libpath_) + ':' + ','.join(self.libs_)
-    def libpath(self): return self.libpath_
-    def libs(self): return self.libs_
+        return self.__class__.__name__ + ':' + ','.join(self.__libpath) + ':' + ','.join(self.__libs)
+    def libpath(self): return self.__libpath
+    def libs(self): return self.__libs
     def install(self): return self
     pass
 
@@ -169,7 +169,7 @@ class BuildInfo_CommandlineMacros(BuildInformation):
         return update_marshalling_data(
             marshalling_data=BuildInformation.get_marshalling_data(self),
             generating_class=BuildInfo_CommandlineMacros,
-            attributes={'macros': self.macros_},
+            attributes={'macros': self.__macros},
             version={'BuildInfo_CommandlineMacros': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['BuildInfo_CommandlineMacros']
@@ -178,24 +178,24 @@ class BuildInfo_CommandlineMacros(BuildInformation):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.macros_ = data[Marshallable.ATTRIBUTES]['macros']
+        self.__macros = data[Marshallable.ATTRIBUTES]['macros']
         BuildInformation.set_marshalling_data(self, data)
         pass
 
     def __init__(self, macros):
         BuildInformation.__init__(self)
-        self.macros_ = macros
+        self.__macros = macros
         pass
     def unique_key(self):
         ret = self.__class__.__name__ + ':'
-        for k, v in self.macros_.iteritems():
+        for k, v in self.__macros.iteritems():
             ret += k
             if v is not None:
                 ret += v
                 pass
             pass
         pass
-    def macros(self): return self.macros_
+    def macros(self): return self.__macros
     def install(self): return self
     pass
 
@@ -204,7 +204,7 @@ class BuildInfo_CFLAGS(BuildInformation):
         return update_marshalling_data(
             marshalling_data=BuildInformation.get_marshalling_data(self),
             generating_class=BuildInfo_CFLAGS,
-            attributes={'cflags': self.cflags_},
+            attributes={'cflags': self.__cflags},
             version={'BuildInfo_CFLAGS': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['BuildInfo_CFLAGS']
@@ -213,17 +213,17 @@ class BuildInfo_CFLAGS(BuildInformation):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.cflags_ = data[Marshallable.ATTRIBUTES]['cflags']
+        self.__cflags = data[Marshallable.ATTRIBUTES]['cflags']
         BuildInformation.set_marshalling_data(self, data)
         pass
     
     def __init__(self, cflags):
         BuildInformation.__init__(self)
-        self.cflags_ = cflags
+        self.__cflags = cflags
         pass
     def unique_key(self):
-        return self.__class__.__name__ + ':' + ','.join(self.cflags_)
-    def cflags(self): return self.cflags_
+        return self.__class__.__name__ + ':' + ','.join(self.__cflags)
+    def cflags(self): return self.__cflags
     def install(self): return self
     pass
 
@@ -232,7 +232,7 @@ class BuildInfo_CXXFLAGS(BuildInformation):
         return update_marshalling_data(
             marshalling_data=BuildInformation.get_marshalling_data(self),
             generating_class=BuildInfo_CXXFLAGS,
-            attributes={'cxxflags': self.cxxflags_},
+            attributes={'cxxflags': self.__cxxflags},
             version={'BuildInfo_CXXFLAGS': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['BuildInfo_CXXFLAGS']
@@ -241,16 +241,16 @@ class BuildInfo_CXXFLAGS(BuildInformation):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.cxxflags_ = data[Marshallable.ATTRIBUTES]['cxxflags']
+        self.__cxxflags = data[Marshallable.ATTRIBUTES]['cxxflags']
         BuildInformation.set_marshalling_data(self, data)
         pass
 
     def __init__(self, cxxflags):
         BuildInformation.__init__(self)
-        self.cxxflags_ = cxxflags
+        self.__cxxflags = cxxflags
         pass
     def unique_key(self):
-        return self.__class__.__name__ + ':' + ','.join(self.cxxflags_)
-    def cxxflags(self): return self.cxxflags_
+        return self.__class__.__name__ + ':' + ','.join(self.__cxxflags)
+    def cxxflags(self): return self.__cxxflags
     def install(self): return self
     pass

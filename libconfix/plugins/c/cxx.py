@@ -32,7 +32,7 @@ class CXXBuilder(CompiledCBuilder):
         return 'C.CXXBuilder('+self.file().name()+')'
 
     def cxxflags(self):
-        return self.cxxflags_
+        return self.__cxxflags
         
     def relate(self, node, digraph, topolist):
         CompiledCBuilder.relate(self, node, digraph, topolist)
@@ -40,7 +40,7 @@ class CXXBuilder(CompiledCBuilder):
         for n in topolist:
             for bi in n.buildinfos():
                 if isinstance(bi, BuildInfo_CXXFLAGS):
-                    self.cxxflags_.extend(bi.cxxflags())
+                    self.__cxxflags.extend(bi.cxxflags())
                     continue
                 pass
             pass
@@ -51,13 +51,13 @@ class CXXBuilder(CompiledCBuilder):
         self.package().configure_ac().add_paragraph(
             paragraph=Paragraph(['AC_PROG_CXX']),
             order=Configure_ac.PROGRAMS)
-        for cxxflag in self.cxxflags_:
+        for cxxflag in self.__cxxflags:
             self.parentbuilder().makefile_am().add_am_cxxflags(cxxflag)
             pass
         pass
 
     def __init_buildinfo(self):
-        self.cxxflags_ = []
+        self.__cxxflags = []
         pass
 
     pass

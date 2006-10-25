@@ -35,31 +35,31 @@ class GraphInstaller(Builder):
         Builder.__init__(self)
 
         # dictionary filename -> installdir
-        self.entry_points_ = {}
+        self.__entry_points = {}
 
         # remember these until it gets to write output. dict filename
         # -> installdir
-        self.installed_files_ = {}
+        self.__installed_files = {}
 
         pass
 
     def installpath_of_headerfile(self, filename):
-        return self.installed_files_.get(filename)
+        return self.__installed_files.get(filename)
 
     def add_entry_point(self, filename, dir):
         assert type(dir) in [types.ListType]
 
-        if self.entry_points_.has_key(filename):
+        if self.__entry_points.has_key(filename):
             raise Error('Duplicate entry point: '+filename)
 
-        self.entry_points_[filename] = dir
+        self.__entry_points[filename] = dir
         pass
 
     def dependency_info(self):
         ret = DependencyInformation()
 
         # clear output information
-        self.installed_files_ = {}
+        self.__installed_files = {}
 
         # let base class do its job
         ret.add(super(GraphInstaller, self).dependency_info())
@@ -91,7 +91,7 @@ class GraphInstaller(Builder):
         headergraph = DirectedGraph(nodes=nodes, edges=edges)
 
         # handle our subgraph nodes
-        for filename, installdir in self.entry_points_.iteritems():
+        for filename, installdir in self.__entry_points.iteritems():
             entry_node = None
             for b in headergraph.nodes():
                 if b.file().name() == filename:
@@ -104,7 +104,7 @@ class GraphInstaller(Builder):
             subgraph = reached_from.reached_from(digraph=headergraph, entrypoints=[entry_node])
 
             for header in subgraph.nodes():
-                self.installed_files_[header.file().name()] = installdir
+                self.__installed_files[header.file().name()] = installdir
                 ret.add_internal_provide(Provide_CInclude(header.file().name()))
                 ret.add_provide(Provide_CInclude('/'.join(installdir+[header.file().name()])))
                 pass
@@ -114,7 +114,7 @@ class GraphInstaller(Builder):
 
     def output(self):
         super(graphinstaller, self).output()
-        for filename, installdir in self.installed_files_.iteritems():
+        for filename, installdir in self.__installed_files.iteritems():
             self.parentbuilder().file_installer().add_public_header(filename=filename, dir=installdir)
             self.parentbuilder().file_installer().add_private_header(filename=filename, dir=installdir)
             pass
@@ -125,12 +125,12 @@ class GraphInstaller(Builder):
 class GraphInstallerInterfaceProxy(InterfaceProxy):
     def __init__(self, object):
         InterfaceProxy.__init__(self)
-        self.object_ = object
+        self.__object = object
         self.add_global('INSTALLED_HEADER_ENTRYPOINT', getattr(self, 'INSTALLED_HEADER_ENTRYPOINT'))
         pass
 
     def INSTALLED_HEADER_ENTRYPOINT(self, filename, dir):
-        self.object_.add_entry_point(filename=filename, dir=dir)
+        self.__object.add_entry_point(filename=filename, dir=dir)
         pass
     pass
 
