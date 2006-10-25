@@ -102,7 +102,7 @@ The source is basically made up of three parts:
 
 Have a look at http://confix.sourceforge.net/epydoc/index.html for a
 growing amount of text that grows linear with the amount of docstrings
-added to the code.
+added.
 
 Distributions
 =============

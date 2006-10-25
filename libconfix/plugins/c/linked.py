@@ -71,7 +71,9 @@ class LinkedBuilder(Builder):
         # case.
 
         nodes_with_library = algorithm.nearest_property(digraph=digraph, entrypoint=node, property=HaveLibraryProperty())
+        print str(self)
         for n in nodes_with_library:
+            print '      '+str(n)
             for bi in n.buildinfos():
                 if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                     self.buildinfo_direct_dependent_native_libs_.append(bi)
