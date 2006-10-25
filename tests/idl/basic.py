@@ -32,6 +32,7 @@ class BasicIDLSuiteInMemory(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(BasicIDLTest('test'))
         self.addTest(NoInternalRequiresTest('test'))
+        self.addTest(ModuleNotClosedIsFlat('test'))
         pass
     pass
 
@@ -60,7 +61,7 @@ class BasicIDLTest(unittest.TestCase):
         idl_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
                                              path=['file.idl'])
         self.failIf(idl_builder is None)
-        self.failUnless(idl_builder.install_path() == ['A', 'B'])
+        self.failUnlessEqual(idl_builder.install_path(), ['A', 'B'])
         pass
     pass
 
@@ -86,6 +87,30 @@ class NoInternalRequiresTest(unittest.TestCase):
                                setups=[IDLSetup()])
         package.boil(external_nodes=[])
         self.failIf(len(package.rootbuilder().requires()) != 0)
+        pass
+    pass
+
+class ModuleNotClosedIsFlat(unittest.TestCase):
+    def test(self):
+        fs = FileSystem(path=['don\'t', 'care'])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('ModuleNotClosedIsFlat')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File())
+
+        fs.rootdirectory().add(
+            name='file.idl',
+            entry=File(lines=["module A {",
+                              "};"]))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[IDLSetup()])
+        package.boil(external_nodes=[])
+        idl_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.idl'])
+        self.failUnlessEqual(idl_builder.install_path(), [])
         pass
     pass
     

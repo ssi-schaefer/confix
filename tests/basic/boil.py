@@ -18,39 +18,47 @@
 
 import unittest
 
-from libconfix.core.filesys.file import File
-from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 
-class MiscellaneousSuite(unittest.TestSuite):
+class BoilSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ProvideStringUpdateTest('test'))
+        self.addTest(ConfigureCalledOnlyOnce('test'))
         pass
     pass
 
-class ProvideStringUpdateTest(unittest.TestCase):
-
-    # one day I tries to eliminate Provide_String.update() and didn't
-    # see from the tests that it was needed. now I see.
-    
+class ConfigureCalledOnlyOnce(unittest.TestCase):
+    class ConfigureWatcher(Builder):
+        def __init__(self):
+            Builder.__init__(self)
+            self.__configure_called = False
+            pass
+        def configure(self):
+            if self.__configure_called:
+                raise "already called"
+            super(ConfigureCalledOnlyOnce.ConfigureWatcher, self).configure()
+            self.__configure_called = True
+            pass
+        pass
     def test(self):
-        fs = FileSystem(path=['don\'t', 'care'])
+        fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=["PACKAGE_NAME('ProvideStringUpdateTest')",
+            entry=File(lines=["PACKAGE_NAME('ConfigureCalledOnlyOnce')",
                               "PACKAGE_VERSION('1.2.3')"]))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=["PROVIDE_SYMBOL('aaa')",
-                              "PROVIDE_SYMBOL('aaa')"]))
+            entry=File())
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package.rootbuilder().add_builder(self.ConfigureWatcher())
         package.boil(external_nodes=[])
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(MiscellaneousSuite())
+    unittest.TextTestRunner().run(BoilSuite())
     pass
-

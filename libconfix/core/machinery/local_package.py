@@ -142,6 +142,9 @@ class LocalPackage(Package):
         nodes = set()
         depinfo_per_node = {}
 
+        # remember those builders who have already been configure()d.
+        builders_where_configure_has_been_called = set()
+
         while True:
             something_new = False
             
@@ -155,8 +158,13 @@ class LocalPackage(Package):
                     raise Error('Enlarge-loop entered for a ridiculously large number of times '
                                 '(some Builder must be misbehaving)')
 
+                # before we can do anything meaningful with a builder,
+                # we must configure it (but only once)
                 for b in builders:
+                    if b in builders_where_configure_has_been_called:
+                        continue
                     b.configure()
+                    builders_where_configure_has_been_called.add(b)
                     pass
                 for b in builders:
                     b.enlarge()

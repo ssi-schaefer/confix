@@ -20,6 +20,7 @@ from digraph.suite import DiGraphSuite
 from package_iface import PackageInterfaceSuite
 from dependencyset import DependencySetSuite
 from depinfo import DependencyInformationSuite
+from boil import BoilSuite
 from dirsetup import BasicDirectorySetupSuite
 from filesystests import FileSystemTestSuite
 from ignored_entries import IgnoredEntriesSuite
@@ -44,6 +45,7 @@ class BasicTestSuiteInMemory(unittest.TestSuite):
         self.addTest(PackageInterfaceSuite())
         self.addTest(DependencySetSuite())
         self.addTest(DependencyInformationSuite())
+        self.addTest(BoilSuite())
         self.addTest(FileSystemTestSuite())
         self.addTest(BasicDirectorySetupSuite())
         self.addTest(IgnoredEntriesSuite())

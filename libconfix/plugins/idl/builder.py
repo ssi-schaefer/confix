@@ -36,8 +36,17 @@ from buildinfo import \
 class Builder(FileBuilder):
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
+        self.__includes = []
+        self.__install_path = []
+        pass
 
-        lines = file.lines()
+    def shortname(self):
+        return 'IDL.Builder'
+
+    def configure(self):
+        super(Builder, self).configure()
+        
+        lines = self.file().lines()
 
         # remember the #includes for later use (we generate require
         # objects, and we generate a buildinfo object that carries
@@ -45,37 +54,33 @@ class Builder(FileBuilder):
         # preprocessor for includes, so we can use the C plugin for
         # that.
 
-        self.includes_ = libconfix.plugins.c.helper.extract_requires(lines)
+        self.__includes = libconfix.plugins.c.helper.extract_requires(lines)
 
         # search lines for a namespace. if one is found, our install
         # path is the namespace (or the concatenation of nested
         # namespaces). if none is found, the file is installed
         # directly into <prefix>/include.
         
-        self.install_path_ = []
         paths = self.parse_modules_(lines)
         if len(paths) > 1:
-            raise Error(os.sep.join(file.abspath()) + ': error: '
+            raise Error(os.sep.join(self.file().relpath(self.package().rootdirectory())) + ': error: '
                         'found multiple modules, ' + ', '.join(['::'.join(p) for p in paths]))
         if len(paths):
             for p in paths[0]:
-                self.install_path_.append(p)
+                self.__install_path.append(p)
                 pass
             pass
 
         self.add_buildinfo(
-            BuildInfo_IDL_NativeLocal(filename='/'.join(self.install_path_ + [file.name()]),
-                                      includes=self.includes_))
+            BuildInfo_IDL_NativeLocal(filename='/'.join(self.__install_path + [self.file().name()]),
+                                      includes=self.__includes))
         pass
-
-    def shortname(self):
-        return 'IDL.Builder'
 
     def dependency_info(self):
         ret = DependencyInformation()
         ret.add(super(Builder, self).dependency_info())
 
-        external_name = '/'.join(self.install_path_ + [self.file().name()])
+        external_name = '/'.join(self.__install_path + [self.file().name()])
         internal_name = self.file().name()
 
         ret.add_provide(Provide_IDL(external_name))
@@ -83,7 +88,7 @@ class Builder(FileBuilder):
             ret.add_internal_provide(Provide_IDL(internal_name))
             pass
             
-        for inc in self.includes_:
+        for inc in self.__includes:
             ret.add_require(Require_IDL(filename=inc,
                                          found_in='/'.join(self.file().relpath(self.package().rootdirectory())),
                                          urgency=Require.URGENCY_WARN))
@@ -91,7 +96,7 @@ class Builder(FileBuilder):
         return ret
 
     def install_path(self):
-        return self.install_path_
+        return self.__install_path
 
     def output(self):
         super(Builder, self).output()
@@ -99,10 +104,10 @@ class Builder(FileBuilder):
         self.parentbuilder().makefile_am().add_extra_dist(self.file().name())
         self.parentbuilder().file_installer().add_private_header(
             filename=self.file().name(),
-            dir=self.install_path_)
+            dir=self.__install_path)
         self.parentbuilder().file_installer().add_public_header(
             filename=self.file().name(),
-            dir=self.install_path_)
+            dir=self.__install_path)
         pass
 
     re_beg_mod_ = re.compile(r'^\s*module(.*){')
@@ -129,7 +134,8 @@ class Builder(FileBuilder):
             m = Builder.re_end_mod_.search(l)            
             if m:
                 if len(stack) == 0:
-                    raise Error(self.fullname() + ':' + str(lineno) + ': error: '
+                    raise Error('/'.join(self.file().relpath(self.package().rootdirectory())) + ':' + \
+                                str(lineno) + ': error: '
                                 'end of module found though none was begun')
                 if stack_growth == 1 and len(stack[-1]) > 0:
                     found_modules.append(stack[0:]) # copy, not just ref
@@ -138,9 +144,8 @@ class Builder(FileBuilder):
                 continue
 
         if len(stack):
-            raise Error(self.fullname()+': error: '
-                        'module \''+'::'.join(stack)+'\' was opened but not closed '
-                        '(remember, you have to close it with a line like \'} // /module\')')
+            self.__install_path = []
+            pass
 
         return found_modules
     pass
