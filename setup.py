@@ -65,6 +65,7 @@ setup(
     # find a better way.)
     packages=['libconfix',
               'libconfix.core',
+              'libconfix.core.machinery',
               'libconfix.core.repo',
               'libconfix.core.digraph',
               'libconfix.core.iface',

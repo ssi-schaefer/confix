@@ -53,7 +53,7 @@ sf: sourceforge
 sourceforge: all
 	find .|												\
 	grep -v \\.\$$|											\
-	grep -v CVS|											\
+	grep -v \\.svn|											\
 	grep -v presentation|										\
 	grep -v installation|										\
 	tar -z -c -v -f - -T - |									\

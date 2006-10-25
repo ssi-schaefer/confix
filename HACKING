@@ -63,7 +63,46 @@ feature if tests are written consequently.
 Source Code Roadmap
 ===================
 
-(waiting for epydoc)
+The source is basically made up of three parts:
+
+* plugins
+
+  Everything that can actually be productively done with confix is
+  coded as a plugin. The core only coordinates plugins; it has
+  absolutely no real value itself (a symptom particular to be observed
+  with real-world manager humans).
+
+  The C plugin, libconfix.plugins.c, is the mother of all plugins, and
+  a good example for plugin writers.
+
+* core
+
+  As stated, the core only coordinates. At the heart of the core (sic)
+  there is a directed graph implementation, libconfix.core.digraph. It
+  is used by the core machinery, libconfix.core.machinery (a
+  misnomer), which defines the plugin interface, and implements the
+  procedure that boils a package until it can be built. Various other
+  submodules aid in doing so.
+
+  The goal is to keep the core as small as possible. In fact, although
+  libconfix.core.automake is currently part of the core, one may think
+  of it as just another backend build tool. (There's still a bit to be
+  done, of course.)
+
+* frontends
+
+  confix2.py is only a small script which is the entry point to
+  libconfix.frontends.confix, the module that implements what the
+  common user uses to write on the commandline.
+
+  Notice that the plural - frontends - suggests that there is more
+  than one frontend. While this is not the case, one may think if
+  it. At least, the test cases are full of such situations - they
+  surely do not use the command line to setup a build.
+
+Have a look at http://confix.sourceforge.net/epydoc/index.html for a
+growing amount of text that grows linear with the amount of docstrings
+added to the code.
 
 Distributions
 =============
