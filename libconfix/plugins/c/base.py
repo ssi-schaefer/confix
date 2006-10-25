@@ -37,13 +37,14 @@ import helper
 # argh: '$' does not hit doze-like carriage return, but rather leaves
 # it at the end of the match.
 
-_re_confix = re.compile('//\s*CONFIX:([^\r\n]*)')
-
 class CBaseBuilder(FileBuilder):
+
+    re_confix = re.compile('//\s*CONFIX:([^\r\n]*)')
+    
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
 
-        self.eval_iface_()
+        self.__eval_iface()
         
         pass
 
@@ -62,7 +63,7 @@ class CBaseBuilder(FileBuilder):
                [REQUIRE_H_InterfaceProxy(object=self),
                 PROVIDE_H_InterfaceProxy(object=self)]
     
-    def eval_iface_(self):
+    def __eval_iface(self):
 
         # extract python lines from the file and evaluate them. search
         # for 'CONFIX:' lines, gathering blocks of consecutive
@@ -79,7 +80,7 @@ class CBaseBuilder(FileBuilder):
 
         for l in lines:
             lineno = lineno + 1
-            match = _re_confix.match(l)
+            match = self.re_confix.match(l)
 
             if match:
                 # start new block if we don't yet have one
