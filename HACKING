@@ -87,7 +87,7 @@ The source is basically made up of three parts:
   The goal is to keep the core as small as possible. In fact, although
   libconfix.core.automake is currently part of the core, one may think
   of it as just another backend build tool. (There's still a bit to be
-  done, of course.)
+  done to make the code reflect this understanding, of course.)
 
 * frontends
 
