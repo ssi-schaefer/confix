@@ -23,15 +23,8 @@ from libconfix.core.utils import external_cmd
 from libconfix.core.utils import helper
 
 def find_archive_root(argv0):
-    dir = os.path.dirname(argv0)
-
-    # accommodate for relative paths.
-    if not os.path.isabs(dir):
-        dir = os.path.normpath(os.path.join(os.getcwd(), dir))
-        pass
-
     try:
-        confix_root = helper.find_confix_root(dir)
+        confix_root = helper.find_confix_root(argv0)
     except Error, e:
         raise Error('Cannot find autoconf archive: cannot find confix installation', [e])
 
