@@ -1,3 +1,8 @@
+2006-11-30 Robert Lechner <rlechne@salomon.at>
+
+	* bug fixes
+	* Release 2.0.0pre17
+
 2006-10-25 Joerg Faschingbauer <jfasch@salomon.at>
 
 	* IDL: install files with modules that are not properly terminated
