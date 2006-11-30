@@ -28,6 +28,8 @@ from buildinfo import \
      BuildInfo_CLibrary_NativeInstalled, \
      BuildInfo_CLibrary_External
 
+import sys
+
 class LinkedBuilder(Builder):
     def __init__(self, use_libtool):
         Builder.__init__(self)
@@ -120,11 +122,15 @@ class LinkedBuilder(Builder):
         using_installed_library = False
 
         if self.__use_libtool:
-            # when linking anything with libtool, we don't need to
-            # specify the whole topologically sorted list of
-            # dependencies - libtool does that by itself. we only
-            # specify the direct dependencies.
-            native_libs_to_use = self.__buildinfo_direct_dependent_native_libs
+            if sys.platform.startswith('interix'):
+                # a Windows-DLL needs all dependencies
+                native_libs_to_use = self.__buildinfo_topo_dependent_native_libs
+            else:
+                # when linking anything with libtool, we don't need to
+                # specify the whole topologically sorted list of
+                # dependencies - libtool does that by itself. we only
+                # specify the direct dependencies.
+                native_libs_to_use = self.__buildinfo_direct_dependent_native_libs
         else:
             # not using libtool; have to toposort ourselves
             native_libs_to_use = self.__buildinfo_topo_dependent_native_libs
