@@ -32,8 +32,19 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |      |
   REL-2.0.0pre14 134    |
   REL-2.0.0pre15 139<---138
+                 |      v TRY-jfasch-kde-hack (dead)
+                 |
+                 184----+
                  |      |
-                 |      v TRY-jfasch-kde-hack
+                 |      |
+                 |      v devlopment/jfasch/library-dependencies
+                 |
+                 |
+                 |
+                 |
+                 |
+                 |
+                 |
                  |
                  v
                trunk
