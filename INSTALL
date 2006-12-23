@@ -1,8 +1,7 @@
 This file briefly describes how to install the Confix source
-distribution. (Other methods include installing Confix from a package,
-but describing how to install packages is not the point of this file).
-
-Confix distribution is done using the Python Distutils package.
+distribution. Confix distribution is done using the Python Distutils
+package, so the following is just a short excerpt of the distutils
+documentation :-)
 
 Unpack the file; for example,
 
