@@ -39,7 +39,10 @@ class FileWatcher(Builder):
         Builder.__init__(self)
         self.seen_names_ = set()
         pass
-
+    def locally_unique_id(self):
+        # I am supposed to be the only one of my kind in any given
+        # directory, so my class is a good unique ID.
+        return str(self.__class__)
     def seen_names(self):
         return self.seen_names_
 

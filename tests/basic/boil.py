@@ -37,6 +37,10 @@ class ConfigureCalledOnlyOnce(unittest.TestCase):
             Builder.__init__(self)
             self.__configure_called = False
             pass
+        def locally_unique_id(self):
+            # I am supposed to be the only one of my kind in any given
+            # directory, so my class is a good unique ID.
+            return str(self.__class__)
         def configure(self):
             if self.__configure_called:
                 raise "already called"

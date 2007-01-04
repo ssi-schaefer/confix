@@ -25,7 +25,7 @@ from libconfix.core.repo.package_file import PackageFile
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import helper
 from libconfix.core.digraph.digraph import DirectedGraph
-from libconfix.core.edgefinder import EdgeFinder
+from libconfix.core.machinery.edgefinder import EdgeFinder
 from libconfix.core.automake import helper_automake
 
 def write_graph(graph):
