@@ -68,7 +68,9 @@ class CompiledCBuilder(CBaseBuilder):
                 if prop_main is not None:
                     self.__is_main = libconfix.core.utils.helper.read_boolean(prop_main)
                     break
-                self.__is_main = helper.search_main(self.file().lines())
+                if helper.search_main(self.file().lines()):
+                    self.__is_main = True
+                    pass
                 break
             pass
         return self.__is_main

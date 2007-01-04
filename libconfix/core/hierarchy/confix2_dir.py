@@ -26,6 +26,27 @@ from libconfix.core.utils.error import Error
 from iface import DirectoryBuilderInterfaceProxy
 
 class Confix2_dir(FileBuilder):
+
+    """ Many builders have a body where one can write build
+    instructions. For example, the C like builders have a special
+    comment syntax which is parsed and interpreted. A DirectoryBuilder
+    does not have a body, so there is no natural place where one can
+    write directory specific build instructions. Unfortunately, a
+    directory is *the* place which people consdier the most natural
+    place where build instructions belong.
+
+    A Confix2_dir object plays the role of a directory's body: it
+    wraps a file, Confix2.dir.  Everything you want to tell the
+    directory, you write in that file.
+
+    Confix2_dir is also a builder. It does not that much in this role
+    though - adding the Confix2.dir file to the package is the most
+    important responsibility. Well, not right: as a builder, it
+    provides the parentbuilder() method, which most of the interface
+    code uses. Unfortunate coupling, that.
+
+    """
+
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
         self.__executed = False
@@ -36,16 +57,20 @@ class Confix2_dir(FileBuilder):
         return 'Hierarchy.Confix2_dir'
 
     def add_method(self, method):
+        # adding code after executing is considered a programming
+        # error.
+        assert not self.__executed
+        
         self.__external_ifaces.append(method)
         pass
 
-    def enlarge(self):
-        super(Confix2_dir, self).enlarge()
+    def configure_directory(self):
 
-        if self.__executed:
-            return
-        self.__executed = True
+        """ Called by the DirectoryBuilder when that is configure()ed."""
         
+        assert not self.__executed
+        self.__executed = True
+
         try:
             # take the externally provided methods, plus our
             # directory's (don't take our own -- we're here to

@@ -70,21 +70,30 @@ class Builder(object):
     def shortname(self):
         return str(self)
 
-    def unique_id(self):
-        assert self.__package
-        return str(self.__class__)+'('+self.__parentbuilder.unique_id()+')'
+    def locally_unique_id(self):
+
+        """ A unique, opaque identifier that is supposed to
+        distinguish this builder from its brothers in the same
+        directory. Used primarily to spot bugs that result from
+        creating the same builder twice. To be implemented by derived
+        classes."""
+
+        assert False, 'abstract: implement '+str(self.__class__)+'.locally_unique_id()'
+        pass
     
-    def set_owners(self, parentbuilder, package):
-        assert self.__parentbuilder is None
+    def package(self):
+        return self.__package
+    def set_package(self, package):
         assert self.__package is None
-        self.__parentbuilder = parentbuilder
         self.__package = package
         pass
 
     def parentbuilder(self):
         return self.__parentbuilder
-    def package(self):
-        return self.__package
+    def set_parentbuilder(self, parentbuilder):
+        assert self.__parentbuilder is None
+        self.__parentbuilder = parentbuilder
+        pass
 
     def add_require(self, r):
         self.__dependency_info.add_require(r)
@@ -105,6 +114,7 @@ class Builder(object):
         pass
 
     def configure(self):
+        assert not self.__base_configure_called
         self.__base_configure_called = True
         pass
     
@@ -304,50 +314,4 @@ class BuilderInterfaceProxy(InterfaceProxy):
                 lines=lines))
             pass
         pass
-    pass
-
-class BuilderSet(object):
-
-    """ A set-like datatype that contains Builder objects. Builder
-    comparison is not done by object identity, but rather by comparing
-    the return values of the respective Builders' id() method."""
-    
-    def __init__(self):
-        # dictionary: builder id->builder
-        self.builders_ = {}
-        pass
-
-    def __iter__(self):
-        return self.builders_.itervalues()
-
-    def __contains__(self, b):
-        return self.builders_.has_key(b.unique_id())
-
-    def __len__(self):
-        return len(self.builders_)
-
-    def values(self):
-        return self.builders_.values()
-
-    def add(self, b):
-        have = self.builders_.get(b.unique_id())
-        if have:
-            raise Error('Duplicate builder id "'+b.unique_id()+'"; have: '+str(have)+', new: '+str(b))
-        self.builders_[b.unique_id()] = b
-        pass
-
-    def remove(self, b):
-        assert self.builders_.has_key(b.unique_id()), str(b)
-        del self.builders_[b.unique_id()]
-        pass
-
-    def is_equal(self, other):
-        if len(self.builders_) != len(other.builders_):
-            return False
-        for id in self.builders_.keys():
-            if not other.builders_.has_key(id):
-                return False
-            pass
-        return True
-        
     pass

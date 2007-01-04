@@ -1,3 +1,25 @@
+2007-01-04 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* libconfix.plugins.c.library_dependencies: generate library
+	  dependencies for executables that are not linked by libtool
+	  (<exename>_DEPENDENCIES).
+	* Internal changes
+	  * Replace the odd BuilderSet with an ordinary standard Python
+	    set.
+	  * Builders IDs do not anymore have to be globally (well, inside
+	    the package) unique, but only within a directory. Renamed
+	    Builder.unique_id() to Builder.locally_unique_id(),
+	    therefore. Require an implementation to implement it, though,
+	    to make people aware.
+	  * libconfix.plugins.c.base: evaluate the C comment interface
+	    calls (you know, "// CONFIX:BLAH()" stuff) in
+	    Builder.configure(), rather than in the ctor.
+	  * libconfix.plugins.c.clusterer: support for C files that get
+	    their "MAIN" property *after* the clusterer has seen them the
+	    first time.
+	  * lots of new tests.
+	* Release 2.0.0pre18
+
 2006-11-30 Robert Lechner <rlechne@salomon.at>
 
 	* bug fixes

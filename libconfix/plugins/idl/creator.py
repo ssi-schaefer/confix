@@ -27,6 +27,12 @@ class Creator(Builder):
         self.handled_entries_ = set()
         pass
 
+    def locally_unique_id(self):
+        # I am supposed to the only one of my kind among all the
+        # builders in a directory, so my class suffices as a unique
+        # id.
+        return str(self.__class__)
+
     def shortname(self):
         return 'IDL.Creator'
 

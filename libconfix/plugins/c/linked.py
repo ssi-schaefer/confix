@@ -19,7 +19,7 @@
 from libconfix.core.automake.configure_ac import Configure_ac
 from libconfix.core.digraph import algorithm
 from libconfix.core.machinery import readonly_prefixes
-from libconfix.core.machinery.builder import Builder, BuilderSet
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils.paragraph import Paragraph, OrderedParagraphSet
 
@@ -35,7 +35,7 @@ class LinkedBuilder(Builder):
         Builder.__init__(self)
 
         self.__init_buildinfo()
-        self.__members = BuilderSet()
+        self.__members = set()
         self.__use_libtool = use_libtool
         pass
 
@@ -47,8 +47,20 @@ class LinkedBuilder(Builder):
         self.__members.add(b)
         pass
 
+    def remove_member(self, b):
+        self.__members.remove(b)
+        pass
+
     def use_libtool(self):
         return self.__use_libtool
+
+    def am_compound_name(self):
+
+        """ To be implemented by derived classes like
+        ExecutableBuilder, LibraryBuilder, and possibly other linked
+        entities that participate in writing Makefile.am."""
+        assert 0
+        pass
     
     def buildinfo_direct_dependent_native_libs(self):
         return self.__buildinfo_direct_dependent_native_libs

@@ -22,7 +22,7 @@ from error import Error
 import debug
 
 def exec_program(program, dir, args=None, env=None, path=None):
-    assert type(dir) in [types.ListType, types.TupleType]
+    assert type(dir) in [types.ListType, types.TupleType], dir
 
     if os.path.isabs(program):
         the_program = program

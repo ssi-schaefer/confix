@@ -38,14 +38,14 @@ class PlainFileCreator(Builder):
         self.__handled_entries = set()
         
         try:
-            self.compiled_regex_ = re.compile(regex)
+            self.__compiled_regex = re.compile(regex)
         except Exception, e:
             raise Error('Error compiling regex "'+regex+'"', [e])
 
         pass
 
-    def unique_id(self):
-        return str(self.__class__)+'('+self.parentbuilder().unique_id()+','+self.__regex+')'
+    def locally_unique_id(self):
+        return str(self.__class__) + ':' + self.__regex
 
     def enlarge(self):
         super(PlainFileCreator, self).enlarge()
@@ -54,7 +54,7 @@ class PlainFileCreator(Builder):
                 continue
             if name in self.__handled_entries:
                 continue
-            if self.compiled_regex_.search(name):
+            if self.__compiled_regex.search(name):
                 self.parentbuilder().add_builder(
                     PlainFileBuilder(file=entry,
                                      datadir=self.__datadir,

@@ -99,6 +99,10 @@ class Makefile_am(object):
 
         self.compound_ldadd_ = CompoundListManager(unique=True, extension='LDADD')
         
+        # _DEPENDENCIES for compound objects.
+
+        self.compound_dependencies_ = CompoundListManager(unique=True, extension='DEPENDENCIES')
+        
         # AM_CPPFLAGS. includepath and commandline macros make their
         # way into AM_CPPFLAGS. we maintain them separately because
         # they have different overriding semantics.
@@ -221,6 +225,12 @@ class Makefile_am(object):
         return self.compound_ldadd_.list(compound_name)
     def add_compound_ldadd(self, compound_name, lib):
         self.compound_ldadd_.add(compound_name, lib)
+        pass
+
+    def compound_dependencies(self, compound_name):
+        return self.compound_dependencies_.list(compound_name)
+    def add_compound_dependencies(self, compound_name, dependency):
+        self.compound_dependencies_.add(compound_name, dependency)
         pass
 
     def includepath(self): return self.includepath_
@@ -427,6 +437,7 @@ class Makefile_am(object):
         lines.extend(self.compound_ldflags_.lines())
         lines.extend(self.compound_libadd_.lines())
         lines.extend(self.compound_ldadd_.lines())
+        lines.extend(self.compound_dependencies_.lines())
 
         # install directories
         for symbolicname, dirdef in self.install_directories_.iteritems():

@@ -20,6 +20,7 @@
 from libconfix.core.utils.error import Error
 from libconfix.core.automake.rule import Rule
 from libconfix.core.automake.list import List
+from libconfix.core.automake.include import Include
 from libconfix.core.automake.white import White
 from libconfix.testutils import makefileparser
 
@@ -32,6 +33,7 @@ class MakefileUtilsSuite(unittest.TestSuite):
         self.addTest(RuleTest('test_ok2'))
         self.addTest(RuleTest('test_error'))
         self.addTest(RuleTest('test_command_as_list'))
+        self.addTest(IncludeTest('test'))
         pass
     pass
 
@@ -148,6 +150,19 @@ class RuleTest(unittest.TestCase):
         self.failUnlessEqual(found_rule.commands(), ['cmd1 cmd2', 'cmd3'])
         pass
 
+    pass
+
+class IncludeTest(unittest.TestCase):
+    def test(self):
+        lines = []
+        for element in [Include('blah')]:
+            lines.extend(element.lines())
+            pass
+
+        elements = makefileparser.parse_makefile(lines=lines)
+        self.failUnless(isinstance(elements[0], Include))
+        self.failUnlessEqual(elements[0].file(), 'blah')
+        pass
     pass
 
 

@@ -18,7 +18,7 @@
 
 # Confix package version
 
-CONFIX_VERSION = '2.0.0pre17'
+CONFIX_VERSION = '2.0.0pre18'
 
 # the default name of interface files
 CONFIX2_DIR = 'Confix2.dir'

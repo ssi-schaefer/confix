@@ -56,6 +56,7 @@ class ScanTest(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
         builder = CBuilder(file=file)
         package.rootbuilder().add_builder(builder)
+        package.boil(external_nodes=[])
         self.assertEqual(len(builder.dependency_info().requires()), 5)
         inc1 = None
         inc2 = None
@@ -113,8 +114,8 @@ class IfaceTest(unittest.TestCase):
                               "// CONFIX:REQUIRE_H(filename='inc4', urgency=URGENCY_ERROR)"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
         builder = CBuilder(file=file)
+        builder.configure()
         package.rootbuilder().add_builder(builder)
-        package.boil(external_nodes=[])
         self.assertEqual(len(builder.dependency_info().requires()), 4)
         inc1 = None
         inc2 = None

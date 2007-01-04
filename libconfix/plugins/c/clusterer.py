@@ -49,6 +49,12 @@ class CClusterer(Builder):
     def shortname(self):
         return 'C.Clusterer'
 
+    def locally_unique_id(self):
+        # I am supposed to the only one of my kind among all the
+        # builders in a directory, so my class suffices as a unique
+        # id.
+        return str(self.__class__)
+
     def set_libname(self, name):
         self.__libname = name
         pass
@@ -61,7 +67,7 @@ class CClusterer(Builder):
         super(CClusterer, self).enlarge()
         # copy what we will be iterating over because we will change
         # its size
-        for b in self.parentbuilder().builders().values()[:]:
+        for b in self.parentbuilder().builders()[:]:
             if not isinstance(b, CBaseBuilder):
                 continue
 
@@ -75,11 +81,27 @@ class CClusterer(Builder):
                 continue
 
             # main C file. wrap an ExecutableBuilder around
-            # it. liquidate a library in favor of the executable.
+            # it. liquidate a library in favor of the executable. if
+            # the main C file is member of another executable that I
+            # maintain, pull it out from there.
             if b.is_main():
                 if self.__executables.has_key(b):
                     # already got that one.
                     continue
+
+                # remove my center b from any other executables which
+                # it happens to be a member of. (rationale: b may not
+                # have been marked executable from the
+                # beginning. rather, it is possible that anyone in the
+                # game marks any C file executable, though that file
+                # has been made the member of another executable
+                # before.)
+                for e in self.__executables.itervalues():
+                    if b in e.members():
+                        e.remove_member(b)
+                        pass
+                    pass
+                
                 center_stem, center_ext = os.path.splitext(b.file().name())
                 if center_stem.startswith('_check'):
                     what = ExecutableBuilder.CHECK
@@ -102,6 +124,8 @@ class CClusterer(Builder):
                     what=what)
                 self.parentbuilder().add_builder(exe)
                 self.__executables[b] = exe
+
+                # liquidate library, if any.
                 if self.__library is not None:
                     self.parentbuilder().remove_builder(self.__library)
                     for m in self.__library.members():
@@ -109,6 +133,7 @@ class CClusterer(Builder):
                         pass
                     self.__library = None
                     pass
+
                 continue
 
             # a compiled C builder

@@ -1,4 +1,3 @@
-# Copyright (C) 2002-2006 Salomon Automation
 # Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
@@ -16,23 +15,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
+from marked_main_afterwards import MarkedMainAfterwardsSuite
 
-from builder import Builder
+import unittest
 
-class EntryBuilder(Builder):
-    def __init__(self, entry):
-        Builder.__init__(self)
-        self.__entry = entry
+class ClustererInMemorySuite(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+        self.addTest(MarkedMainAfterwardsSuite())
         pass
-
-    def __str__(self):
-        return str(self.__class__)+'('+os.sep.join(self.__entry.abspath())+')'
-        
-    def locally_unique_id(self):
-        return str(self.__class__) + ':' + self.__entry.name()
-    
-    def entry(self):
-        return self.__entry
     pass
 
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(ClustererInMemorySuite())
+    pass
+
+            

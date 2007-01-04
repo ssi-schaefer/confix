@@ -40,6 +40,9 @@ class FileInterfaceTestCreator(Builder):
         self.handled_entries_ = set()
         pass
 
+    def locally_unique_id(self):
+        return str(self.__class__)
+
     def enlarge(self):
         super(FileInterfaceTestCreator, self).enlarge()
         for name, entry in self.parentbuilder().entries():

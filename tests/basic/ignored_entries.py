@@ -43,6 +43,9 @@ class FileWatcher(Builder):
         # I am supposed to be the only one of my kind in any given
         # directory, so my class is a good unique ID.
         return str(self.__class__)
+    def locally_unique_id(self):
+        return str(self.__class__)
+
     def seen_names(self):
         return self.seen_names_
 

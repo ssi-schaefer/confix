@@ -1,4 +1,4 @@
- # Copyright (C) 2002-2006 Salomon Automation
+# Copyright (C) 2002-2006 Salomon Automation
 # Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
@@ -37,7 +37,6 @@ from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 
 from setup import Setup
-from builder import BuilderSet
 from package import Package
 from local_node import LocalNode
 from installed_package import InstalledPackage
@@ -48,34 +47,30 @@ import readonly_prefixes
 class LocalPackage(Package):
 
     def __init__(self, rootdirectory, setups):
-        self.name_ = None
-        self.version_ = None
-        self.rootdirectory_ = rootdirectory
+        self.__name = None
+        self.__version = None
+        self.__rootdirectory = rootdirectory
 
-        self.setups_ = setups
+        self.__setups = setups
 
-        self.digraph_ = None
-        self.local_nodes_ = None
+        self.__digraph = None
+        self.__local_nodes = None
 
         # the (contents of) configure.ac and acinclude.m4 we will be
         # writing
-        self.configure_ac_ = Configure_ac()
-        self.acinclude_m4_ = ACInclude_m4()
+        self.__configure_ac = Configure_ac()
+        self.__acinclude_m4 = ACInclude_m4()
 
         # read package definition file
-        pkgdeffile = self.rootdirectory_.find([const.CONFIX2_PKG])
+        pkgdeffile = self.__rootdirectory.find([const.CONFIX2_PKG])
         if pkgdeffile is None:
-            raise Error(const.CONFIX2_PKG+' missing in '+os.sep.join(self.rootdirectory_.abspath()))
+            raise Error(const.CONFIX2_PKG+' missing in '+os.sep.join(self.__rootdirectory.abspath()))
         InterfaceExecutor(iface_pieces=[PackageInterfaceProxy(package=self)]).execute_file(pkgdeffile)
-        if self.name_ is None:
+        if self.__name is None:
             raise Error(const.CONFIX2_PKG+': package name has not been set')
-        if self.version_ is None:
+        if self.__version is None:
             raise Error(const.CONFIX2_PKG+': package version has not been set')
 
-        # setup rootbuilder.
-        self.rootbuilder_ = DirectoryBuilder(directory=rootdirectory)
-        self.rootbuilder_.set_owners(parentbuilder=None, package=self)
-        
         # slurp in Confix2.dir which will act as the rootbuilder's
         # configurator object. the setup objects will be asked to
         # contribute to the configurator object's interface.
@@ -86,64 +81,83 @@ class LocalPackage(Package):
             if not isinstance(confix2_dir_file, File):
                 raise Error(os.sep.join(confix2_dir_file.abspath())+' is not a file')
             confix2_dir = Confix2_dir(file=confix2_dir_file)
-            self.rootbuilder_.set_configurator(confix2_dir)
+            # setup rootbuilder.
+            self.__rootbuilder = DirectoryBuilder(directory=rootdirectory, configurator=confix2_dir)
+            self.__rootbuilder.add_builder(confix2_dir)
         except Error, e:
             raise Error('Cannot initialize package in '+'/'.join(rootdirectory.abspath()), [e])
 
         # setup our autoconf auxiliary directory. this a regular
         # builder by itself, but plays a special role for us because
         # we use it to put, well, auxiliary files in.
-        dir = self.rootdirectory_.find([const.AUXDIR])
+        dir = self.__rootdirectory.find([const.AUXDIR])
         if dir is None:
             dir = Directory()
-            self.rootdirectory_.add(name=const.AUXDIR, entry=dir)
+            self.__rootdirectory.add(name=const.AUXDIR, entry=dir)
             pass
-        self.auxdir_ = AutoconfAuxDirBuilder(directory=dir)
-        self.rootbuilder_.add_builder(self.auxdir_)
+        self.__auxdir = AutoconfAuxDirBuilder(directory=dir)
+        self.__rootbuilder.add_builder(self.__auxdir)
 
         # setup the rootbuilder and auxdir. be careful to use
-        # self.setups_ instead of the __init__ parameter setups -- the
+        # self.__setups instead of the __init__ parameter setups -- the
         # config file may have changed it under the hood.
-        for dir in [self.rootbuilder_, self.auxdir_]:
-            for setup in self.setups_:
+        for dir in [self.__rootbuilder, self.__auxdir]:
+            for setup in self.__setups:
                 setup.setup_directory(directory_builder=dir)
                 pass
             pass
-        
+
         pass
 
     def __str__(self):
-        return 'LocalPackage:'+str(self.name_)
+        return 'LocalPackage:'+str(self.__name)
     
     def name(self):
-        return self.name_
+        return self.__name
+    def set_name(self, name):
+        assert self.__name is None
+        self.__name = name
+        pass
     def version(self):
-        return self.version_
+        return self.__version
+    def set_version(self, version):
+        assert self.__version is None
+        self.__version = version
+        pass
 
     def rootdirectory(self):
-        return self.rootdirectory_
+        return self.__rootdirectory
 
     def setups(self):
-        return self.setups_
+        return self.__setups
+    def add_setup(self, s):
+        self.__setups.append(s)
+        pass
+    def set_setups(self, ss):
+        self.__setups = ss[:]
+        pass
 
     def configure_ac(self):
-        return self.configure_ac_
+        return self.__configure_ac
     def acinclude_m4(self):
-        return self.acinclude_m4_
+        return self.__acinclude_m4
 
     def rootbuilder(self):
-        return self.rootbuilder_
+        return self.__rootbuilder
 
     def digraph(self):
         return self.current_digraph_
 
     def boil(self, external_nodes):
         builders = self.__collect_builders()
+
+        # one of my responsibilities (god am I responsible) is to call
+        # every builder's configure() method once before the game
+        # begins. remember the configured builders.
+        configured_builders = set()
+
         nodes = set()
         depinfo_per_node = {}
-
-        # remember those builders who have already been configure()d.
-        builders_where_configure_has_been_called = set()
 
         while True:
             something_new = False
@@ -158,14 +172,20 @@ class LocalPackage(Package):
                     raise Error('Enlarge-loop entered for a ridiculously large number of times '
                                 '(some Builder must be misbehaving)')
 
-                # before we can do anything meaningful with a builder,
-                # we must configure it (but only once)
+                # for those that are new among us, tell them some
+                # basic properties
                 for b in builders:
-                    if b in builders_where_configure_has_been_called:
-                        continue
-                    b.configure()
-                    builders_where_configure_has_been_called.add(b)
+                    if b.package() is None:
+                        b.set_package(self)
+                        pass
+                    if not b in configured_builders:
+                        b.configure()
+                        assert b.base_configure_called(), type(b)
+                        configured_builders.add(b)
+                        pass
                     pass
+
+                # doit baby!
                 for b in builders:
                     b.enlarge()
                     pass
@@ -174,7 +194,7 @@ class LocalPackage(Package):
                 # changed in the current run.
                 prev_builders = builders
                 builders = self.__collect_builders()
-                if prev_builders.is_equal(builders):
+                if self.__equal_builders(prev_builders, builders):
                     builders = prev_builders
                     break
 
@@ -225,7 +245,7 @@ class LocalPackage(Package):
     def output(self):
 
         # distribute the package configuration file
-        self.rootbuilder_.makefile_am().add_extra_dist(const.CONFIX2_PKG)
+        self.__rootbuilder.makefile_am().add_extra_dist(const.CONFIX2_PKG)
 
         # we will be writing two files in the package's root
         # directory. configure.ac is our responsbility - we will have
@@ -240,25 +260,25 @@ class LocalPackage(Package):
         self.output_unique_file_()
 
         # recursively write the package's output
-        self.rootbuilder_.output()
+        self.__rootbuilder.output()
 
         # write my configure.ac and acinclude.m4
         
-        configure_ac = self.rootdirectory_.find(['configure.ac'])
+        configure_ac = self.__rootdirectory.find(['configure.ac'])
         if configure_ac is None:
-            configure_ac = self.rootdirectory_.add(name='configure.ac', entry=File())
+            configure_ac = self.__rootdirectory.add(name='configure.ac', entry=File())
         else:
             configure_ac.truncate()
             pass
-        configure_ac.add_lines(self.configure_ac_.lines())
+        configure_ac.add_lines(self.__configure_ac.lines())
 
-        acinclude_m4 = self.rootdirectory_.find(['acinclude.m4'])
+        acinclude_m4 = self.__rootdirectory.find(['acinclude.m4'])
         if acinclude_m4 is None:
-            acinclude_m4 = self.rootdirectory_.add(name='acinclude.m4', entry=File())
+            acinclude_m4 = self.__rootdirectory.add(name='acinclude.m4', entry=File())
         else:
             acinclude_m4.truncate()
             pass
-        acinclude_m4.add_lines(self.acinclude_m4_.lines())
+        acinclude_m4.add_lines(self.__acinclude_m4.lines())
         pass
 
     def install(self):
@@ -274,32 +294,32 @@ class LocalPackage(Package):
             nodes=installed_nodes)
     
     def output_stock_autoconf_(self):
-        self.configure_ac_.set_packagename(self.name())
-        self.configure_ac_.set_packageversion(self.version())
+        self.__configure_ac.set_packagename(self.name())
+        self.__configure_ac.set_packageversion(self.version())
 
         # we require autoconf 2.52 because it has (possibly among
         # others) AC_HELP_STRING(), and can go into subsubdirs from
         # the toplevel.
 
-        self.configure_ac_.set_minimum_autoconf_version('2.52')
+        self.__configure_ac.set_minimum_autoconf_version('2.52')
 
         # we never pass AC_DEFINE'd macros on the commandline
 
-        self.configure_ac_.add_ac_config_headers('config.h')
+        self.__configure_ac.add_ac_config_headers('config.h')
         pass
 
     def output_options_(self):
         # our minimum required automake version is 1.9 
-        self.rootbuilder_.makefile_am().add_automake_options('1.9')
+        self.__rootbuilder.makefile_am().add_automake_options('1.9')
 
         # enable dist'ing in the following formats
-        self.rootbuilder_.makefile_am().add_automake_options('dist-bzip2')
-        self.rootbuilder_.makefile_am().add_automake_options('dist-shar')
-        self.rootbuilder_.makefile_am().add_automake_options('dist-zip')
+        self.__rootbuilder.makefile_am().add_automake_options('dist-bzip2')
+        self.__rootbuilder.makefile_am().add_automake_options('dist-shar')
+        self.__rootbuilder.makefile_am().add_automake_options('dist-zip')
 
         # the ubiquitous readonly-prefixes: add the configure option
         # and stuff.
-        self.configure_ac_.add_paragraph(
+        self.__configure_ac.add_paragraph(
             paragraph=readonly_prefixes.commandline_option_paragraph,
             order=Configure_ac.OPTIONS)
         pass
@@ -332,13 +352,13 @@ class LocalPackage(Package):
         
         for dirnode in toposort.toposort(digraph=graph, nodes=subdir_nodes):
             assert isinstance(dirnode, DirectoryBuilder)
-            relpath = dirnode.directory().relpath(self.rootdirectory_)
+            relpath = dirnode.directory().relpath(self.__rootdirectory)
             if len(relpath):
                 dirstr = '/'.join(relpath)
             else:
                 dirstr = '.'
                 pass
-            self.rootbuilder_.makefile_am().add_subdir(dirstr)
+            self.__rootbuilder.makefile_am().add_subdir(dirstr)
             self.configure_ac().add_ac_config_files('/'.join([dirstr, 'Makefile']))
             pass
 
@@ -349,23 +369,23 @@ class LocalPackage(Package):
         # that takes care to install it. put it into the dist-package.
 
         repofilename = self.name() + '.repo'
-        repofile = self.rootdirectory_.find([repofilename])
+        repofile = self.__rootdirectory.find([repofilename])
         if repofile is None:
-            repofile = self.rootdirectory_.add(name=repofilename, entry=File())
+            repofile = self.__rootdirectory.add(name=repofilename, entry=File())
         else:
             repofile.truncate()
             pass
 
         PackageFile(file=repofile).dump(package=self.install())
 
-        self.rootbuilder_.makefile_am().define_install_directory(
+        self.__rootbuilder.makefile_am().define_install_directory(
             symbolicname='confixrepo',
             dirname=repo_automake.dir_for_automake())
-        self.rootbuilder_.makefile_am().add_to_install_directory(
+        self.__rootbuilder.makefile_am().add_to_install_directory(
             symbolicname='confixrepo',
             family='DATA',
             files=[repofilename])
-        self.rootbuilder_.makefile_am().add_extra_dist(
+        self.__rootbuilder.makefile_am().add_extra_dist(
             name=repofilename)
         
         pass
@@ -401,16 +421,17 @@ class LocalPackage(Package):
                         "("+os.getcwd()+") is not "
                         "the package root directory?")
 
-        self.configure_ac_.set_unique_file_in_srcdir('/'.join(unique_file.relpath(self.rootdirectory_)))
+        self.__configure_ac.set_unique_file_in_srcdir('/'.join(unique_file.relpath(self.__rootdirectory)))
         pass
 
     def __collect_builders(self):
-        builders = BuilderSet()
-        self.__collect_builders_recursive(self.rootbuilder_, builders)
+        builders = []
+        self.__collect_builders_recursive(self.__rootbuilder, builders)
         return builders
 
     def __collect_builders_recursive(self, builder, found):
-        found.add(builder)
+        assert isinstance(found, list)
+        found.append(builder)
         if isinstance(builder, DirectoryBuilder):
             for b in builder.builders():
                 self.__collect_builders_recursive(b, found)
@@ -418,30 +439,24 @@ class LocalPackage(Package):
             pass
         pass
 
-    pass
-
-class PackageDefinition:
-    def __init__(self):
-        self.name_ = None
-        self.version_ = None
-        pass
-    def set_name(self, name):
-        self.name_ = name
-        pass
-    def set_version(self, version):
-        self.version_ = version
-        pass
-    def name(self):
-        return self.name_
-    def version(self):
-        return self.version_
+    def __equal_builders(self, lhs_builders, rhs_builders):
+        assert type(lhs_builders) is type(rhs_builders) is list
+        if len(lhs_builders) != len(rhs_builders):
+            return False
+        # out of luck: have to compare element-wise
+        lookup = set(lhs_builders)
+        for b in rhs_builders:
+            if b not in lookup:
+                return False
+            pass
+        return True
     pass
 
 class PackageInterfaceProxy(InterfaceProxy):
     def __init__(self, package):
         InterfaceProxy.__init__(self)
 
-        self.package_ = package
+        self.__package = package
 
         self.add_global('PACKAGE_NAME', getattr(self, 'PACKAGE_NAME'))
         self.add_global('PACKAGE_VERSION', getattr(self, 'PACKAGE_VERSION'))
@@ -453,19 +468,19 @@ class PackageInterfaceProxy(InterfaceProxy):
     def PACKAGE_NAME(self, name):
         if type(name) is not types.StringType:
             raise Error('PACKAGE_NAME(): argument must be a string')
-        self.package_.name_ = name
+        self.__package.set_name(name)
         pass
 
     def PACKAGE_VERSION(self, version):
         if type(version) is not types.StringType:
             raise Error('PACKAGE_VERSION(): argument must be a string')
-        self.package_.version_ = version
+        self.__package.set_version(version)
         pass
 
     def ADD_SETUP(self, setup):
         if not isinstance(setup, Setup):
             raise Error('ADD_SETUP(): argument must be a Setup object')
-        self.package_.setups_.append(setup)
+        self.__package.add_setup(setup)
         pass
 
     def SETUPS(self, setups):
@@ -475,7 +490,7 @@ class PackageInterfaceProxy(InterfaceProxy):
             if not isinstance(s, Setup):
                 raise Error('SETUPS(): all list members must be Setup objects')
             pass
-        self.package_.setups_ = setups
+        self.__package.set_setups(setups)
         pass
         
     pass

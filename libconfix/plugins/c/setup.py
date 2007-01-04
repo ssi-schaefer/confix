@@ -20,40 +20,41 @@ from libconfix.core.machinery.setup import CompositeSetup
 
 from clusterer import CClustererSetup
 from creator import CreatorSetup
+from library_dependencies import LibraryDependenciesFinderSetup
 from default_installer import DefaultInstallerSetup
 from graph_installer import GraphInstallerSetup
 from iface import InterfaceSetup
 from interix import InterixSetup
 
+def make_core_setups(short_libnames, use_libtool):
+    return [CClustererSetup(short_libnames=short_libnames,
+                            use_libtool=use_libtool),
+            CreatorSetup(),
+            InterfaceSetup(),
+            InterixSetup()
+            ]
+
 class DefaultCSetup(CompositeSetup):
     def __init__(self,
                  short_libnames,
                  use_libtool):
+        setups = make_core_setups(short_libnames=short_libnames, use_libtool=use_libtool)
+        setups.append(DefaultInstallerSetup())
         CompositeSetup.__init__(
             self,
-            setups=[CClustererSetup(short_libnames=short_libnames, use_libtool=use_libtool),
-                    DefaultInstallerSetup(),
-                    CreatorSetup(),
-                    InterfaceSetup(),
-                    InterixSetup()
-                    ])
+            setups=setups)
         pass
-    
     pass
 
 class GraphSetup(CompositeSetup):
     def __init__(self,
                  short_libnames,
                  use_libtool):
+        setups = make_core_setups(short_libnames=short_libnames, use_libtool=use_libtool)
+        setups.append(GraphInstallerSetup())
         CompositeSetup.__init__(
             self,
-            setups=[CClustererSetup(short_libnames=short_libnames, use_libtool=use_libtool),
-                    GraphInstallerSetup(),
-                    CreatorSetup(),
-                    InterfaceSetup(),
-                    InterixSetup()
-                    ])
+            setups=setups)
         pass
-    
     pass
 

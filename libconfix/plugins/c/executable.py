@@ -19,8 +19,6 @@
 from linked import LinkedBuilder
 from buildinfo import BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled
 
-from libconfix.core.machinery.builder import BuilderSet
-
 class ExecutableBuilder(LinkedBuilder):
 
     BIN = 0
@@ -46,11 +44,11 @@ class ExecutableBuilder(LinkedBuilder):
         self.__what = what
         pass
 
-    def unique_id(self):
+    def locally_unique_id(self):
         # careful: we cannot have exename as part of the builder's
         # id. exename can be manipulated at will by the user during
         # the lifetime of the object.
-        return str(self.__class__)+'('+self.parentbuilder().unique_id()+','+self.center().unique_id()+')'
+        return str(self.__class__) + ':' + self.center().file().name()
 
     def shortname(self):
         return 'C.ExecutableBuilder('+self.exename()+',center='+self.__center.file().name()+')'
@@ -61,6 +59,9 @@ class ExecutableBuilder(LinkedBuilder):
         return self.__exename
     def what(self):
         return self.__what
+
+    def am_compound_name(self):
+        return self.__exename
 
     def output(self):
         LinkedBuilder.output(self)
@@ -76,12 +77,12 @@ class ExecutableBuilder(LinkedBuilder):
         else: assert 0
 
         for m in self.members():
-            mf_am.add_compound_sources(self.__exename, m.file().name())
+            mf_am.add_compound_sources(self.am_compound_name(), m.file().name())
             pass
 
         for fragment in LinkedBuilder.get_linkline(self):
             mf_am.add_compound_ldadd(
-                compound_name=self.__exename,
+                compound_name=self.am_compound_name(),
                 lib=fragment)
             pass
         pass

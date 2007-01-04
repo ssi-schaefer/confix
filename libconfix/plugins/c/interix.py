@@ -36,6 +36,12 @@ class InterixMacroDefiner(Builder):
     def shortname(self):
         return 'C.InterixMacroDefiner'
 
+    def locally_unique_id(self):
+        # I am supposed to the only one of my kind among all the
+        # builders in a directory, so my class suffices as a unique
+        # id.
+        return str(self.__class__)
+
     def enlarge(self):
         self.parentbuilder().directory().set_property('INTERIX_SHARED_COMPILING_MACRO', self.__macroname())
         pass

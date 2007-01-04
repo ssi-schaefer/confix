@@ -43,9 +43,11 @@ class CBaseBuilder(FileBuilder):
     
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
+        pass
 
+    def configure(self):
+        super(CBaseBuilder, self).configure()
         self.__eval_iface()
-        
         pass
 
     def dependency_info(self):

@@ -32,7 +32,7 @@ from libconfix.plugins.c.setup import DefaultCSetup
 class Provide_CInclude_and_Require_CInclude_Suite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-#        self.addTest(Provide_CInclude_and_Require_CInclude('testBasic'))
+        self.addTest(Provide_CInclude_and_Require_CInclude('testBasic'))
         self.addTest(Provide_CInclude_and_Require_CInclude('testIface'))
         pass
     pass

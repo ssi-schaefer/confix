@@ -1,5 +1,3 @@
-# $Id: FILE-HEADER,v 1.4 2006/02/06 21:07:44 jfasch Exp $
-
 # Copyright (C) 2002-2006 Salomon Automation
 
 # This library is free software; you can redistribute it and/or modify
@@ -20,6 +18,7 @@
 from libconfix.core.utils.error import Error
 from libconfix.core.automake.list import List
 from libconfix.core.automake.rule import Rule
+from libconfix.core.automake.include import Include
 from libconfix.core.automake.white import White
 
 import re
@@ -54,6 +53,9 @@ def parse_makefile(lines):
             continue
         if is_rule(my_lines):
             elements.append(consume_rule(my_lines))
+            continue
+        if is_include(my_lines):
+            elements.append(consume_include(my_lines))
             continue
         raise Error('Bad line: "'+my_lines[0]+'"')
     return elements
@@ -114,6 +116,16 @@ def consume_rule(lines):
         rule.add_command(match.group(1))
         pass
     return rule
+
+rex_include = re.compile(r'^\s*include\s+(.*)\s*$')
+def is_include(lines):
+    return rex_include.search(lines[0])
+def consume_include(lines):
+    match = rex_include.search(lines[0])
+    if match is None:
+        raise Error('Error parsing include: '+lines[0])
+    del lines[0]
+    return Include(file=match.group(1))
 
 def collapse_continuations(lines):
     ret = []

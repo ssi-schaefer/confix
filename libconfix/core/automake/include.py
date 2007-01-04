@@ -1,4 +1,3 @@
-# Copyright (C) 2002-2006 Salomon Automation
 # Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
@@ -16,23 +15,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
+from element import MakefileElement
 
-from builder import Builder
-
-class EntryBuilder(Builder):
-    def __init__(self, entry):
-        Builder.__init__(self)
-        self.__entry = entry
+class Include(MakefileElement):
+    def __init__(self, file):
+        MakefileElement.__init__(self)
+        self.__file = file
         pass
-
     def __str__(self):
-        return str(self.__class__)+'('+os.sep.join(self.__entry.abspath())+')'
-        
-    def locally_unique_id(self):
-        return str(self.__class__) + ':' + self.__entry.name()
-    
-    def entry(self):
-        return self.__entry
+        return 'include '+self.__file
+    def file(self):
+        return self.__file
+    def lines(self):
+        return ['include '+self.__file]
     pass
-

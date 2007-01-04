@@ -34,7 +34,7 @@ def dir_for_automake(): return os.path.join('$(datadir)', 'confix2', 'repo')
 class AutomakePackageRepository(CompositePackageRepository):
 
     def __init__(self, prefix):
-        assert type(prefix) in [types.ListType, types.TupleType]
+        assert type(prefix) in [types.ListType, types.TupleType], prefix
 
         CompositePackageRepository.__init__(self)
 

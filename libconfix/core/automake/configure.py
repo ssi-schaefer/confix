@@ -33,7 +33,7 @@ def configure(packageroot, builddir, prefix, readonly_prefixes, args=None, env=N
     if readonly_prefixes is not None:
         ro_args = []
         for rp in readonly_prefixes:
-            assert type(rp) in [types.ListType, types.TupleType]
+            assert type(rp) in [types.ListType, types.TupleType], rp
             ro_args.append(os.sep.join(rp))
             pass
         if len(ro_args):

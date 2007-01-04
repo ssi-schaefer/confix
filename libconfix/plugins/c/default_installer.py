@@ -49,6 +49,12 @@ class DefaultInstaller(Builder):
     def shortname(self):
         return 'C.DefaultInstaller'
 
+    def locally_unique_id(self):
+        # I am supposed to the only one of my kind among all the
+        # builders in a directory, so my class suffices as a unique
+        # id.
+        return str(self.__class__)
+
     def set_installdir(self, dir):
         assert type(dir) is list
         self.__global_installdir = dir

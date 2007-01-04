@@ -34,6 +34,7 @@ from buildinfo import BuildInfoSuite
 from confix2_dir import Confix2_dir_Suite
 from inter_package_inmem import InterPackageInMemorySuite
 from misc import MiscellaneousSuite
+from clusterer.suite_inmem import ClustererInMemorySuite
 
 class CTestSuiteInMemory(unittest.TestSuite):
     def __init__(self):
@@ -53,6 +54,7 @@ class CTestSuiteInMemory(unittest.TestSuite):
         self.addTest(Confix2_dir_Suite())
         self.addTest(InterPackageInMemorySuite())
         self.addTest(MiscellaneousSuite())
+        self.addTest(ClustererInMemorySuite())
 
         self.addTest(AutomakeCSuiteInMemory())
         pass

@@ -34,6 +34,11 @@ class SubdirectoryRecognizer(Builder):
     def shortname(self):
         return 'Hierarchy.SubdirectoryRecognizer'
 
+    def locally_unique_id(self):
+        # I am supposed to be the only SubdirectoryRecognizer in any
+        # given directory, so my class ensures uniqueness.
+        return str(self.__class__)
+
     def enlarge(self):
         Builder.enlarge(self)
 
@@ -50,10 +55,10 @@ class SubdirectoryRecognizer(Builder):
                 errors.append(Error(confix2_dir_file.relpath()+' is not a file'))
                 continue
             try:
-                dirbuilder = DirectoryBuilder(directory=entry)
-                self.parentbuilder().add_builder(dirbuilder)
                 confix2_dir = Confix2_dir(file=confix2_dir_file)
-                dirbuilder.set_configurator(confix2_dir)
+                dirbuilder = DirectoryBuilder(directory=entry, configurator=confix2_dir)
+                dirbuilder.add_builder(confix2_dir)
+                self.parentbuilder().add_builder(dirbuilder)
                 for setup in self.package().setups():
                     setup.setup_directory(directory_builder=dirbuilder)
                     pass

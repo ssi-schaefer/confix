@@ -52,13 +52,15 @@ class LibraryBuilder(LinkedBuilder):
         
         pass
 
-    def unique_id(self):
+    def locally_unique_id(self):
         # careful: we cannot have basename as part of the builder's
         # id. basename can be manipulated at will by the user during
         # the lifetime of the object. but we can be sure that there's
-        # only one library being built in one directory, so it is
-        # sufficient to have our parentbuilder's id to distinguish.
-        return str(self.__class__)+'('+self.parentbuilder().unique_id()+')'
+        # only one library being built in one directory (at least for
+        # the time being - maybe this constraint will go away in the
+        # future, but then we will know), so it is sufficient to have
+        # our class to distinguish.
+        return str(self.__class__)
 
     def shortname(self):
         return 'C.LibraryBuilder('+self.basename()+')'
@@ -72,6 +74,9 @@ class LibraryBuilder(LinkedBuilder):
         else:
             return 'lib'+self.__basename+'.a'
         pass
+
+    def am_compound_name(self):
+        return helper_automake.automake_name(self.libname())
 
     def enlarge(self):
         super(LibraryBuilder, self).enlarge()
@@ -93,15 +98,13 @@ class LibraryBuilder(LinkedBuilder):
         LinkedBuilder.output(self)
 
         mf_am = self.parentbuilder().makefile_am()
-        am_basename = helper_automake.automake_name(self.basename())
-        am_libname = helper_automake.automake_name(self.libname())
 
         if self.use_libtool():
             mf_am.add_ltlibrary(self.libname())
             if self.__libtool_version_info is not None:
-                mf_am.add_compound_ldflags(am_libname, '-version-info %d:%d:%d' % self.__libtool_version_info)
+                mf_am.add_compound_ldflags(self.am_compound_name(), '-version-info %d:%d:%d' % self.__libtool_version_info)
             elif self.__libtool_release_info is not None:
-                mf_am.add_compound_ldflags(am_libname, '-release '+self.__libtool_release_info)
+                mf_am.add_compound_ldflags(self.am_compound_name(), '-release '+self.__libtool_release_info)
                 pass
             pass
         else:
@@ -112,13 +115,13 @@ class LibraryBuilder(LinkedBuilder):
             pass
         
         for m in self.members():
-            mf_am.add_compound_sources(am_libname, m.file().name())
+            mf_am.add_compound_sources(self.am_compound_name(), m.file().name())
             pass
 
         if self.use_libtool():
             for fragment in LinkedBuilder.get_linkline(self):
                 mf_am.add_compound_libadd(
-                    compound_name=am_libname,
+                    compound_name=self.am_compound_name(),
                     lib=fragment)
                 pass
             pass

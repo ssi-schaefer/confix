@@ -23,7 +23,6 @@ from libconfix.core.automake.makefile_am import Makefile_am
 from libconfix.core.digraph import toposort
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
-from libconfix.core.machinery.builder import BuilderSet
 from libconfix.core.machinery.buildinfoset import BuildInformationSet
 from libconfix.core.machinery.dependencyset import DependencySet
 from libconfix.core.machinery.depindex import ProvideMap
@@ -42,17 +41,29 @@ from libconfix.core.utils.error import Error
 from iface import DirectoryBuilderInterfaceProxy
 
 class DirectoryBuilder(EntryBuilder, LocalNode):
+
+    class DuplicateBuilderError(Error):
+        def __init__(self, existing_builder, new_builder):
+            Error.__init__(self, msg='Duplicate builder: existing "'+str(existing_builder)+'", new "'+str(new_builder)+'"')
+            pass
+        pass
+    
     def __init__(self,
-                 directory):
+                 directory,
+                 configurator):
         assert isinstance(directory, Directory)
 
         EntryBuilder.__init__(
             self,
             entry=directory)
         
-        self.__directory = directory
-        self.__configurator = None
-        self.__builders = BuilderSet()
+        self.__directory = directory        
+        self.__configurator = configurator
+
+        # the builders that I maintain, compositely. a dictionary that
+        # maps from the locally unique builder IDs to the builders
+        # themselves.
+        self.__builders = {}
         
         # names of files and directories that are to be ignored
         self.__ignored_entries = set()
@@ -105,15 +116,15 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         return ret
 
     def builders(self):
-        return self.__builders
+        return self.__builders.values()
 
     def add_builder(self, b):
-        try:
-            b.set_owners(parentbuilder=self, package=self.package())
-            self.__builders.add(b)
-        except Error, e:
-            raise Error('In directory '+'/'.join(self.__directory.relpath(self.package().rootdirectory()))+': '
-                        'cannot add builder '+str(b), [e])
+        b.set_parentbuilder(self)
+        id = b.locally_unique_id()
+        existing_builder = self.__builders.get(id)
+        if existing_builder:
+            raise DuplicateBuilderError(existing_builder=existing_builder, new_builder=b)
+        self.__builders[id] = b
         pass
 
     def add_builders(self, builderlist):
@@ -123,23 +134,19 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         pass
 
     def remove_builder(self, b):
-        self.__builders.remove(b)
+        id = b.locally_unique_id()
+        assert self.__builders.has_key(id)
+        del self.__builders[id]
         pass
 
     def configurator(self):
         return self.__configurator
 
-    def set_configurator(self, c):
-        assert self.__configurator is None
-        self.__configurator = c
-        self.add_builder(c)
-        pass
-
     def configure(self):
         super(DirectoryBuilder, self).configure()
         # have my configurator fiddle with me
         if self.__configurator is not None:
-            self.__configurator.enlarge()
+            self.__configurator.configure_directory()
             pass
         pass
 
@@ -152,7 +159,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         self.__makefile_am.add_maintainercleanfiles('Makefile.in')
 
         # let our builders write their output, recursively
-        for b in self.__builders:
+        for b in self.__builders.itervalues():
             b.output()
             assert b.base_output_called() == True, str(b)
             pass
@@ -243,11 +250,10 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
                     self.__prev_requires.is_equal(self.__requires))
 
     def node_managed_builders(self):
-        ret = set()
-        ret.add(self)
-        for b in self.__builders:
+        ret = [self]
+        for b in self.__builders.itervalues():
             if not isinstance(b, Node):
-                ret.add(b)
+                ret.append(b)
                 pass
             pass
         return ret
@@ -272,7 +278,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     def buildinfos(self):
         ret = BuildInformationSet()
         ret.merge(EntryBuilder.buildinfos(self))
-        for b in self.__builders:
+        for b in self.__builders.itervalues():
             if not isinstance(b, Node):
                 ret.merge(b.buildinfos())
                 pass
