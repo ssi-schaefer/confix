@@ -41,11 +41,11 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |      v devlopment/jfasch/library-dependencies
                  |        (dead)
                  |
-                 |
-                 |
-                 |
-                 |
-                 |
-                 |
+                 200----+
+                 |      |
+                 |      |
+                 |      |
+                 |      v TRY-jfasch-builder-init-state
+                 |      
                  v
                trunk
