@@ -1,4 +1,3 @@
-# Copyright (C) 2002-2006 Salomon Automation
 # Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
@@ -16,13 +15,27 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.setup import Setup
+from makefile_utils import MakefileUtilsSuite
+from makefile_am import MakefileAmSuite
+from configure_ac import ConfigureACSuite
+from output import AutomakeOutputSuite
+from iface import InterfaceSuite
 
-from creator import Creator
+import unittest
 
-class IDLSetup(Setup):
-    def initial_builders(self):
-        ret = super(IDLSetup, self).initial_builders()
-        ret.add_builder(Creator())
-        return ret
+class AutomakeInMemorySuite(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+
+        self.addTest(MakefileUtilsSuite())
+        self.addTest(MakefileAmSuite())
+        self.addTest(ConfigureACSuite())
+        self.addTest(AutomakeOutputSuite())
+        self.addTest(InterfaceSuite())
+        pass
+
+    pass
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(AutomakeInMemorySuite())
     pass

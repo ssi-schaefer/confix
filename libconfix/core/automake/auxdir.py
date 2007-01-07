@@ -28,7 +28,7 @@ import os
 
 class AutoconfAuxDirBuilder(DirectoryBuilder):
     def __init__(self, directory):
-        DirectoryBuilder.__init__(self, directory=directory, configurator=None)
+        DirectoryBuilder.__init__(self, directory=directory)
         pass
 
     def output(self):

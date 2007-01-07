@@ -1,3 +1,11 @@
+2007-01-07 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Eliminate the bogus DirectoryBuilder.configurator
+	  story. Builder.initialize() is now responsible for executing the
+	  user's interface calls. Configuration of the directory is now
+	  done by the package's LocalPackage.initial_builders() return
+	  value.
+	  
 2007-01-04 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* libconfix.plugins.c.library_dependencies: generate library

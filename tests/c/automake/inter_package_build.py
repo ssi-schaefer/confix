@@ -208,7 +208,6 @@ class InterPackageBuildWithoutLibtool(InterPackageBuildBase):
     pass
 
 class InstalledIncludeDirTest(PersistentTestCase):
-    def tearDown(self): pass
     def test(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(

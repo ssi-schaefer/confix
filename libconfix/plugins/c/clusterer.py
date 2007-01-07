@@ -208,17 +208,16 @@ class CClustererSetup(Setup):
         self.__use_libtool = use_libtool
         pass
         
-    def setup_directory(self, directory_builder):
-        super(CClustererSetup, self).setup_directory(directory_builder)
+    def initial_builders(self):
+        ret = super(CClustererSetup, self).initial_builders()
         
         clusterer = CClusterer(
             namefinder=self.__namefinder,
             use_libtool=self.__use_libtool)
+        proxy = CClustererInterfaceProxy(object=clusterer)
 
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                CClustererInterfaceProxy(object=clusterer))
-            pass
+        ret.add_builder(clusterer)
+        ret.add_iface_proxy(proxy)
 
-        directory_builder.add_builder(clusterer)
-        pass
+        return ret
+    pass

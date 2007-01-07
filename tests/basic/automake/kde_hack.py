@@ -24,6 +24,7 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.hierarchy.setup import DirectorySetup
 from libconfix.core.automake.kde_hack import KDEHackSetup
 from libconfix.core.automake.auxdir import AutoconfAuxDirBuilder
 from libconfix.core.automake import bootstrap, configure, make
@@ -50,11 +51,22 @@ class KDEHackTest(PersistentTestCase):
         source.add(
             name=const.CONFIX2_DIR,
             entry=File())
+
+        subdir = source.add(
+            name='subdir',
+            entry=Directory())
+        subdir.add(
+            name=const.CONFIX2_DIR,
+            entry=File())
+        
+        
         build = fs.rootdirectory().add(
             name='build',
             entry=Directory())
 
-        package=LocalPackage(rootdirectory=source, setups=[KDEHackSetup()])
+        package=LocalPackage(rootdirectory=source,
+                             setups=[KDEHackSetup(),
+                                     DirectorySetup()])
         package.boil(external_nodes=[])
         package.output()
 

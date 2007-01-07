@@ -16,18 +16,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from dirbuilder import DirectoryBuilder
+from confix2_dir import Confix2_dir
+
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
-from dirbuilder import DirectoryBuilder
-from confix2_dir import Confix2_dir
+import os
 
 class SubdirectoryRecognizer(Builder):
     def __init__(self):
         Builder.__init__(self)
+        # remember directories that we already saw.
         self.__recognized_directories = set()
         pass
 
@@ -40,6 +43,12 @@ class SubdirectoryRecognizer(Builder):
         return str(self.__class__)
 
     def enlarge(self):
+        """
+        If my parentbuilder has any subdirectories, see if they
+        contain a Confix2.dir file. If any, wrap DirectoryBuilder
+        objects around them and add them to the parentbuilder.
+        """
+        
         Builder.enlarge(self)
 
         errors = []
@@ -54,22 +63,20 @@ class SubdirectoryRecognizer(Builder):
             if not isinstance(confix2_dir_file, File):
                 errors.append(Error(confix2_dir_file.relpath()+' is not a file'))
                 continue
+
             try:
-                confix2_dir = Confix2_dir(file=confix2_dir_file)
-                dirbuilder = DirectoryBuilder(directory=entry, configurator=confix2_dir)
-                dirbuilder.add_builder(confix2_dir)
-                self.parentbuilder().add_builder(dirbuilder)
-                for setup in self.package().setups():
-                    setup.setup_directory(directory_builder=dirbuilder)
-                    pass
                 self.__recognized_directories.add(entry)
+                dirbuilder = DirectoryBuilder(directory=entry)
+                dirbuilder.add_builder(Confix2_dir(file=confix2_dir_file))
+                self.parentbuilder().add_builder(dirbuilder)
             except Error, e:
-                errors.append(Error('Error executing '+os.sep.join(confix2_dir_file.relpath()), [e]))
+                errors.append(Error('Error creating directory builder for '+\
+                                    os.sep.join(self.parentbuilder().directory().relpath(self.package().rootdirectory())), [e]))
                 pass
             pass
         if len(errors):
             raise Error('There were errors in directory '+\
-                        os.sep.join(self.parentbuilder().directory().relpath()), errors)
+                        os.sep.join(self.parentbuilder().directory().relpath(self.package().rootdirectory())), errors)
         pass
     
     pass

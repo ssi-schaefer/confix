@@ -1,6 +1,4 @@
-# $Id: suite.py,v 1.1 2006/07/12 08:42:22 jfasch Exp $
-
-# Copyright (C) 2002-2006 Salomon Automation
+# Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,27 +15,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from makefile_utils import MakefileUtilsSuite
-from makefile_am import MakefileAmSuite
-from configure_ac import ConfigureACSuite
-from output import AutomakeOutputSuite
-from iface import InterfaceSuite
+from kde_hack import KDEHackTestSuiteBuild
 
 import unittest
 
-class AutomakeSuite(unittest.TestSuite):
+class AutomakeBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-
-        self.addTest(MakefileUtilsSuite())
-        self.addTest(MakefileAmSuite())
-        self.addTest(ConfigureACSuite())
-        self.addTest(AutomakeOutputSuite())
-        self.addTest(InterfaceSuite())
+        self.addTest(KDEHackTestSuiteBuild())
         pass
-
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeSuite())
+    unittest.TextTestRunner().run(AutomakeBuildSuite())
     pass

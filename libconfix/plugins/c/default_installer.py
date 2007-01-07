@@ -179,15 +179,14 @@ class DefaultInstallerInterfaceProxy(InterfaceProxy):
     pass
 
 class DefaultInstallerSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(DefaultInstallerSetup, self).setup_directory(directory_builder)
+    def initial_builders(self):
+        ret = super(DefaultInstallerSetup, self).initial_builders()
 
         installer = DefaultInstaller()
-        directory_builder.add_builder(installer)
-        
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                DefaultInstallerInterfaceProxy(object=installer))
-            pass
-        pass
+        proxy = DefaultInstallerInterfaceProxy(object=installer)
+
+        ret.add_builder(installer)
+        ret.add_iface_proxy(proxy)
+
+        return ret
     pass

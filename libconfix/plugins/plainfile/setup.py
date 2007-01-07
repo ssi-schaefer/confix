@@ -18,17 +18,22 @@
 
 from libconfix.core.machinery.setup import Setup
 
-from iface import ADD_PLAINFILE_InterfaceProxy
+from iface import \
+     ADD_PLAINFILE_InterfaceProxy, \
+     MethodPassThrough
 from creator import PlainFileCreator
 
 class PlainFileInterfaceSetup(Setup):
-    def setup_directory(self, directory_builder):
-        Setup.setup_directory(self, directory_builder)
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                ADD_PLAINFILE_InterfaceProxy(object=directory_builder))
-            pass
-        pass
+    def initial_builders(self):
+        ret = super(PlainFileInterfaceSetup, self).initial_builders()
+
+        pass_through_builder = MethodPassThrough(id=str(self.__class__))
+        proxy = ADD_PLAINFILE_InterfaceProxy(object=pass_through_builder)
+
+        ret.add_builder(pass_through_builder)
+        ret.add_iface_proxy(proxy)
+
+        return ret
     pass
 
 class PlainFileCreatorSetup(Setup):
@@ -38,12 +43,11 @@ class PlainFileCreatorSetup(Setup):
         self.prefixdir_ = prefixdir
         self.datadir_ = datadir
         pass
-    def setup_directory(self, directory_builder):
-        Setup.setup_directory(self, directory_builder)
-        directory_builder.add_builder(
-            PlainFileCreator(regex=self.regex_,
-                             prefixdir=self.prefixdir_,
-                             datadir=self.datadir_))
-        pass
+    def initial_builders(self):
+        ret = super(PlainFileCreatorSetup, self).initial_builders()
+        ret.add_builder(PlainFileCreator(regex=self.regex_,
+                                         prefixdir=self.prefixdir_,
+                                         datadir=self.datadir_))
+        return ret
     pass
 

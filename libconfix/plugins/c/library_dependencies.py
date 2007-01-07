@@ -26,10 +26,10 @@ from libconfix.core.automake.configure_ac import Configure_ac
 from libconfix.core.utils.paragraph import Paragraph
 
 class LibraryDependenciesFinderSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(LibraryDependenciesFinderSetup, self).setup_directory(directory_builder)
-        directory_builder.add_builder(ExecutableWatcher())
-        pass
+    def initial_builders(self):
+        ret = super(LibraryDependenciesFinderSetup, self).initial_builders()
+        ret.add_builder(ExecutableWatcher())
+        return ret
     pass
         
 class ExecutableWatcher(Builder):

@@ -17,15 +17,19 @@
 # USA
 
 from libconfix.core.machinery.setup import Setup
+from libconfix.core.iface.pass_through import MethodPassThrough
 
 from iface import ADD_SCRIPT_InterfaceProxy
 
 class ScriptSetup(Setup):
-    def setup_directory(self, directory_builder):
-        Setup.setup_directory(self, directory_builder)
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                ADD_SCRIPT_InterfaceProxy(object=directory_builder))
-            pass
-        pass
+    def initial_builders(self):
+        ret = super(ScriptSetup, self).initial_builders()
+
+        pass_through_builder = MethodPassThrough(id=str(self.__class__))
+        proxy = ADD_SCRIPT_InterfaceProxy(object=pass_through_builder)
+
+        ret.add_builder(pass_through_builder)
+        ret.add_iface_proxy(proxy)
+
+        return ret
     pass

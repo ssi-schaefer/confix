@@ -43,8 +43,8 @@ class Builder(FileBuilder):
     def shortname(self):
         return 'IDL.Builder'
 
-    def configure(self):
-        super(Builder, self).configure()
+    def initialize(self, package):
+        super(Builder, self).initialize(package)
         
         lines = self.file().lines()
 

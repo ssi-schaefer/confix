@@ -74,9 +74,8 @@ def do_create_builder(name, entry):
     return None
 
 class CreatorSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(CreatorSetup, self).setup_directory(directory_builder)
-
-        directory_builder.add_builder(Creator())
-        pass
+    def initial_builders(self):
+        ret = super(CreatorSetup, self).initial_builders()
+        ret.add_builder(Creator())
+        return ret
     pass

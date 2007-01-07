@@ -110,6 +110,7 @@ class ModuleNotClosedIsFlat(unittest.TestCase):
                                setups=[IDLSetup()])
         package.boil(external_nodes=[])
         idl_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.idl'])
+        self.failIf(idl_builder is None)
         self.failUnlessEqual(idl_builder.install_path(), [])
         pass
     pass

@@ -21,7 +21,9 @@ import types
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.iface.pass_through import MethodPassThrough
 from libconfix.core.filesys.file import File
 
 from builder import PlainFileBuilder
@@ -53,13 +55,13 @@ class ADD_PLAINFILE_InterfaceProxy(InterfaceProxy):
                 raise Error('ADD_PLAINFILE('+filename+'): prefixdir', [e])
             pass
         
-        file = self.object_.directory().find([filename])
+        file = self.object_.parentbuilder().directory().find([filename])
         if file is None:
             raise Error('ADD_PLAINFILE('+filename+'): no such file or directory')
         if not isinstance(file, File):
             raise Error('ADD_PLAINFILE('+filename+'): not a file')
 
-        self.object_.add_builder(
+        self.object_.parentbuilder().add_builder(
             PlainFileBuilder(file=file,
                              datadir=the_datadir,
                              prefixdir=the_prefixdir))

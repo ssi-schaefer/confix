@@ -35,6 +35,7 @@ from libconfix.core.machinery.provide_string import Provide_String
 from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileManager
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.require_string import Require_String
+from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
@@ -49,8 +50,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         pass
     
     def __init__(self,
-                 directory,
-                 configurator):
+                 directory):
         assert isinstance(directory, Directory)
 
         EntryBuilder.__init__(
@@ -58,7 +58,6 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
             entry=directory)
         
         self.__directory = directory        
-        self.__configurator = configurator
 
         # the builders that I maintain, compositely. a dictionary that
         # maps from the locally unique builder IDs to the builders
@@ -81,6 +80,37 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         # initialize collected dependency information
         self.__init_dep_info()
 
+        pass
+
+    def initialize(self, package):
+        """
+        Get basic setup information from the package (initial
+        builders, accompanied with interface proxies to mainpulate
+        them). Initialize member builders."""
+
+        initial_builders = package.get_initial_builders()
+        self.add_builders(initial_builders.builders())
+        
+        for b in self.__builders.itervalues():
+            # this is an unfortunate coupling between DirectoryBuilder
+            # and Confix2_dir. we do not want to know anyting about
+            # the builder's type. rather, we'd want to know if the
+            # builder is capable of executing interface methods.
+            if isinstance(b, Confix2_dir):
+                b.add_iface_proxies(initial_builders.iface_proxies())
+                pass
+            pass
+
+        super(DirectoryBuilder, self).initialize(package=package)
+        assert self.package() is not None # initialize() should have done that.
+
+        # then, initialize my builders, recursively. copy the initial
+        # list bcause it may change under the hood.
+        for b in self.__builders.values()[:]:
+            assert not b.is_initialized()
+            b.initialize(package=self.package())
+            assert b.is_initialized()
+            pass
         pass
 
     def shortname(self):
@@ -119,12 +149,28 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         return self.__builders.values()
 
     def add_builder(self, b):
+        """
+        Add one builder to my managees. Check for its uniqueness.
+        Initialize it if I am already initialized myself.
+        """
+
         b.set_parentbuilder(self)
-        id = b.locally_unique_id()
-        existing_builder = self.__builders.get(id)
+        unique_id = b.locally_unique_id()
+        existing_builder = self.__builders.get(unique_id)
         if existing_builder:
-            raise DuplicateBuilderError(existing_builder=existing_builder, new_builder=b)
-        self.__builders[id] = b
+            raise DirectoryBuilder.DuplicateBuilderError(existing_builder=existing_builder, new_builder=b)
+        self.__builders[unique_id] = b
+
+        # if I am initialized, then I must ensure that any builder is
+        # initialized before anybody can get his hands on it.
+
+        if self.is_initialized():
+            assert self.package(), self
+            assert not b.is_initialized(), b
+            b.initialize(package=self.package())
+            assert b.is_initialized(), b
+            pass
+        
         pass
 
     def add_builders(self, builderlist):
@@ -134,20 +180,9 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         pass
 
     def remove_builder(self, b):
-        id = b.locally_unique_id()
-        assert self.__builders.has_key(id)
-        del self.__builders[id]
-        pass
-
-    def configurator(self):
-        return self.__configurator
-
-    def configure(self):
-        super(DirectoryBuilder, self).configure()
-        # have my configurator fiddle with me
-        if self.__configurator is not None:
-            self.__configurator.configure_directory()
-            pass
+        unique_id = b.locally_unique_id()
+        assert self.__builders.has_key(unique_id)
+        del self.__builders[unique_id]
         pass
 
     def output(self):
@@ -299,5 +334,5 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         self.__provides = DependencySet(klass=Provide, string_klass=Provide_String)
         self.__requires = DependencySet(klass=Require, string_klass=Require_String)
         pass
-    
+
     pass

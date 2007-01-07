@@ -30,7 +30,7 @@ from resolve import ResolveTestSuite
 from relate import RelateTestSuite
 from package_file import PackageFileSuite
 from pseudo_handwritten import PseudoHandwrittenSuite
-from automake.suite import AutomakeSuite
+from automake.suite_inmem import AutomakeInMemorySuite
 from config.suite import ConfigSuite
 from misc import MiscellaneousSuite
 
@@ -55,7 +55,7 @@ class BasicTestSuiteInMemory(unittest.TestSuite):
         self.addTest(RelateTestSuite())
         self.addTest(PackageFileSuite())
         self.addTest(PseudoHandwrittenSuite())
-        self.addTest(AutomakeSuite())
+        self.addTest(AutomakeInMemorySuite())
         self.addTest(ConfigSuite())
         self.addTest(MiscellaneousSuite())
         pass

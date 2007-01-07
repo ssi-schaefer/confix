@@ -16,11 +16,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from initial import InitialBuilders
+
 class Setup(object):
     def __init__(self):
         pass
-    def setup_directory(self, directory_builder):
-        pass
+    def initial_builders(self):
+        return InitialBuilders()
     pass
 
 class CompositeSetup(Setup):
@@ -29,12 +31,11 @@ class CompositeSetup(Setup):
         self.setups_ = setups
         pass
 
-    def setup_directory(self, directory_builder):
-        super(CompositeSetup, self).setup_directory(directory_builder)
-
+    def initial_builders(self):
+        ret = super(CompositeSetup, self).initial_builders()
         for s in self.setups_:
-            s.setup_directory(directory_builder)
+            ret.add(s.initial_builders())
             pass
-        pass
+        return ret
 
     pass

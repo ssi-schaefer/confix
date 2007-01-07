@@ -22,13 +22,29 @@ import re
 
 from libconfix.core.automake.auxdir import AutoconfAuxDirBuilder
 from libconfix.core.machinery.setup import Setup
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
 
 class KDEHackSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(KDEHackSetup, self).setup_directory(directory_builder)
-        if not isinstance(directory_builder, AutoconfAuxDirBuilder):
+    def initial_builders(self):
+        ret = super(KDEHackSetup, self).initial_builders()
+        ret.add_builder(AutoconfAuxDirWatcher())
+        return ret
+    pass
+
+class AutoconfAuxDirWatcher(Builder):
+    """ On enlarge(), if my parent directory is of type
+    AutoconfAuxDirBuilder, put the necessary files in it."""
+
+    def locally_unique_id(self):
+        # I am supposed to be the only one of my kind in a given
+        # directory, so my class suffices as an ID.
+        return str(self.__class__)
+    
+    def enlarge(self):
+        super(AutoconfAuxDirWatcher, self).enlarge()
+        if not isinstance(self.parentbuilder(), AutoconfAuxDirBuilder):
             return
 
         try:
@@ -44,10 +60,11 @@ class KDEHackSetup(Setup):
         if not os.path.isfile(config_pl):
             raise Error('Cannot apply KDE hack: '+config_pl+' not found')
 
-        directory_builder.eat_file(sourcename=conf_change_pl, mode=0755)
-        directory_builder.eat_file(sourcename=config_pl, mode=0755)
+        self.parentbuilder().eat_file(sourcename=conf_change_pl, mode=0755)
+        self.parentbuilder().eat_file(sourcename=config_pl, mode=0755)
         pass
     pass
+        
 
 def patch_configure_script(packageroot):
     filename = os.sep.join(packageroot+['configure'])

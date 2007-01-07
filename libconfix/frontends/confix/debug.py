@@ -23,13 +23,10 @@ from libconfix.core.machinery.setup import Setup
 class DebugSetup(Setup):
     def __init__(self, parameters):
         pass
-
-    def setup_directory(self, directory_builder):
-        super(DebugSetup, self).setup_directory(directory_builder)
-        if directory_builder is directory_builder.package().rootbuilder():
-            directory_builder.add_builder(DebugBuilder())
-            pass
-        pass
+    def initial_builders(self):
+        ret = super(DebugSetup, self).initial_builders()
+        ret.add_builder(DebugBuilder())
+        return ret
     pass
 
 class DebugBuilder(Builder):
@@ -43,6 +40,8 @@ class DebugBuilder(Builder):
         
     def enlarge(self):
         super(DebugBuilder, self).enlarge()
+        if not self.parentbuilder() is self.package().rootbuilder():
+            return
         print 'ENLARGE ROUND #'+str(self.__round)
         self.__round += 1
         self.__output_builders(directory_builder=self.parentbuilder(), indent=0)

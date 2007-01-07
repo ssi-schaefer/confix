@@ -57,9 +57,13 @@ class RelateBasic(unittest.TestCase):
         package.boil(external_nodes=[])
 
         lodirbuilder = find.find_entrybuilder(package.rootbuilder(), ['lo'])
+        self.failIf(lodirbuilder is None)
         hidirbuilder = find.find_entrybuilder(package.rootbuilder(), ['hi'])
+        self.failIf(hidirbuilder is None)
         lofilebuilder = find.find_entrybuilder(package.rootbuilder(), ['lo', 'lo.iface'])
+        self.failIf(lofilebuilder is None)
         hifilebuilder = find.find_entrybuilder(package.rootbuilder(), ['hi', 'hi.iface'])
+        self.failIf(hifilebuilder is None)
 
         self.failIf(lofilebuilder.successors() is None)
         self.failUnlessEqual(len(lofilebuilder.successors()), 0)

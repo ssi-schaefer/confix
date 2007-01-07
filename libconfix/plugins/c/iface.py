@@ -19,6 +19,7 @@
 import os, types
 
 from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.iface.pass_through import MethodPassThrough
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.provide_string import Provide_String
 from libconfix.core.machinery.require import Require
@@ -144,18 +145,19 @@ class TESTS_ENVIRONMENT_InterfaceProxy(InterfaceProxy):
     pass
 
 class InterfaceSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(InterfaceSetup, self).setup_directory(directory_builder)
+    def initial_builders(self):
+        ret = super(InterfaceSetup, self).initial_builders()
 
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                EXTERNAL_LIBRARY_InterfaceProxy(object=directory_builder.configurator()))
-            directory_builder.configurator().add_method(
-                REQUIRE_H_InterfaceProxy(object=directory_builder.configurator()))
-            directory_builder.configurator().add_method(
-                PROVIDE_H_InterfaceProxy(object=directory_builder.configurator()))
-            directory_builder.configurator().add_method(
-                TESTS_ENVIRONMENT_InterfaceProxy(object=directory_builder.configurator()))
+        pass_through_builder = MethodPassThrough(id=str(self.__class__))
+        ret.add_builder(pass_through_builder)
+        
+        for proxy in [EXTERNAL_LIBRARY_InterfaceProxy(object=pass_through_builder),
+                      REQUIRE_H_InterfaceProxy(object=pass_through_builder),
+                      PROVIDE_H_InterfaceProxy(object=pass_through_builder),
+                      TESTS_ENVIRONMENT_InterfaceProxy(object=pass_through_builder)]:
+            ret.add_iface_proxy(proxy)
             pass
-        pass
+
+        return ret
+
     pass

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.setup import Setup
+from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.hierarchy.setup import DirectorySetup
 
 from libconfix.plugins.c.setup import DefaultCSetup
@@ -25,23 +25,18 @@ from libconfix.plugins.script.setup import ScriptSetup
 from libconfix.plugins.idl.setup import IDLSetup
 from libconfix.plugins.make.setup import MakeSetup
 
-class ConfixSetup(Setup):
+class ConfixSetup(CompositeSetup):
     def __init__(self,
                  use_libtool,
                  short_libnames):
-        Setup.__init__(self)
-        self.setups_ = [DirectorySetup(),
-                        DefaultCSetup(short_libnames=short_libnames, use_libtool=use_libtool),
-                        ScriptSetup(),
-                        IDLSetup(),
-                        PlainFileInterfaceSetup(),
-                        MakeSetup()]
+        CompositeSetup.__init__(
+            self,
+            [DirectorySetup(),
+             DefaultCSetup(short_libnames=short_libnames, use_libtool=use_libtool),
+             ScriptSetup(),
+             IDLSetup(),
+             PlainFileInterfaceSetup(),
+             MakeSetup()])
         pass
 
-    def setup_directory(self, directory_builder):
-        Setup.setup_directory(self, directory_builder)
-        for setup in self.setups_:
-            setup.setup_directory(directory_builder)
-            pass
-        pass
     pass

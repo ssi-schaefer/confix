@@ -49,28 +49,27 @@ class Confix2_dir(FileBuilder):
 
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
-        self.__executed = False
         self.__external_ifaces = []
         pass
 
     def shortname(self):
         return 'Hierarchy.Confix2_dir'
 
-    def add_method(self, method):
+    def add_iface_proxy(self, proxy):
         # adding code after executing is considered a programming
         # error.
-        assert not self.__executed
-        
-        self.__external_ifaces.append(method)
+        assert not self.is_initialized()
+        self.__external_ifaces.append(proxy)
         pass
 
-    def configure_directory(self):
+    def add_iface_proxies(self, proxies):
+        for p in proxies:
+            self.add_iface_proxy(p)
+            pass
+        pass
 
-        """ Called by the DirectoryBuilder when that is configure()ed."""
-        
-        assert not self.__executed
-        self.__executed = True
-
+    def initialize(self, package):
+        super(Confix2_dir, self).initialize(package)
         try:
             # take the externally provided methods, plus our
             # directory's (don't take our own -- we're here to

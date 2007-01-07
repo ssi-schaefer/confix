@@ -34,11 +34,13 @@ class ADD_SCRIPT_InterfaceProxy(InterfaceProxy):
         if type(filename) is not types.StringType:
             raise Error('ADD_SCRIPT(): filename must be a string')
 
-        file = self.object_.directory().find([filename])
+        file = self.object_.parentbuilder().directory().find([filename])
         if file is None:
             raise Error('ADD_SCRIPT('+filename+'): no such file or directory')
         if not isinstance(file, File):
             raise Error('ADD_SCRIPT('+filename+'): not a file')
 
-        self.object_.add_builder(ScriptBuilder(file=file))
+        self.object_.parentbuilder().add_builder(ScriptBuilder(file=file))
         pass
+
+    pass

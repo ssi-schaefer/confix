@@ -16,8 +16,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-import types
+from setup import Setup
+from package import Package
+from local_node import LocalNode
+from installed_package import InstalledPackage
+from edgefinder import EdgeFinder
+from filebuilder import FileBuilder
+from initial import InitialBuilders
+import readonly_prefixes
 
 from libconfix.core.digraph import algorithm
 from libconfix.core.digraph import toposort
@@ -36,13 +42,8 @@ from libconfix.core.iface.executor import InterfaceExecutor
 from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 
-from setup import Setup
-from package import Package
-from local_node import LocalNode
-from installed_package import InstalledPackage
-from edgefinder import EdgeFinder
-from filebuilder import FileBuilder
-import readonly_prefixes
+import os
+import types
 
 class LocalPackage(Package):
 
@@ -71,18 +72,20 @@ class LocalPackage(Package):
         if self.__version is None:
             raise Error(const.CONFIX2_PKG+': package version has not been set')
 
-        # slurp in Confix2.dir which will act as the rootbuilder's
-        # configurator object. the setup objects will be asked to
-        # contribute to the configurator object's interface.
         try:
+            # create our root builder, but only if we have a
+            # Confix2.dir file. (hmm: I don't believe that we should
+            # absolutely insist in having Confix2.dir - the mere fact
+            # that this is the root directory of the package should
+            # suffice.)
             confix2_dir_file = rootdirectory.get(const.CONFIX2_DIR)
             if confix2_dir_file is None:
                 raise Error(const.CONFIX2_DIR+' missing in '+os.sep.join(rootdirectory.abspath()))
             if not isinstance(confix2_dir_file, File):
                 raise Error(os.sep.join(confix2_dir_file.abspath())+' is not a file')
             confix2_dir = Confix2_dir(file=confix2_dir_file)
-            # setup rootbuilder.
-            self.__rootbuilder = DirectoryBuilder(directory=rootdirectory, configurator=confix2_dir)
+            
+            self.__rootbuilder = DirectoryBuilder(directory=rootdirectory)
             self.__rootbuilder.add_builder(confix2_dir)
         except Error, e:
             raise Error('Cannot initialize package in '+'/'.join(rootdirectory.abspath()), [e])
@@ -98,14 +101,9 @@ class LocalPackage(Package):
         self.__auxdir = AutoconfAuxDirBuilder(directory=dir)
         self.__rootbuilder.add_builder(self.__auxdir)
 
-        # setup the rootbuilder and auxdir. be careful to use
-        # self.__setups instead of the __init__ parameter setups -- the
-        # config file may have changed it under the hood.
-        for dir in [self.__rootbuilder, self.__auxdir]:
-            for setup in self.__setups:
-                setup.setup_directory(directory_builder=dir)
-                pass
-            pass
+        # now's the time to make everyone aware that we're no fun
+        # anymore.
+        self.__rootbuilder.initialize(package=self)
 
         pass
 
@@ -136,6 +134,16 @@ class LocalPackage(Package):
     def set_setups(self, ss):
         self.__setups = ss[:]
         pass
+    def get_initial_builders(self):
+        """
+        Called by DirectoryBuilder objects that are just being
+        initialized, to get initial builders and interface proxies.
+        """
+        ret = InitialBuilders()
+        for s in self.__setups:
+            ret.add(s.initial_builders())
+            pass
+        return ret
 
     def configure_ac(self):
         return self.__configure_ac
@@ -150,11 +158,6 @@ class LocalPackage(Package):
 
     def boil(self, external_nodes):
         builders = self.__collect_builders()
-
-        # one of my responsibilities (god am I responsible) is to call
-        # every builder's configure() method once before the game
-        # begins. remember the configured builders.
-        configured_builders = set()
 
         nodes = set()
         depinfo_per_node = {}
@@ -171,19 +174,6 @@ class LocalPackage(Package):
                 if loop_count > 1000:
                     raise Error('Enlarge-loop entered for a ridiculously large number of times '
                                 '(some Builder must be misbehaving)')
-
-                # for those that are new among us, tell them some
-                # basic properties
-                for b in builders:
-                    if b.package() is None:
-                        b.set_package(self)
-                        pass
-                    if not b in configured_builders:
-                        b.configure()
-                        assert b.base_configure_called(), type(b)
-                        configured_builders.add(b)
-                        pass
-                    pass
 
                 # doit baby!
                 for b in builders:

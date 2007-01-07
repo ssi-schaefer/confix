@@ -50,7 +50,6 @@ class Builder(object):
         # flags to ensure that every derived builder's methods have
         # called their immediate base's methods that they overload,
         # and that the chain did reach the base of all builders.
-        self.__base_configure_called = False
         self.__base_enlarge_called = False
         self.__base_dependency_info_called = False
         self.__base_relate_called = False
@@ -83,15 +82,11 @@ class Builder(object):
     
     def package(self):
         return self.__package
-    def set_package(self, package):
-        assert self.__package is None
-        self.__package = package
-        pass
 
     def parentbuilder(self):
         return self.__parentbuilder
     def set_parentbuilder(self, parentbuilder):
-        assert self.__parentbuilder is None
+        assert self.__parentbuilder is None, self
         self.__parentbuilder = parentbuilder
         pass
 
@@ -113,9 +108,28 @@ class Builder(object):
         self.__buildinfos.add(b)
         pass
 
-    def configure(self):
-        assert not self.__base_configure_called
-        self.__base_configure_called = True
+    def is_initialized(self):
+        """
+        See initialize().
+        """
+        return self.__package is not None
+
+    def initialize(self, package):
+        """
+        Initialize the builder object; called once in an object's
+        lifetime.
+
+        The base class implementation does nothing but remembering the
+        package. Derived classes may implement something complicated
+        like parsing their file's content for confix calls, or
+        searching for C++ namespace definitions, or whatnot.
+
+        It a derived class implements this method, however, it must
+        make sure that it hands the call upwards the inheritance
+        chain; else, it won't see the package being set.
+        """
+        assert not self.is_initialized(), self
+        self.__package = package
         pass
     
     def buildinfos(self):
@@ -155,11 +169,6 @@ class Builder(object):
 
     # these are mainly for use by test programs, and serve no real
     # functionality
-    def base_configure_called(self):
-        if self.__base_configure_called:
-            self.__base_configure_called = False
-            return True
-        return False
     def base_dependency_info_called(self):
         if self.__base_dependency_info_called:
             self.__base_dependency_info_called = False

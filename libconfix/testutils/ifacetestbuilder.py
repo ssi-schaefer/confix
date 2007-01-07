@@ -28,10 +28,10 @@ class FileInterfaceTestSetup(Setup):
     def __init__(self):
         Setup.__init__(self)
         pass
-    def setup_directory(self, directory_builder):
-        Setup.setup_directory(self, directory_builder)
-        directory_builder.add_builder(FileInterfaceTestCreator())
-        pass
+    def initial_builders(self):
+        ret = super(FileInterfaceTestSetup, self).initial_builders()
+        ret.add_builder(FileInterfaceTestCreator())
+        return ret
     pass
 
 class FileInterfaceTestCreator(Builder):

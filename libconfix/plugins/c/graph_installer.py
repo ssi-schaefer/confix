@@ -141,16 +141,14 @@ class GraphInstallerInterfaceProxy(InterfaceProxy):
     pass
 
 class GraphInstallerSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(GraphInstallerSetup, self).setup_directory(directory_builder)
+    def initial_builders(self):
+        ret = super(GraphInstallerSetup, self).initial_builders()
 
         installer = GraphInstaller()
+        proxy = GraphInstallerInterfaceProxy(object=installer)
 
-        directory_builder.add_builder(installer)
+        ret.add_builder(installer)
+        ret.add_iface_proxy(proxy)
 
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                GraphInstallerInterfaceProxy(object=installer))
-            pass
-        pass
+        return ret
     pass

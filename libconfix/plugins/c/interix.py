@@ -21,10 +21,10 @@ from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
 
 class InterixSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(InterixSetup, self).setup_directory(directory_builder)
-        directory_builder.add_builder(InterixMacroDefiner())
-        pass
+    def initial_builders(self):
+        ret = super(InterixSetup, self).initial_builders()
+        ret.add_builder(InterixMacroDefiner())
+        return ret
     pass
 
 class InterixMacroDefiner(Builder):

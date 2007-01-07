@@ -45,8 +45,8 @@ class CBaseBuilder(FileBuilder):
         FileBuilder.__init__(self, file=file)
         pass
 
-    def configure(self):
-        super(CBaseBuilder, self).configure()
+    def initialize(self, package):
+        super(CBaseBuilder, self).initialize(package)
         self.__eval_iface()
         pass
 
