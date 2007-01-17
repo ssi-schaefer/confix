@@ -149,7 +149,7 @@ def BOIL():
         #profile.runctx('package.boil(external_nodes=external_nodes)', {'package':package, 'external_nodes':external_nodes} ,{})
         package.boil(external_nodes=external_nodes)
     except CycleError, e:
-        for l in core.helper.format_cycle_error(e):
+        for l in helper.format_cycle_error(e):
             sys.stderr.write(l+'\n')
             pass
         return 1
