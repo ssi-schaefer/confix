@@ -1,3 +1,10 @@
+2007-01-17 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Add tests (inmem and build) for explicit executable names
+	* setup.py: try to put all modules into the distribution packages
+	  (maybe someone will invent recursive_packages one day)
+	* Release 2.0.0pre19
+
 2007-01-07 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* Eliminate the bogus DirectoryBuilder.configurator

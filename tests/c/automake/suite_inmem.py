@@ -26,6 +26,7 @@ from intra_package_inmem import IntraPackageInMemorySuite
 from check_inmem import CheckProgramInMemorySuite
 from external_library import ExternalLibraryInMemorySuite
 from library_dependencies.suite_inmem import LibraryDependenciesInMemorySuite
+from exename.suite_inmem import ExecutableNameInMemorySuite
 
 import unittest
 
@@ -42,6 +43,7 @@ class AutomakeCSuiteInMemory(unittest.TestSuite):
         self.addTest(CheckProgramInMemorySuite())
         self.addTest(ExternalLibraryInMemorySuite())
         self.addTest(LibraryDependenciesInMemorySuite())
+        self.addTest(ExecutableNameInMemorySuite())
         pass
     pass
 
