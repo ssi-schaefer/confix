@@ -56,9 +56,9 @@ Write a test for every single feature
 Most of the tests can be written in a fire-and-forget way (you don't
 need to clean up memory), and in fact it is quite easy to write
 tests. So, no feature should ever be implemented without writing a
-test first. Yes, Kent Beck's "Test Driven Development" really works,
-and it gives a real good feeling as no feature won't break any other
-feature if tests are written consequently.
+test first. Yes, Test Driven Development really works, and it gives a
+real good feeling as no feature won't break any other feature if tests
+are written consequently.
 
 Source Code Roadmap
 ===================
@@ -96,7 +96,7 @@ The source is basically made up of three parts:
   common user uses to write on the commandline.
 
   Notice that the plural - frontends - suggests that there is more
-  than one frontend. While this is not the case, one may think if
+  than one frontend. While this is not the case, one may think of
   it. At least, the test cases are full of such situations - they
   surely do not use the command line to setup a build.
 
