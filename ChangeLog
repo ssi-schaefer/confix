@@ -1,3 +1,9 @@
+2007-01-22 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* fix "[ 1639330 ] 'CALL_MAKE_AND_RESCAN' is not defined", plus
+	  associated test.
+	* Release 2.0.0pre20
+	
 2007-01-17 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* fix "[ 1620287 ] Cycle error: message output bug"

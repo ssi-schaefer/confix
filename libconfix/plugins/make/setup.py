@@ -18,14 +18,18 @@
 
 from libconfix.core.machinery.setup import Setup
 
-from iface import CALL_MAKE_AND_RESCAN_InterfaceProxy
+from caller import MakeCaller
+from iface import MakeCallerInterfaceProxy
 
 class MakeSetup(Setup):
-    def setup_directory(self, directory_builder):
-        super(MakeSetup, self).setup_directory(directory_builder)
-        if directory_builder.configurator() is not None:
-            directory_builder.configurator().add_method(
-                CALL_MAKE_AND_RESCAN_InterfaceProxy(directory_builder=directory_builder))
-            pass
-        pass
+    def initial_builders(self):
+        ret = super(MakeSetup, self).initial_builders()
+
+        caller = MakeCaller()
+        proxy = MakeCallerInterfaceProxy(caller=caller)
+        
+        ret.add_builder(caller)
+        ret.add_iface_proxy(proxy)
+
+        return ret
     pass

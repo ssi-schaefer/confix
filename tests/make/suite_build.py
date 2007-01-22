@@ -1,4 +1,3 @@
-# Copyright (C) 2002-2006 Salomon Automation
 # Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
@@ -16,26 +15,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-# Confix package version
+from basic import MakeBasicSuite
 
-CONFIX_VERSION = '2.0.0pre20'
+import unittest
 
-# the default name of interface files
-CONFIX2_DIR = 'Confix2.dir'
-CONFIX2_PKG = 'Confix2.pkg'
+class MakeSuiteBuild(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+        self.addTest(MakeBasicSuite())
+        pass
+    pass
 
-# the name of our auxiliary files directory
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(MakeSuiteBuild())
+    pass
 
-AUXDIR = 'confix-admin'
-
-# the name of the include directory that mimics the include directory
-# structure before the files are installed in $(includedir). (this
-# directory is located in $(top_builddir).)
-
-LOCAL_INCLUDE_DIR = 'confix_include'
-
-# name of the per-directory file which contains the list of
-# automatically generated sources (the pseudo hand-written generated
-# files)
-
-PSEUDO_HANDWRITTEN_LIST_FILENAME = '.confix-pseudo-handwritten'

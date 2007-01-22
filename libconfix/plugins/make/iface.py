@@ -22,18 +22,13 @@ from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.filesys import scan
 from libconfix.core.utils.error import Error
 
-class CALL_MAKE_AND_RESCAN_InterfaceProxy(InterfaceProxy):
-    def __init__(self, directory_builder):
+class MakeCallerInterfaceProxy(InterfaceProxy):
+    def __init__(self, caller):
         InterfaceProxy.__init__(self)
-        self.__directory_builder = directory_builder
+        self.__caller = caller
         self.add_global('CALL_MAKE_AND_RESCAN', getattr(self, 'CALL_MAKE_AND_RESCAN'))
         pass
     def CALL_MAKE_AND_RESCAN(self, filename='Makefile', args=[]):
-        args = ['make', '-f', filename] + args
-        if os.spawnvp(os.P_WAIT, 'make', args) != 0:
-            raise Error(
-                'Error calling make in '+\
-                os.sep.join(self.__directory_builder.directory().abspath()))
-        scan.rescan_dir(self.__directory_builder.directory())
+        self.__caller.add_call(filename=filename, args=args)
         pass
     pass

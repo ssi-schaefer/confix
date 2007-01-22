@@ -21,6 +21,7 @@ import unittest
 from basic.suite_build import BasicTestSuiteBuild
 from c.suite_build import CTestSuiteBuild
 from plainfile.suite_build import PlainFileSuiteBuild
+from make.suite_build import MakeSuiteBuild
 
 if __name__ == '__main__':
 
@@ -29,6 +30,7 @@ if __name__ == '__main__':
     suite.addTest(BasicTestSuiteBuild())
     suite.addTest(CTestSuiteBuild())
     suite.addTest(PlainFileSuiteBuild())
+    suite.addTest(MakeSuiteBuild())
 
     runner = unittest.TextTestRunner()
     runner.run(suite)
