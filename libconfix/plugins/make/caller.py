@@ -34,15 +34,7 @@ class MakeCaller(Builder):
 
     def add_call(self, filename, args):
         self.__requested_calls.append((filename, args))
-
-        # FIXME: once TRY-jfasch-nonlocal-headers has been merged, use
-        # Builder.force_enlarge() instead of this crap
-
-        # force one more enlarge round by pretending that dependency
-        # info has changed.
-        self.add_provide(Provide_Symbol(symbol='Bogus dummy crap: '+self.__class__.__name__+':'+str(self.__crap_force_enlarge_round)))
-        self.__crap_force_enlarge_round += 1
-
+        self.__force_enlarge()
         pass
 
     def enlarge(self):
@@ -50,14 +42,6 @@ class MakeCaller(Builder):
 
         if len(self.__requested_calls) == 0:
             return
-
-        # FIXME: once TRY-jfasch-nonlocal-headers has been merged, use
-        # Builder.force_enlarge() instead of this crap
-
-        # force one more enlarge round by pretending that dependency
-        # info has changed.
-        self.add_provide(Provide_Symbol(symbol='Bogus dummy crap: '+self.__class__.__name__+':'+str(self.__crap_force_enlarge_round)))
-        self.__crap_force_enlarge_round += 1
 
         for filename, args in self.__requested_calls:
             external_cmd.exec_program(
@@ -69,8 +53,30 @@ class MakeCaller(Builder):
         # make might have had side effects that we don't see
         # automatically.
         scan.rescan_dir(self.parentbuilder().directory())
+
+        # just in case it had, we tell the machinery to initiate
+        # another round to have them recognized
+        # eventually. performancewise, we could see if the directory
+        # state changed, and only then reiterate. on the other, we can
+        # never know what Makefile writers think and do, and they
+        # could generate files in other directories than the current.
+        self.__force_enlarge()
         
         self.__requested_calls = []
         
+        pass
+
+    def __force_enlarge(self):
+        # FIXME: once TRY-jfasch-nonlocal-headers has been merged, use
+        # Builder.force_enlarge() instead of this crap
+
+        # force one more enlarge round by pretending that dependency
+        # info has changed.
+        self.add_provide(
+            Provide_Symbol(symbol='Bogus dummy crap: '+self.__class__.__name__+\
+                           '(package='+self.package().name()+','
+                           'directory='+'/'.join(self.parentbuilder().directory().relpath(self.package().rootdirectory()))+'):'+\
+                           str(self.__crap_force_enlarge_round)))
+        self.__crap_force_enlarge_round += 1
         pass
     pass

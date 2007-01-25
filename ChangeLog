@@ -1,3 +1,9 @@
+2007-01-25 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Bug fix in plugins.make.caller: ambiguous provide objects
+	  generated.
+	* Release 2.0.0pre21
+
 2007-01-22 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* fix "[ 1639330 ] 'CALL_MAKE_AND_RESCAN' is not defined", plus
