@@ -22,26 +22,23 @@ import traceback
 class Error(Exception):
 
     def __init__(self, msg, list=[]):
-        self.message_ = msg
-        self.list_ = list[:]
-
-    def __repr__(self):
-        list = self.format_list()
-        return '\n'.join(list)
+        self.__message = msg
+        self.__list = list[:]
+        pass
 
     def __str__(self):
         list = self.format_list()
         return '\n'.join(list)
 
     def errors(self):
-        return self.list_
+        return self.__list
 
     def add(self, e):
-        self.list_.append(e)
+        self.__list.append(e)
 
     def format_list(self, offset=0):
-        ret = [' ' * offset + self.message_]
-        for e in self.list_:
+        ret = [' ' * offset + self.__message]
+        for e in self.__list:
             if isinstance(e, Error):
                 ret.extend(e.format_list(offset+2))
             elif isinstance(e, NativeError):

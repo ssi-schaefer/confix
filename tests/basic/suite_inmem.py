@@ -33,6 +33,7 @@ from pseudo_handwritten import PseudoHandwrittenSuite
 from automake.suite_inmem import AutomakeInMemorySuite
 from config.suite import ConfigSuite
 from misc import MiscellaneousSuite
+from urgency_error import UrgencyErrorSuite
 
 import unittest
 
@@ -58,6 +59,7 @@ class BasicTestSuiteInMemory(unittest.TestSuite):
         self.addTest(AutomakeInMemorySuite())
         self.addTest(ConfigSuite())
         self.addTest(MiscellaneousSuite())
+        self.addTest(UrgencyErrorSuite())
         pass
     pass
 

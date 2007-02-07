@@ -23,6 +23,8 @@ from installed_package import InstalledPackage
 from edgefinder import EdgeFinder
 from filebuilder import FileBuilder
 from initial import InitialBuilders
+from require import Require
+from resolve_error import NotResolved
 import readonly_prefixes
 
 from libconfix.core.digraph import algorithm
@@ -54,8 +56,7 @@ class LocalPackage(Package):
 
         self.__setups = setups
 
-        self.__digraph = None
-        self.__local_nodes = None
+        self.__current_digraph = None
 
         # the (contents of) configure.ac and acinclude.m4 we will be
         # writing
@@ -154,7 +155,7 @@ class LocalPackage(Package):
         return self.__rootbuilder
 
     def digraph(self):
-        return self.current_digraph_
+        return self.__current_digraph
 
     def boil(self, external_nodes):
         builders = self.__collect_builders()
@@ -216,17 +217,24 @@ class LocalPackage(Package):
                     pass
                 pass
 
+            # still nothing new. see if everybody is happy.
             if not something_new:
+                if self.__edgefinder is not None:
+                    self.__edgefinder.raise_unresolved()
+                    pass
                 return
 
             # something seems to be new. go calculate the dependency
             # graph.
             all_nodes = nodes.union(set(external_nodes))
-            self.current_digraph_ = DirectedGraph(nodes=all_nodes, edgefinder=EdgeFinder(all_nodes))
+            self.__edgefinder = EdgeFinder(nodes=all_nodes)
+            self.__current_digraph = DirectedGraph(
+                nodes=all_nodes,
+                edgefinder=self.__edgefinder)
 
             # let the nodes communicate with each other.
             for n in nodes:
-                n.node_relate_managed_builders(digraph=self.current_digraph_)
+                n.node_relate_managed_builders(digraph=self.__current_digraph)
                 pass
 
             pass
@@ -337,7 +345,7 @@ class LocalPackage(Package):
                 pass
             pass
 
-        graph = algorithm.subgraph(digraph=self.current_digraph_,
+        graph = algorithm.subgraph(digraph=self.__current_digraph,
                                    nodes=subdir_nodes)
         
         for dirnode in toposort.toposort(digraph=graph, nodes=subdir_nodes):

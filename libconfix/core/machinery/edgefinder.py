@@ -16,42 +16,37 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from depindex import ProvideMap
+from require import Require
+from resolve_error import NotResolved
+
+from libconfix.core.utils import debug
 from libconfix.core.digraph import digraph
 from libconfix.core.utils.error import Error
 
-from depindex import ProvideMap
-from require import Require
-from libconfix.core.utils import debug
-
 class EdgeFinder(digraph.EdgeFinder):
 
-    class RequireNotResolved(Error):
-        def __init__(self, require):
-            Error.__init__(self, 'Require object '+str(require)+' could not be resolved')
-            self.require_ = require
-            pass
-        def require(self):
-            return self.require_
-        pass
-    class SuccessorNotFound(Error):
-        def __init__(self, node, errors):
-            Error.__init__(self, 'Cannot find successors of node '+str(node), errors)
-            self.node_ = node
-            pass
-        def node(self):
-            return self.node_
-        pass
-
     def __init__(self, nodes):
+        """
+        Find successors of a node by matching that node's require
+        objects against the provide objects of all nodes.
+
+        Unresolved require objects are remembered for later use by
+        raise_unresolved().
+        """
+
+        # we remember require objects that we haven't been able to
+        # resolve. list of (require, node).
+        self.__unresolved_requires = []
 
         # index nodes by what they provide, in a fascist manner.
         
-        self.providemap_ = ProvideMap(permissive=False)
+        self.__providemap = ProvideMap(permissive=False)
         errors = []
         for n in nodes:
             for p in n.provides():
                 try:
-                    self.providemap_.add(p, n)
+                    self.__providemap.add(p, n)
                 except Error, e:
                     errors.append(Error('"'+str(p)+'" of node '+str(n), [e]))
                     pass
@@ -63,44 +58,27 @@ class EdgeFinder(digraph.EdgeFinder):
         pass
 
     def find_out_edges(self, node):
-        errors = []
-
         # dictionary:
         #    key: node
         #    value: set of requires that pull in the node
         successors = {}
         
         for r in node.requires():
-            found_nodes = self.providemap_.find_match(r)
+            found_nodes = self.__providemap.find_match(r)
 
             if len(found_nodes) == 0:
-                if r.urgency() == Require.URGENCY_ERROR:
-                    errors.append(EdgeFinder.RequireNotResolved(r))
-                    continue
-                if r.urgency() == Require.URGENCY_WARN:
-                    debug.warn('Require object '+str(r)+' could not be resolved')
-                    continue
-                if r.urgency() == Require.URGENCY_IGNORE:
-                    continue
-                assert 0, 'huh? missed urgency level '+str(r.urgency())
-                pass
-            if len(found_nodes) > 1:
-                errors.append(Error('Found more than one node resolving require object "'+\
-                                    str(r)+': '+\
-                                    str(['.'.join(n.fullname()) for n in found_nodes])))
+                self.__unresolved_requires.append((r, node))
                 continue
-
+            if len(found_nodes) > 1:
+                raise AmbiguouslyResolved(require=r, nodes=found_nodes)
+            
             successor = found_nodes[0]
             assert successor is not node, 'self-cycle detected'
             if not successors.has_key(successor):
                 successors[successor] = set()
                 pass
             successors[successor].add(r)
-
             pass
-
-        if len(errors):
-            raise EdgeFinder.SuccessorNotFound(node, errors)
 
         edges = []
         for succ, requires in successors.iteritems():
@@ -108,3 +86,69 @@ class EdgeFinder(digraph.EdgeFinder):
             pass
 
         return edges
+
+    def raise_unresolved(self):
+        error = NotResolved()
+        for require, node in self.__unresolved_requires:
+            if require.urgency() == Require.URGENCY_ERROR:
+                error.add(require, node)
+                continue
+            if require.urgency() == Require.URGENCY_WARN:
+                debug.warn('Require object '+str(require)+' could not be resolved')
+                continue
+            if require.urgency() == Require.URGENCY_IGNORE:
+                continue
+            assert 0, 'huh? missed urgency level '+str(require.urgency())
+            pass
+        if len(error) > 0:
+            raise error
+        pass
+
+        # jjjj
+
+##     def find_out_edges(self, node):
+##         errors = []
+
+##         # dictionary:
+##         #    key: node
+##         #    value: set of requires that pull in the node
+##         successors = {}
+        
+##         for r in node.requires():
+##             found_nodes = self.__providemap.find_match(r)
+
+##             if len(found_nodes) == 0:
+##                 if r.urgency() == Require.URGENCY_ERROR:
+##                     errors.append(EdgeFinder.RequireNotResolved(r))
+##                     continue
+##                 if r.urgency() == Require.URGENCY_WARN:
+##                     debug.warn('Require object '+str(r)+' could not be resolved')
+##                     continue
+##                 if r.urgency() == Require.URGENCY_IGNORE:
+##                     continue
+##                 assert 0, 'huh? missed urgency level '+str(r.urgency())
+##                 pass
+##             if len(found_nodes) > 1:
+##                 errors.append(Error('Found more than one node resolving require object "'+\
+##                                     str(r)+': '+\
+##                                     str(['.'.join(n.fullname()) for n in found_nodes])))
+##                 continue
+
+##             successor = found_nodes[0]
+##             assert successor is not node, 'self-cycle detected'
+##             if not successors.has_key(successor):
+##                 successors[successor] = set()
+##                 pass
+##             successors[successor].add(r)
+
+##             pass
+
+##         if len(errors):
+##             raise EdgeFinder.SuccessorNotFound(node, errors)
+
+##         edges = []
+##         for succ, requires in successors.iteritems():
+##             edges.append(digraph.Edge(tail=node, head=succ, annotations=requires))
+##             pass
+
+##         return edges

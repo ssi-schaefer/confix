@@ -19,11 +19,18 @@
 import unittest
 
 from libconfix.core.digraph.cycle import CycleError
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.machinery.edgefinder import EdgeFinder
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.require_symbol import Require_Symbol
+from libconfix.core.machinery.provide_symbol import Provide_Symbol
+from libconfix.core.machinery.resolve_error import NotResolved, AmbiguouslyResolved
+from libconfix.core.utils.error import Error
+from libconfix.core.utils import const
 
 from libconfix.testutils import dirhier
 from libconfix.testutils import find
@@ -32,13 +39,13 @@ from libconfix.testutils.ifacetestbuilder import FileInterfaceTestSetup
 class ResolveTestSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(BasicResolveTest())
-        self.addTest(NotResolvedTest())
-        self.addTest(CycleTest())
+        self.addTest(BasicResolveTest('test'))
+        self.addTest(NotResolvedTest('test'))
+        self.addTest(AmbiguousResolveTest('test'))
+        self.addTest(CycleTest('test'))
         pass
 
 class BasicResolveTest(unittest.TestCase):
-    def runTest(self): self.test()
     def test(self):
         fs = dirhier.packageroot()
 
@@ -85,32 +92,55 @@ class BasicResolveTest(unittest.TestCase):
     pass
 
 class NotResolvedTest(unittest.TestCase):
-    def runTest(self): self.test()
     def test(self):
         fs = dirhier.packageroot()
         file = fs.rootdirectory().add(name='x.iface',
                                       entry=File(lines=['REQUIRE_SYMBOL(symbol="unknown_symbol", urgency=URGENCY_ERROR)']))
-
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[FileInterfaceTestSetup()])
-
-        try:
-            package.boil(external_nodes=[])
-            pass
-        except EdgeFinder.SuccessorNotFound, e:
-            self.assert_(e.node() is package.rootbuilder())
-            self.assert_(isinstance(e.errors()[0], EdgeFinder.RequireNotResolved))
-            self.assert_(isinstance(e.errors()[0].require(), Require_Symbol))
-            self.assert_(e.errors()[0].require().symbol() == 'unknown_symbol')
-            return
-
-        self.fail()
+        self.failUnlessRaises(NotResolved, package.boil, external_nodes=[])
         pass
     
     pass
 
+class AmbiguousResolveTest(unittest.TestCase):
+    def test(self):
+        fs = FileSystem(path=[])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=['PACKAGE_NAME("'+self.__class__.__name__+'")',
+                              'PACKAGE_VERSION("1.2.3")']))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File())
+        lo1 = fs.rootdirectory().add(
+            name='lo1',
+            entry=Directory())
+        lo2 = fs.rootdirectory().add(
+            name='lo2',
+            entry=Directory())
+        hi = fs.rootdirectory().add(
+            name='hi',
+            entry=Directory())
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+
+        lo1_builder = DirectoryBuilder(directory=lo1)
+        lo1_builder.add_provide(Provide_Symbol(symbol='the_ambiguous_symbol'))
+        package.rootbuilder().add_builder(lo1_builder)
+
+        lo2_builder = DirectoryBuilder(directory=lo2)
+        lo2_builder.add_provide(Provide_Symbol(symbol='the_ambiguous_symbol'))
+        package.rootbuilder().add_builder(lo2_builder)
+
+        hi_builder = DirectoryBuilder(directory=hi)
+        hi_builder.add_require(Require_Symbol(symbol='the_ambiguous_symbol', found_in=[]))
+        package.rootbuilder().add_builder(hi_builder)
+
+        self.failUnlessRaises(Error, package.boil, external_nodes=[])
+        pass
+    pass
+
 class CycleTest(unittest.TestCase):
-    def runTest(self): self.test()
     def test(self):
         fs = dirhier.packageroot()
 
@@ -128,14 +158,17 @@ class CycleTest(unittest.TestCase):
                                setups=[DirectorySetup(),
                                        FileInterfaceTestSetup()])
         try:
+            print 'boil'
             package.boil(external_nodes=[])
+            print 'done'
         except CycleError:
             return
         self.fail()
         pass
     pass
 
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(ResolveTestSuite())
     pass
 
