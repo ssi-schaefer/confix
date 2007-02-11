@@ -30,15 +30,15 @@ class ProvideMap(Unmarshallable):
         # match (to return as soon as possible, so to say), and to not
         # continue to search for more.
 
-        self.permissive_ = permissive
+        self.__permissive = permissive
 
         # dictionary: require-type -> Index_Provide_String
 
-        self.string_indexes_ = {}
+        self.__string_indexes = {}
 
         # list of tuples (provide-object, Node) (use is deprecated)
         
-        self.rest_ = []
+        self.__rest = []
 
     def find_match(self, require):
 
@@ -47,19 +47,19 @@ class ProvideMap(Unmarshallable):
 
         ret_nodes = []
 
-        index = self.string_indexes_.get(require.__class__)
+        index = self.__string_indexes.get(require.__class__)
         if index:
             ret_nodes.extend(index.find_match(require))
-            if self.permissive_ and len(ret_nodes) > 0:
+            if self.__permissive and len(ret_nodes) > 0:
                 return ret_nodes
             pass
 
         # ask the anti-performant section for a match.
 
-        for p, n in self.rest_:
+        for p, n in self.__rest:
             if p.resolve(require):
                 ret_nodes.append(n)
-                if self.permissive_ and len(ret_nodes) > 0:
+                if self.__permissive and len(ret_nodes) > 0:
                     return ret_nodes
                 pass
             pass
@@ -80,11 +80,11 @@ class ProvideMap(Unmarshallable):
         # and add it there.
 
         for require_type in provide.can_match_classes():
-            index = self.string_indexes_.get(require_type)
+            index = self.__string_indexes.get(require_type)
             if not index:
                 index = Index_Provide_String(type=require_type,
-                                             permissive=self.permissive_)
-                self.string_indexes_[require_type] = index
+                                             permissive=self.__permissive)
+                self.__string_indexes[require_type] = index
                 pass
             index.add(provide, node)
             pass
@@ -96,31 +96,23 @@ class Index_Provide_String(Unmarshallable):
                  type,
                  permissive):
 
-        # the type of the provide objects that I am responsibe for
-
-        self.type_ = type
-
         # same meaning as with our checf, the ProvideMap
-
-        self.permissive_ = permissive
+        self.__permissive = permissive
 
         # map string -> Node
-
-        self.exact_ = {}
+        self.__exact = {}
 
         # list of tuples (prefix-provide, node) 
-        
-        self.prefix_ = []
+        self.__prefix = []
 
         # list of tuples (prefix-provide, node)
-        
-        self.glob_ = []
+        self.__glob = []
 
         pass
 
-    def n_exact(self): return len(self.exact_)
-    def n_prefix(self): return len(self.prefix_)
-    def n_glob(self): return len(self.glob_)
+    def n_exact(self): return len(self.__exact)
+    def n_prefix(self): return len(self.__prefix)
+    def n_glob(self): return len(self.__glob)
 
     def find_match(self, require):
 
@@ -130,26 +122,26 @@ class Index_Provide_String(Unmarshallable):
 
         ret_nodes = []
 
-        node = self.exact_.get(require.string())
+        node = self.__exact.get(require.string())
         if node:
             ret_nodes.append(node)
             pass
 
-        if self.permissive_ and len(ret_nodes) > 0:
+        if self.__permissive and len(ret_nodes) > 0:
             return ret_nodes
 
-        for p, n in self.glob_:
+        for p, n in self.__glob:
             if p.resolve(require):
                 ret_nodes.append(n)
-                if self.permissive_:
+                if self.__permissive:
                     return ret_nodes
                 pass
             pass
 
-        for p, n in self.prefix_:
+        for p, n in self.__prefix:
             if p.resolve(require):
                 ret_nodes.append(n)
-                if self.permissive_:
+                if self.__permissive:
                     return ret_nodes
                 pass
             pass
@@ -158,11 +150,11 @@ class Index_Provide_String(Unmarshallable):
 
     def add(self, provide, node):
         if provide.match() == Provide_String.EXACT_MATCH:
-            existing_node = self.exact_.get(provide.string())
+            existing_node = self.__exact.get(provide.string())
             if existing_node:
                 raise Error('Conflict: '+str(provide)+' already provided by '+str(existing_node))
-            self.exact_[provide.string()] = node
+            self.__exact[provide.string()] = node
         elif provide.match() == Provide_String.PREFIX_MATCH:
-            self.prefix_.append((provide, node))
+            self.__prefix.append((provide, node))
         elif provide.match() == Provide_String.GLOB_MATCH:
-            self.glob_.append((provide, node))
+            self.__glob.append((provide, node))

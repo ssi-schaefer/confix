@@ -51,7 +51,6 @@ class MakeCaller(Builder):
             pass
 
         # make might have had side effects that we don't see
-        # automatically.
         scan.rescan_dir(self.parentbuilder().directory())
 
         # just in case it had, we tell the machinery to initiate
