@@ -1,4 +1,3 @@
-# Copyright (C) 2002-2006 Salomon Automation
 # Copyright (C) 2006 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
@@ -16,19 +15,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from automake.suite_build import AutomakeCSuiteBuild
-from readonly_prefixes.suite_build import ReadonlyPrefixesBuildSuite
-
 import unittest
 
-class CTestSuiteBuild(unittest.TestSuite):
+class ReadonlyPrefixesInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ReadonlyPrefixesBuildSuite())
-        self.addTest(AutomakeCSuiteBuild())
+        self.addTest(ReadonlyPrefixesIncludePathInMemorySuite())
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CTestSuiteBuild())
+    unittest.TextTestRunner().run(ReadonlyPrefixesInMemorySuite())
     pass
