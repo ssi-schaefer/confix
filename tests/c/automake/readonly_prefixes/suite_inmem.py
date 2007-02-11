@@ -15,15 +15,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from incpath import PathsInMemorySuite
+
 import unittest
 
-class ReadonlyPrefixesInMemorySuite(unittest.TestSuite):
+class InMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ReadonlyPrefixesIncludePathInMemorySuite())
+        self.addTest(IncludePathInMemorySuite())
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ReadonlyPrefixesInMemorySuite())
+    unittest.TextTestRunner().run(InMemorySuite())
     pass
