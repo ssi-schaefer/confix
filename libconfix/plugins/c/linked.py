@@ -162,7 +162,7 @@ class LinkedBuilder(Builder):
 
         if using_installed_library:
             native_paths.append('-L$(libdir)')
-            native_paths.append(readonly_prefixes.libpath_subst)
+            native_paths.append('$('+readonly_prefixes.libpath_var+')')
             pass
 
         # in either case (libtool or not), we have to link all

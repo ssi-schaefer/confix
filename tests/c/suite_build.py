@@ -17,14 +17,12 @@
 # USA
 
 from automake.suite_build import AutomakeCSuiteBuild
-from readonly_prefixes.suite_build import ReadonlyPrefixesBuildSuite
 
 import unittest
 
 class CTestSuiteBuild(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ReadonlyPrefixesBuildSuite())
         self.addTest(AutomakeCSuiteBuild())
         pass
     pass

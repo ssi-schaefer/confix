@@ -158,9 +158,7 @@ class CycleTest(unittest.TestCase):
                                setups=[DirectorySetup(),
                                        FileInterfaceTestSetup()])
         try:
-            print 'boil'
             package.boil(external_nodes=[])
-            print 'done'
         except CycleError:
             return
         self.fail()

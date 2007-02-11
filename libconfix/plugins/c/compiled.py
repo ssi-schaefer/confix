@@ -133,7 +133,7 @@ class CompiledCBuilder(CBaseBuilder):
             self.parentbuilder().makefile_am().add_includepath(
                 '-I$(includedir)')
             self.parentbuilder().makefile_am().add_includepath(
-                readonly_prefixes.incpath_subst)
+                '$('+readonly_prefixes.incpath_var+')')
             pass
         # external includes.
         for p in self.external_include_path_:

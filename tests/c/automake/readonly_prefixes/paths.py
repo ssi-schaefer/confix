@@ -22,14 +22,14 @@ from libconfix.plugins.c.setup import DefaultCSetup
 
 import unittest
 
-class ReadonlyPrefixesIncludePathInMemorySuite(unittest.TestSuite):
+class PathsInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ReadonlyPrefixesIncludePathInMemoryTest('test'))
+        self.addTest(PathsInMemoryTest('test'))
         pass
     pass
 
-class ReadonlyPrefixesIncludePathInMemoryTest(unittest.TestCase):
+class PathsInMemoryTest(unittest.TestCase):
     def test(self):
         source = source_tree(testname=self.__class__.__name__)
         lo_dir = source.get('lo')
@@ -45,10 +45,14 @@ class ReadonlyPrefixesIncludePathInMemoryTest(unittest.TestCase):
 
         makefile_am = hi_pkg.rootbuilder().makefile_am()
         self.failUnless('$(readonly_prefixes_incpath)' in makefile_am.includepath())
+        print 
+        hi_ldadd = makefile_am.compound_ldadd(self.__class__.__name__+'-hi_main')
+        self.failIf(hi_ldadd is None)
+        self.failUnless('$(readonly_prefixes_libpath)' in hi_ldadd)
         pass
     pass        
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ReadonlyPrefixesIncludePathInMemorySuite())
+    unittest.TextTestRunner().run(PathsInMemorySuite())
     pass
         
