@@ -45,6 +45,15 @@ class PlainFileBuilder(FileBuilder):
             pass
         pass
 
+    def locally_unique_id(self):
+        if(self.datadir_):
+            prefix = ''.join(self.datadir())
+
+        if(self.prefixdir_):
+            prefix = ''.join(self.prefixdir())
+
+        return prefix + FileBuilder.locally_unique_id(self)
+
     def datadir(self):
         return self.datadir_
 
