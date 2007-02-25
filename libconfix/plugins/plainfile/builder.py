@@ -47,12 +47,12 @@ class PlainFileBuilder(FileBuilder):
 
     def locally_unique_id(self):
         if(self.datadir_):
-            prefix = ''.join(self.datadir())
+            suffix = 'datadir:'+'/'.join(self.datadir())
 
         if(self.prefixdir_):
-            prefix = ''.join(self.prefixdir())
+            suffix = 'prefixdir:'+'/'.join(self.prefixdir())
 
-        return prefix + FileBuilder.locally_unique_id(self)
+        return FileBuilder.locally_unique_id(self)+'-'+suffix
 
     def datadir(self):
         return self.datadir_
