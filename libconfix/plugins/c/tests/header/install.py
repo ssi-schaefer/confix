@@ -29,10 +29,10 @@ from libconfix.testutils import find
 
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.setup import DefaultCSetup
-from libconfix.plugins.c.default_installer import DefaultInstaller
+
 import libconfix.plugins.c.namespace
 
-class DefaultInstallerSuite(unittest.TestSuite):
+class InstallInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(FilePropertyOnly('test'))
@@ -66,9 +66,12 @@ class FilePropertyOnly(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
-        self.failUnlessEqual(find.find_default_installer(rootbuilder=package.rootbuilder(),
-                                                         path=[]).
-                             installpath_of_headerfile('file.h'), ['xxx'])
+
+        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+
+        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['xxx'])
         pass
     pass
 
@@ -88,9 +91,12 @@ class IfaceOnly(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
-        self.failUnlessEqual(find.find_default_installer(rootbuilder=package.rootbuilder(),
-                                                         path=[]).
-                             installpath_of_headerfile('file.h'), ['xxx'])
+
+        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+
+        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['xxx'])
         pass
     pass
 
@@ -111,10 +117,14 @@ class Namespace(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
-        self.failUnlessEqual(find.find_default_installer(rootbuilder=package.rootbuilder(),
-                                                         path=[]).
-                             installpath_of_headerfile('file.h'), ['A'])
+
+        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        
+        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['A'])
         pass
+
     def testNested(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
@@ -133,10 +143,14 @@ class Namespace(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
-        self.failUnlessEqual(find.find_default_installer(rootbuilder=package.rootbuilder(),
-                                                         path=[]).
-                             installpath_of_headerfile('file.h'), ['A', 'B'])
+
+        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+
+        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['A', 'B'])
         pass
+
     def testGlobal(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
@@ -152,10 +166,14 @@ class Namespace(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
-        self.failUnlessEqual(find.find_default_installer(rootbuilder=package.rootbuilder(),
-                                                         path=[]).
-                             installpath_of_headerfile('file.h'), [])
+
+        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+
+        self.failUnlessEqual(file_h_builder.visible_in_directory(), [])
         pass
+
     def testAmbiguousFlat(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
@@ -223,9 +241,12 @@ class Namespace(unittest.TestCase):
                                setups=[DefaultCSetup(short_libnames=False,
                                               use_libtool=False)])
         package.boil(external_nodes=[])
-        self.failUnlessEqual(find.find_default_installer(rootbuilder=package.rootbuilder(),
-                                                         path=[]).
-                             installpath_of_headerfile('file.h'), ['xxx'])
+
+        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+
+        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['xxx'])
         pass
     pass
 
@@ -249,7 +270,7 @@ class IfaceFilePropertyConflict(unittest.TestCase):
                                               use_libtool=False)])
         try:
             package.boil(external_nodes=[])
-        except DefaultInstaller.InstallPathConflict, e:
+        except HeaderBuilder.AmbiguousVisibility, e:
             return
         self.fail()
         pass
@@ -280,10 +301,11 @@ class InstallPriorities(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        self.failUnlessEqual(find.find_default_installer(rootbuilder=package.rootbuilder(),
-                                                 path=[]).
-                             installpath_of_headerfile('file.h'),
-                             ['install','from','dir','iface'])
+        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+
+        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['install','from','dir','iface'])
         pass
     pass
 
@@ -330,6 +352,6 @@ class INSTALLDIR_H_EmptyString(unittest.TestCase):
         
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(DefaultInstallerSuite())
+    unittest.TextTestRunner().run(InstallInMemorySuite())
     pass
 

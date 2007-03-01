@@ -49,6 +49,14 @@ import types
 
 class LocalPackage(Package):
 
+    class InfiniteLoopError(Error):
+        def __init__(self):
+            Error.__init__(self,
+                           'Enlarge-loop entered for a ridiculously large number of times '
+                           '(some Builder must be misbehaving)')
+            pass
+        pass
+
     def __init__(self, rootdirectory, setups):
         self.__name = None
         self.__version = None
@@ -173,18 +181,33 @@ class LocalPackage(Package):
             while True:
                 loop_count += 1
                 if loop_count > 1000:
-                    raise Error('Enlarge-loop entered for a ridiculously large number of times '
-                                '(some Builder must be misbehaving)')
+                    raise self.InfiniteLoopError()
+
+                prev_force_enlarge_count = 0
+                for b in builders:
+                    prev_force_enlarge_count += b.force_enlarge_count()
+                    pass                    
 
                 # doit baby!
+                # ----------
                 for b in builders:
                     b.enlarge()
                     pass
-
-                # re-collect our builders, and see if anything has
-                # changed in the current run.
+                    
+                # re-collect our builders. continue enlarging if
+                # somebody forces us to without necessarily
+                # contributing anything meaningful, of if we have new
+                # builders.
                 prev_builders = builders
                 builders = self.__collect_builders()
+
+                cur_force_enlarge_count = 0
+                for b in builders:
+                    cur_force_enlarge_count += b.force_enlarge_count()
+                    pass
+                if prev_force_enlarge_count < cur_force_enlarge_count:
+                    continue
+                
                 if self.__equal_builders(prev_builders, builders):
                     builders = prev_builders
                     break

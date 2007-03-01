@@ -1,3 +1,15 @@
+2007-03-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* core.machinery.builder.Builder: new method force_enlarge() which
+	  can be used to easily request another enlarge round. (people
+	  used to add an artificial provide object for that purpose.)
+	* plugins.c: removed GraphInstaller and DefaultInstaller. the
+	  responsibility of the latter was moved back into
+	  h.HeaderBuilder; the former has no replacement.
+	* started to move tests from the toplevel 'tests' directory into
+	  subdirectories (named 'tests') of the source to be tested.
+	* Release 2.0.0pre23
+ 
 2007-02-11 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* plugins.make.iface: new method CALL_MAKE_AND_RESCAN_SYNC()

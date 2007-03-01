@@ -35,6 +35,7 @@ from libconfix.core.machinery.provide_string import Provide_String
 from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileManager
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.require_string import Require_String
+from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
@@ -81,6 +82,9 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         self.__init_dep_info()
 
         pass
+
+    def short_description(self):
+        return '.'.join([self.package().name()]+self.directory().relpath(self.package().rootdirectory()))
 
     def initialize(self, package):
         """
@@ -166,11 +170,11 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
         if self.is_initialized():
             assert self.package(), self
-            assert not b.is_initialized(), b
-            b.initialize(package=self.package())
-            assert b.is_initialized(), b
+            if not b.is_initialized():
+                b.initialize(package=self.package())
+                assert b.is_initialized(), b
+                pass
             pass
-        
         pass
 
     def add_builders(self, builderlist):
@@ -183,7 +187,36 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         unique_id = b.locally_unique_id()
         assert self.__builders.has_key(unique_id)
         del self.__builders[unique_id]
+        b.set_parentbuilder(None)
         pass
+
+    def find_entry_builder(self, path):
+        """
+        Convenience method: find an entry builder that manages an
+        entry object with the relative path 'path'. Return None if
+        none is found.
+        """
+        assert type(path) in (list, tuple), path
+        tmp_path = path[:]
+        if len(tmp_path) == 0:
+            return self
+        entryname = tmp_path.pop(0)
+        for b in self.builders():
+            if isinstance(b, DirectoryBuilder) and b.directory().name() == entryname:
+                if len(tmp_path) == 0:
+                    return b
+                else:
+                    return b.find_entry_builder(tmp_path)
+                pass
+            if isinstance(b, FileBuilder) and b.file().name() == entryname:
+                if len(tmp_path) == 0:
+                    return b
+                else:
+                    raise Error('Found FileBuilder ('+str(b)+') and rest of path ('+tmp_path+')remains')
+                pass
+            pass
+        return None
+        
 
     def output(self):
         EntryBuilder.output(self)

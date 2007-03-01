@@ -192,7 +192,7 @@ class RelateBasic(unittest.TestCase):
         # see if everyone who is involved in the game has the right
         # buildinfo.
 
-        for bi in find.find_default_installer(rootbuilder=self.lodir_builder_, path=[]).buildinfos():
+        for bi in find.find_entrybuilder(rootbuilder=self.lodir_builder_, path=['lo.h']).buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass
@@ -216,7 +216,7 @@ class RelateBasic(unittest.TestCase):
             self.fail()
             pass
         
-        for bi in find.find_default_installer(rootbuilder=self.hi1dir_builder_, path=[]).buildinfos():
+        for bi in find.find_entrybuilder(rootbuilder=self.hi1dir_builder_, path=['hi1.h']).buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass
@@ -230,7 +230,7 @@ class RelateBasic(unittest.TestCase):
                 continue
             pass
 
-        for bi in find.find_default_installer(rootbuilder=self.hi2dir_builder_, path=[]).buildinfos():
+        for bi in find.find_entrybuilder(rootbuilder=self.hi2dir_builder_, path=['hi2.h']).buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass

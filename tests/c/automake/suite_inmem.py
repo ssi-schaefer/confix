@@ -19,7 +19,6 @@
 from c import CSuite
 from library import LibrarySuite
 from exe import ExecutableSuite
-from default_installer import DefaultInstallerSuite
 from libtool_version import LibtoolVersionSuite
 from libtool_linking import LibtoolLinkingSuite
 from intra_package_inmem import IntraPackageInMemorySuite
@@ -39,7 +38,6 @@ class AutomakeCSuiteInMemory(unittest.TestSuite):
         self.addTest(LibtoolVersionSuite())
         self.addTest(LibtoolLinkingSuite())
         self.addTest(ExecutableSuite())
-        self.addTest(DefaultInstallerSuite())
         self.addTest(IntraPackageInMemorySuite())
         self.addTest(CheckProgramInMemorySuite())
         self.addTest(ExternalLibraryInMemorySuite())

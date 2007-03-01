@@ -47,6 +47,8 @@ class Builder(object):
 
         self.__buildinfos = BuildInformationSet()
 
+        self.__force_enlarge_count = 0
+
         # flags to ensure that every derived builder's methods have
         # called their immediate base's methods that they overload,
         # and that the chain did reach the base of all builders.
@@ -70,13 +72,12 @@ class Builder(object):
         return str(self)
 
     def locally_unique_id(self):
-
-        """ A unique, opaque identifier that is supposed to
-        distinguish this builder from its brothers in the same
-        directory. Used primarily to spot bugs that result from
-        creating the same builder twice. To be implemented by derived
-        classes."""
-
+        """
+        A unique, opaque identifier that is supposed to distinguish
+        this builder from its brothers in the same directory. Used
+        primarily to spot bugs that result from creating the same
+        builder twice. To be implemented by derived classes.
+        """
         assert False, 'abstract: implement '+str(self.__class__)+'.locally_unique_id()'
         pass
     
@@ -86,9 +87,17 @@ class Builder(object):
     def parentbuilder(self):
         return self.__parentbuilder
     def set_parentbuilder(self, parentbuilder):
-        assert self.__parentbuilder is None, self
         self.__parentbuilder = parentbuilder
         pass
+
+    def force_enlarge(self):
+        """
+        Force one more round.
+        """
+        self.__force_enlarge_count += 1
+        pass
+    def force_enlarge_count(self):
+        return self.__force_enlarge_count
 
     def add_require(self, r):
         self.__dependency_info.add_require(r)

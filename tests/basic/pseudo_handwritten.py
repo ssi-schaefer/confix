@@ -27,15 +27,13 @@ from libconfix.core.utils import const
 class PseudoHandwrittenSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(PseudoHandwritten('test'))
+        sys.stderr.write('PseudoHandwritten not working\n')
+        #self.addTest(PseudoHandwritten('test'))
         pass
     pass
 
 class PseudoHandwritten(unittest.TestCase):
     def test(self):
-        sys.stderr.write('PseudoHandwritten not working')
-        return
-        
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,

@@ -27,8 +27,6 @@ from setup_cxx import CXXSetupSuite
 from setup_lexyacc import LexYaccSetupSuite
 from name_mangling import NameManglingSuite
 from requires import RequireTestSuite
-from default_installer import DefaultInstallerSuite
-from graph_installer import GraphInstallerSuite
 from relate import RelateSuite
 from buildinfo import BuildInfoSuite
 from confix2_dir import Confix2_dir_Suite
@@ -47,8 +45,6 @@ class CTestSuiteInMemory(unittest.TestSuite):
         self.addTest(LexYaccSetupSuite())
         self.addTest(NameManglingSuite())
         self.addTest(RequireTestSuite())
-        self.addTest(DefaultInstallerSuite())
-        self.addTest(GraphInstallerSuite())
         self.addTest(RelateSuite())
         self.addTest(BuildInfoSuite())
         self.addTest(Confix2_dir_Suite())

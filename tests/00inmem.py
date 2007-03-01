@@ -24,6 +24,10 @@ from plainfile.suite_inmem import PlainFileSuiteInMemory
 from script.suite_inmem import ScriptSuiteInMemory
 from idl.suite_inmem import IDLSuiteInMemory
 
+# since Jan 7, 2007 I try to keep tests as near to the code as
+# possible. seems like a better way.
+from libconfix.tests.suite_inmem import LibConfixInMemorySuite
+
 if __name__ == '__main__':
 
     suite = unittest.TestSuite()
@@ -33,6 +37,7 @@ if __name__ == '__main__':
     suite.addTest(PlainFileSuiteInMemory())
     suite.addTest(ScriptSuiteInMemory())
     suite.addTest(IDLSuiteInMemory())
+    suite.addTest(LibConfixInMemorySuite())
 
     runner = unittest.TextTestRunner()
     runner.run(suite)

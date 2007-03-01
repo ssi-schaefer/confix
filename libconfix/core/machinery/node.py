@@ -34,6 +34,11 @@ class Node(Marshallable):
     
     def __init__(self):
         pass
+
+    def short_description(self):
+        assert False, 'abstract'
+        pass
+    
     def provides(self):
         assert False, 'abstract'
         pass

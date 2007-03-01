@@ -71,12 +71,13 @@ class InterPackageBuildBase(PersistentTestCase):
                                       '             order=AC_PROGRAMS)',
                                       'ACINCLUDE_M4(lines=["  "])'
                                       ]))
-        lo_root.add(name='lo.h',
-                    entry=File(lines=['#ifndef lo_lo_h',
-                                      '#define lo_lo_h',
-                                      'void lo();',
-                                      '#endif',
-                                      ]))
+        lo_h = lo_root.add(name='lo.h',
+                           entry=File(lines=['#ifndef lo_lo_h',
+                                             '#define lo_lo_h',
+                                             'void lo();',
+                                             '#endif',
+                                             ]))
+        lo_h.set_property(name='INSTALLPATH_CINCLUDE', value=['lo'])
         lo_root.add(name='lo.c',
                     entry=File(lines=['#include "lo.h"',
                                       'void lo() {}']))
@@ -113,11 +114,11 @@ class InterPackageBuildBase(PersistentTestCase):
         bin.add(name=const.CONFIX2_DIR,
                 entry=File())
         bin.add(name='main.c',
-                entry=File(lines=['#include <lo.h>',
+                entry=File(lines=['#include <lo/lo.h>',
                                   '#include <hilib.h>',
                                   '// URGENCY_ERROR: detect errors as early as possible ',
                                   '// (keeping test-and-fix cycles low)',
-                                  '// CONFIX:REQUIRE_H("lo.h", URGENCY_ERROR)',
+                                  '// CONFIX:REQUIRE_H("lo/lo.h", URGENCY_ERROR)',
                                   '// CONFIX:REQUIRE_H("hilib.h", URGENCY_ERROR)',
                                   '',
                                   'int main() {',

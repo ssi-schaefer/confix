@@ -32,7 +32,6 @@ class MiscellaneousSuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(IgnoredEntriesTest('test'))
         self.addTest(NoInternalRequiresTest('test'))
-        self.addTest(HeaderInstallPath('test'))
         pass
     pass
 
@@ -90,28 +89,6 @@ class NoInternalRequiresTest(unittest.TestCase):
         self.failIf(len(package.rootbuilder().requires()) != 0)
         pass
     pass
-
-class HeaderInstallPath(unittest.TestCase):
-    def test(self):
-        fs = FileSystem(path=[])
-        fs.rootdirectory().add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=["PACKAGE_NAME('HeaderInstallPath')",
-                              "PACKAGE_VERSION('1.2.3')"]))
-        fs.rootdirectory().add(
-            name=const.CONFIX2_DIR,
-            entry=File())
-        fs.rootdirectory().add(
-            name='file.h',
-            entry=File(lines=["// CONFIX:INSTALLPATH('a/b')"]))
-        package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
-        package.boil(external_nodes=[])
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
-        self.failUnlessEqual(file_h_builder.iface_install_path(), ['a', 'b'])
-        pass
-    pass
-
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(MiscellaneousSuite())

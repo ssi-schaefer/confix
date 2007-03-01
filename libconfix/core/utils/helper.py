@@ -66,11 +66,11 @@ def format_cycle_error(error):
 
     lines = []
     lines.append('ERROR: cycle detected')
-    lines.append(' '*2+'->'.join(['.'.join(n.fullname()) for n in error.nodelist()]))
+    lines.append(' '*2+'->'.join([n.short_description() for n in error.nodelist()]))
     lines.append('Details follow:')
 
     for edge in error.edgelist():
-        lines.append(' '*2+'.'.join(edge.tail().fullname())+'->'+'.'.join(edge.head().fullname()))
+        lines.append(' '*2+edge.tail().short_description()+'->'+edge.head().short_description())
         for require in edge.annotations():
             lines.append(' '*4+str(require))
             pass
@@ -238,7 +238,7 @@ def intersect_lists(l1, l2):
     return ret
 
 def normalize_filename(fn):
-
+    assert type(fn) is str, fn
     return fn.replace('\\', '/')
 
 def clone_value(v):

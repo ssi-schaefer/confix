@@ -21,9 +21,9 @@ from libconfix.core.machinery.setup import CompositeSetup
 from clusterer import CClustererSetup
 from creator import CreatorSetup
 from library_dependencies import LibraryDependenciesFinderSetup
-from default_installer import DefaultInstallerSetup
-from graph_installer import GraphInstallerSetup
+from explicit_install import ExplicitInstallerSetup
 from iface import InterfaceSetup
+from relocated_headers.setup import RelocatedHeadersSetup
 from interix import InterixSetup
 
 def make_core_setups(short_libnames, use_libtool):
@@ -31,6 +31,7 @@ def make_core_setups(short_libnames, use_libtool):
                             use_libtool=use_libtool),
             CreatorSetup(),
             InterfaceSetup(),
+            RelocatedHeadersSetup(),
             InterixSetup()
             ]
 
@@ -39,22 +40,9 @@ class DefaultCSetup(CompositeSetup):
                  short_libnames,
                  use_libtool):
         setups = make_core_setups(short_libnames=short_libnames, use_libtool=use_libtool)
-        setups.append(DefaultInstallerSetup())
+        setups.append(ExplicitInstallerSetup())
         CompositeSetup.__init__(
             self,
             setups=setups)
         pass
     pass
-
-class GraphSetup(CompositeSetup):
-    def __init__(self,
-                 short_libnames,
-                 use_libtool):
-        setups = make_core_setups(short_libnames=short_libnames, use_libtool=use_libtool)
-        setups.append(GraphInstallerSetup())
-        CompositeSetup.__init__(
-            self,
-            setups=setups)
-        pass
-    pass
-

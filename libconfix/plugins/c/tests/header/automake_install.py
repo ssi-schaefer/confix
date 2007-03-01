@@ -23,12 +23,11 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.plugins.c.default_installer import DefaultInstaller
 from libconfix.plugins.c.setup import DefaultCSetup
 
 from libconfix.testutils import dirhier, makefileparser
 
-class DefaultInstallerSuite(unittest.TestSuite):
+class AutomakeInstallInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(BasicHeaderInstallTest('test_zerodeep'))
