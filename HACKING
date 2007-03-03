@@ -28,12 +28,20 @@ VersionControl
 Test Suite
 ==========
 
-There's an extensive test suite in the tests directory. A primary
-design criterion of confix's internals is to be able to test in memory
-as much as possible, and not having to worry much about file system
-cleanup and such. Hence, the great majority of tests is written this
-way. For the rest, though, we have to take care of all those nasty
-issues. So, we have two entry points into the test suite,
+There's an extensive test suite which is distributed all over the
+source code. Nearly every directory that contains code has a 'tests'
+subdirectory which contains regression tests and suites. Every 'tests'
+directory's suite is part of the suite of the 'tests' directory of the
+next higher level source directory. There is still a large amount of
+tests around in the toplevel 'tests' directory and its subdirectories,
+but it is intended to move all those the the 'tests' directories near
+the source.
+
+A primary design criterion of confix's internals is to be able to test
+in memory as much as possible, and not having to worry much about file
+system cleanup and such. Hence, the great majority of tests is written
+this way. For the rest, though, we have to take care of all those
+nasty issues. So, we have two entry points into the test suite,
 
 * tests/00inmem.py
 
