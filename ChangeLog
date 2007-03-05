@@ -1,3 +1,8 @@
+2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* (argh) added libconfix.plugins.c.relocated_headers to setup.py
+	* Release 2.0.0pre24	
+
 2007-03-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* core.machinery.builder.Builder: new method force_enlarge() which

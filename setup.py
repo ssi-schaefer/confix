@@ -90,6 +90,7 @@ setup(
               'libconfix.frontends.confix',
               'libconfix.plugins',
               'libconfix.plugins.c',
+              'libconfix.plugins.c.relocated_headers',
               'libconfix.plugins.idl',
               'libconfix.plugins.make',
               'libconfix.plugins.plainfile',
