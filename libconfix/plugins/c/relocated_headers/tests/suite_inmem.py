@@ -18,11 +18,13 @@
 import unittest
 
 from basic import BasicSuite
+from inter_package_inmem import InterPackageInMemorySuite
 
 class RelocatedHeadersInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(BasicSuite())
+        self.addTest(InterPackageInMemorySuite())
         pass
     pass
 

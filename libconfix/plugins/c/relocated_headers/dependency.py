@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,25 @@
 from libconfix.core.machinery.require_string import Require_String
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.repo.marshalling import update_marshalling_data, Marshallable, MarshalledVersionUnknownError
 
 class RequireRelocatedHeader(Require_String):
+    def get_marshalling_data(self):
+        return update_marshalling_data(
+            marshalling_data=Require_String.get_marshalling_data(self),
+            generating_class=RequireRelocatedHeader,
+            attributes={},
+            version={'RequireRelocatedHeader': 1})
+    def set_marshalling_data(self, data):
+        version = data[Marshallable.VERSIONS]['RequireRelocatedHeader']
+        if version != 1:
+            raise MarshalledVersionUnknownError(
+                klass=self.__class__,
+                marshalled_version=version,
+                current_version=1)
+        Require_String.set_marshalling_data(self, data)
+        pass
+
     def __init__(self, filename, source_directory):
         Require_String.__init__(
             self,
@@ -30,6 +47,22 @@ class RequireRelocatedHeader(Require_String):
     pass
 
 class ProvideRelocatedHeader(Provide_String):
+    def get_marshalling_data(self):
+        return update_marshalling_data(
+            marshalling_data=Provide_String.get_marshalling_data(self),
+            generating_class=ProvideRelocatedHeader,
+            attributes={},
+            version={'ProvideRelocatedHeader': 1})
+    def set_marshalling_data(self, data):
+        version = data[Marshallable.VERSIONS]['ProvideRelocatedHeader']
+        if version != 1:
+            raise MarshalledVersionUnknownError(
+                klass=self.__class__,
+                marshalled_version=version,
+                current_version=1)
+        Provide_String.set_marshalling_data(self, data)
+        pass
+
     MATCH_CLASSES = [RequireRelocatedHeader]
     def __init__(self, filename, source_directory):
         Provide_String.__init__(

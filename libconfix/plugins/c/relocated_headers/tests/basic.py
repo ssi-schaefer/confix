@@ -33,8 +33,7 @@ import unittest
 class BasicSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        #        self.addTest(BasicTest('test'))
-        print 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        self.addTest(BasicTest('test'))
         self.addTest(RelocatedHeaderRequiresRelocatedHeaderTest('test'))
         pass
     pass

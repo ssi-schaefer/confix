@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,13 @@ from basic.suite_build import BasicTestSuiteBuild
 from c.suite_build import CTestSuiteBuild
 from plainfile.suite_build import PlainFileSuiteBuild
 from make.suite_build import MakeSuiteBuild
+from libconfix.tests.suite_build import LibConfixBuildSuite
 
 if __name__ == '__main__':
 
     suite = unittest.TestSuite()
 
+    suite.addTest(LibConfixBuildSuite())
     suite.addTest(BasicTestSuiteBuild())
     suite.addTest(CTestSuiteBuild())
     suite.addTest(PlainFileSuiteBuild())

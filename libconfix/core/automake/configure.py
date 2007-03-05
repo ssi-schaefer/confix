@@ -20,7 +20,7 @@ import os, types
 
 from libconfix.core.utils import external_cmd
 
-def configure(packageroot, builddir, prefix, readonly_prefixes, args=None, env=None):
+def configure(packageroot, builddir, prefix, readonly_prefixes=None, args=None, env=None):
     assert type(packageroot) in [types.ListType, types.TupleType]
     assert type(builddir) in [types.ListType, types.TupleType]
     assert type(prefix) in [types.NoneType, types.ListType, types.TupleType]

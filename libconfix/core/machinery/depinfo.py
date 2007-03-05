@@ -77,6 +77,7 @@ class DependencyInformation(Unmarshallable):
             pass
         pass
     def add(self, other):
+        assert isinstance(other, self.__class__), str(other.__class__)
         self.requires_.merge(other.requires_)
         self.provides_.merge(other.provides_)
         self.internal_provides_.merge(other.internal_provides_)

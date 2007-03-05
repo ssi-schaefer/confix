@@ -1,5 +1,11 @@
 2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
+	* (Merged from TRY-jfasch-relocated-headers)
+	  * new RELOCATE_HEADER() function
+	  * "build" test suite for libconfix
+
+2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
 	* (argh) added libconfix.plugins.c.relocated_headers to setup.py
 	* Release 2.0.0pre24	
 

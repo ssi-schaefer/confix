@@ -26,7 +26,7 @@ from libconfix.core.utils import debug
 import autoconf_archive
 import kde_hack
 
-def bootstrap(packageroot, path, use_libtool, use_kde_hack, argv0):
+def bootstrap(packageroot, use_libtool, use_kde_hack, argv0, path=None):
     aclocal_incdirs = []
     aclocal_incdirs.append(autoconf_archive.include_path(argv0))
     

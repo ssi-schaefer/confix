@@ -39,6 +39,9 @@ def automake_name(name):
     clean = clean.replace('$', '_')
     clean = clean.replace('/', '_')
     clean = clean.replace('+', '_')
+    clean = clean.replace('<', '_')
+    clean = clean.replace('>', '_')
+    clean = clean.replace(':', '_')
     return clean.replace('%', '_')
 
 def format_word_list(words):

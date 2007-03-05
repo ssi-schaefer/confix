@@ -29,39 +29,28 @@ Developer experiments     TRY-<developer>-<short-desc>
   REL-2.0.0pre13 +
                  |
                  131----+
-                 |      |
   REL-2.0.0pre14 134    |
   REL-2.0.0pre15 139<---138
                  |      v TRY-jfasch-kde-hack (dead)
                  |
                  184----+
-                 |      |
   REL-2.0.0pre18 200<---198
-                 |      |
-                 |      v devlopment/jfasch/library-dependencies
-                 |        (dead)
-                 |
+                 |      v devlopment/jfasch/library-dependencies (dead)
+                 |      
                  200----+
-                 |      |
-                 |      |
                  213<---212
-                 |      |
                  |      v TRY-jfasch-builder-init-state (dead)
                  |
                  216----+
-                 |      |
-                 |      |
   REL-2.0.0pre19 220    |
-                 |      |
   REL-2.0.0pre20 227    |
-                 |      |
                  247<---246
-                 |      |
                  |      v TRY-jfasch-nonlocal-headers (dead)
                  |
                  247----+
-                 |      |
   REL-2.0.0pre24 257    |
+                 |      |
+                 |      |
                  |      |
                  |      v TRY-jfasch-relocated-headers
                  |
