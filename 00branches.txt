@@ -36,7 +36,7 @@ Developer experiments     TRY-<developer>-<short-desc>
                  184----+
   REL-2.0.0pre18 200<---198
                  |      v devlopment/jfasch/library-dependencies (dead)
-                 |      
+                 |
                  200----+
                  213<---212
                  |      v TRY-jfasch-builder-init-state (dead)
@@ -49,10 +49,8 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |
                  247----+
   REL-2.0.0pre24 257    |
-                 |      |
-                 |      |
-                 |      |
-                 |      v TRY-jfasch-relocated-headers
+                 260<---256
+                 |      v TRY-jfasch-relocated-headers (dead)
                  |
                  |
                  |
