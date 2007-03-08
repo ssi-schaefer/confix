@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,21 +15,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from header.suite_inmem import HeaderInMemorySuite
-from libconfix.plugins.c.relocated_headers.tests.suite_inmem import RelocatedHeadersInMemorySuite
-from libconfix.plugins.c.pkg_config.tests.suite_inmem import PkgConfigInMemorySuite
+from iface import PKG_CONFIG_LIBRARY_InterfaceProxy
 
-import unittest
+from libconfix.core.machinery.setup import Setup
+from libconfix.core.iface.pass_through import MethodPassThrough
 
-class CInMemoryTestSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(RelocatedHeadersInMemorySuite())
-        self.addTest(HeaderInMemorySuite())
-        self.addTest(PkgConfigInMemorySuite())
-        pass
-    pass
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(CInMemoryTestSuite())
+class PkgConfigSetup(Setup):
+    def initial_builders(self):
+        ret = super(PkgConfigSetup, self).initial_builders()
+        pass_through = MethodPassThrough(id=str(self.__class__))
+        ret.add_builder(pass_through)
+        ret.add_iface_proxy(PKG_CONFIG_LIBRARY_InterfaceProxy(object=pass_through))
+        return ret
     pass

@@ -91,6 +91,7 @@ setup(
               'libconfix.plugins',
               'libconfix.plugins.c',
               'libconfix.plugins.c.relocated_headers',
+              'libconfix.plugins.c.pkg_config',
               'libconfix.plugins.idl',
               'libconfix.plugins.make',
               'libconfix.plugins.plainfile',
