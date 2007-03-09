@@ -36,6 +36,7 @@ class BasicSuite(unittest.TestSuite):
     pass
 
 class BasicTest(unittest.TestCase):
+
     def test(self):
         root = Directory()
         root.add(
@@ -61,6 +62,7 @@ class BasicTest(unittest.TestCase):
             name='main.cc',
             entry=File(lines=['#include <ext_lib.h>',
                               '// CONFIX:REQUIRE_H("ext_lib.h", REQUIRED)',
+                              '// CONFIX:EXENAME("the_exe")',
                               'int main() { return 0; }']))
         main.add(
             name=const.CONFIX2_DIR,
@@ -77,8 +79,9 @@ class BasicTest(unittest.TestCase):
         self.failIf(maindir_builder is None)
 
         self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_builder.makefile_am().am_cflags())
+        self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_builder.makefile_am().am_cxxflags())
 
-        main_ldadd = maindir_builder.makefile_am().compound_ldadd(compound_name='ext_lib_main_main')
+        main_ldadd = maindir_builder.makefile_am().compound_ldadd(compound_name='the_exe')
         self.failIf(main_ldadd is None)
         
         self.failUnless('$(ext_lib_PKG_CONFIG_LIBS)' in main_ldadd)

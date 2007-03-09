@@ -17,6 +17,7 @@
 
 from libconfix.plugins.c.buildinfo import \
      BuildInfo_CFLAGS, \
+     BuildInfo_CXXFLAGS, \
      BuildInfo_CLibrary_External
 
 from libconfix.core.iface.proxy import InterfaceProxy
@@ -38,26 +39,43 @@ class PKG_CONFIG_LIBRARY_InterfaceProxy(InterfaceProxy):
     def PKG_CONFIG_LIBRARY(self, package):
         if type(package) is not str:
             raise Error("PKG_CONFIG_LIBRARY(): argument 'package' must be a string")
+
+        package_shell_name = helper_automake.automake_name(package)
+        
         self.__object.add_buildinfo(BuildInfo_ACInclude_m4(
             lines=[pkg_config_check]))
         self.__object.add_buildinfo(BuildInfo_Configure_in(
-            lines=['CONFIX_PKG_CONFIG_LIBRARY('+package+')'],
+            lines=['CONFIX_PKG_CONFIG_LIBRARY(['+package+'], ['+package_shell_name+'])'],
             order=Configure_ac.LIBRARIES))
         self.__object.add_buildinfo(BuildInfo_CFLAGS(
-            cflags=['$('+helper_automake.automake_name(package)+'_PKG_CONFIG_CFLAGS)']))
+            cflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)']))
+        self.__object.add_buildinfo(BuildInfo_CXXFLAGS(
+            cxxflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)']))
         self.__object.add_buildinfo(BuildInfo_CLibrary_External(
             libpath=[],
-            libs=['$('+helper_automake.automake_name(package)+'_PKG_CONFIG_LIBS)']))
+            libs=['$('+package_shell_name+'_PKG_CONFIG_LIBS)']))
         pass
     pass
 
 pkg_config_check = """
 
+dnl Use pkg-config to extract information out of <package-name>.pc. Output
+dnl variables are ${<package-shell-name>_CFLAGS} and
+dnl ${<package-shell-name>_LIBS}, which are AC_SUBST'ed
+dnl 
+dnl $1 ... <package-name>; package name as understood by pkg-config.
+dnl 
+dnl $2 ... <package-shell-name>; prefix used in output shell variable
+dnl        names; be careful to craft it carefully.
+
 AC_DEFUN([CONFIX_PKG_CONFIG_LIBRARY],
 [
-AC_REQUIRE(PKG_PROG_PKG_CONFIG)
-$1_PKG_CONFIG_CFLAGS=`${PKG_CONFIG} --cflags`
-$1_PKG_CONFIG_LIBS=`${PKG_CONFIG} --libs`
+AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+$2_PKG_CONFIG_CFLAGS=`${PKG_CONFIG} --cflags $1`
+$2_PKG_CONFIG_LIBS=`${PKG_CONFIG} --libs $1`
+
+AC_SUBST([$2_PKG_CONFIG_CFLAGS])
+AC_SUBST([$2_PKG_CONFIG_LIBS])
 ])
 
 """
