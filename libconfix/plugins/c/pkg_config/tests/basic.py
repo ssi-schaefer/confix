@@ -53,7 +53,7 @@ class BasicTest(unittest.TestCase):
         ext_lib.add(
             name=const.CONFIX2_DIR,
             entry=File(lines=['PROVIDE_H("ext_lib.h")',
-                              'PKG_CONFIG_LIBRARY(package="ext_lib")']))
+                              'PKG_CONFIG_LIBRARY(packagename="ext_lib")']))
 
         main = root.add(
             name='main',

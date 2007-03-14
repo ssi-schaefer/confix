@@ -15,67 +15,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.c.buildinfo import \
-     BuildInfo_CFLAGS, \
-     BuildInfo_CXXFLAGS, \
-     BuildInfo_CLibrary_External
+from adapter import PkgConfigLibraryAdapter
 
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.automake.buildinfo import \
-     BuildInfo_ACInclude_m4, \
-     BuildInfo_Configure_in
-from libconfix.core.automake.configure_ac import Configure_ac
-from libconfix.core.automake import helper_automake
-
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.utils.error import Error
 
-class PKG_CONFIG_LIBRARY_InterfaceProxy(InterfaceProxy):
-    def __init__(self, object):
+class PKG_CONFIG_LIBRARY_InterfaceProxy(InterfaceProxy, Builder):
+    def __init__(self):
         InterfaceProxy.__init__(self)
-        self.__object = object
+        Builder.__init__(self)
         self.add_global('PKG_CONFIG_LIBRARY', getattr(self, 'PKG_CONFIG_LIBRARY'))
         pass
 
-    def PKG_CONFIG_LIBRARY(self, package):
-        if type(package) is not str:
-            raise Error("PKG_CONFIG_LIBRARY(): argument 'package' must be a string")
+    def locally_unique_id(self):
+        return str(self.__class__.__name__)
 
-        package_shell_name = helper_automake.automake_name(package)
-        
-        self.__object.add_buildinfo(BuildInfo_ACInclude_m4(
-            lines=[pkg_config_check]))
-        self.__object.add_buildinfo(BuildInfo_Configure_in(
-            lines=['CONFIX_PKG_CONFIG_LIBRARY(['+package+'], ['+package_shell_name+'])'],
-            order=Configure_ac.LIBRARIES))
-        self.__object.add_buildinfo(BuildInfo_CFLAGS(
-            cflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)']))
-        self.__object.add_buildinfo(BuildInfo_CXXFLAGS(
-            cxxflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)']))
-        self.__object.add_buildinfo(BuildInfo_CLibrary_External(
-            libpath=[],
-            libs=['$('+package_shell_name+'_PKG_CONFIG_LIBS)']))
+    def PKG_CONFIG_LIBRARY(self, packagename):
+        if type(packagename) is not str:
+            raise Error("PKG_CONFIG_LIBRARY(): argument 'packagename' must be a string")
+        self.parentbuilder().add_builder(PkgConfigLibraryAdapter(packagename=packagename))
         pass
     pass
 
-pkg_config_check = """
-
-dnl Use pkg-config to extract information out of <package-name>.pc. Output
-dnl variables are ${<package-shell-name>_CFLAGS} and
-dnl ${<package-shell-name>_LIBS}, which are AC_SUBST'ed
-dnl 
-dnl $1 ... <package-name>; package name as understood by pkg-config.
-dnl 
-dnl $2 ... <package-shell-name>; prefix used in output shell variable
-dnl        names; be careful to craft it carefully.
-
-AC_DEFUN([CONFIX_PKG_CONFIG_LIBRARY],
-[
-AC_REQUIRE([PKG_PROG_PKG_CONFIG])
-$2_PKG_CONFIG_CFLAGS=`${PKG_CONFIG} --cflags $1`
-$2_PKG_CONFIG_LIBS=`${PKG_CONFIG} --libs $1`
-
-AC_SUBST([$2_PKG_CONFIG_CFLAGS])
-AC_SUBST([$2_PKG_CONFIG_LIBS])
-])
-
-"""

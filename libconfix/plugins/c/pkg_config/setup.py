@@ -23,8 +23,8 @@ from libconfix.core.iface.pass_through import MethodPassThrough
 class PkgConfigSetup(Setup):
     def initial_builders(self):
         ret = super(PkgConfigSetup, self).initial_builders()
-        pass_through = MethodPassThrough(id=str(self.__class__))
-        ret.add_builder(pass_through)
-        ret.add_iface_proxy(PKG_CONFIG_LIBRARY_InterfaceProxy(object=pass_through))
+        builder_and_iface = PKG_CONFIG_LIBRARY_InterfaceProxy()
+        ret.add_iface_proxy(builder_and_iface)
+        ret.add_builder(builder_and_iface)
         return ret
     pass

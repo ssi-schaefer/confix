@@ -40,11 +40,21 @@ class HeaderBuilder(CBaseBuilder):
                            cur+'/'+prev)
             pass
         pass
+
+    class BadNamespace(Error):
+        def __init__(self, path, error):
+            assert isinstance(error, Error)
+            Error.__init__(self,
+                           msg='Bad namespace in file '+'/'.join(path),
+                           list=[error])
+            pass
+        pass
     
     def __init__(self, file):
         CBaseBuilder.__init__(self, file=file)
 
         self.__namespace_install_path = None
+        self.__namespace_error = None
         self.__property_install_path = None
         self.__iface_install_path = None
         self.__external_install_path = None
@@ -66,7 +76,11 @@ class HeaderBuilder(CBaseBuilder):
         if self.file() is not None:
             self.__property_install_path = self.file().get_property(HeaderBuilder.PROPERTY_INSTALLPATH)
             pass
-        self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
+        try:        
+            self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
+        except Error, e:
+            self.__namespace_error = e
+            pass
         pass
 
     def set_not_provided(self):
@@ -142,6 +156,9 @@ class HeaderBuilder(CBaseBuilder):
             pass
 
         if ret is None:
+            # bail out if we had an error recognizing the namespace
+            if self.__namespace_error is not None:
+                raise self.BadNamespace(path=self.file().relpath(self.package().rootdirectory()), error=self.__namespace_error)
             ret = self.__namespace_install_path
             pass
 

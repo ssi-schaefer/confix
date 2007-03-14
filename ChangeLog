@@ -1,3 +1,10 @@
+2007-03-14 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* libconfix.plugins.c.pkg_config: basic pkg-config support;
+	  currently only supports finding an external library using
+	  pkg-config. in the future, it's supposed to generate pkg-config
+	  files for confix-generated libraries.
+
 2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* (Merged from TRY-jfasch-relocated-headers)

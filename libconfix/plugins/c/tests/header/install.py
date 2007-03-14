@@ -30,8 +30,6 @@ from libconfix.testutils import find
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.setup import DefaultCSetup
 
-import libconfix.plugins.c.namespace
-
 class InstallInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
@@ -46,6 +44,8 @@ class InstallInMemorySuite(unittest.TestSuite):
         self.addTest(Namespace('testDirectory'))
         self.addTest(InstallPriorities('test'))
         self.addTest(INSTALLDIR_H_EmptyString('test'))
+        self.addTest(BadNamespace('test'))
+        self.addTest(BadNamespaceGoodINSTALLDIR_H('test'))
         pass
     pass
 
@@ -194,7 +194,7 @@ class Namespace(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         try:
             package.boil(external_nodes=[])
-        except libconfix.plugins.c.namespace.AmbiguousNamespace:
+        except HeaderBuilder.BadNamespace:
             return
         self.fail()
         pass
@@ -222,7 +222,7 @@ class Namespace(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         try:
             package.boil(external_nodes=[])
-        except libconfix.plugins.c.namespace.AmbiguousNamespace:
+        except HeaderBuilder.BadNamespace:
             return
         self.fail()
         pass
@@ -349,6 +349,59 @@ class INSTALLDIR_H_EmptyString(unittest.TestCase):
                                setups=[DirectorySetup(),
                                        DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
+        pass
+    pass
+
+class BadNamespace(unittest.TestCase):
+    """
+    A bad namespace, and no idea where to install file.h
+    """
+    def test(self):
+        rootdirectory = Directory()
+        rootdirectory.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        rootdirectory.add(
+            name=const.CONFIX2_DIR,
+            entry=File())
+        rootdirectory.add(
+            name='file.h',
+            entry=File(lines=['namespace X {',
+                              '}']))
+
+        package = LocalPackage(rootdirectory=rootdirectory,
+                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+        try:
+            package.boil(external_nodes=[])
+        except HeaderBuilder.BadNamespace:
+            pass
+        pass
+    pass
+
+class BadNamespaceGoodINSTALLDIR_H(unittest.TestCase):
+    """
+    Explicit INSTALLDIR_H() covers bad namespace.
+    """
+    def test(self):
+        rootdirectory = Directory()
+        rootdirectory.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        rootdirectory.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['INSTALLDIR_H("")']))
+        rootdirectory.add(
+            name='file.h',
+            entry=File(lines=['namespace X {',
+                              '}']))
+
+        package = LocalPackage(rootdirectory=rootdirectory,
+                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+        package.boil(external_nodes=[])
+        pass
+    pass
         
 
 if __name__ == '__main__':
