@@ -32,7 +32,7 @@ class MiscellaneousSuite(unittest.TestSuite):
 
 class ProvideStringUpdateTest(unittest.TestCase):
 
-    # one day I tries to eliminate Provide_String.update() and didn't
+    # one day I tried to eliminate Provide_String.update() and didn't
     # see from the tests that it was needed. now I see.
     
     def test(self):
