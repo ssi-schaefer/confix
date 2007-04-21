@@ -18,19 +18,19 @@
 
 from libconfix.core.machinery.setup import CompositeSetup
 
-from clusterer import CClustererSetup
-from creator import CreatorSetup
-from library_dependencies import LibraryDependenciesFinderSetup
-from explicit_install import ExplicitInstallerSetup
-from iface import InterfaceSetup
-from relocated_headers.setup import RelocatedHeadersSetup
-from interix import InterixSetup
+from libconfix.plugins.c.clusterer import CClustererSetup
+from libconfix.plugins.c.creator import CreatorSetup
+from libconfix.plugins.c.explicit_install import ExplicitInstallerSetup
+from libconfix.plugins.c.relocated_headers.setup import RelocatedHeadersSetup
+from libconfix.plugins.c.interix import InterixSetup
+
+from common_iface_setup import CommonInterfaceSetup
 
 def make_core_setups(short_libnames, use_libtool):
     return [CClustererSetup(short_libnames=short_libnames,
                             use_libtool=use_libtool),
             CreatorSetup(),
-            InterfaceSetup(),
+            CommonInterfaceSetup(),
             RelocatedHeadersSetup(),
             InterixSetup()
             ]

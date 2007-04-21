@@ -20,7 +20,7 @@ import inter_package
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.hierarchy.setup import DirectorySetup
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 import unittest
 

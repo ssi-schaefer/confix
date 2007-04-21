@@ -19,14 +19,14 @@
 import os, types
 
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.iface.pass_through import MethodPassThrough
-from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.provide_string import Provide_String
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.utils.error import Error
 
-from dependency import Provide_CInclude, Require_CInclude
+from dependency import \
+     Provide_CInclude, \
+     Require_CInclude
 
 from buildinfo import \
     BuildInfo_CIncludePath_External, \
@@ -142,22 +142,4 @@ class TESTS_ENVIRONMENT_InterfaceProxy(InterfaceProxy):
             raise Error('TESTS_ENVIRONMENT(): value must be a string')
         self.__object.parentbuilder().makefile_am().add_tests_environment(name, value)
         pass
-    pass
-
-class InterfaceSetup(Setup):
-    def initial_builders(self):
-        ret = super(InterfaceSetup, self).initial_builders()
-
-        pass_through_builder = MethodPassThrough(id=str(self.__class__))
-        ret.add_builder(pass_through_builder)
-        
-        for proxy in [EXTERNAL_LIBRARY_InterfaceProxy(object=pass_through_builder),
-                      REQUIRE_H_InterfaceProxy(object=pass_through_builder),
-                      PROVIDE_H_InterfaceProxy(object=pass_through_builder),
-                      TESTS_ENVIRONMENT_InterfaceProxy(object=pass_through_builder)]:
-            ret.add_iface_proxy(proxy)
-            pass
-
-        return ret
-
     pass

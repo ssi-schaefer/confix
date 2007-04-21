@@ -28,7 +28,7 @@ from libconfix.core.utils import const
 from libconfix.testutils import find
 
 from libconfix.plugins.c.h import HeaderBuilder
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 class InstallInMemorySuite(unittest.TestSuite):
     def __init__(self):

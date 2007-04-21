@@ -18,7 +18,7 @@
 from libconfix.testutils import find
 
 from libconfix.plugins.c.pkg_config.setup import PkgConfigSetup
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File

@@ -29,7 +29,7 @@ from libconfix.core.machinery.require import Require
 from libconfix.core.utils.error import Error
 
 from dependency import Require_CInclude
-from iface import \
+from common_iface import \
      REQUIRE_H_InterfaceProxy, \
      PROVIDE_H_InterfaceProxy
 import helper
