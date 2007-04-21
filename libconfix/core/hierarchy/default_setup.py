@@ -20,12 +20,12 @@ from libconfix.core.machinery.setup import Setup
 
 from subdir import SubdirectoryRecognizer
 
-class DirectorySetup(Setup):
+class DefaultDirectorySetup(Setup):
     def __init__(self):
         Setup.__init__(self)
         pass
     def initial_builders(self):
-        ret = super(DirectorySetup, self).initial_builders()
+        ret = super(DefaultDirectorySetup, self).initial_builders()
         ret.add_builder(SubdirectoryRecognizer())
         return ret
     pass

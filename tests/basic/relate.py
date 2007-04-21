@@ -19,7 +19,7 @@
 import unittest
 
 from libconfix.core.filesys.file import File
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.testutils import dirhier
@@ -52,7 +52,7 @@ class RelateBasic(unittest.TestCase):
             entry=File(lines=['REQUIRE_SYMBOL(symbol="lo", urgency=URGENCY_ERROR)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DirectorySetup(),
+                               setups=[DefaultDirectorySetup(),
                                        FileInterfaceTestSetup()])
         package.boil(external_nodes=[])
 
@@ -93,7 +93,7 @@ class InternalRequires(unittest.TestCase):
                               '               urgency=URGENCY_ERROR)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DirectorySetup(),
+                               setups=[DefaultDirectorySetup(),
                                        FileInterfaceTestSetup()])
         package.boil(external_nodes=[])
 

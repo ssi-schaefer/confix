@@ -18,7 +18,7 @@
 import inter_package
 
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
@@ -42,7 +42,7 @@ class InterPackageInMemoryTest(unittest.TestCase):
 
         lo_package = LocalPackage(rootdirectory=lo,
                                   setups=[DefaultCSetup(short_libnames=False, use_libtool=False),
-                                          DirectorySetup()])
+                                          DefaultDirectorySetup()])
         lo_package.boil(external_nodes=common_installed.nodes())
         lo_installed = lo_package.install()
 

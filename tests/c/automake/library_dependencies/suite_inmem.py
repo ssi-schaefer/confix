@@ -18,7 +18,7 @@
 from dirstructure import DirectoryStructure
 
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 
 from libconfix.testutils import find
 from libconfix.testutils import makefileparser
@@ -56,7 +56,7 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
         second_installed_package = second_local_package.install()
 
         third_local_package = LocalPackage(rootdirectory=dirstructure.third_source(),
-                                           setups=[DirectorySetup(),
+                                           setups=[DefaultDirectorySetup(),
                                                    DefaultCSetup(short_libnames=False,
                                                                  use_libtool=False),
                                                    LibraryDependenciesFinderSetup()])

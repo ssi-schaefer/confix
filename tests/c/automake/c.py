@@ -19,7 +19,7 @@
 import unittest
 
 from libconfix.core.filesys.file import File
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
@@ -49,7 +49,7 @@ class CTest(unittest.TestCase):
 
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[DirectorySetup(),
+            setups=[DefaultDirectorySetup(),
                     DefaultCSetup(short_libnames=False,
                                   use_libtool=False)])
         package.boil(external_nodes=[])

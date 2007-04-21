@@ -19,7 +19,7 @@
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
@@ -93,7 +93,7 @@ class LibraryNames(unittest.TestCase):
     def testLongName(self):
         
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[DirectorySetup(),
+                               setups=[DefaultDirectorySetup(),
                                        DefaultCSetup(short_libnames=False,
                                               use_libtool=False)])
         package.boil(external_nodes=[])
@@ -113,7 +113,7 @@ class LibraryNames(unittest.TestCase):
     def testShortName(self):
         
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[DirectorySetup(),
+                               setups=[DefaultDirectorySetup(),
                                        DefaultCSetup(short_libnames=True,
                                               use_libtool=False)])
         package.boil(external_nodes=[])

@@ -24,7 +24,7 @@ from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 
 import unittest
 
@@ -70,7 +70,7 @@ class BasicTest(unittest.TestCase):
 
         package = LocalPackage(rootdirectory=root,
                                setups=[DefaultCSetup(short_libnames=False, use_libtool=False),
-                                       DirectorySetup(),
+                                       DefaultDirectorySetup(),
                                        PkgConfigSetup()])
         package.boil(external_nodes=[])
         package.output()

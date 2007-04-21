@@ -21,7 +21,7 @@ import unittest
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
@@ -83,7 +83,7 @@ class ExternalLibraryTest(unittest.TestCase):
             entry=File(lines=["// CONFIX:REQUIRE_SYMBOL('lo', URGENCY_ERROR)"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DirectorySetup(),
+                               setups=[DefaultDirectorySetup(),
                                        DefaultCSetup(use_libtool=True, short_libnames=False)])
         package.boil(external_nodes=[])
         package.output()

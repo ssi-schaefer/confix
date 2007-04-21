@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
 
@@ -42,7 +42,7 @@ class BasicDirectorySetup(unittest.TestCase):
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[DirectorySetup()])
+            setups=[DefaultDirectorySetup()])
         package.boil(external_nodes=[])
 
         self.assertEqual(package.rootbuilder().directory().find(['a']), subdir)

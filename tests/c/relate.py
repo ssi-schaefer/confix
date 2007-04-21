@@ -21,7 +21,7 @@ import unittest
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
@@ -67,7 +67,7 @@ class RelateBasic(unittest.TestCase):
                         rootdirectory=packages.lo_hi1_hi2_highest_exe(name='xxx', version='1.2.3'))
         
         self.package_ = LocalPackage(rootdirectory=fs.rootdirectory(),
-                                     setups=[DirectorySetup(),
+                                     setups=[DefaultDirectorySetup(),
                                              DefaultCSetup(short_libnames=False,
                                                     use_libtool=False)])
         self.package_.boil(external_nodes=[])
