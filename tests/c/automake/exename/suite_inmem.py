@@ -20,7 +20,7 @@ from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.executable import ExecutableBuilder
 
 import unittest
@@ -62,6 +62,6 @@ class ExplicitExecutableNameInMemoryTest(unittest.TestCase):
         pass
         
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExplicitExecutableNameInMemorySuite())
+    unittest.TextTestRunner().run(ExecutableNameInMemorySuite())
     pass
 

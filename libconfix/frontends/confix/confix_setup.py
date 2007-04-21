@@ -19,7 +19,7 @@
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.hierarchy.setup import DirectorySetup
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 from libconfix.plugins.script.setup import ScriptSetup
 from libconfix.plugins.idl.setup import IDLSetup

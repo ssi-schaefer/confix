@@ -27,7 +27,7 @@ from libconfix.core.utils import const
 
 from libconfix.testutils import find
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 
 class Confix2_dir_Suite(unittest.TestSuite):

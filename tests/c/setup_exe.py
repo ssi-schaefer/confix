@@ -26,7 +26,7 @@ from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from libconfix.testutils import dirhier
 

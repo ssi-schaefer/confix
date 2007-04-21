@@ -24,7 +24,7 @@ from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.library import LibraryBuilder

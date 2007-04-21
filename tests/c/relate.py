@@ -24,7 +24,7 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.hierarchy.setup import DirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CIncludePath_NativeLocal, BuildInfo_CLibrary_NativeLocal

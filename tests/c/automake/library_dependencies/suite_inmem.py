@@ -24,8 +24,8 @@ from libconfix.testutils import find
 from libconfix.testutils import makefileparser
 from libconfix.testutils.persistent import PersistentTestCase
 
-from libconfix.plugins.c.setup import DefaultCSetup
-from libconfix.plugins.c.setup import LibraryDependenciesFinderSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
+from libconfix.plugins.c.library_dependencies import LibraryDependenciesFinderSetup
 
 import unittest
 

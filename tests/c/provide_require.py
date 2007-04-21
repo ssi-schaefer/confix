@@ -27,7 +27,7 @@ from libconfix.core.utils import const
 from libconfix.plugins.c.dependency import \
      Require_CInclude, \
      Provide_CInclude
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 class Provide_CInclude_and_Require_CInclude_Suite(unittest.TestSuite):
     def __init__(self):

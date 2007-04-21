@@ -24,7 +24,7 @@ from libconfix.core.utils import const
 
 from libconfix.testutils.persistent import PersistentTestCase
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 import os, unittest
 

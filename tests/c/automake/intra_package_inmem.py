@@ -26,7 +26,7 @@ from libconfix.core.hierarchy.setup import DirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils.error import Error
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from libconfix.testutils import packages, find
 

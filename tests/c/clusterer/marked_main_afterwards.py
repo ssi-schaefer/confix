@@ -22,7 +22,7 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.provide_symbol import Provide_Symbol
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.clusterer import CClusterer
 from libconfix.plugins.c.c import CBuilder

@@ -25,7 +25,7 @@ from libconfix.core.utils import const
 
 from libconfix.plugins.c.lex import LexBuilder
 from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.yacc import YaccBuilder
 
 class LexYaccSetupSuite(unittest.TestSuite):

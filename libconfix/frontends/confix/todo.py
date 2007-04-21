@@ -29,7 +29,7 @@ from libconfix.core.utils import debug
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from confix_setup import ConfixSetup
 from debug import DebugSetup

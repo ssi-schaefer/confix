@@ -23,7 +23,7 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from libconfix.testutils import find
 
