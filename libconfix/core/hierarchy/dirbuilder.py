@@ -40,7 +40,7 @@ from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
-from iface import DirectoryBuilderInterfaceProxy
+from dirbuilder_iface import DirectoryBuilderInterfaceProxy
 
 class DirectoryBuilder(EntryBuilder, LocalNode):
 

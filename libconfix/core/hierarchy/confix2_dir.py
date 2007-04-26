@@ -23,7 +23,7 @@ from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils.error import Error
 
-from iface import DirectoryBuilderInterfaceProxy
+from dirbuilder_iface import DirectoryBuilderInterfaceProxy
 
 class Confix2_dir(FileBuilder):
 

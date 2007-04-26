@@ -16,6 +16,7 @@
 # USA
 
 from libconfix.core.machinery.tests.suite_inmem import MachineryInMemorySuite
+from libconfix.core.hierarchy.tests.suite_inmem import HierarchyInMemorySuite
 
 import unittest
 
@@ -23,11 +24,10 @@ class CoreInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(MachineryInMemorySuite())
+        self.addTest(HierarchyInMemorySuite())
         pass
     pass
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(CoreInMemorySuite())
     pass
-
-

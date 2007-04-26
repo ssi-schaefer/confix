@@ -17,7 +17,7 @@
 # USA
 
 from libconfix.core.machinery.setup import CompositeSetup
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
@@ -31,7 +31,7 @@ class ConfixSetup(CompositeSetup):
                  short_libnames):
         CompositeSetup.__init__(
             self,
-            [DirectorySetup(),
+            [DefaultDirectorySetup(),
              DefaultCSetup(short_libnames=short_libnames, use_libtool=use_libtool),
              ScriptSetup(),
              IDLSetup(),

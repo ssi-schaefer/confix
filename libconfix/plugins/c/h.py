@@ -79,7 +79,7 @@ class HeaderBuilder(CBaseBuilder):
         try:        
             self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
         except Error, e:
-            self.__namespace_error = e
+            self.__namespace_error = Error('Could not initialize '+'/'.join(self.file().relpath(dir=self.package())), [e])
             pass
         pass
 
