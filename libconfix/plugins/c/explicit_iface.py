@@ -51,6 +51,9 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         self.__object.add_builder(cxx)
         return cxx
 
+    def LIBRARY(self, members):
+        argh
+
     def __find_file(self, filename):
         for f in self.__object.parentbuilder().entries():
             if f.name() == filename:

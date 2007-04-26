@@ -20,6 +20,7 @@ import unittest
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
+from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
@@ -41,9 +42,9 @@ class ExplicitCSetupInMemoryTest(unittest.TestCase):
                               "PACKAGE_VERSION('1.2.3')"]))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=["DIRECTORY('lolibrary')",
-                              "DIRECTORY('hilibrary')",
-                              "DIRECTORY('executable')"]))
+            entry=File(lines=["DIRECTORY(['lolibrary'])",
+                              "DIRECTORY(['hilibrary'])",
+                              "DIRECTORY(['executable'])"]))
 
         lolibrary_dir = fs.rootdirectory().add(
             name='lolibrary',
@@ -98,7 +99,8 @@ class ExplicitCSetupInMemoryTest(unittest.TestCase):
                               "           center=CXX(filename='main.cc'),"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup()])
+                               setups=[ExplicitCSetup(),
+                                       ExplicitDirectorySetup()])
         package.boil(external_nodes=[])
 
         pass
