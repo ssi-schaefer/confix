@@ -48,11 +48,11 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |      v TRY-jfasch-nonlocal-headers (dead)
                  |
                  247----+
-  REL-2.0.0pre24 257    |
-                 260<---256
-                 |      v TRY-jfasch-relocated-headers (dead)
-                 |
-                 |
-                 |
+  REL-2.0.0pre24 257--- | -------------------------------------+
+                 260<---256                                    |
+                 |      v TRY-jfasch-relocated-headers (dead)  |
+                 |                                             |
+                 |                                             |
+                 |                      TRY-jfasch-bug-1713807 v
                  v
                trunk
