@@ -92,9 +92,14 @@ class LocalPackage(Package):
                 raise Error(const.CONFIX2_DIR+' missing in '+os.sep.join(rootdirectory.abspath()))
             if not isinstance(confix2_dir_file, File):
                 raise Error(os.sep.join(confix2_dir_file.abspath())+' is not a file')
-            confix2_dir = Confix2_dir(file=confix2_dir_file)
-            
+
             self.__rootbuilder = DirectoryBuilder(directory=rootdirectory)
+
+            confix2_dir = Confix2_dir(file=confix2_dir_file)
+            initial = self.get_initial_builders()
+            confix2_dir.add_iface_proxies(initial.iface_proxies())
+            self.__rootbuilder.add_builders(initial.builders())
+            
             self.__rootbuilder.add_builder(confix2_dir)
         except Error, e:
             raise Error('Cannot initialize package in '+'/'.join(rootdirectory.abspath()), [e])

@@ -28,6 +28,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
     
     def __init__(self, object):
         InterfaceProxy.__init__(self)
+        assert not isinstance(object, DirectoryBuilder), 'assuming a pass-through object'
         self.__object = object
         self.add_global('DIRECTORY', getattr(self, 'DIRECTORY'))
         pass
@@ -40,11 +41,23 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         if directory is None:
             raise Error('DIRECTORY(): could not find directory '+str(path))
         dirbuilder = DirectoryBuilder(directory=directory)
-        self.__object.parentbuilder().add_builder(dirbuilder)
+
+        # initialize directory builder from the package's setup. if we
+        # have a Confix2.dir file, then tell him about the interface
+        # the setup wants it to have, and add him to the directory
+        # builder. finally, add the directory bilder to his future
+        # parent.
+        initials = self.__object.package().get_initial_builders()
+        dirbuilder.add_builders(initials.builders())
+
         confix2_dir_file = directory.get(const.CONFIX2_DIR)
         if confix2_dir_file is not None:
-            dirbuilder.add_builder(Confix2_dir(file=confix2_dir_file))
+            confix2_dir_builder = Confix2_dir(file=confix2_dir_file)
+            confix2_dir_builder.add_iface_proxies(initials.iface_proxies())
+            dirbuilder.add_builder(confix2_dir_builder)
             pass
+
+        self.__object.parentbuilder().add_builder(dirbuilder)
         return dirbuilder
 
     pass

@@ -36,7 +36,6 @@ from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileMan
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.require_string import Require_String
 from libconfix.core.machinery.filebuilder import FileBuilder
-from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
@@ -88,23 +87,9 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
     def initialize(self, package):
         """
-        Get basic setup information from the package (initial
-        builders, accompanied with interface proxies to mainpulate
-        them). Initialize member builders."""
-
-        initial_builders = package.get_initial_builders()
-        self.add_builders(initial_builders.builders())
+        Recursively initialize self and the children.
+        """
         
-        for b in self.__builders.itervalues():
-            # this is an unfortunate coupling between DirectoryBuilder
-            # and Confix2_dir. we do not want to know anyting about
-            # the builder's type. rather, we'd want to know if the
-            # builder is capable of executing interface methods.
-            if isinstance(b, Confix2_dir):
-                b.add_iface_proxies(initial_builders.iface_proxies())
-                pass
-            pass
-
         super(DirectoryBuilder, self).initialize(package=package)
         assert self.package() is not None # initialize() should have done that.
 
