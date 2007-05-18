@@ -66,8 +66,15 @@ class SubdirectoryRecognizer(Builder):
 
             try:
                 self.__recognized_directories.add(entry)
+
+                initials = self.package().get_initial_builders()
+
                 dirbuilder = DirectoryBuilder(directory=entry)
-                dirbuilder.add_builder(Confix2_dir(file=confix2_dir_file))
+                dirbuilder.add_builders(initials. builders())
+
+                confix2_dir_builder = Confix2_dir(file=confix2_dir_file)
+                confix2_dir_builder.add_iface_proxies(initials.iface_proxies())
+                dirbuilder.add_builder(confix2_dir_builder)
                 self.parentbuilder().add_builder(dirbuilder)
             except Error, e:
                 errors.append(Error('Error creating directory builder for '+\

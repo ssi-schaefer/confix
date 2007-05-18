@@ -16,6 +16,7 @@
 # USA
 
 from libconfix.plugins.c.relocated_headers.tests.suite_build import RelocatedHeadersBuildSuite
+from libconfix.plugins.c.setups.tests.suite_build import SetupsBuildSuite
 
 import unittest
 
@@ -23,6 +24,7 @@ class CBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(RelocatedHeadersBuildSuite())
+        self.addTest(SetupsBuildSuite())
         pass
     pass
 

@@ -33,19 +33,19 @@ from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 class InstallInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(FilePropertyOnly('test'))
-        self.addTest(IfaceOnly('test'))
-        self.addTest(IfaceFilePropertyConflict('test'))
-        self.addTest(Namespace('testSimple'))
-        self.addTest(Namespace('testNested'))
-        self.addTest(Namespace('testGlobal'))
-        self.addTest(Namespace('testAmbiguousFlat'))
-        self.addTest(Namespace('testAmbiguousNested'))
-        self.addTest(Namespace('testDirectory'))
-        self.addTest(InstallPriorities('test'))
+##         self.addTest(FilePropertyOnly('test'))
+##         self.addTest(IfaceOnly('test'))
+##         self.addTest(IfaceFilePropertyConflict('test'))
+##         self.addTest(Namespace('testSimple'))
+##         self.addTest(Namespace('testNested'))
+##         self.addTest(Namespace('testGlobal'))
+##         self.addTest(Namespace('testAmbiguousFlat'))
+##         self.addTest(Namespace('testAmbiguousNested'))
+##         self.addTest(Namespace('testDirectory'))
+##         self.addTest(InstallPriorities('test'))
         self.addTest(INSTALLDIR_H_EmptyString('test'))
-        self.addTest(BadNamespace('test'))
-        self.addTest(BadNamespaceGoodINSTALLDIR_H('test'))
+##         self.addTest(BadNamespace('test'))
+##         self.addTest(BadNamespaceGoodINSTALLDIR_H('test'))
         pass
     pass
 
@@ -334,7 +334,6 @@ class INSTALLDIR_H_EmptyString(unittest.TestCase):
         lo.add(
             name='lo.h',
             entry=File())
-        
         hi = fs.rootdirectory().add(
             name='hi',
             entry=Directory())

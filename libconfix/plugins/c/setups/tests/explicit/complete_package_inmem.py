@@ -15,103 +15,28 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
-from libconfix.testutils import find
-
-from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.filesys.file import File
-from libconfix.core.filesys.directory import Directory
-from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
-from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.utils import const
+import complete_package
 
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
+from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.testutils import find
 
-class ExplicitCSetupInMemorySuite(unittest.TestSuite):
+import unittest
+
+class CompletePackageInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ExplicitCSetupInMemoryTest('test'))
+        self.addTest(CompletePackageInMemoryTest('test'))
         pass
     pass
 
-class ExplicitCSetupInMemoryTest(unittest.TestCase):
+class CompletePackageInMemoryTest(unittest.TestCase):
     def test(self):
-        fs = FileSystem(path=[])
-        fs.rootdirectory().add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
-                              "PACKAGE_VERSION('1.2.3')"]))
-        fs.rootdirectory().add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=["DIRECTORY(['lolibrary'])",
-                              "DIRECTORY(['hilibrary'])",
-                              "DIRECTORY(['executable'])"]))
-
-        lolibrary_dir = fs.rootdirectory().add(
-            name='lolibrary',
-            entry=Directory())
-        hilibrary_dir = fs.rootdirectory().add(
-            name='hilibrary',
-            entry=Directory())
-        executable_dir = fs.rootdirectory().add(
-            name='executable',
-            entry=Directory())
-
-        lolibrary_dir.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=["LIBRARY(members=[H(filename='lo.h'),",
-                              "                 C(filename='lo1.c'),",
-                              "                 C(filename='lo2.c')],",
-                              "        basename='hansi')"]))
-        lolibrary_dir.add(
-            name='lo.h',
-            entry=File(lines=['#ifndef LO_H',
-                              '#define LO_H',
-                              'void lo1(void);'
-                              'void lo2(void);'
-                              '#endif']))
-        lolibrary_dir.add(
-            name='lo1.c',
-            entry=File(lines=['#include "lo.h"',
-                              'void lo1(void) { lo2(); }']))
-        lolibrary_dir.add(
-            name='lo2.c',
-            entry=File(lines=['#include "lo.h"',
-                              'void lo2(void) {}']))
-
-        hilibrary_dir.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=["LIBRARY(members=[H(filename='hi.h', install=['hi']),",
-                              "                 CXX(filename='hi.cc')])"]))
-        hilibrary_dir.add(
-            name='hi.h',
-            entry=File(lines=["#ifndef HI_HI_H",
-                              "#define HI_HI_H",
-                              "void hi();",
-                              "#endif"]))
-        hilibrary_dir.add(
-            name='hi.cc',
-            entry=File(lines=['#include "hi.h"',
-                              '#include <lo.h>',
-                              'void hi() { lo1(); }']))
-
-        executable_dir.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=["EXECUTABLE(exename='the_executable',",
-                              "           center=CXX(filename='main.cc'))"]))
-        executable_dir.add(
-            name='main.cc',
-            entry=File(lines=['#include <hi/hi.h>',
-                              'int main() {',
-                              '    hi();',
-                              '    return 0;',
-                              '}']))
-
-        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+        package = LocalPackage(rootdirectory=complete_package.make_package_source(package_name=self.__class__.__name__),
                                setups=[ExplicitCSetup(),
                                        ExplicitDirectorySetup()])
         package.boil(external_nodes=[])
@@ -134,13 +59,13 @@ class ExplicitCSetupInMemoryTest(unittest.TestCase):
         found_lo_lo1_c = None
         found_lo_lo2_c = None
         for b in found_lodir_builder.builders():
-            if type(b) is HeaderBuilder and b.file().name() is 'lo.h':
+            if type(b) is HeaderBuilder and b.file().name() == 'lo.h':
                 found_lo_lo_h = b
                 pass
-            if type(b) is CBuilder and b.file().name() is 'lo1.c':
+            if type(b) is CBuilder and b.file().name() == 'lo1.c':
                 found_lo_lo1_c = b
                 pass
-            if type(b) is CBuilder and b.file().name() is 'lo2.c':
+            if type(b) is CBuilder and b.file().name() == 'lo2.c':
                 found_lo_lo2_c = b
                 pass
             pass
@@ -158,7 +83,6 @@ class ExplicitCSetupInMemoryTest(unittest.TestCase):
                 pass
             pass
         self.failIf(found_lolib_builder is None)
-        print found_lolib_builder.basename() 
         self.failUnless(found_lolib_builder.basename() == 'hansi')
 
         # see if it has the right members
@@ -186,5 +110,5 @@ class ExplicitCSetupInMemoryTest(unittest.TestCase):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExplicitCSetupInMemorySuite())
+    unittest.TextTestRunner().run(CompletePackageInMemorySuite())
     pass

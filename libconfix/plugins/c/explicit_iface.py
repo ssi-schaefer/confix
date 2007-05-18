@@ -18,6 +18,7 @@
 
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.utils.error import Error
+from libconfix.core.utils import helper
 
 from h import HeaderBuilder
 from c import CBuilder
@@ -25,6 +26,7 @@ from cxx import CXXBuilder
 from library import LibraryBuilder
 from executable import ExecutableBuilder
 from namefinder import LongNameFinder
+from relocated_headers.master import Master
 
 class ExplicitInterfaceProxy(InterfaceProxy):
 
@@ -38,13 +40,21 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         self.add_global('EXECUTABLE', getattr(self, 'EXECUTABLE'))
         pass
 
-    def H(self, filename, install=[]):
+    def H(self, filename, install=[], relocate_to=None):
         h = HeaderBuilder(file=self.__find_file(filename))
         if install is not None:
             h.set_external_install_path(install)
             pass
 
         self.__object.parentbuilder().add_builder(h)
+
+        if relocate_to is not None:
+            try:
+                the_path_to_relocate_to = helper.make_path(relocate_to)
+            except Error, e:
+                raise Error('H(): invalid "relocate_to" value', [e])
+            self.__object.parentbuilder().add_builder(
+                Master(filename=filename, directory=the_path_to_relocate_to))
         return h
 
     def C(self, filename):
@@ -69,10 +79,13 @@ class ExplicitInterfaceProxy(InterfaceProxy):
                                                     # from the setup
                                  libtool_version_info=libtool_version_info,
                                  libtool_release_info=self.__object.package().version())
+        for m in members:
+            library.add_member(m)
+            pass
         self.__object.parentbuilder().add_builder(library)
         return library
 
-    def EXECUTABLE(self, center, exename=None, what=ExecutableBuilder.BIN):
+    def EXECUTABLE(self, center, members=[], exename=None, what=ExecutableBuilder.BIN):
         the_exename = exename
         if the_exename is None:
             the_exename = LongNameFinder().find_exename(
@@ -85,6 +98,10 @@ class ExplicitInterfaceProxy(InterfaceProxy):
             pass
         # FIXME: libtool from setup object
         executable = ExecutableBuilder(center=center, exename=the_exename, what=what, use_libtool=False)
+        for m in members:
+            executable.add_member(m)
+            pass
+        self.__object.parentbuilder().add_builder(executable)
         return executable
     
     def __find_file(self, filename):

@@ -24,7 +24,7 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.automake.kde_hack import KDEHackSetup
 from libconfix.core.automake.auxdir import AutoconfAuxDirBuilder
 from libconfix.core.automake import bootstrap, configure, make
@@ -38,6 +38,9 @@ class KDEHackTestSuiteBuild(unittest.TestSuite):
     pass
 
 class KDEHackTest(PersistentTestCase):
+    def tearDown(self):
+        print 'KDEHackTest.tearDown'
+        pass
     def test(self):
         fs = FileSystem(path=self.rootpath())
 
@@ -66,7 +69,7 @@ class KDEHackTest(PersistentTestCase):
 
         package=LocalPackage(rootdirectory=source,
                              setups=[KDEHackSetup(),
-                                     DirectorySetup()])
+                                     DefaultDirectorySetup()])
         package.boil(external_nodes=[])
         package.output()
 

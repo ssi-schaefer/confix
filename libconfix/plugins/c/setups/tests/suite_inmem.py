@@ -17,7 +17,7 @@
 
 import unittest
 
-from explicit_setup import ExplicitCSetupInMemorySuite
+from explicit.suite_inmem import ExplicitCSetupInMemorySuite
 
 class SetupsInMemorySuite(unittest.TestSuite):
     def __init__(self):
