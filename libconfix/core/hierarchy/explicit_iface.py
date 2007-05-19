@@ -17,6 +17,7 @@
 
 from dirbuilder import DirectoryBuilder
 from confix2_dir import Confix2_dir
+import init_dirbuilder
 
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.utils.error import Error
@@ -47,15 +48,17 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         # the setup wants it to have, and add him to the directory
         # builder. finally, add the directory bilder to his future
         # parent.
-        initials = self.__object.package().get_initial_builders()
-        dirbuilder.add_builders(initials.builders())
-
+        
+        confix2_dir_builder = None
         confix2_dir_file = directory.get(const.CONFIX2_DIR)
         if confix2_dir_file is not None:
             confix2_dir_builder = Confix2_dir(file=confix2_dir_file)
-            confix2_dir_builder.add_iface_proxies(initials.iface_proxies())
-            dirbuilder.add_builder(confix2_dir_builder)
             pass
+        
+        init_dirbuilder.initialize_directory(
+            confix2_dir_builder=confix2_dir_builder,
+            dir_builder=dirbuilder,
+            package=self.__object.package())
 
         self.__object.parentbuilder().add_builder(dirbuilder)
         return dirbuilder

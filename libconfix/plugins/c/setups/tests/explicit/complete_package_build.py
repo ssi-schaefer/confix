@@ -34,8 +34,8 @@ import sys
 class CompletePackageBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(CompletePackageBuildTestWithLibtool('test'))
         self.addTest(CompletePackageBuildTestWithoutLibtool('test'))
-        print 'CompletePackageBuildTestWithLibtool: to be implemented'
         pass
     pass
 
@@ -54,7 +54,7 @@ class CompletePackageBuildTestBase(PersistentTestCase):
 
         package = LocalPackage(rootdirectory=source,
                                setups=[ExplicitDirectorySetup(),
-                                       ExplicitCSetup()])
+                                       ExplicitCSetup(use_libtool=self.use_libtool())])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()

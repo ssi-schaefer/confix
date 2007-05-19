@@ -23,7 +23,7 @@ import unittest
 from libconfix.core.automake import bootstrap, configure, make
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
@@ -56,7 +56,7 @@ class PlainFileBuildTest(PersistentTestCase):
             entry=Directory())
 
         package = LocalPackage(rootdirectory=source,
-                               setups=[DirectorySetup(), PlainFileInterfaceSetup()])
+                               setups=[DefaultDirectorySetup(), PlainFileInterfaceSetup()])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()

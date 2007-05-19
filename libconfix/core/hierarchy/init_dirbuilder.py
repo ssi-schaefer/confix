@@ -15,16 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.setup import CompositeSetup
-
-from common_iface_setup import CommonInterfaceSetup
-from explicit_iface_setup import ExplicitInterfaceSetup
-
-class ExplicitCSetup(CompositeSetup):
-    def __init__(self, use_libtool):
-        CompositeSetup.__init__(
-            self,
-            setups=[CommonInterfaceSetup(),
-                    ExplicitInterfaceSetup(use_libtool=use_libtool)])
+def initialize_directory(confix2_dir_builder, dir_builder, package):
+    initial = package.get_initial_builders()
+    if confix2_dir_builder is not None:
+        confix2_dir_builder.add_iface_proxies(initial.iface_proxies())
+        dir_builder.add_builder(confix2_dir_builder)
         pass
+    dir_builder.add_builders(initial.builders())
     pass

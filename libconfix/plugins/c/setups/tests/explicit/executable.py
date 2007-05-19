@@ -49,7 +49,7 @@ class ExecutableInMemoryTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup()])
+                               setups=[ExplicitCSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_exe_builder = None

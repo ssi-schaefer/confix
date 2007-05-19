@@ -30,9 +30,11 @@ from relocated_headers.master import Master
 
 class ExplicitInterfaceProxy(InterfaceProxy):
 
-    def __init__(self, object):
+    def __init__(self, object, use_libtool):
         InterfaceProxy.__init__(self)
         self.__object = object
+        self.__use_libtool = use_libtool
+        
         self.add_global('H', getattr(self, 'H'))
         self.add_global('C', getattr(self, 'C'))
         self.add_global('CXX', getattr(self, 'CXX'))
@@ -75,8 +77,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
                 path=self.__object.parentbuilder().directory().relpath(dir=self.__object.package().rootdirectory()))
             pass
         library = LibraryBuilder(basename=the_basename,
-                                 use_libtool=False, # todo: pass this
-                                                    # from the setup
+                                 use_libtool=self.__use_libtool,
                                  libtool_version_info=libtool_version_info,
                                  libtool_release_info=self.__object.package().version())
         for m in members:
@@ -91,13 +92,12 @@ class ExplicitInterfaceProxy(InterfaceProxy):
             the_exename = LongNameFinder().find_exename(
                 packagename=self.__object.package().name(),
                 path=self.__object.parentbuilder().directory().relpath(dir=self.__object.package().rootdirectory()),
-                centername=center.file().name(),
-                what=what,
-                use_libtool=False # todo: pass this from the setup
-                )
+                centername=center.file().name())
             pass
-        # FIXME: libtool from setup object
-        executable = ExecutableBuilder(center=center, exename=the_exename, what=what, use_libtool=False)
+        executable = ExecutableBuilder(center=center,
+                                       exename=the_exename,
+                                       what=what,
+                                       use_libtool=self.__use_libtool)
         for m in members:
             executable.add_member(m)
             pass

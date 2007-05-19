@@ -43,6 +43,7 @@ from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.iface.executor import InterfaceExecutor
 from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.hierarchy import init_dirbuilder
 
 import os
 import types
@@ -95,12 +96,10 @@ class LocalPackage(Package):
 
             self.__rootbuilder = DirectoryBuilder(directory=rootdirectory)
 
-            confix2_dir = Confix2_dir(file=confix2_dir_file)
-            initial = self.get_initial_builders()
-            confix2_dir.add_iface_proxies(initial.iface_proxies())
-            self.__rootbuilder.add_builders(initial.builders())
-            
-            self.__rootbuilder.add_builder(confix2_dir)
+            init_dirbuilder.initialize_directory(
+                confix2_dir_builder=Confix2_dir(file=confix2_dir_file),
+                dir_builder=self.__rootbuilder,
+                package=self)
         except Error, e:
             raise Error('Cannot initialize package in '+'/'.join(rootdirectory.abspath()), [e])
 
@@ -114,6 +113,10 @@ class LocalPackage(Package):
             pass
         self.__auxdir = AutoconfAuxDirBuilder(directory=dir)
         self.__rootbuilder.add_builder(self.__auxdir)
+        init_dirbuilder.initialize_directory(
+            confix2_dir_builder=None,
+            dir_builder=self.__auxdir,
+            package=self)
 
         # now's the time to make everyone aware that we're no fun
         # anymore.

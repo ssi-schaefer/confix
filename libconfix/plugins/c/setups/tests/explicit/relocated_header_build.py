@@ -34,8 +34,8 @@ import sys
 class RelocatedHeaderBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(RelocatedHeaderBuildTestWithLibTool('test'))
         self.addTest(RelocatedHeaderBuildTestWithoutLibTool('test'))
-        print 'RelocatedHeaderBuildTestWithLibTool: to be implemented'
         pass
     pass
 
@@ -54,7 +54,7 @@ class RelocatedHeaderBuildTestBase(PersistentTestCase):
 
         package = LocalPackage(rootdirectory=source,
                                setups=[ExplicitDirectorySetup(),
-                                       ExplicitCSetup()])
+                                       ExplicitCSetup(use_libtool=self.use_libtool())])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()

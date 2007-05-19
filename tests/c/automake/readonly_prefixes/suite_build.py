@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -25,11 +25,11 @@ from libconfix.core.automake.repo_automake import AutomakeCascadedPackageReposit
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
 
@@ -170,7 +170,7 @@ class ReadonlyPrefixesBuildBase(PersistentTestCase):
                               '}']))
 
         hi_package = LocalPackage(rootdirectory=hi_fs.rootdirectory(),
-                                  setups=[DirectorySetup(),
+                                  setups=[DefaultDirectorySetup(),
                                           DefaultCSetup(short_libnames=False,
                                                  use_libtool=self.use_libtool())])
         hi_package.boil(external_nodes=repo.nodes())

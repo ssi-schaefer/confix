@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 
 from dirbuilder import DirectoryBuilder
 from confix2_dir import Confix2_dir
+import init_dirbuilder
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.filesys.directory import Directory
@@ -66,15 +67,11 @@ class SubdirectoryRecognizer(Builder):
 
             try:
                 self.__recognized_directories.add(entry)
-
-                initials = self.package().get_initial_builders()
-
                 dirbuilder = DirectoryBuilder(directory=entry)
-                dirbuilder.add_builders(initials. builders())
-
-                confix2_dir_builder = Confix2_dir(file=confix2_dir_file)
-                confix2_dir_builder.add_iface_proxies(initials.iface_proxies())
-                dirbuilder.add_builder(confix2_dir_builder)
+                init_dirbuilder.initialize_directory(
+                    confix2_dir_builder=Confix2_dir(file=confix2_dir_file),
+                    dir_builder=dirbuilder,
+                    package=self.package())
                 self.parentbuilder().add_builder(dirbuilder)
             except Error, e:
                 errors.append(Error('Error creating directory builder for '+\

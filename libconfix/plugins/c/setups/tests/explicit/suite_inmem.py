@@ -19,6 +19,7 @@ from library import LibraryInMemorySuite
 from executable import ExecutableInMemorySuite
 from relocated_header_inmem import RelocatedHeaderInMemorySuite
 from complete_package_inmem import CompletePackageInMemorySuite
+from libtool import LibtoolInMemorySuite
 
 import unittest
 
@@ -29,6 +30,7 @@ class ExplicitCSetupInMemorySuite(unittest.TestSuite):
         self.addTest(ExecutableInMemorySuite())
         self.addTest(RelocatedHeaderInMemorySuite())
         self.addTest(CompletePackageInMemorySuite())
+        self.addTest(LibtoolInMemorySuite())
         pass
     pass
 

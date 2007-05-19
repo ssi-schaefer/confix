@@ -37,7 +37,7 @@ class CompletePackageInMemorySuite(unittest.TestSuite):
 class CompletePackageInMemoryTest(unittest.TestCase):
     def test(self):
         package = LocalPackage(rootdirectory=complete_package.make_package_source(package_name=self.__class__.__name__),
-                               setups=[ExplicitCSetup(),
+                               setups=[ExplicitCSetup(use_libtool=False),
                                        ExplicitDirectorySetup()])
         package.boil(external_nodes=[])
 

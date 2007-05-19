@@ -36,7 +36,7 @@ class RelocatedHeaderInMemoryTest(unittest.TestCase):
     def test(self):
         package = LocalPackage(rootdirectory=relocated_header.make_package_source(package_name=self.__class__.__name__),
                                setups=[ExplicitDirectorySetup(),
-                                       ExplicitCSetup()])
+                                       ExplicitCSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         exe_builder = find.find_entrybuilder(

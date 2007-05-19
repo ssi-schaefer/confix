@@ -48,7 +48,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File(lines=["LIBRARY(basename='hansi', members=[])"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup()])
+                               setups=[ExplicitCSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_lib_builder = None
@@ -73,7 +73,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File(lines=["LIBRARY(members=[])"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup()])
+                               setups=[ExplicitCSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_lib_builder = None
@@ -113,7 +113,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup()])
+                               setups=[ExplicitCSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_lib_builder = None

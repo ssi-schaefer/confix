@@ -22,9 +22,9 @@ from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.automake import bootstrap, configure, make, helper_automake
 from libconfix.core.automake.repo_automake import AutomakePackageRepository
-from libconfix.core.hierarchy.setup import DirectorySetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
 
@@ -105,7 +105,7 @@ class InterPackageBuildTest(PersistentTestCase):
         lo_package = LocalPackage(
             rootdirectory=lo_source,
             setups=[DefaultCSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool()),
-                    DirectorySetup()])
+                    DefaultDirectorySetup()])
         lo_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
         lo_package.output()
         fs.sync()
@@ -128,7 +128,7 @@ class InterPackageBuildTest(PersistentTestCase):
 
         hi_package = LocalPackage(
             rootdirectory=hi_source,
-            setups=[DirectorySetup()])
+            setups=[DefaultDirectorySetup()])
         hi_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
         hi_package.output()
         fs.sync()
