@@ -17,6 +17,7 @@
 
 from relocated_header_build import RelocatedHeaderBuildSuite
 from complete_package_build import CompletePackageBuildSuite
+from check_build import CheckProgramBuildSuite
 
 import unittest
 
@@ -25,6 +26,7 @@ class ExplicitCSetupBuildSuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(RelocatedHeaderBuildSuite())
         self.addTest(CompletePackageBuildSuite())
+        self.addTest(CheckProgramBuildSuite())
         pass
     pass
 

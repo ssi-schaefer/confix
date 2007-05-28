@@ -1,3 +1,7 @@
+2007-05-28 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Explicit interface rudimentary implemented.
+
 2007-03-14 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* libconfix.plugins.c.pkg_config: basic pkg-config support;

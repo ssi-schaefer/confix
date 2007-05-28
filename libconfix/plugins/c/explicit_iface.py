@@ -39,6 +39,10 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         self.add_global('C', getattr(self, 'C'))
         self.add_global('CXX', getattr(self, 'CXX'))
         self.add_global('LIBRARY', getattr(self, 'LIBRARY'))
+
+        self.add_global('EXECUTABLE_BIN', ExecutableBuilder.BIN)
+        self.add_global('EXECUTABLE_CHECK', ExecutableBuilder.CHECK)
+        self.add_global('EXECUTABLE_NOINST', ExecutableBuilder.NOINST)
         self.add_global('EXECUTABLE', getattr(self, 'EXECUTABLE'))
         pass
 
@@ -95,7 +99,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
                 centername=center.file().name())
             pass
         executable = ExecutableBuilder(center=center,
-                                       exename=the_exename,
+                                      exename=the_exename,
                                        what=what,
                                        use_libtool=self.__use_libtool)
         for m in members:
