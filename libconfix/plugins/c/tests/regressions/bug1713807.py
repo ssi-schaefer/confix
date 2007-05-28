@@ -23,8 +23,8 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.installed_package import InstalledPackage
 from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.require import Require
-from libconfix.core.hierarchy.setup import DirectorySetup
-from libconfix.plugins.c.setup import DefaultCSetup
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.dependency import Require_CInclude
 
 import unittest
@@ -79,7 +79,7 @@ class Bug1713807Test(unittest.TestCase):
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(short_libnames=False, use_libtool=False),
-                                       DirectorySetup()])
+                                       DefaultDirectorySetup()])
         package.boil(external_nodes=installed_package.nodes())
         pass
     pass
