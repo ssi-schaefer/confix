@@ -46,6 +46,8 @@ class DirectedGraph(object):
                 pass
             pass
         pass
+
+
     
     def nodes(self): return self.nodes_
 
@@ -54,7 +56,7 @@ class DirectedGraph(object):
         return self.edges_
 
     def find_edge(self, tail, head):
-        self.complete_edges_()
+        self.out_edges(tail)
         return self.edges_.find_edge(tail, head)
 
     def successors(self, node):

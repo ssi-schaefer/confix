@@ -1,6 +1,8 @@
 2007-05-28 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
-	* Explicit interface rudimentary implemented.
+	* Explicit interface rudimentarily implemented.
+	* Merged from TRY-jfasch-bug-1713807:
+	  * fixed "[ 1713807 ] Full graph computed even for unused installed packages"
 
 2007-03-14 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 

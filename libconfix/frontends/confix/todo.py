@@ -315,6 +315,11 @@ def SETTINGS():
         debug.set_trace(trace)
         pass
 
+    message_prefix = CONFIG.message_prefix()
+    if message_prefix is not None:
+        debug.set_message_prefix(message_prefix)
+        pass
+
     pass
 
 def deduce_builddir():
