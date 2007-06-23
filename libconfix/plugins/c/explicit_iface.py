@@ -28,6 +28,8 @@ from executable import ExecutableBuilder
 from namefinder import LongNameFinder
 from relocated_headers.master import Master
 
+import os
+
 class ExplicitInterfaceProxy(InterfaceProxy):
 
     def __init__(self, object, use_libtool):
@@ -93,13 +95,14 @@ class ExplicitInterfaceProxy(InterfaceProxy):
     def EXECUTABLE(self, center, members=[], exename=None, what=ExecutableBuilder.BIN):
         the_exename = exename
         if the_exename is None:
+            center_stem, center_ext = os.path.splitext(center.file().name())
             the_exename = LongNameFinder().find_exename(
                 packagename=self.__object.package().name(),
                 path=self.__object.parentbuilder().directory().relpath(dir=self.__object.package().rootdirectory()),
-                centername=center.file().name())
+                centername=center_stem)
             pass
         executable = ExecutableBuilder(center=center,
-                                      exename=the_exename,
+                                       exename=the_exename,
                                        what=what,
                                        use_libtool=self.__use_libtool)
         for m in members:

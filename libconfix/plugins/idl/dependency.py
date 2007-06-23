@@ -84,5 +84,8 @@ class Provide_IDL(Provide_String):
                                 string=helper.normalize_filename(filename),
                                 match=match)
 
+    def __str__(self):
+        return 'plugins.idl.Provide_IDL(' + self.string() + ')'
+
     def can_match_classes(self): return Provide_IDL.MATCH_CLASSES
     pass

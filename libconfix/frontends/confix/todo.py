@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -265,12 +265,17 @@ def CONFIGURE():
         for p in CONFIG.readonly_prefixes():
             ro_pfxs.append(p.split(os.sep))
             pass
+        prefix = None
+        if CONFIG.prefix() is not None:
+            prefix = CONFIG.prefix().split(os.sep)
+            pass
         configure.configure(packageroot=CONFIG.packageroot().split(os.sep),
                             builddir=builddir.split(os.sep),
-                            prefix=CONFIG.prefix().split(os.sep),
+                            prefix=prefix,
                             readonly_prefixes=ro_pfxs,
                             args=CONFIG.configure_args(),
                             env=configure_env)
+        pass
     except Error, e:
         raise Error("Error calling configure:", [e])
 
@@ -287,7 +292,7 @@ def MAKE():
     make_env = {}
     make_env.update(os.environ)
     if CONFIG.make_env() is not None:
-        env.update(CONFIG.make_env())
+        make_env.update(CONFIG.make_env())
         pass
 
     try:

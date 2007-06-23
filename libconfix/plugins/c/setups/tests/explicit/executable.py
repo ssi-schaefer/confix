@@ -31,6 +31,7 @@ class ExecutableInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(ExecutableInMemoryTest('testExplicitName'))
+        self.addTest(ExecutableInMemoryTest('testImplicitName'))
         pass
     pass
 
@@ -61,6 +62,34 @@ class ExecutableInMemoryTest(unittest.TestCase):
             pass
         self.failIf(found_exe_builder is None)
         self.failUnless(found_exe_builder.exename() == 'hansi')
+        pass
+
+    def testImplicitName(self):
+        fs = FileSystem(path=[])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('ExecutableInMemoryTest')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["EXECUTABLE(center=C(filename='main.c'), members=[])"]))
+        fs.rootdirectory().add(
+            name='main.c',
+            entry=File())
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ExplicitCSetup(use_libtool=False)])
+        package.boil(external_nodes=[])
+
+        found_exe_builder = None
+        for b in package.rootbuilder().builders():
+            if isinstance(b, ExecutableBuilder):
+                self.failUnless(found_exe_builder is None)
+                found_exe_builder = b
+                continue
+            pass
+        self.failIf(found_exe_builder is None)
+        self.failUnless(found_exe_builder.exename() == 'ExecutableInMemoryTest_main')
         pass
 
 if __name__ == '__main__':

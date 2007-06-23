@@ -37,7 +37,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
     def DIRECTORY(self, path):
         if type(path) not in (list, tuple):
             raise Error('DIRECTORY('+str(path)+'): path argument must be list or tuple')
-            
+        
         directory = self.__object.parentbuilder().directory().find(path=path)
         if directory is None:
             raise Error('DIRECTORY(): could not find directory '+str(path))

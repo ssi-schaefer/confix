@@ -98,6 +98,8 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         for b in self.__builders.values()[:]:
             assert not b.is_initialized()
             b.initialize(package=self.package())
+            # verify that initialize() has reached the Builder base
+            # class
             assert b.is_initialized()
             pass
         pass

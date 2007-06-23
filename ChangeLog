@@ -1,3 +1,14 @@
+2007-06-23 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Merged from RB-2.0
+	  * Fixed bug when setting environment variables for make, in the
+	    config file.
+	  * Fixed
+	    https://sourceforge.net/tracker/index.php?func=detail&aid=1741989&group_id=68975&atid=523019,
+	    "[ 1741989 ] Explicit interface: EXECUTABLE with implicit
+	    exename".
+	  * fixed "[ 1708975 ] Configure without --prefix"
+
 2007-05-28 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* Explicit interface rudimentarily implemented.
@@ -14,7 +25,7 @@
 
 2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
-	* (Merged from TRY-jfasch-relocated-headers)
+l	* (Merged from TRY-jfasch-relocated-headers)
 	  * new RELOCATE_HEADER() function
 	  * "build" test suite for libconfix
 

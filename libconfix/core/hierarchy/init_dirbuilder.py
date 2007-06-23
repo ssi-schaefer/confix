@@ -16,6 +16,7 @@
 # USA
 
 def initialize_directory(confix2_dir_builder, dir_builder, package):
+    assert package is not None
     initial = package.get_initial_builders()
     if confix2_dir_builder is not None:
         confix2_dir_builder.add_iface_proxies(initial.iface_proxies())
