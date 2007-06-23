@@ -25,7 +25,7 @@
 
 2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
-l	* (Merged from TRY-jfasch-relocated-headers)
+	* (Merged from TRY-jfasch-relocated-headers)
 	  * new RELOCATE_HEADER() function
 	  * "build" test suite for libconfix
 
