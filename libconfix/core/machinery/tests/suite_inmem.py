@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,7 +15,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from dependencyset import DependencySetSuite
+from depinfo import DependencyInformationSuite
 from enlarge_force import EnlargeForceSuite
+from iface import BuilderInterfaceTestSuite
+from provide import ProvideSuite
+from relate import RelateTestSuite
+from resolve import ResolveTestSuite
+from urgency_error import UrgencyErrorSuite
+from local_package import LocalPackageSuite
 
 import unittest
 
@@ -23,6 +31,14 @@ class MachineryInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(EnlargeForceSuite())
+        self.addTest(DependencySetSuite())
+        self.addTest(DependencyInformationSuite())
+        self.addTest(BuilderInterfaceTestSuite())
+        self.addTest(ProvideSuite())
+        self.addTest(RelateTestSuite())
+        self.addTest(ResolveTestSuite())
+        self.addTest(LocalPackageSuite())
+        self.addTest(UrgencyErrorSuite())
         pass
     pass
 

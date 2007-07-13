@@ -17,12 +17,18 @@
 
 import unittest
 
+from dirsetup import BasicDirectorySetupSuite
 from explicit_iface import ExplicitInterfaceInMemorySuite
+from ignored_entries import IgnoredEntriesSuite
+from pseudo_handwritten import PseudoHandwrittenSuite
 
 class HierarchyInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(BasicDirectorySetupSuite())
         self.addTest(ExplicitInterfaceInMemorySuite())
+        self.addTest(IgnoredEntriesSuite())
+        self.addTest(PseudoHandwrittenSuite())
         pass
     pass
 

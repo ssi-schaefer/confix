@@ -97,4 +97,3 @@ class With_Confix2_dir(unittest.TestCase):
 if __name__ == '__main__':
     unittest.TextTestRunner().run(ExplicitInterfaceInMemorySuite())
     pass
-

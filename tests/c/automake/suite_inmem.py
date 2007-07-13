@@ -22,7 +22,6 @@ from exe import ExecutableSuite
 from libtool_version import LibtoolVersionSuite
 from libtool_linking import LibtoolLinkingSuite
 from intra_package_inmem import IntraPackageInMemorySuite
-from check_inmem import CheckProgramInMemorySuite
 from external_library import ExternalLibraryInMemorySuite
 from library_dependencies.suite_inmem import LibraryDependenciesInMemorySuite
 from exename.suite_inmem import ExecutableNameInMemorySuite
@@ -39,7 +38,6 @@ class AutomakeCSuiteInMemory(unittest.TestSuite):
         self.addTest(LibtoolLinkingSuite())
         self.addTest(ExecutableSuite())
         self.addTest(IntraPackageInMemorySuite())
-        self.addTest(CheckProgramInMemorySuite())
         self.addTest(ExternalLibraryInMemorySuite())
         self.addTest(LibraryDependenciesInMemorySuite())
         self.addTest(ExecutableNameInMemorySuite())

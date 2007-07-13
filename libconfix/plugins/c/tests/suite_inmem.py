@@ -15,8 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from regressions.suite_inmem import RegressionsInMemorySuite
+from name_mangling import NameManglingSuite
 
+from check.suite_inmem import CheckProgramInMemorySuite
+from regressions.suite_inmem import RegressionsInMemorySuite
 from header.suite_inmem import HeaderInMemorySuite
 
 from libconfix.plugins.c.setups.tests.suite_inmem import SetupsInMemorySuite
@@ -28,6 +30,8 @@ import unittest
 class CInMemoryTestSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(CheckProgramInMemorySuite())
+        self.addTest(NameManglingSuite())
         self.addTest(SetupsInMemorySuite())
         self.addTest(RelocatedHeadersInMemorySuite())
         self.addTest(HeaderInMemorySuite())

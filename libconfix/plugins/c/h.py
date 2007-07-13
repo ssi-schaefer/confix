@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -171,11 +171,10 @@ class HeaderBuilder(CBaseBuilder):
 
 class HeaderBuilderInterfaceProxy(InterfaceProxy):
     def __init__(self, object):
-        InterfaceProxy.__init__(self)
-        self.__object = object
+        InterfaceProxy.__init__(self, object=object)
         self.add_global('INSTALLPATH', getattr(self, 'INSTALLPATH'))
         pass
     def INSTALLPATH(self, path):
-        self.__object.set_iface_install_path(helper.make_path(path))
+        self.object().set_iface_install_path(helper.make_path(path))
         pass
     pass

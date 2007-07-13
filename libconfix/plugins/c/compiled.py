@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -193,11 +193,10 @@ class CompiledCBuilder(CBaseBuilder):
 
 class CompiledCBuilderInterfaceProxy(InterfaceProxy):
     def __init__(self, object):
-        InterfaceProxy.__init__(self)
-        self.object_ = object
+        InterfaceProxy.__init__(self, object=object)
         self.add_global('EXENAME', getattr(self, 'EXENAME'))
         pass
     def EXENAME(self, name):
-        self.object_.set_exename(name)
+        self.object().set_exename(name)
         pass
     pass

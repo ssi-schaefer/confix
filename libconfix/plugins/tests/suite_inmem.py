@@ -16,6 +16,9 @@
 # USA
 
 from libconfix.plugins.c.tests.suite_inmem import CInMemoryTestSuite
+from libconfix.plugins.plainfile.tests.suite_inmem import PlainFileSuiteInMemory
+from libconfix.plugins.script.tests.suite_inmem import ScriptSuiteInMemory
+from libconfix.plugins.idl.tests.suite_inmem import IDLSuiteInMemory
 
 import unittest
 
@@ -23,6 +26,9 @@ class PluginsInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(CInMemoryTestSuite())
+        self.addTest(PlainFileSuiteInMemory())
+        self.addTest(ScriptSuiteInMemory())
+        self.addTest(IDLSuiteInMemory())
         pass
     pass
 

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,17 +19,21 @@
 from libconfix.core.utils.error import Error
 
 class InterfaceProxy:
-    def __init__(self):
-        self.globals_ = {}
+    def __init__(self, object):
+        self.__object = object
+        self.__globals = {}
         pass
 
+    def object(self):
+        return self.__object
+
     def add_global(self, key, value):
-        if self.globals_.has_key(key):
+        if self.__globals.has_key(key):
             raise Error('"'+key+'" is already set')
-        self.globals_[key] = value
+        self.__globals[key] = value
         pass
 
     def get_globals(self):
-        return self.globals_
+        return self.__globals
 
     pass

@@ -17,6 +17,7 @@
 
 from libconfix.core.tests.suite_inmem import CoreInMemorySuite
 from libconfix.plugins.tests.suite_inmem import PluginsInMemorySuite
+from libconfix.frontends.tests.suite_inmem import FrontendsInMemorySuite
 
 import unittest
 
@@ -25,6 +26,7 @@ class LibConfixInMemorySuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(CoreInMemorySuite())
         self.addTest(PluginsInMemorySuite())
+        self.addTest(FrontendsInMemorySuite())
         pass
     pass
 

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,36 +18,28 @@
 
 from libconfix.core.machinery.setup import Setup
 
-from iface import \
-     ADD_PLAINFILE_InterfaceProxy, \
-     MethodPassThrough
+from iface import ADD_PLAINFILE_Confix2_dir
 from creator import PlainFileCreator
 
 class PlainFileInterfaceSetup(Setup):
     def initial_builders(self):
         ret = super(PlainFileInterfaceSetup, self).initial_builders()
-
-        pass_through_builder = MethodPassThrough(id=str(self.__class__))
-        proxy = ADD_PLAINFILE_InterfaceProxy(object=pass_through_builder)
-
-        ret.add_builder(pass_through_builder)
-        ret.add_iface_proxy(proxy)
-
+        ret.append(ADD_PLAINFILE_Confix2_dir())
         return ret
     pass
 
 class PlainFileCreatorSetup(Setup):
     def __init__(self, regex, prefixdir=None, datadir=None):
         Setup.__init__(self)
-        self.regex_ = regex
-        self.prefixdir_ = prefixdir
-        self.datadir_ = datadir
+        self.__regex = regex
+        self.__prefixdir = prefixdir
+        self.__datadir = datadir
         pass
     def initial_builders(self):
         ret = super(PlainFileCreatorSetup, self).initial_builders()
-        ret.add_builder(PlainFileCreator(regex=self.regex_,
-                                         prefixdir=self.prefixdir_,
-                                         datadir=self.datadir_))
+        ret.append(PlainFileCreator(regex=self.__regex,
+                                    prefixdir=self.__prefixdir,
+                                    datadir=self.__datadir))
         return ret
     pass
 

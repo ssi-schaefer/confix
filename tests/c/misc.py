@@ -21,6 +21,7 @@ import unittest
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.utils import const
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
@@ -55,7 +56,8 @@ class IgnoredEntriesTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False),
+                                       DefaultDirectorySetup()])
         package.boil(external_nodes=[])
 
         self.failIf(find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['x.cc']) is not None)

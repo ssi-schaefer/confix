@@ -16,6 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from property import PropertySuite
+
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory, DirectoryState
 from libconfix.core.filesys.file import File, FileState
@@ -40,6 +42,8 @@ class FileSystemTestSuite(unittest.TestSuite):
         self.addTest(Sync_RootMoreThanOneDirectoryDeep('test'))
         self.addTest(VirtualFile('test'))
         self.addTest(ExplicitMode('test'))
+        
+        self.addTest(PropertySuite())
         pass
     pass
 

@@ -15,16 +15,22 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.core.filesys.tests.suite_inmem import FileSystemTestSuite
+from libconfix.core.digraph.tests.suite_inmem import DiGraphSuite
 from libconfix.core.machinery.tests.suite_inmem import MachineryInMemorySuite
 from libconfix.core.hierarchy.tests.suite_inmem import HierarchyInMemorySuite
+from libconfix.core.automake.tests.suite_inmem import AutomakeInMemorySuite
 
 import unittest
 
 class CoreInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(FileSystemTestSuite())
+        self.addTest(DiGraphSuite())
         self.addTest(MachineryInMemorySuite())
         self.addTest(HierarchyInMemorySuite())
+        self.addTest(AutomakeInMemorySuite())
         pass
     pass
 

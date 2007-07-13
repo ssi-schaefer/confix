@@ -19,25 +19,31 @@ from master import Master
 
 from libconfix.core.utils.error import Error
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.machinery.builder import Builder
+from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 
-class RelocatorInterface(InterfaceProxy, Builder):
-    def __init__(self):
-        InterfaceProxy.__init__(self)
-        Builder.__init__(self)
-        self.add_global('RELOCATE_HEADER', getattr(self, 'RELOCATE_HEADER'))
+class Relocator_Confix2_dir(Confix2_dir_Contributor):
+    class RelocatorInterfaceProxy(InterfaceProxy):
+        def __init__(self, object):
+            assert isinstance(object, DirectoryBuilder)
+            InterfaceProxy.__init__(self, object)
+            self.add_global('RELOCATE_HEADER', getattr(self, 'RELOCATE_HEADER'))
+            pass
+        def RELOCATE_HEADER(self, filename, directory):
+            if not type(filename) is str:
+                raise Error('RELOCATE_HEADER(): filename parameter must be a string')
+            if not type(directory) in (list, tuple):
+                raise Error('RELOCATE_HEADER(): directory parameter must be list or tuple')
+            self.object().add_builder(
+                Master(filename, directory))
+            pass
         pass
+
+    def get_iface_proxies(self):
+        return [self.RelocatorInterfaceProxy(object=self.parentbuilder())]
 
     def locally_unique_id(self):
         return str(self.__class__)
 
-    def RELOCATE_HEADER(self, filename, directory):
-        if not type(filename) is str:
-            raise Error('RELOCATE_HEADER(): filename parameter must be a string')
-        if not type(directory) in (list, tuple):
-            raise Error('RELOCATE_HEADER(): directory parameter must be list or tuple')
-        self.parentbuilder().add_builder(
-            Master(filename, directory))
-        pass
 
     pass

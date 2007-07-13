@@ -15,19 +15,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from explicit_iface import ExplicitInterfaceProxy
+from explicit_iface import Confix2_dir_ExplicitInterface
+from common_iface import CommonDirectoryInterface_Confix2_dir
 
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.iface.pass_through import MethodPassThrough
 
 class ExplicitDirectorySetup(Setup):
-    def __init__(self):
-        Setup.__init__(self)
-        pass
     def initial_builders(self):
-        ret = super(ExplicitDirectorySetup, self).initial_builders()
-        pass_through_builder = MethodPassThrough(id=str(self.__class__))
-        ret.add_builder(pass_through_builder)
-        ret.add_iface_proxy(ExplicitInterfaceProxy(object=pass_through_builder))
-        return ret
+        return super(ExplicitDirectorySetup, self).initial_builders() + \
+               [Confix2_dir_ExplicitInterface(), CommonDirectoryInterface_Confix2_dir()]
     pass

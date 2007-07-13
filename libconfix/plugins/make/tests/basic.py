@@ -1,5 +1,4 @@
-# Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,41 +15,47 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
+from libconfix.plugins.make.setup import MakeSetup
 
-from libconfix.core.filesys.file import File
+from libconfix.testutils.persistent import PersistentTestCase
 from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.filesys.file import File
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-class MiscellaneousSuite(unittest.TestSuite):
+import unittest
+
+class BasicMakeSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ProvideStringUpdateTest('test'))
+        self.addTest(BasicMakeTest('test'))
         pass
     pass
 
-class ProvideStringUpdateTest(unittest.TestCase):
-
-    # one day I tried to eliminate Provide_String.update() and didn't
-    # see from the tests that it was needed. now I see.
-    
+class BasicMakeTest(PersistentTestCase):
     def test(self):
-        fs = FileSystem(path=['don\'t', 'care'])
+        fs = FileSystem(self.rootpath())
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=["PACKAGE_NAME('ProvideStringUpdateTest')",
+            entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
                               "PACKAGE_VERSION('1.2.3')"]))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=["PROVIDE_SYMBOL('aaa')",
-                              "PROVIDE_SYMBOL('aaa')"]))
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+            entry=File(lines=['CALL_MAKE_AND_RESCAN()']))
+        fs.rootdirectory().add(
+            name='Makefile',
+            entry=File(lines=['all:',
+                              '\t@touch the_file',
+                              '']))
+        fs.sync() # the make program need something to hold on to
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[MakeSetup()])
         package.boil(external_nodes=[])
+
+        self.failUnless(fs.rootdirectory().find(['the_file']))
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(MiscellaneousSuite())
+    unittest.TextTestRunner().run(BasicMakeSuite())
     pass
-

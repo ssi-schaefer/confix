@@ -16,27 +16,26 @@
 # USA
 
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.iface.pass_through import MethodPassThrough
+from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 
 from libconfix.plugins.c.common_iface import \
-     EXTERNAL_LIBRARY_InterfaceProxy, \
-     REQUIRE_H_InterfaceProxy, \
-     PROVIDE_H_InterfaceProxy, \
-     TESTS_ENVIRONMENT_InterfaceProxy
+     EXTERNAL_LIBRARY, \
+     REQUIRE_H, \
+     PROVIDE_H, \
+     TESTS_ENVIRONMENT
+
+class CommonInterface_Confix2_dir(Confix2_dir_Contributor):
+    def get_iface_proxies(self):
+        return [EXTERNAL_LIBRARY(object=self),
+                REQUIRE_H(object=self),
+                PROVIDE_H(object=self),
+                TESTS_ENVIRONMENT(object=self.parentbuilder())]
+    def locally_unique_id(self):
+        return str(self.__class__)
+    pass
 
 class CommonInterfaceSetup(Setup):
     def initial_builders(self):
-        ret = super(CommonInterfaceSetup, self).initial_builders()
-
-        pass_through_builder = MethodPassThrough(id=str(self.__class__))
-        ret.add_builder(pass_through_builder)
-
-        for p in [EXTERNAL_LIBRARY_InterfaceProxy(object=pass_through_builder),
-                  REQUIRE_H_InterfaceProxy(object=pass_through_builder),
-                  PROVIDE_H_InterfaceProxy(object=pass_through_builder),
-                  TESTS_ENVIRONMENT_InterfaceProxy(object=pass_through_builder)]:
-            ret.add_iface_proxy(p)
-            pass
-        
-        return ret
+        return super(CommonInterfaceSetup, self).initial_builders() + \
+               [CommonInterface_Confix2_dir()]
     pass

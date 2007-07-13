@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -174,7 +174,7 @@ class Builder(object):
         pass
 
     def iface_pieces(self):
-        return [BuilderInterfaceProxy(builder=self)]
+        return [BuilderInterfaceProxy(object=self)]
 
     # these are mainly for use by test programs, and serve no real
     # functionality
@@ -202,11 +202,9 @@ class Builder(object):
     pass
 
 class BuilderInterfaceProxy(InterfaceProxy):
-    def __init__(self, builder):
-        InterfaceProxy.__init__(self)
+    def __init__(self, object):
+        InterfaceProxy.__init__(self, object=object)
 
-        self.builder_ = builder
-        
         # the most basic ones
         self.add_global('PARENTBUILDER', getattr(self, 'PARENTBUILDER'))
         self.add_global('PACKAGE', getattr(self, 'PACKAGE'))
@@ -249,20 +247,20 @@ class BuilderInterfaceProxy(InterfaceProxy):
         pass
 
     def PARENTBUILDER(self):
-        return self.builder_.parentbuilder()
+        return self.object().parentbuilder()
     def PACKAGE(self):
-        return self.builder_.package()
+        return self.object().package()
 
     def PROVIDE(self, provide):
         if not isinstance(provide, Provide):
             raise Error('PROVIDE(): argument must be of type '+str(Provide)+' (was '+str(provide)+')')
-        self.builder_.add_provide(provide)
+        self.object().add_provide(provide)
         pass
 
     def REQUIRE(self, require):
         if not isinstance(require, Require):
             raise Error('REQUIRE(): argument must be of type '+str(Require))
-        self.builder_.add_require(require)
+        self.object().add_require(require)
         pass
 
     def PROVIDE_SYMBOL(self, symbol, match=Provide_String.EXACT_MATCH):
@@ -270,7 +268,7 @@ class BuilderInterfaceProxy(InterfaceProxy):
             raise Error('PROVIDE_SYMBOL(): need a non-zero symbol parameter')
         if not match in [Provide_String.EXACT_MATCH, Provide_String.PREFIX_MATCH, Provide_String.GLOB_MATCH]:
             raise Error('PROVIDE_SYMBOL(): match must be one of EXACT_MATCH, PREFIX_MATCH, GLOB_MATCH')
-        self.builder_.add_provide(Provide_Symbol(symbol=symbol, match=match))
+        self.object().add_provide(Provide_Symbol(symbol=symbol, match=match))
         pass
 
     def REQUIRE_SYMBOL(self, symbol, urgency=Require.URGENCY_IGNORE):
@@ -278,16 +276,16 @@ class BuilderInterfaceProxy(InterfaceProxy):
             raise Error('REQUIRE_SYMBOL(): need a non-zero symbol parameter')
         if not urgency in [Require.URGENCY_IGNORE, Require.URGENCY_WARN, Require.URGENCY_ERROR]:
             raise Error('REQUIRE_SYMBOL(): urgency must be one of URGENCY_IGNORE, URGENCY_WARN, URGENCY_ERROR')
-        self.builder_.add_require(Require_Symbol(
+        self.object().add_require(Require_Symbol(
             symbol,
-            found_in=[str(self.builder_)],
+            found_in=[str(self.object())],
             urgency=urgency))
         pass
 
     def PROVIDE_CALLABLE(self, name):
         if not name or len(name) == 0:
             raise Error('PROVIDE_CALLABLE(): need a non-zero name parameter')
-        self.builder_.add_provide(Provide_Callable(exename=name))
+        self.object().add_provide(Provide_Callable(exename=name))
         pass
 
     def REQUIRE_CALLABLE(self, name, urgency=Require.URGENCY_IGNORE):
@@ -295,14 +293,14 @@ class BuilderInterfaceProxy(InterfaceProxy):
             raise Error('REQUIRE_CALLABLE(): need a non-zero name parameter')
         if not urgency in [Require.URGENCY_IGNORE, Require.URGENCY_WARN, Require.URGENCY_ERROR]:
             raise Error('REQUIRE_SYMBOL(): urgency must be one of URGENCY_IGNORE, URGENCY_WARN, URGENCY_ERROR')
-        self.builder_.add_require(Require_Callable(
+        self.object().add_require(Require_Callable(
             exename=name,
-            found_in=[str(self.builder_)],
+            found_in=[str(self.object())],
             urgency=urgency))
         pass
 
     def BUILDINFORMATION(self, buildinfo):
-        self.builder_.add_buildinfo(buildinfo)
+        self.object().add_buildinfo(buildinfo)
         pass
 
     AC_BUILDINFO_TRANSPORT_LOCAL = 0
@@ -311,12 +309,12 @@ class BuilderInterfaceProxy(InterfaceProxy):
         if type(order) not in [types.IntType or types.LongType]:
             raise Error('CONFIGURE_AC(): "order" parameter must be an integer')
         if flags is None or BuilderInterfaceProxy.AC_BUILDINFO_TRANSPORT_LOCAL in flags:
-            self.builder_.package().configure_ac().add_paragraph(
+            self.object().package().configure_ac().add_paragraph(
                 paragraph=Paragraph(lines=lines),
                 order=order)
             pass
         if flags is None or BuilderInterfaceProxy.AC_BUILDINFO_TRANSPORT_PROPAGATE in flags:
-            self.builder_.add_buildinfo(BuildInfo_Configure_in(
+            self.object().add_buildinfo(BuildInfo_Configure_in(
                 lines=lines,
                 order=order))
             pass
@@ -324,11 +322,11 @@ class BuilderInterfaceProxy(InterfaceProxy):
 
     def ACINCLUDE_M4(self, lines, flags=None):
         if flags is None or BuilderInterfaceProxy.AC_BUILDINFO_TRANSPORT_LOCAL in flags:
-            self.builder_.package().acinclude_m4().add_paragraph(
+            self.object().package().acinclude_m4().add_paragraph(
                 paragraph=Paragraph(lines=lines))
             pass
         if flags is None or BuilderInterfaceProxy.AC_BUILDINFO_TRANSPORT_PROPAGATE in flags:
-            self.builder_.add_buildinfo(BuildInfo_ACInclude_m4(
+            self.object().add_buildinfo(BuildInfo_ACInclude_m4(
                 lines=lines))
             pass
         pass

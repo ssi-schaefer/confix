@@ -39,8 +39,6 @@ from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
-from dirbuilder_iface import DirectoryBuilderInterfaceProxy
-
 class DirectoryBuilder(EntryBuilder, LocalNode):
 
     class DuplicateBuilderError(Error):
@@ -89,14 +87,22 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         """
         Recursively initialize self and the children.
         """
+
+        # first of all, ask the package for my initial builders. I
+        # have to do this before initializing anything - else, if I
+        # initialize myself too early, then adding a builder will
+        # trigger initializing it, and I will end up trying to
+        # initialize it twice (which is letal)
+        self.add_builders(package.get_initial_builders())
         
+        # now's the time
         super(DirectoryBuilder, self).initialize(package=package)
         assert self.package() is not None # initialize() should have done that.
 
         # then, initialize my builders, recursively. copy the initial
-        # list bcause it may change under the hood.
+        # list because it may change under the hood.
         for b in self.__builders.values()[:]:
-            assert not b.is_initialized()
+            assert not b.is_initialized(), 'self: '+str(self)+', builder: '+str(b)
             b.initialize(package=self.package())
             # verify that initialize() has reached the Builder base
             # class
@@ -248,13 +254,8 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
             pass
 
         mf_am.add_lines(self.__makefile_am.lines())
-
         pass
      
-    def iface_pieces(self):
-        return EntryBuilder.iface_pieces(self) + \
-               [DirectoryBuilderInterfaceProxy(directory_builder=self)]
-
     # Node
 
     def recollect_dependency_info(self):

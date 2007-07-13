@@ -16,13 +16,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
 from basic.suite_build import BasicTestSuiteBuild
 from c.suite_build import CTestSuiteBuild
-from plainfile.suite_build import PlainFileSuiteBuild
 from make.suite_build import MakeSuiteBuild
 from libconfix.tests.suite_build import LibConfixBuildSuite
+
+from libconfix.plugins.plainfile.tests.suite_build import PlainFileSuiteBuild
+
+import unittest
 
 if __name__ == '__main__':
 

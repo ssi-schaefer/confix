@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -49,7 +49,10 @@ class BasicDirectorySetup(unittest.TestCase):
         self.assertEqual(package.rootbuilder().directory().find(['a', 'a']), subsubdir)
         
         subdir_builder = find.find_entrybuilder(package.rootbuilder(), ['a'])
+        self.failIf(subdir_builder is None)
+        
         subsubdir_builder = find.find_entrybuilder(package.rootbuilder(), ['a','a'])
+        self.failIf(subsubdir_builder is None)
 
         self.assertEqual(subdir_builder.directory(), subdir)
         self.assertEqual(subsubdir_builder.directory(), subsubdir)

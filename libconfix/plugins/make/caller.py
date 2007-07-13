@@ -24,9 +24,6 @@ class MakeCaller(Builder):
     def __init__(self):
         Builder.__init__(self)
         self.__requested_calls = []
-
-        # FIXME: crap; see below
-        self.__crap_force_enlarge_round = 0
         pass
 
     def locally_unique_id(self):
@@ -34,7 +31,7 @@ class MakeCaller(Builder):
 
     def add_call(self, filename, args):
         self.__requested_calls.append((filename, args))
-        self.__force_enlarge()
+        self.force_enlarge()
         pass
 
     def enlarge(self):
@@ -59,23 +56,8 @@ class MakeCaller(Builder):
         # state changed, and only then reiterate. on the other, we can
         # never know what Makefile writers think and do, and they
         # could generate files in other directories than the current.
-        self.__force_enlarge()
-        
+        self.force_enlarge()
+
         self.__requested_calls = []
-        
-        pass
-
-    def __force_enlarge(self):
-        # FIXME: once TRY-jfasch-nonlocal-headers has been merged, use
-        # Builder.force_enlarge() instead of this crap
-
-        # force one more enlarge round by pretending that dependency
-        # info has changed.
-        self.add_provide(
-            Provide_Symbol(symbol='Bogus dummy crap: '+self.__class__.__name__+\
-                           '(package='+self.package().name()+','
-                           'directory='+'/'.join(self.parentbuilder().directory().relpath(self.package().rootdirectory()))+'):'+\
-                           str(self.__crap_force_enlarge_round)))
-        self.__crap_force_enlarge_round += 1
         pass
     pass

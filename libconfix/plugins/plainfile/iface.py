@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -22,47 +22,55 @@ import types
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
 from libconfix.core.machinery.builder import Builder
+from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
+from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.iface.pass_through import MethodPassThrough
 from libconfix.core.filesys.file import File
 
 from builder import PlainFileBuilder
 
-class ADD_PLAINFILE_InterfaceProxy(InterfaceProxy):
-    def __init__(self, object):
-        InterfaceProxy.__init__(self)
-        self.object_ = object
-        self.add_global('ADD_PLAINFILE', getattr(self, 'ADD_PLAINFILE'))
-        pass
+class ADD_PLAINFILE_Confix2_dir(Confix2_dir_Contributor):
+    def get_iface_proxies(self):
+        return [self.ADD_PLAINFILE(object=self.parentbuilder())]
+    def locally_unique_id(self):
+        return str(self.__class__)
 
-    def ADD_PLAINFILE(self, filename, datadir=None, prefixdir=None):
-        if type(filename) is not types.StringType:
-            raise Error('ADD_PLAINFILE(): filename must be a string')
-        if (datadir is not None and prefixdir is not None) or \
-           (datadir is None and prefixdir is None):
-            raise Error('ADD_PLAINFILE('+filename+'): specify either datadir or prefixdir')
-        the_datadir = the_prefixdir = None
-        if datadir is not None:
-            try:
-                the_datadir = helper.make_path(datadir)
-            except Error, e:
-                raise Error('ADD_PLAINFILE('+filename+'): datadir', [e])
+    class ADD_PLAINFILE(InterfaceProxy):
+        def __init__(self, object):
+            assert isinstance(object, DirectoryBuilder)
+            InterfaceProxy.__init__(self, object=object)
+            self.add_global('ADD_PLAINFILE', getattr(self, 'ADD_PLAINFILE'))
             pass
-        if prefixdir is not None:
-            try:
-                the_prefixdir = helper.make_path(prefixdir)
-            except Error, e:
-                raise Error('ADD_PLAINFILE('+filename+'): prefixdir', [e])
-            pass
+
+        def ADD_PLAINFILE(self, filename, datadir=None, prefixdir=None):
+            if type(filename) is not types.StringType:
+                raise Error('ADD_PLAINFILE(): filename must be a string')
+            if (datadir is not None and prefixdir is not None) or \
+                   (datadir is None and prefixdir is None):
+                raise Error('ADD_PLAINFILE('+filename+'): specify either datadir or prefixdir')
+            the_datadir = the_prefixdir = None
+            if datadir is not None:
+                try:
+                    the_datadir = helper.make_path(datadir)
+                except Error, e:
+                    raise Error('ADD_PLAINFILE('+filename+'): datadir', [e])
+                pass
+            if prefixdir is not None:
+                try:
+                    the_prefixdir = helper.make_path(prefixdir)
+                except Error, e:
+                    raise Error('ADD_PLAINFILE('+filename+'): prefixdir', [e])
+                pass
         
-        file = self.object_.parentbuilder().directory().find([filename])
-        if file is None:
-            raise Error('ADD_PLAINFILE('+filename+'): no such file or directory')
-        if not isinstance(file, File):
-            raise Error('ADD_PLAINFILE('+filename+'): not a file')
-
-        self.object_.parentbuilder().add_builder(
-            PlainFileBuilder(file=file,
-                             datadir=the_datadir,
-                             prefixdir=the_prefixdir))
+            file = self.object().directory().find([filename])
+            if file is None:
+                raise Error('ADD_PLAINFILE('+filename+'): no such file or directory')
+            if not isinstance(file, File):
+                raise Error('ADD_PLAINFILE('+filename+'): not a file')
+            
+            self.object().add_builder(
+                PlainFileBuilder(file=file,
+                                 datadir=the_datadir,
+                                 prefixdir=the_prefixdir))
+            pass
         pass

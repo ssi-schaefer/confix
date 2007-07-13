@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,12 +15,3 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from iface import Relocator_Confix2_dir
-
-from libconfix.core.machinery.setup import Setup
-
-class RelocatedHeadersSetup(Setup):
-    def initial_builders(self):
-        return super(RelocatedHeadersSetup, self).initial_builders() + \
-               [Relocator_Confix2_dir()]
-    pass

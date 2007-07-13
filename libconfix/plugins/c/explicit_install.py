@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ from h import HeaderBuilder
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
+from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
@@ -61,31 +62,37 @@ class ExplicitInstaller(Builder):
             pass
         pass
 
-class ExplicitInstallerInterfaceProxy(InterfaceProxy):
+class ExplicitInstaller_Confix2_dir(Confix2_dir_Contributor):
+    class INSTALLDIR_H(InterfaceProxy):
+        def __init__(self, object):
+            assert isinstance(object, ExplicitInstaller)
+            InterfaceProxy.__init__(self, object=object)
+            self.add_global('INSTALLDIR_H', getattr(self, 'INSTALLDIR_H'))
+            pass
+        def INSTALLDIR_H(self, dir):
+            try:
+                the_dir = helper.make_path(dir)
+            except Error, e:
+                raise Error('INSTALLDIR_H(): dir argument must either '
+                            'be a string or a list of path components', [e])
+            self.object().set_installdir(the_dir)
+            pass
+        pass
     def __init__(self, explicit_installer):
-        InterfaceProxy.__init__(self)
+        Confix2_dir_Contributor.__init__(self)
         self.__explicit_installer = explicit_installer
-        self.add_global('INSTALLDIR_H', getattr(self, 'INSTALLDIR_H'))
         pass
-    def INSTALLDIR_H(self, dir):
-        try:
-            the_dir = helper.make_path(dir)
-        except Error, e:
-            raise Error('INSTALLDIR_H(): dir argument must either '
-                        'be a string or a list of path components', [e])
-        self.__explicit_installer.set_installdir(the_dir)
-        pass
+    def get_iface_proxies(self):
+        return [self.INSTALLDIR_H(object=self.__explicit_installer)]
+    def locally_unique_id(self):
+        return str(self.__class__)
     pass
 
 class ExplicitInstallerSetup(Setup):
     def initial_builders(self):
         ret = super(ExplicitInstallerSetup, self).initial_builders()
-
         installer = ExplicitInstaller()
-        proxy = ExplicitInstallerInterfaceProxy(explicit_installer=installer)
-
-        ret.add_builder(installer)
-        ret.add_iface_proxy(proxy)
-
+        ret.extend([
+            installer,            ExplicitInstaller_Confix2_dir(explicit_installer=installer)])
         return ret
     pass

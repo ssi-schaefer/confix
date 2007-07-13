@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ from libconfix.core.utils.paragraph import Paragraph
 class LibraryDependenciesFinderSetup(Setup):
     def initial_builders(self):
         ret = super(LibraryDependenciesFinderSetup, self).initial_builders()
-        ret.add_builder(ExecutableWatcher())
+        ret.append(ExecutableWatcher())
         return ret
     pass
         

@@ -16,14 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from automake.suite_build import AutomakeBuildSuite
-
 import unittest
 
 class BasicTestSuiteBuild(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeBuildSuite())
         pass
     pass
 

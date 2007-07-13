@@ -33,8 +33,8 @@ import os
 class ExplicitInterfaceProxy(InterfaceProxy):
 
     def __init__(self, object, use_libtool):
-        InterfaceProxy.__init__(self)
-        self.__object = object
+        InterfaceProxy.__init__(self, object=object)
+
         self.__use_libtool = use_libtool
         
         self.add_global('H', getattr(self, 'H'))
@@ -54,42 +54,42 @@ class ExplicitInterfaceProxy(InterfaceProxy):
             h.set_external_install_path(install)
             pass
 
-        self.__object.parentbuilder().add_builder(h)
+        self.object().add_builder(h)
 
         if relocate_to is not None:
             try:
                 the_path_to_relocate_to = helper.make_path(relocate_to)
             except Error, e:
                 raise Error('H(): invalid "relocate_to" value', [e])
-            self.__object.parentbuilder().add_builder(
+            self.object().add_builder(
                 Master(filename=filename, directory=the_path_to_relocate_to))
         return h
 
     def C(self, filename):
         c = CBuilder(file=self.__find_file(filename))
-        self.__object.parentbuilder().add_builder(c)
+        self.object().add_builder(c)
         return c
 
     def CXX(self, filename):
         cxx = CXXBuilder(file=self.__find_file(filename))
-        self.__object.parentbuilder().add_builder(cxx)
+        self.object().add_builder(cxx)
         return cxx
 
     def LIBRARY(self, members, basename=None, libtool_version_info=None):
         the_basename = basename
         if the_basename is None:
             the_basename=LongNameFinder().find_libname(
-                packagename=self.__object.package().name(),
-                path=self.__object.parentbuilder().directory().relpath(dir=self.__object.package().rootdirectory()))
+                packagename=self.object().package().name(),
+                path=self.object().directory().relpath(dir=self.object().package().rootdirectory()))
             pass
         library = LibraryBuilder(basename=the_basename,
                                  use_libtool=self.__use_libtool,
                                  libtool_version_info=libtool_version_info,
-                                 libtool_release_info=self.__object.package().version())
+                                 libtool_release_info=self.object().package().version())
         for m in members:
             library.add_member(m)
             pass
-        self.__object.parentbuilder().add_builder(library)
+        self.object().add_builder(library)
         return library
 
     def EXECUTABLE(self, center, members=[], exename=None, what=ExecutableBuilder.BIN):
@@ -97,8 +97,8 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         if the_exename is None:
             center_stem, center_ext = os.path.splitext(center.file().name())
             the_exename = LongNameFinder().find_exename(
-                packagename=self.__object.package().name(),
-                path=self.__object.parentbuilder().directory().relpath(dir=self.__object.package().rootdirectory()),
+                packagename=self.object().package().name(),
+                path=self.object().directory().relpath(dir=self.object().package().rootdirectory()),
                 centername=center_stem)
             pass
         executable = ExecutableBuilder(center=center,
@@ -108,11 +108,11 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         for m in members:
             executable.add_member(m)
             pass
-        self.__object.parentbuilder().add_builder(executable)
+        self.object().add_builder(executable)
         return executable
     
     def __find_file(self, filename):
-        for name, entry in self.__object.parentbuilder().entries():
+        for name, entry in self.object().entries():
             if name == filename:
                 return entry
             pass

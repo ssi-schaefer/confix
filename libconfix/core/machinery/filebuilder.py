@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,15 +31,13 @@ class FileBuilder(EntryBuilder):
         return self.entry()
     def iface_pieces(self):
         return EntryBuilder.iface_pieces(self) + \
-               [FileBuilderInterfaceProxy(builder=self)]
+               [FileBuilderInterfaceProxy(object=self)]
     pass
 
 class FileBuilderInterfaceProxy(InterfaceProxy):
-    def __init__(self, builder):
-        InterfaceProxy.__init__(self)
+    def __init__(self, object):
+        InterfaceProxy.__init__(self, object=object)
 
-        self.builder_ = builder
-        
         self.add_global('SET_FILE_PROPERTIES', getattr(self, 'SET_FILE_PROPERTIES'))
         self.add_global('SET_FILE_PROPERTY', getattr(self, 'SET_FILE_PROPERTY'))
         pass
@@ -50,13 +48,13 @@ class FileBuilderInterfaceProxy(InterfaceProxy):
         if not type(properties) is types.DictionaryType:
             raise Error("SET_FILE_PROPERTIES(): 'properties' parameter must be a dictionary")
         for name, value in properties.iteritems():
-            self.builder_.file().set_property(name=name, value=value)
+            self.object().file().set_property(name=name, value=value)
             pass
         pass
 
     def SET_FILE_PROPERTY(self, name, value):
         if type(name) is not types.StringType:
             raise Error("SET_FILE_PROPERTY(): 'name' must be a string")
-        self.builder_.file().set_property(name, value)
+        self.object().file().set_property(name, value)
         pass
     

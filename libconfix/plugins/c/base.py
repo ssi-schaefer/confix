@@ -29,9 +29,7 @@ from libconfix.core.machinery.require import Require
 from libconfix.core.utils.error import Error
 
 from dependency import Require_CInclude
-from common_iface import \
-     REQUIRE_H_InterfaceProxy, \
-     PROVIDE_H_InterfaceProxy
+from common_iface import REQUIRE_H, PROVIDE_H
 import helper
 
 # argh: '$' does not hit doze-like carriage return, but rather leaves
@@ -62,8 +60,7 @@ class CBaseBuilder(FileBuilder):
 
     def iface_pieces(self):
         return FileBuilder.iface_pieces(self) + \
-               [REQUIRE_H_InterfaceProxy(object=self),
-                PROVIDE_H_InterfaceProxy(object=self)]
+               [REQUIRE_H(object=self), PROVIDE_H(object=self)]
     
     def __eval_iface(self):
 

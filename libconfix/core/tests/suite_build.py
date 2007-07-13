@@ -15,26 +15,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from adapter import PkgConfigLibraryAdapter
+from libconfix.core.automake.tests.suite_build import AutomakeBuildSuite
 
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.machinery.builder import Builder
-from libconfix.core.utils.error import Error
+import unittest
 
-class PKG_CONFIG_LIBRARY_InterfaceProxy(InterfaceProxy, Builder):
+class CoreBuildSuite(unittest.TestSuite):
     def __init__(self):
-        InterfaceProxy.__init__(self)
-        Builder.__init__(self)
-        self.add_global('PKG_CONFIG_LIBRARY', getattr(self, 'PKG_CONFIG_LIBRARY'))
+        unittest.TestSuite.__init__(self)
+        self.addTest(AutomakeBuildSuite())
         pass
+    pass
 
-    def locally_unique_id(self):
-        return str(self.__class__.__name__)
-
-    def PKG_CONFIG_LIBRARY(self, packagename):
-        if type(packagename) is not str:
-            raise Error("PKG_CONFIG_LIBRARY(): argument 'packagename' must be a string")
-        self.parentbuilder().add_builder(PkgConfigLibraryAdapter(packagename=packagename))
-        pass
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(CoreBuildSuite())
     pass
 

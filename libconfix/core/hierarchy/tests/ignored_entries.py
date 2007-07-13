@@ -16,7 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
+from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
+from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -27,10 +28,13 @@ from libconfix.core.utils import const
 
 from libconfix.testutils import dirhier
 
+import unittest
+
 class IgnoredEntriesSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(IgnoredEntries('test'))
+        self.addTest(IgnoredEntries('testDefaultSetup'))
+        self.addTest(IgnoredEntries('testExplicitSetup'))
         pass
     pass
 
@@ -59,7 +63,7 @@ class FileWatcher(Builder):
 
 class IgnoredEntries(unittest.TestCase):
 
-    def test(self):
+    def testDefaultSetup(self):
         fs = FileSystem(path=['a'])
         fs.rootdirectory().add(name=const.CONFIX2_PKG,
                                entry=File(lines=["PACKAGE_NAME('xxx')",
@@ -74,7 +78,33 @@ class IgnoredEntries(unittest.TestCase):
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[])
+            setups=[DefaultDirectorySetup()])
+        filewatcher = FileWatcher(parentbuilder=package.rootbuilder(),
+                                  package=package)
+        package.rootbuilder().add_builder(filewatcher)
+        package.boil(external_nodes=[])
+
+        self.failIf('file1' in filewatcher.seen_names())
+        self.failIf('file2' in filewatcher.seen_names())
+
+        pass
+
+    def testExplicitSetup(self):
+        fs = FileSystem(path=['a'])
+        fs.rootdirectory().add(name=const.CONFIX2_PKG,
+                               entry=File(lines=["PACKAGE_NAME('xxx')",
+                                                 "PACKAGE_VERSION('6.6.6')"]))
+        fs.rootdirectory().add(name=const.CONFIX2_DIR,
+                               entry=File(lines=['IGNORE_ENTRIES(["file1"])',
+                                                 'IGNORE_FILE("file2")']))
+        fs.rootdirectory().add(name='file1',
+                               entry=File())
+        fs.rootdirectory().add(name='file2',
+                               entry=File())
+        
+        package = LocalPackage(
+            rootdirectory=fs.rootdirectory(),
+            setups=[ExplicitDirectorySetup()])
         filewatcher = FileWatcher(parentbuilder=package.rootbuilder(),
                                   package=package)
         package.rootbuilder().add_builder(filewatcher)

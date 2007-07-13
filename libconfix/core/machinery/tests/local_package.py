@@ -25,12 +25,16 @@ from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.installed_package import InstalledPackage
 from libconfix.core.machinery.provide_symbol import Provide_Symbol
 from libconfix.core.machinery.require_symbol import Require_Symbol
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.setup import Setup
 from libconfix.core.repo.package_file import PackageFile
+from libconfix.core.utils import const
 
-class PackageFileSuite(unittest.TestSuite):
+class LocalPackageSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(PackageFileTest('test'))
+        self.addTest(PackageInterfaceTest('test'))
         pass
     pass
 
@@ -61,7 +65,38 @@ class PackageFileTest(unittest.TestCase):
         
         pass
     pass
+
+class PackageInterfaceTest(unittest.TestCase):
+    class DummySetup1(Setup): pass
+    def test(self):
+        fs = FileSystem(path=['dont\'t', 'care'])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["from libconfix.core.machinery.setup import Setup",
+                              "class DummySetup2(Setup): pass",
+                              "PACKAGE_NAME('PackageInterfaceTest')",
+                              "PACKAGE_VERSION('1.2.3')",
+                              "ADD_SETUP(DummySetup2())"]))
+
+        # add Confix2.dir for no real reason. we could really do
+        # without, and should take some time to investigate. but not
+        # now (now==2006-09-19).
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File())
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[self.DummySetup1()])
+
+        self.failUnlessEqual(package.name(), 'PackageInterfaceTest')
+        self.failUnlessEqual(package.version(), '1.2.3')
+        # we don't have DummySetup1's definition at hand (we defined
+        # it inside Confix2.pkg), so we have to check for its name.
+        self.failUnless(type(package.setups()[1]).__name__ != 'DummySetup1')
+        pass
+    pass
+
         
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PackageFileSuite())
+    unittest.TextTestRunner().run(LocalPackageSuite())
     pass

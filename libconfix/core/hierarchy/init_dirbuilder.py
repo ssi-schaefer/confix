@@ -1,3 +1,5 @@
+assert False
+
 # Copyright (C) 2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify

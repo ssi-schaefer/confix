@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,20 +16,49 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.setup import Setup
-from libconfix.core.iface.pass_through import MethodPassThrough
+from builder import ScriptBuilder
 
-from iface import ADD_SCRIPT_InterfaceProxy
+from libconfix.core.machinery.setup import Setup
+from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
+from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.filesys.file import File
+
+import types
+
+class ScriptInterface_Confix2_dir(Confix2_dir_Contributor):
+
+    class ADD_SCRIPT(InterfaceProxy):
+        def __init__(self, object):
+            InterfaceProxy.__init__(self, object)
+            self.add_global('ADD_SCRIPT', getattr(self, 'ADD_SCRIPT'))
+            pass
+
+        def ADD_SCRIPT(self, filename):
+            if type(filename) is not types.StringType:
+                raise Error('ADD_SCRIPT(): filename must be a string')
+            
+            file = self.object().parentbuilder().directory().find([filename])
+            if file is None:
+                raise Error('ADD_SCRIPT('+filename+'): no such file or directory')
+            if not isinstance(file, File):
+                raise Error('ADD_SCRIPT('+filename+'): not a file')
+            
+            self.object().add_script(file)
+            pass
+        pass
+
+    def add_script(self, file):
+        self.parentbuilder().add_builder(ScriptBuilder(file=file))
+        pass
+    def get_iface_proxies(self):
+        return [self.ADD_SCRIPT(object=self)]
+    def locally_unique_id(self):
+        return str(self.__class__)
+    pass
 
 class ScriptSetup(Setup):
     def initial_builders(self):
         ret = super(ScriptSetup, self).initial_builders()
-
-        pass_through_builder = MethodPassThrough(id=str(self.__class__))
-        proxy = ADD_SCRIPT_InterfaceProxy(object=pass_through_builder)
-
-        ret.add_builder(pass_through_builder)
-        ret.add_iface_proxy(proxy)
-
+        ret.append(ScriptInterface_Confix2_dir())
         return ret
     pass

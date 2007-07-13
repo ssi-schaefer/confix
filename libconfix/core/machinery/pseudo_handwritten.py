@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@ class PseudoHandWrittenFileManager(object):
 
     def create_file(self, filename):
         if filename in self.registered_files_:
-            raise Error(self.directory_.relpath(self.directory_.filesystem().rootdirectory())+': '
+            raise Error('/'.join(self.directory_.relpath(self.directory_.filesystem().rootdirectory()))+': '
                         'cannot add pseudo-handwritten file "'+filename+'" twice')
         self.registered_files_.add(filename)
         try:

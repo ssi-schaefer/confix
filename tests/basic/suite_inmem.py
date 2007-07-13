@@ -16,50 +16,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from digraph.suite import DiGraphSuite
-from package_iface import PackageInterfaceSuite
-from dependencyset import DependencySetSuite
-from depinfo import DependencyInformationSuite
-from boil import BoilSuite
-from dirsetup import BasicDirectorySetupSuite
-from filesystests import FileSystemTestSuite
-from ignored_entries import IgnoredEntriesSuite
-from property import PropertySuite
-from iface import BuilderInterfaceTestSuite
-from resolve import ResolveTestSuite
-from relate import RelateTestSuite
-from package_file import PackageFileSuite
-from pseudo_handwritten import PseudoHandwrittenSuite
-from automake.suite_inmem import AutomakeInMemorySuite
-from config.suite import ConfigSuite
-from misc import MiscellaneousSuite
-from urgency_error import UrgencyErrorSuite
-
 import unittest
 
 class BasicTestSuiteInMemory(unittest.TestSuite):
 
     def __init__(self):
         unittest.TestSuite.__init__(self)
-
-        self.addTest(DiGraphSuite())
-        self.addTest(PackageInterfaceSuite())
-        self.addTest(DependencySetSuite())
-        self.addTest(DependencyInformationSuite())
-        self.addTest(BoilSuite())
-        self.addTest(FileSystemTestSuite())
-        self.addTest(BasicDirectorySetupSuite())
-        self.addTest(IgnoredEntriesSuite())
-        self.addTest(PropertySuite())
-        self.addTest(BuilderInterfaceTestSuite())
-        self.addTest(ResolveTestSuite())
-        self.addTest(RelateTestSuite())
-        self.addTest(PackageFileSuite())
-        self.addTest(PseudoHandwrittenSuite())
-        self.addTest(AutomakeInMemorySuite())
-        self.addTest(ConfigSuite())
-        self.addTest(MiscellaneousSuite())
-        self.addTest(UrgencyErrorSuite())
         pass
     pass
 

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,6 @@ from local_node import LocalNode
 from installed_package import InstalledPackage
 from edgefinder import EdgeFinder
 from filebuilder import FileBuilder
-from initial import InitialBuilders
 from require import Require
 from resolve_error import NotResolved
 import readonly_prefixes
@@ -43,7 +42,6 @@ from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.iface.executor import InterfaceExecutor
 from libconfix.core.hierarchy.confix2_dir import Confix2_dir
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
-from libconfix.core.hierarchy import init_dirbuilder
 
 import os
 import types
@@ -76,7 +74,7 @@ class LocalPackage(Package):
         pkgdeffile = self.__rootdirectory.find([const.CONFIX2_PKG])
         if pkgdeffile is None:
             raise Error(const.CONFIX2_PKG+' missing in '+os.sep.join(self.__rootdirectory.abspath()))
-        InterfaceExecutor(iface_pieces=[PackageInterfaceProxy(package=self)]).execute_file(pkgdeffile)
+        InterfaceExecutor(iface_pieces=[PackageInterfaceProxy(object=self)]).execute_file(pkgdeffile)
         if self.__name is None:
             raise Error(const.CONFIX2_PKG+': package name has not been set')
         if self.__version is None:
@@ -93,13 +91,8 @@ class LocalPackage(Package):
                 raise Error(const.CONFIX2_DIR+' missing in '+os.sep.join(rootdirectory.abspath()))
             if not isinstance(confix2_dir_file, File):
                 raise Error(os.sep.join(confix2_dir_file.abspath())+' is not a file')
-
             self.__rootbuilder = DirectoryBuilder(directory=rootdirectory)
-
-            init_dirbuilder.initialize_directory(
-                confix2_dir_builder=Confix2_dir(file=confix2_dir_file),
-                dir_builder=self.__rootbuilder,
-                package=self)
+            self.__rootbuilder.add_builder(Confix2_dir(file=confix2_dir_file))
         except Error, e:
             raise Error('Cannot initialize package in '+'/'.join(rootdirectory.abspath()), [e])
 
@@ -113,10 +106,6 @@ class LocalPackage(Package):
             pass
         self.__auxdir = AutoconfAuxDirBuilder(directory=dir)
         self.__rootbuilder.add_builder(self.__auxdir)
-        init_dirbuilder.initialize_directory(
-            confix2_dir_builder=None,
-            dir_builder=self.__auxdir,
-            package=self)
 
         # now's the time to make everyone aware that we're no fun
         # anymore.
@@ -156,9 +145,9 @@ class LocalPackage(Package):
         Called by DirectoryBuilder objects that are just being
         initialized, to get initial builders and interface proxies.
         """
-        ret = InitialBuilders()
+        ret = []
         for s in self.__setups:
-            ret.add(s.initial_builders())
+            ret.extend(s.initial_builders())
             pass
         return ret
 
@@ -482,10 +471,8 @@ class LocalPackage(Package):
     pass
 
 class PackageInterfaceProxy(InterfaceProxy):
-    def __init__(self, package):
-        InterfaceProxy.__init__(self)
-
-        self.__package = package
+    def __init__(self, object):
+        InterfaceProxy.__init__(self, object=object)
 
         self.add_global('PACKAGE_NAME', getattr(self, 'PACKAGE_NAME'))
         self.add_global('PACKAGE_VERSION', getattr(self, 'PACKAGE_VERSION'))
@@ -497,19 +484,19 @@ class PackageInterfaceProxy(InterfaceProxy):
     def PACKAGE_NAME(self, name):
         if type(name) is not types.StringType:
             raise Error('PACKAGE_NAME(): argument must be a string')
-        self.__package.set_name(name)
+        self.object().set_name(name)
         pass
 
     def PACKAGE_VERSION(self, version):
         if type(version) is not types.StringType:
             raise Error('PACKAGE_VERSION(): argument must be a string')
-        self.__package.set_version(version)
+        self.object().set_version(version)
         pass
 
     def ADD_SETUP(self, setup):
         if not isinstance(setup, Setup):
             raise Error('ADD_SETUP(): argument must be a Setup object')
-        self.__package.add_setup(setup)
+        self.object().add_setup(setup)
         pass
 
     def SETUPS(self, setups):
@@ -519,7 +506,7 @@ class PackageInterfaceProxy(InterfaceProxy):
             if not isinstance(s, Setup):
                 raise Error('SETUPS(): all list members must be Setup objects')
             pass
-        self.__package.set_setups(setups)
+        self.object().set_setups(setups)
         pass
         
     pass

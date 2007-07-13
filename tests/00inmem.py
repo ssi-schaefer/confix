@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,9 +20,6 @@ import unittest
 
 from basic.suite_inmem import BasicTestSuiteInMemory
 from c.suite_inmem import CTestSuiteInMemory
-from plainfile.suite_inmem import PlainFileSuiteInMemory
-from script.suite_inmem import ScriptSuiteInMemory
-from idl.suite_inmem import IDLSuiteInMemory
 
 # since Jan 7, 2007 I try to keep tests as near to the code as
 # possible. seems like a better way.
@@ -34,9 +31,6 @@ if __name__ == '__main__':
 
     suite.addTest(BasicTestSuiteInMemory())
     suite.addTest(CTestSuiteInMemory())
-    suite.addTest(PlainFileSuiteInMemory())
-    suite.addTest(ScriptSuiteInMemory())
-    suite.addTest(IDLSuiteInMemory())
     suite.addTest(LibConfixInMemorySuite())
 
     runner = unittest.TextTestRunner()

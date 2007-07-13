@@ -63,20 +63,7 @@ setup(
 
     # argh. have to name every single subdirectory (at least until I
     # find a better way.)
-    packages=['tests',
-              'tests.c',
-              'tests.c.automake',
-              'tests.c.automake.exename',
-              'tests.c.automake.library_dependencies',
-              'tests.c.clusterer',
-              'tests.idl',
-              'tests.plainfile',
-              'tests.basic',
-              'tests.basic.digraph',
-              'tests.basic.automake',
-              'tests.basic.config',
-              'tests.script',
-              'libconfix',
+    packages=['libconfix',
               'libconfix.core',
               'libconfix.core.repo',
               'libconfix.core.digraph',

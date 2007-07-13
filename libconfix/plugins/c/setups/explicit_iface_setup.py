@@ -16,9 +16,20 @@
 # USA
 
 from libconfix.core.machinery.setup import Setup
+from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 
 from libconfix.plugins.c.explicit_iface import ExplicitInterfaceProxy
-from libconfix.core.iface.pass_through import MethodPassThrough
+
+class ExplicitInterface_Confix2_dir(Confix2_dir_Contributor):
+    def __init__(self, use_libtool):
+        Confix2_dir_Contributor.__init__(self)
+        self.__use_libtool = use_libtool
+        pass
+    def get_iface_proxies(self):
+        return [ExplicitInterfaceProxy(object=self.parentbuilder(), use_libtool=self.__use_libtool)]
+    def locally_unique_id(self):
+        return str(self.__class__)
+    pass
 
 class ExplicitInterfaceSetup(Setup):
     def __init__(self, use_libtool):
@@ -27,9 +38,6 @@ class ExplicitInterfaceSetup(Setup):
         pass
     def initial_builders(self):
         ret = super(ExplicitInterfaceSetup, self).initial_builders()
-        pass_through_builder = MethodPassThrough(id=str(self.__class__))
-        ret.add_builder(pass_through_builder)
-        ret.add_iface_proxy(ExplicitInterfaceProxy(object=pass_through_builder,
-                                                   use_libtool=self.__use_libtool))
+        ret.append(ExplicitInterface_Confix2_dir(use_libtool=self.__use_libtool))
         return ret
     pass

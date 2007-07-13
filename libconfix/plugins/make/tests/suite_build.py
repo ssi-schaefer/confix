@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,12 +15,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from iface import Relocator_Confix2_dir
+from basic import BasicMakeSuite
 
-from libconfix.core.machinery.setup import Setup
+import unittest
 
-class RelocatedHeadersSetup(Setup):
-    def initial_builders(self):
-        return super(RelocatedHeadersSetup, self).initial_builders() + \
-               [Relocator_Confix2_dir()]
+class MakeSuiteBuild(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+        self.addTest(BasicMakeSuite())
+        pass
+    pass
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(MakeSuiteBuild())
     pass
