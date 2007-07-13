@@ -65,14 +65,14 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |
                  313-----------------------+
                  336<----------------------+333 REL-2.0.1pre1
-                 |                         vTRY-jfasch-initialbuilders-refactoring
+                 |                         v TRY-jfasch-initialbuilders-refactoring
                  |
-                 |
-                 |
-                 |
-                 |
-                 |
-                 |
+                 336-----------------------+
+                 |                         |
+                 |                         |
+                 |                         |
+                 |                         |
+                 |                         v TRY-visual-studio
                  v
                trunk
 
