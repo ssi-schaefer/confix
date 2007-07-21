@@ -22,13 +22,15 @@ from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 from libconfix.core.utils.error import Error
+from libconfix.core.utils import external_cmd
+from libconfix.core.filesys import scan
 
 class _MakeInterface_Confix2_dir(Confix2_dir_Contributor):
     class MakeCallerInterfaceProxy(InterfaceProxy):
         def __init__(self, object):
             InterfaceProxy.__init__(self, object)
             self.add_global('CALL_MAKE_AND_RESCAN', getattr(self, 'CALL_MAKE_AND_RESCAN'))
-            # self.add_global('CALL_MAKE_AND_RESCAN_SYNC', getattr(self, 'CALL_MAKE_AND_RESCAN_SYNC'))
+            self.add_global('CALL_MAKE_AND_RESCAN_SYNC', getattr(self, 'CALL_MAKE_AND_RESCAN_SYNC'))
             pass
         def CALL_MAKE_AND_RESCAN(self, filename='Makefile', args=[]):
             """
@@ -37,6 +39,24 @@ class _MakeInterface_Confix2_dir(Confix2_dir_Contributor):
             way, not at the time the method is called.
             """
             self.object().add_call(filename=filename, args=args)
+            pass
+        def CALL_MAKE_AND_RESCAN_SYNC(self, filename='Makefile', args=[]):
+            """
+            Call make immediately, and rescan the directory. This is
+            done synchronously, so that the caller can be sure that
+            make has been called when the function returns.
+            """
+            cwd = self.object().parentbuilder().directory()
+
+            external_cmd.exec_program(
+                program='make',
+                dir=cwd.abspath(),
+                args=['-f', filename] + args)
+            pass
+
+            # make might have had side effects that we don't see
+            scan.rescan_dir(cwd)
+
             pass
         pass
 

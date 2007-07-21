@@ -1,3 +1,8 @@
+2007-07-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* resurrected CALL_MAKE_AND_RESCAN_SYNC() (by popular demand)
+	* Release 2.1.0pre2
+
 2007-07-13 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* fixed "[ 1732685 ] Funny error with
