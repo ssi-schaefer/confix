@@ -54,7 +54,7 @@ class _MakeInterface_Confix2_dir(Confix2_dir_Contributor):
                 args=['-f', filename] + args)
             pass
 
-            # make might have had side effects that we don't see
+            # make might have had side effects that we want to see
             scan.rescan_dir(cwd)
 
             pass
