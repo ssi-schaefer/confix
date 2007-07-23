@@ -67,12 +67,24 @@ Developer experiments     TRY-<developer>-<short-desc>
                  336<----------------------+333 REL-2.1.0pre1
                  |                         v TRY-jfasch-initialbuilders-refactoring
                  |
-                 336-----------------------+
-                 345 REL-2.1.0pre2         |
-                 |                         |
-                 |                         |
-                 |                         |
-                 |                         v TRY-visual-studio
+                 336--------------------------------------+
+                 345 REL-2.1.0pre2                        |
+                 349---------------------------+          |
+                 |                             |          |
+                 |                             |          |
+                 |                             |          v TRY-visual-studio
+                 |                             |
+                 |                             |
+                 |                             |
+                 |                             |
+                 |                             |
+                 |                             |
+                 |                             |
+                 |                             v RB-2.1
+                 |
+                 |
+                 |
+                 |
                  v
                trunk
 
