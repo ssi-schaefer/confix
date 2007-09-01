@@ -1,5 +1,10 @@
 2007-09-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
+	* merged from branches/RB-2.1 (last changed rev. 351 there):
+	  * resurrected CALL_MAKE_AND_RESCAN_SYNC() (by popular demand)
+
+2007-09-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
 	* Conditional local install.
 	
 	  Before, every header file was copied into the directory
@@ -27,11 +32,6 @@
 	* Moved more tests from their original location in the global
 	  tests directory to the place where they belong - to the
 	  neigborhood of the code they test.
-
-2007-07-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
-
-	* resurrected CALL_MAKE_AND_RESCAN_SYNC() (by popular demand)
-	* Release 2.1.0pre2
 
 2007-07-13 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 

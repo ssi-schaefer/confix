@@ -71,6 +71,7 @@ class CALL_MAKE_AND_RESCAN_SYNC_Test(PersistentTestCase):
     less obvious."""
     
     def test(self):
+        self.fail()
         fs = FileSystem(self.rootpath())
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
