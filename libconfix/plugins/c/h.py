@@ -18,14 +18,15 @@
 
 from base import CBaseBuilder
 from dependency import Provide_CInclude
+from buildinfo import BuildInfo_CIncludePath_NativeLocal
 import namespace
-import buildinfo
 
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.machinery.depinfo import DependencyInformation
 from libconfix.core.machinery.buildinfoset import BuildInformationSet
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
+from libconfix.core.utils import const
 
 import os
 
@@ -123,14 +124,37 @@ class HeaderBuilder(CBaseBuilder):
     def buildinfos(self):
         ret = BuildInformationSet()
         ret.merge(super(HeaderBuilder, self).buildinfos())
-        ret.add(buildinfo.singleton_buildinfo_cincludepath_nativelocal)
+
+        # if the receiver can see the file directly (without doing a
+        # local install), then tell him the directory that he has to
+        # add to his include path. else, only tell him the local
+        # install directory.
+        direct_includedir = _get_direct_includedir(
+            rootdir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+            visibledir=self.visible_in_directory())
+
+        if direct_includedir is not None:
+            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=['$(top_srcdir)']+direct_includedir))
+        else:
+            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=['$(top_builddir)', const.LOCAL_INCLUDE_DIR]))
+            pass
+
         return ret
 
     def output(self):
         super(HeaderBuilder, self).output()
         installdir = self.visible_in_directory()
         self.parentbuilder().file_installer().add_public_header(filename=self.file().name(), dir=installdir)
-        self.parentbuilder().file_installer().add_private_header(filename=self.file().name(), dir=installdir)
+
+        # see above: see if we need to locally install the file.
+        include_dir = _get_direct_includedir(
+            rootdir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+            visibledir=self.visible_in_directory())
+        if include_dir is None:
+            self.parentbuilder().file_installer().add_private_header(
+                filename=self.file().name(),
+                dir=self.visible_in_directory())
+            pass
         pass
 
     def visible_in_directory(self):
@@ -158,7 +182,8 @@ class HeaderBuilder(CBaseBuilder):
         if ret is None:
             # bail out if we had an error recognizing the namespace
             if self.__namespace_error is not None:
-                raise self.BadNamespace(path=self.file().relpath(self.package().rootdirectory()), error=self.__namespace_error)
+                raise self.BadNamespace(path=self.file().relpath(self.package().rootdirectory()),
+                                        error=self.__namespace_error)
             ret = self.__namespace_install_path
             pass
 
@@ -178,3 +203,10 @@ class HeaderBuilderInterfaceProxy(InterfaceProxy):
         self.object().set_iface_install_path(helper.make_path(path))
         pass
     pass
+
+def _get_direct_includedir(rootdir, visibledir):
+    if len(rootdir) < len(visibledir):
+        return None
+    if rootdir[len(rootdir)-len(visibledir):] == visibledir:
+        return rootdir[0:len(rootdir)-len(visibledir)]
+    return None

@@ -28,6 +28,12 @@ from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 from libconfix.testutils import dirhier, find
 
 class InterPackageInMemorySuite(unittest.TestSuite):
+
+    """ These tests assert fundamental behavior: relating the
+    nodes. Unfortunately, the tests are tied together with the C
+    plugin - they should have been written using core objects. (The
+    excuse is that C was long considered to be core)."""
+    
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(InterPackageRelate('test'))
@@ -76,8 +82,8 @@ class InterPackageRelate(unittest.TestCase):
 
         # hi.c includes lo.h, so it must have a BuildInfo for
         # installed header files, but none for local header files.
-        self.failUnless(hi_c_builder.buildinfo_includepath_native_installed() == 1)
-        self.failUnless(hi_c_builder.buildinfo_includepath_native_local() == 0)
+        self.failUnless(hi_c_builder.buildinfo_includepath_native_installed() > 0)
+        self.failUnless(len(hi_c_builder.native_local_include_dirs()) == 0)
         self.failUnless(len(libhi_builder.buildinfo_direct_dependent_native_libs()) == 1)
         self.failUnless(len(libhi_builder.buildinfo_topo_dependent_native_libs()) == 1)
         self.failUnless(isinstance(libhi_builder.buildinfo_direct_dependent_native_libs()[0],

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -34,13 +34,18 @@ from libconfix.testutils import find
 from libconfix.testutils import packages
 
 class RelateSuite(unittest.TestSuite):
+
+    """ These tests assert fundamental behavior: relating the
+    nodes. Unfortunately, the tests are tied together with the C
+    plugin - they should have been written using core objects. (The
+    excuse is that C was long considered to be core)."""
+    
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(InternalRequires('testNoInstallPath'))
         self.addTest(RelateBasic('testGraph'))
         self.addTest(RelateBasic('testLocalBuildInfo'))
         self.addTest(RelateBasic('testPropagatedLibraryInfo'))
-        self.addTest(RelateBasic('testPropagatedIncludeInfo'))
         self.addTest(RelateBasic('testPropagatedIncludeInfo'))
         self.addTest(RelateBasic('testLinkOrder'))
         pass
@@ -281,19 +286,14 @@ class RelateBasic(unittest.TestCase):
 
     def testPropagatedIncludeInfo(self):
         # lo.c has no native includes
-        self.failIf(self.lodir_lo_c_builder_.buildinfo_includepath_native_local())
+        self.failIf(len(self.lodir_lo_c_builder_.native_local_include_dirs()) > 0)
 
         # whereas all the others have
-        self.failUnless(self.hi1dir_hi1_c_builder_.buildinfo_includepath_native_local())
-        self.failUnless(self.hi2dir_hi2_c_builder_.buildinfo_includepath_native_local())
-        self.failUnless(self.highestdir_highest_c_builder_.buildinfo_includepath_native_local())
-        self.failUnless(self.exedir_main_c_builder_.buildinfo_includepath_native_local())
+        self.failUnless(len(self.hi1dir_hi1_c_builder_.native_local_include_dirs()) > 0)
+        self.failUnless(len(self.hi2dir_hi2_c_builder_.native_local_include_dirs()) > 0)
+        self.failUnless(len(self.highestdir_highest_c_builder_.native_local_include_dirs()) > 0)
+        self.failUnless(len(self.exedir_main_c_builder_.native_local_include_dirs()) > 0)
         
-        pass
-    
-    def testPropagatedIncludeInfo(self):
-        # highest depends on hi1, hi2, lo
-        self.failUnless(self.highestdir_highest_c_builder_.buildinfo_includepath_native_local() == 3)
         pass
 
     def testLinkOrder(self):

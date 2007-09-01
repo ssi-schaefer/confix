@@ -36,15 +36,10 @@ class CompiledCBuilder(CBaseBuilder):
     MAIN_PROPERTY_NAME = 'MAIN'
     
     def __init__(self, file):
-        # FIXME (redesign me?): CBaseBuilder's ctor takes care of
-        # executing the interface code, thereby eventually manipulating
-        # self's exename_ attribute. we have to take care that that
-        # attribute is present before the ctor runs. (this is a major
-        # violation of the "never get active in the ctor" principle.)
-        self.__exename = None
-
         CBaseBuilder.__init__(self, file=file)
         self.__init_buildinfo()
+
+        self.__exename = None
 
         # tri-state: None - haven't looked yet, True, False
         self.__is_main = None
@@ -76,17 +71,17 @@ class CompiledCBuilder(CBaseBuilder):
         return self.__is_main
 
     def cmdlinemacros(self):
-        return self.cmdlinemacros_
+        return self.__cmdlinemacros
     def cflags(self):
-        return self.cflags_
+        return self.__cflags
     def external_include_path(self):
-        return self.external_include_path_
-        
-    def buildinfo_includepath_native_local(self):
-        return self.buildinfo_includepath_native_local_
+        return self.__external_include_path
+
+    def native_local_include_dirs(self):
+        return self.__native_local_include_dirs
 
     def buildinfo_includepath_native_installed(self):
-        return self.buildinfo_includepath_native_installed_
+        return self.__buildinfo_includepath_native_installed
 
     def relate(self, node, digraph, topolist):
         CBaseBuilder.relate(self, node, digraph, topolist)
@@ -94,17 +89,21 @@ class CompiledCBuilder(CBaseBuilder):
         for n in topolist:
             for bi in n.buildinfos():
                 if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
-                    self.buildinfo_includepath_native_local_ += 1
+                    key = '.'.join(bi.include_dir())
+                    if key not in self.__have_native_local_include_dirs:
+                        self.__have_native_local_include_dirs.add(key)
+                        self.__native_local_include_dirs.insert(0, bi.include_dir())
+                        pass
                     continue
                 if isinstance(bi, BuildInfo_CIncludePath_NativeInstalled):
-                    self.buildinfo_includepath_native_installed_ += 1
+                    self.__buildinfo_includepath_native_installed = True
                     continue
                 if isinstance(bi, BuildInfo_CIncludePath_External):
                     incpath = bi.incpath()
                     key = '.'.join(incpath)
-                    if not key in self.have_external_include_path_:
-                        self.external_include_path_.insert(0, incpath)
-                        self.have_external_include_path_.add(key)
+                    if not key in self.__have_external_include_path:
+                        self.__external_include_path.insert(0, incpath)
+                        self.__have_external_include_path.add(key)
                         pass
                     continue
                 if isinstance(bi, BuildInfo_CommandlineMacros):
@@ -113,7 +112,7 @@ class CompiledCBuilder(CBaseBuilder):
                         pass
                     continue
                 if isinstance(bi, BuildInfo_CFLAGS):
-                    self.cflags_.extend(bi.cflags())
+                    self.__cflags.extend(bi.cflags())
                     continue
                 pass
             pass
@@ -123,30 +122,31 @@ class CompiledCBuilder(CBaseBuilder):
         CBaseBuilder.output(self)
 
         # native includes of the same packages come first
-        if self.buildinfo_includepath_native_local_ > 0:
-            self.parentbuilder().makefile_am().add_includepath(
-                '-I$(top_builddir)/'+const.LOCAL_INCLUDE_DIR)
+        if len(self.__native_local_include_dirs) > 0:
+            for d in self.__native_local_include_dirs:
+                self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(d))
+                pass
             pass
         # native includes of other packages (i.e., native installed
         # includes) come next.
-        if self.buildinfo_includepath_native_installed_ > 0:
+        if self.__buildinfo_includepath_native_installed:
             self.parentbuilder().makefile_am().add_includepath(
                 '-I$(includedir)')
             self.parentbuilder().makefile_am().add_includepath(
                 '$('+readonly_prefixes.incpath_var+')')
             pass
         # external includes.
-        for p in self.external_include_path_:
+        for p in self.__external_include_path:
             for item in p:
                 self.parentbuilder().makefile_am().add_includepath(item)
                 pass
             pass
         # commandline macros
-        for macro, value in self.cmdlinemacros_.iteritems():
+        for macro, value in self.__cmdlinemacros.iteritems():
             self.parentbuilder().makefile_am().add_cmdlinemacro(macro, value)
             pass
         # cflags
-        for cflag in self.cflags_:
+        for cflag in self.__cflags:
             self.parentbuilder().makefile_am().add_am_cflags(cflag)
             pass
         pass
@@ -155,10 +155,23 @@ class CompiledCBuilder(CBaseBuilder):
         return CBaseBuilder.iface_pieces(self) + [CompiledCBuilderInterfaceProxy(object=self)]
 
     def __init_buildinfo(self):
-        self.buildinfo_includepath_native_local_ = 0
-        self.buildinfo_includepath_native_installed_ = 0
-        self.cmdlinemacros_ = {}
-        self.cflags_ = []
+        # a list of directories in the local package that have to be
+        # added to the include path. (we are only adding them once,
+        # thus the have_... set.)
+        self.__native_local_include_dirs = []
+        self.__have_native_local_include_dirs = set()
+
+        # a flag that indicates that there are installed header files
+        # being used (and thus the public include directory (or
+        # whatever the backend's notion thereof) hs to be added to the
+        # include path).
+        self.__buildinfo_includepath_native_installed = False
+
+        # macro definitions for the compiler's command line.
+        self.__cmdlinemacros = {}
+
+        # more compiler commandline options.
+        self.__cflags = []
 
         # include path for external modules. this is a list of lists,
         # of the form
@@ -174,20 +187,20 @@ class CompiledCBuilder(CBaseBuilder):
         # the complete list is accompanied with a set which serves us
         # to sort out duplicates from the beginning.
         
-        self.external_include_path_ = []
-        self.have_external_include_path_ = set()
+        self.__external_include_path = []
+        self.__have_external_include_path = set()
 
         pass
 
     def __insert_cmdlinemacro(self, key, value):
-        if self.cmdlinemacros_.has_key(key):
-            existing_value = self.cmdlinemacros_[key]
+        if self.__cmdlinemacros.has_key(key):
+            existing_value = self.__cmdlinemacros[key]
             if existing_value != value:
                 raise Error(os.sep.join(self.file().relpath())+': '
                             'conflicting values for macro "'+key+'": '
                             '"'+existing_value+'"/"'+value+'"')
             return
-        self.cmdlinemacros_[key] = value
+        self.__cmdlinemacros[key] = value
     
     pass
 

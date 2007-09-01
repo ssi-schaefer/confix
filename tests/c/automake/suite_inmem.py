@@ -17,11 +17,9 @@
 # USA
 
 from c import CSuite
-from library import LibrarySuite
 from exe import ExecutableSuite
 from libtool_version import LibtoolVersionSuite
 from libtool_linking import LibtoolLinkingSuite
-from intra_package_inmem import IntraPackageInMemorySuite
 from external_library import ExternalLibraryInMemorySuite
 from library_dependencies.suite_inmem import LibraryDependenciesInMemorySuite
 from exename.suite_inmem import ExecutableNameInMemorySuite
@@ -33,11 +31,9 @@ class AutomakeCSuiteInMemory(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(CSuite())
-        self.addTest(LibrarySuite())
         self.addTest(LibtoolVersionSuite())
         self.addTest(LibtoolLinkingSuite())
         self.addTest(ExecutableSuite())
-        self.addTest(IntraPackageInMemorySuite())
         self.addTest(ExternalLibraryInMemorySuite())
         self.addTest(LibraryDependenciesInMemorySuite())
         self.addTest(ExecutableNameInMemorySuite())

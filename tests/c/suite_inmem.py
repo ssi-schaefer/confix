@@ -26,10 +26,8 @@ from setup_exe import ExecutableSetupSuite
 from setup_cxx import CXXSetupSuite
 from setup_lexyacc import LexYaccSetupSuite
 from requires import RequireTestSuite
-from relate import RelateSuite
 from buildinfo import BuildInfoSuite
 from confix2_dir import Confix2_dir_Suite
-from inter_package_inmem import InterPackageInMemorySuite
 from misc import MiscellaneousSuite
 from clusterer.suite_inmem import ClustererInMemorySuite
 
@@ -43,10 +41,8 @@ class CTestSuiteInMemory(unittest.TestSuite):
         self.addTest(CXXSetupSuite())
         self.addTest(LexYaccSetupSuite())
         self.addTest(RequireTestSuite())
-        self.addTest(RelateSuite())
         self.addTest(BuildInfoSuite())
         self.addTest(Confix2_dir_Suite())
-        self.addTest(InterPackageInMemorySuite())
         self.addTest(MiscellaneousSuite())
         self.addTest(ClustererInMemorySuite())
 

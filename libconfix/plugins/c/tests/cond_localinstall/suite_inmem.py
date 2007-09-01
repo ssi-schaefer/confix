@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,29 +15,25 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from makefile_utils import MakefileUtilsSuite
-from makefile_am import MakefileAmSuite
-from configure_ac import ConfigureACSuite
-from output import AutomakeOutputSuite
-from iface import InterfaceSuite
-from file_installer_suite import FileInstallerSuite
+from basic import BasicLocalInstallSuite
+from situations import SituationsSuite
 
 import unittest
 
-class AutomakeInMemorySuite(unittest.TestSuite):
+class ConditionalLocalInstallInMemorySuite(unittest.TestSuite):
+
+    """ "Conditional-local-install" is a "feature" I implemented
+    recently to avoid unnecessary installs to
+    $(top_builddir)/confix_include. Rather, if possible, set the
+    user's include path directly to the source directory."""
+    
     def __init__(self):
         unittest.TestSuite.__init__(self)
-
-        self.addTest(MakefileUtilsSuite())
-        self.addTest(MakefileAmSuite())
-        self.addTest(ConfigureACSuite())
-        self.addTest(AutomakeOutputSuite())
-        self.addTest(InterfaceSuite())
-        self.addTest(FileInstallerSuite())
+        self.addTest(BasicLocalInstallSuite())
+        self.addTest(SituationsSuite())
         pass
-
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeInMemorySuite())
+    unittest.TextTestRunner().run(ConditionalLocalInstallInMemorySuite())
     pass

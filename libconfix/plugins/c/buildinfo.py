@@ -25,13 +25,23 @@ from libconfix.core.repo.marshalling import \
 import types
 
 class BuildInfo_CIncludePath_NativeLocal(BuildInformation):
-    def __init__(self): BuildInformation.__init__(self)
+
+    """ Carries the information that a local header contributes: the
+    directory that has to be added to the include path (in the usual
+    form of a directory: a list of strings)."""
+
+    def __init__(self, include_dir):
+        BuildInformation.__init__(self)
+        self.__include_dir = include_dir
+        pass
     def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__
-    def install(self): return singleton_buildinfo_cincludepath_nativeinstalled
+    def include_dir(self):
+        return self.__include_dir
+    def install(self):
+        return singleton_buildinfo_cincludepath_nativeinstalled
     pass
-singleton_buildinfo_cincludepath_nativelocal = BuildInfo_CIncludePath_NativeLocal()
 
 class BuildInfo_CIncludePath_NativeInstalled(BuildInformation):
     def get_marshalling_data(self):

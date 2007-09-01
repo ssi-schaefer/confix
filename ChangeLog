@@ -1,3 +1,33 @@
+2007-09-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Conditional local install.
+	
+	  Before, every header file was copied into the directory
+	  $(top_builddir)/confix_include to make it visible to the build
+	  of fellow modules in the package. This was mainly done to easily
+	  cope with header files that wanted to be visible in a
+	  subdirectory, for example as #include <subdir/file.h>. The
+	  include path of a module that used this file then only had to be
+	  augmented with -I$(top_builddir)/confix_include for any header
+	  file that was locally used.
+
+	  Anyway, this was done even for header files that didn't want to
+	  be visible in a subdirectory, but only as #include <file.h>. For
+	  these, it is sufficient to point the include path of a using
+	  module into $(top_srcdir)/<path to the directory containing the
+	  file.h>.
+
+	  The goal of this change is to do the confix_include dance
+	  only if absolutely necessary; i.e. if there is no way to point a
+	  user's include path to a source directory (we could even point
+	  it to a parent directory if applicable).
+
+	  Tests are in libconfix/plugins/c/tests/cond_localinstall.
+
+	* Moved more tests from their original location in the global
+	  tests directory to the place where they belong - to the
+	  neigborhood of the code they test.
+
 2007-07-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* resurrected CALL_MAKE_AND_RESCAN_SYNC() (by popular demand)

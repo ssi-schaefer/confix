@@ -17,9 +17,13 @@
 
 from name_mangling import NameManglingSuite
 
+from relate import RelateSuite
+from inter_package_inmem import InterPackageInMemorySuite
+from library import LibrarySuite
 from check.suite_inmem import CheckProgramInMemorySuite
 from regressions.suite_inmem import RegressionsInMemorySuite
 from header.suite_inmem import HeaderInMemorySuite
+from cond_localinstall.suite_inmem import ConditionalLocalInstallInMemorySuite
 
 from libconfix.plugins.c.setups.tests.suite_inmem import SetupsInMemorySuite
 from libconfix.plugins.c.relocated_headers.tests.suite_inmem import RelocatedHeadersInMemorySuite
@@ -30,6 +34,9 @@ import unittest
 class CInMemoryTestSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(RelateSuite())
+        self.addTest(InterPackageInMemorySuite())
+        self.addTest(LibrarySuite())
         self.addTest(CheckProgramInMemorySuite())
         self.addTest(NameManglingSuite())
         self.addTest(SetupsInMemorySuite())
@@ -37,6 +44,7 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(HeaderInMemorySuite())
         self.addTest(PkgConfigInMemorySuite())
         self.addTest(RegressionsInMemorySuite())
+        self.addTest(ConditionalLocalInstallInMemorySuite())
         pass
     pass
 

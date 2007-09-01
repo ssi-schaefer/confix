@@ -16,20 +16,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
-from basic.suite_inmem import BasicTestSuiteInMemory
 from c.suite_inmem import CTestSuiteInMemory
 
 # since Jan 7, 2007 I try to keep tests as near to the code as
 # possible. seems like a better way.
 from libconfix.tests.suite_inmem import LibConfixInMemorySuite
 
+
+import unittest
+
 if __name__ == '__main__':
 
     suite = unittest.TestSuite()
 
-    suite.addTest(BasicTestSuiteInMemory())
     suite.addTest(CTestSuiteInMemory())
     suite.addTest(LibConfixInMemorySuite())
 
