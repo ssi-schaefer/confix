@@ -89,10 +89,14 @@ class CompiledCBuilder(CBaseBuilder):
         for n in topolist:
             for bi in n.buildinfos():
                 if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
-                    key = '.'.join(bi.include_dir())
-                    if key not in self.__have_native_local_include_dirs:
-                        self.__have_native_local_include_dirs.add(key)
-                        self.__native_local_include_dirs.insert(0, bi.include_dir())
+                    if bi.include_dir() is None:
+                        self.__have_locally_installed_includes = True
+                    else:
+                        key = '.'.join(bi.include_dir())
+                        if key not in self.__have_native_local_include_dirs:
+                            self.__have_native_local_include_dirs.add(key)
+                            self.__native_local_include_dirs.insert(0, bi.include_dir())
+                            pass
                         pass
                     continue
                 if isinstance(bi, BuildInfo_CIncludePath_NativeInstalled):
@@ -121,11 +125,14 @@ class CompiledCBuilder(CBaseBuilder):
     def output(self):
         CBaseBuilder.output(self)
 
-        # native includes of the same packages come first
+        # native includes of the same package come first
         if len(self.__native_local_include_dirs) > 0:
             for d in self.__native_local_include_dirs:
-                self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(d))
+                self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(['$(top_srcdir)']+d))
                 pass
+            pass
+        if self.__have_locally_installed_includes:
+            self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(['$(top_builddir)', const.LOCAL_INCLUDE_DIR]))
             pass
         # native includes of other packages (i.e., native installed
         # includes) come next.
@@ -157,9 +164,14 @@ class CompiledCBuilder(CBaseBuilder):
     def __init_buildinfo(self):
         # a list of directories in the local package that have to be
         # added to the include path. (we are only adding them once,
-        # thus the have_... set.)
+        # thus the have_... set.) Note that these are the include
+        # directories from the source tree only. 
         self.__native_local_include_dirs = []
         self.__have_native_local_include_dirs = set()
+
+        # a flag that signals us that we have to add to the include
+        # path the directory where the locally installed headers are.
+        self.__have_locally_installed_includes = False
 
         # a flag that indicates that there are installed header files
         # being used (and thus the public include directory (or

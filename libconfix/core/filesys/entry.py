@@ -55,6 +55,9 @@ class DirectoryEntry:
         return self.parent_.abspath() + [self.parent_.entryname(self)]
 
     def relpath(self, dir):
+        """
+        Returns the relative path to self as seen from dir
+        """
         if dir is self:
             return []
         if self.parent_ is None:

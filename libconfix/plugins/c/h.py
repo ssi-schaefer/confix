@@ -134,9 +134,9 @@ class HeaderBuilder(CBaseBuilder):
             visibledir=self.visible_in_directory())
 
         if direct_includedir is not None:
-            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=['$(top_srcdir)']+direct_includedir))
+            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=direct_includedir))
         else:
-            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=['$(top_builddir)', const.LOCAL_INCLUDE_DIR]))
+            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=None))
             pass
 
         return ret

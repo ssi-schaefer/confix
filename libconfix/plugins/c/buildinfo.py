@@ -31,6 +31,11 @@ class BuildInfo_CIncludePath_NativeLocal(BuildInformation):
     form of a directory: a list of strings)."""
 
     def __init__(self, include_dir):
+        """include_dir is either a list of strings or None. If it is a
+        list, then the list is the path to the directory that has to
+        be added to the consumer's include path (supposedly prefixed
+        with $(top_srcdir). If it is None, the consumer will have to
+        add the local install directory to its path."""
         BuildInformation.__init__(self)
         self.__include_dir = include_dir
         pass
