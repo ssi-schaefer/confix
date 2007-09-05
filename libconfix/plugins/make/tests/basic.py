@@ -71,7 +71,6 @@ class CALL_MAKE_AND_RESCAN_SYNC_Test(PersistentTestCase):
     less obvious."""
     
     def test(self):
-        self.fail()
         fs = FileSystem(self.rootpath())
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -80,7 +79,7 @@ class CALL_MAKE_AND_RESCAN_SYNC_Test(PersistentTestCase):
         makefile = fs.rootdirectory().add(
             name='Makefile',
             entry=File(lines=['all:',
-                              '\ttouch the_file_created_by_make']))
+                              '\t@touch the_file_created_by_make']))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
             entry=File(lines=['CALL_MAKE_AND_RESCAN_SYNC()',
