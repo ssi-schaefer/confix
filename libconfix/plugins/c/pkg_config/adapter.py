@@ -77,9 +77,10 @@ dnl        names; be careful to craft it carefully.
 AC_DEFUN([CONFIX_PKG_CONFIG_LIBRARY],
 [
 AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+AC_MSG_CHECKING([pkg-config $1 parameters])
 $2_PKG_CONFIG_CFLAGS=`${PKG_CONFIG} --cflags $1`
 $2_PKG_CONFIG_LIBS=`${PKG_CONFIG} --libs $1`
-
+AC_MSG_RESULT([cflags="${$2_PKG_CONFIG_CFLAGS}"; libs="${$2_PKG_CONFIG_LIBS}"])
 AC_SUBST([$2_PKG_CONFIG_CFLAGS])
 AC_SUBST([$2_PKG_CONFIG_LIBS])
 ])
