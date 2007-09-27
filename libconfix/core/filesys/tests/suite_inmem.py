@@ -17,6 +17,7 @@
 # USA
 
 from property import PropertySuite
+from scan import ScanSuite
 
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory, DirectoryState
@@ -44,6 +45,7 @@ class FileSystemTestSuite(unittest.TestSuite):
         self.addTest(ExplicitMode('test'))
         
         self.addTest(PropertySuite())
+        self.addTest(ScanSuite())
         pass
     pass
 

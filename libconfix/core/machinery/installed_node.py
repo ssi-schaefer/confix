@@ -66,6 +66,8 @@ class InstalledNode(Node):
         pass
     def __str__(self):
         return '.'.join([self.package_.name()]+self.name_)
+    def short_description(self):
+        return '.'.join([self.package_.name()]+self.name_)
     def package(self):
         return self.package_
     def name(self):

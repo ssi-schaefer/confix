@@ -46,10 +46,11 @@ class DeferredProvider(Builder):
     def relate(self, node, digraph, topolist):
         super(DeferredProvider, self).relate(node, digraph, topolist)
         self.__num_relate_calls += 1
+        self.force_enlarge()
         pass
     def dependency_info(self):
         ret = super(DeferredProvider, self).dependency_info()
-        if self.__num_relate_calls == 1:
+        if self.__num_relate_calls == 5:
             ret.add_provide(self.__provide)
             pass
         return ret
