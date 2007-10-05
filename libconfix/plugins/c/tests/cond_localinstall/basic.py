@@ -97,11 +97,11 @@ class BasicLocalInstallTest(unittest.TestCase):
 
         hi_pos = lo_pos = None
         for i in range(len(user_c_builder.native_local_include_dirs())):
-            if user_c_builder.native_local_include_dirs()[i] == ['$(top_srcdir)','hi']:
+            if user_c_builder.native_local_include_dirs()[i] == ['hi']:
                 self.failUnless(hi_pos is None)
                 hi_pos = i
                 continue
-            if user_c_builder.native_local_include_dirs()[i] == ['$(top_srcdir)','lo']:
+            if user_c_builder.native_local_include_dirs()[i] == ['lo']:
                 self.failUnless(lo_pos is None)
                 lo_pos = i
                 continue
