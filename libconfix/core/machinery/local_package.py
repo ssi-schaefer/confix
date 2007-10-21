@@ -163,101 +163,47 @@ class LocalPackage(Package):
         return self.__current_digraph
 
     def boil(self, external_nodes):
-        builders = self.__collect_builders()
-
-        nodes = set()
-        depinfo_per_node = {}
+        loop_count = 0
 
         while True:
-            something_new = False
+            loop_count += 1
+            if loop_count > 1000:
+                raise self.InfiniteLoopError()
             
-            # Enlarge builders so long as changes occur. If changes have
-            # occurred, remember that.
+            builders = self.__do_enlarge()
+            if builders is None:
+                continue
 
-            loop_count = 0
-            while True:
-                loop_count += 1
-                if loop_count > 1000:
-                    raise self.InfiniteLoopError()
+            do_next_round = False
 
-                prev_force_enlarge_count = 0
-                for b in builders:
-                    prev_force_enlarge_count += b.force_enlarge_count()
-                    pass                    
-
-                # doit baby!
-                # ----------
-                for b in builders:
-                    b.enlarge()
-                    pass
-                    
-                # re-collect our builders. continue enlarging if
-                # somebody forces us to without necessarily
-                # contributing anything meaningful, of if we have new
-                # builders.
-                prev_builders = builders
-                builders = self.__collect_builders()
-
-                cur_force_enlarge_count = 0
-                for b in builders:
-                    cur_force_enlarge_count += b.force_enlarge_count()
-                    pass
-                if prev_force_enlarge_count < cur_force_enlarge_count:
-                    continue
-                
-                if self.__equal_builders(prev_builders, builders):
-                    builders = prev_builders
-                    break
-
-                something_new = True
-                pass
-
-            # re-collect current nodes and sort their dependency info
-            # by the node's responsible builders.
-            prev_nodes = nodes
             nodes = set()
             for b in builders:
-                if isinstance(b, LocalNode):
-                    if b not in prev_nodes:
-                        something_new = True
-                        pass
-                    nodes.add(b)
-                    # empty cache from previous run.
-                    b.recollect_dependency_info()
-                    pass
+                if not isinstance(b, LocalNode):
+                    continue
+                nodes.add(b)
+                b.recollect_dependency_info()
+                if b.node_dependency_info_changed():
+                    do_next_round = True
+                    break
                 pass
 
-            # if the nodes themselves haven't changed, their
-            # dependency information might have.
-            if not something_new:
-                for n in nodes:
-                    if n.node_dependency_info_changed():
-                        something_new = True
-                        break
-                    pass
-                pass
+            if do_next_round:
+                continue
 
-            # still nothing new. see if everybody is happy.
-            if not something_new:
-                if self.__edgefinder is not None:
-                    self.__edgefinder.raise_unresolved()
-                    pass
-                return
+            if self.__current_digraph:
+                break
 
-            # something seems to be new. go calculate the dependency
-            # graph.
             all_nodes = nodes.union(set(external_nodes))
-            self.__edgefinder = EdgeFinder(nodes=all_nodes)
             self.__current_digraph = DirectedGraph(
                 nodes=all_nodes,
-                edgefinder=self.__edgefinder)
-
-            # let the nodes communicate with each other.
+                edgefinder=EdgeFinder(nodes=all_nodes))
             for n in nodes:
                 n.node_relate_managed_builders(digraph=self.__current_digraph)
                 pass
 
             pass
+
+        self.__current_digraph.edgefinder().raise_unresolved()
         pass
 
     def output(self):
@@ -310,6 +256,37 @@ class LocalPackage(Package):
             name=self.name(),
             version=self.version(),
             nodes=installed_nodes)
+
+    def __do_enlarge(self):
+        """
+        Enlarge our current set of builders by calling the
+        Builder.enlarge() on each. Returns the new set of builders, or
+        None if we want the caller to repeat.
+        """        
+        builders = self.__collect_builders()
+
+        prev_builder_props = {}
+        for b in builders:
+            prev_builder_props[b] = b.force_enlarge_count()
+            pass
+
+        for b in builders:
+            b.enlarge()
+            pass
+
+        builders = self.__collect_builders()
+
+        for b in builders:
+            prev_enlarge_count = prev_builder_props.get(b)
+            if prev_enlarge_count is None:
+                # this is a new builder; repeat
+                return None
+            if prev_enlarge_count < b.force_enlarge_count():
+                # b forced repetition; repeat
+                return None
+            pass
+
+        return builders
     
     def output_stock_autoconf_(self):
         self.__configure_ac.set_packagename(self.name())
@@ -457,17 +434,6 @@ class LocalPackage(Package):
             pass
         pass
 
-    def __equal_builders(self, lhs_builders, rhs_builders):
-        assert type(lhs_builders) is type(rhs_builders) is list
-        if len(lhs_builders) != len(rhs_builders):
-            return False
-        # out of luck: have to compare element-wise
-        lookup = set(lhs_builders)
-        for b in rhs_builders:
-            if b not in lookup:
-                return False
-            pass
-        return True
     pass
 
 class PackageInterfaceProxy(InterfaceProxy):

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,65 +31,68 @@ class DirectedGraph(object):
         assert edges is None or edgefinder is None
         assert not (edges is not None and edgefinder is not None)
 
-        self.nodes_ = frozenset(nodes)
-        self.edges_ = EdgeSet()
-        self.edgefinder_ = edgefinder
+        self.__nodes = frozenset(nodes)
+        self.__edges = EdgeSet()
+        self.__edgefinder = edgefinder
 
         # nodes without a successor
         self.terminators_ = set()
 
         if edges is not None:
             for e in edges:
-                assert e.tail() in self.nodes_
-                assert e.head() in self.nodes_
-                self.edges_.add(e)
+                assert e.tail() in self.__nodes
+                assert e.head() in self.__nodes
+                self.__edges.add(e)
                 pass
             pass
         pass
 
 
     
-    def nodes(self): return self.nodes_
+    def nodes(self): return self.__nodes
 
     def edges(self):
         self.complete_edges_()
-        return self.edges_
+        return self.__edges
+
+    def edgefinder(self):
+        return self.__edgefinder
 
     def find_edge(self, tail, head):
         self.out_edges(tail)
-        return self.edges_.find_edge(tail, head)
+        return self.__edges.find_edge(tail, head)
 
     def successors(self, node):
         return [edge.head() for edge in self.out_edges(node)]
     
     def out_edges(self, node):
-        assert node in self.nodes_, str(node)+' not among my nodes: '+str([str(n) for n in self.nodes_])
+        assert node in self.__nodes, str(node)+' not among my nodes: '+str([str(n) for n in self.__nodes])
         if node in self.terminators_:
             return []
-        ret = self.edges_.out_edges(node)
+        ret = self.__edges.out_edges(node)
         if ret is not None:
             return ret
-        if self.edgefinder_ is None:
+        if self.__edgefinder is None:
             self.terminators_.add(node)
             return []
-        ret = self.edgefinder_.find_out_edges(node)
+        ret = self.__edgefinder.find_out_edges(node)
         if len(ret) == 0:
             self.terminators_.add(node)
             return []
         for e in ret:
-            self.edges_.add(e)
+            self.__edges.add(e)
             pass
         return ret
 
     def complete_edges_(self):
-        if self.edgefinder_ is None:
+        if self.__edgefinder is None:
             return
         # perform a full edge scan
-        for n in self.nodes_:
+        for n in self.__nodes:
             self.out_edges(n)
             pass
         # no need to search for edges anymore after a full scan
-        self.edgefinder_ = None
+        self.__edgefinder = None
         pass
     pass
 
@@ -97,21 +100,21 @@ class Edge(object):
 
     def __init__(self, tail, head, annotations=None):
         assert tail is not head
-        self.tail_ = tail
-        self.head_ = head
-        self.annotations_ = annotations
+        self.__tail = tail
+        self.__head = head
+        self.__annotations = annotations
         pass
-    def tail(self): return self.tail_
-    def head(self): return self.head_
-    def annotations(self): return self.annotations_
+    def tail(self): return self.__tail
+    def head(self): return self.__head
+    def annotations(self): return self.__annotations
     pass
 
 class EdgeSet(object):
 
     def __init__(self, edges=[]):
 
-        self.by_tail_ = {}
-        self.by_head_ = {}
+        self.__by_tail = {}
+        self.__by_head = {}
 
         for e in edges:
             self.add(e)
@@ -119,32 +122,32 @@ class EdgeSet(object):
         pass
 
     def add(self, edge):
-        by_tail = self.by_tail_.get(edge.tail())
-        by_head = self.by_head_.get(edge.head())
+        by_tail = self.__by_tail.get(edge.tail())
+        by_head = self.__by_head.get(edge.head())
 
         if self.find_edge(edge.tail(), edge.head()):
             return
         
         if by_tail is None:
             by_tail = set()
-            self.by_tail_[edge.tail()] = by_tail
+            self.__by_tail[edge.tail()] = by_tail
             pass
         if by_head is None:
             by_head = set()
-            self.by_head_[edge.head()] = by_head
+            self.__by_head[edge.head()] = by_head
             pass
         by_tail.add(edge)
         by_head.add(edge)
         pass
 
     def out_edges(self, node):
-        return self.by_tail_.get(node)
+        return self.__by_tail.get(node)
 
     def find_edge(self, tail, head):
-        by_tail = self.by_tail_.get(tail)
+        by_tail = self.__by_tail.get(tail)
         if by_tail is None:
             return None
-        by_head = self.by_head_.get(head)
+        by_head = self.__by_head.get(head)
         if by_head is None:
             return None
         found_edges = by_tail & by_head
@@ -155,10 +158,10 @@ class EdgeSet(object):
 
     def __iter__(self):
         ret = set()
-        for edgeset in self.by_tail_.itervalues():
+        for edgeset in self.__by_tail.itervalues():
             ret.update(edgeset)
             pass
-        for edgeset in self.by_head_.itervalues():
+        for edgeset in self.__by_head.itervalues():
             ret.update(edgeset)
             pass
         return ret.__iter__()

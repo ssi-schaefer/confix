@@ -39,18 +39,22 @@ class DeferredProvider(Builder):
     def __init__(self, provide):
         Builder.__init__(self)
         self.__provide = provide
-        self.__num_relate_calls = 0
+        self.__num_rounds = 0
         pass
     def locally_unique_id(self):
         return self.__class__.__name__+':'+str(self.__provide)
+    def enlarge(self):
+        self.__num_rounds += 1
+        if self.__num_rounds < 5:
+            self.force_enlarge()
+            pass
+        pass
     def relate(self, node, digraph, topolist):
         super(DeferredProvider, self).relate(node, digraph, topolist)
-        self.__num_relate_calls += 1
-        self.force_enlarge()
         pass
     def dependency_info(self):
         ret = super(DeferredProvider, self).dependency_info()
-        if self.__num_relate_calls == 5:
+        if self.__num_rounds == 5:
             ret.add_provide(self.__provide)
             pass
         return ret
@@ -59,8 +63,8 @@ class DeferredProvider(Builder):
 class UrgencyErrorTest(unittest.TestCase):
     """ Require object with URGENCY_ERROR needs not be resolved immediately.
 
-    Rather, it is sufficient if it is resolved at the end of the boil
-    cycle."""
+    Rather, it is sufficient if it has ben resolved at the end of the
+    boil cycle."""
     def test(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(

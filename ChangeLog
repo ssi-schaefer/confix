@@ -1,3 +1,8 @@
+2007-10-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Fixed bug "[ 1654643 ] URGENCY_ERROR require need not be
+	  resolved immediately"
+
 2007-09-27 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* merged from RB-branches/2.1 (last changed rev. 375 there)
