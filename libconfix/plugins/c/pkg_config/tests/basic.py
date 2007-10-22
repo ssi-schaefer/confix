@@ -15,8 +15,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.testutils import find
-
 from libconfix.plugins.c.pkg_config.setup import PkgConfigSetup
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
@@ -75,7 +73,7 @@ class BasicTest(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        maindir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['main'])
+        maindir_builder = package.rootbuilder().find_entry_builder(['main'])
         self.failIf(maindir_builder is None)
 
         self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_builder.makefile_am().am_cflags())

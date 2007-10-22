@@ -23,8 +23,6 @@ from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.plugins.script.setup import ScriptSetup
 
-from libconfix.testutils import find
-
 from package import make_package
 
 class ScriptSuiteInMemory(unittest.TestSuite):
@@ -42,7 +40,7 @@ class ScriptInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        script = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['script'])
+        script = package.rootbuilder().find_entry_builder(['script'])
         self.failIf(script is None)
         pass
     pass

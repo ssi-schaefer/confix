@@ -25,7 +25,7 @@ from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 
-from libconfix.testutils import dirhier, find
+from libconfix.testutils import dirhier
 
 class InterPackageInMemorySuite(unittest.TestSuite):
 
@@ -57,8 +57,8 @@ class InterPackageRelate(unittest.TestCase):
                                    setups=[DefaultCSetup(short_libnames=False, use_libtool=False)])
         local_hipkg.boil(external_nodes=installed_lopkg.nodes())
 
-        lo_h_builder = find.find_entrybuilder(rootbuilder=local_lopkg.rootbuilder(), path=['lo.h'])
-        lo_c_builder = find.find_entrybuilder(rootbuilder=local_lopkg.rootbuilder(), path=['lo.c'])
+        lo_h_builder = local_lopkg.rootbuilder().find_entry_builder(['lo.h'])
+        lo_c_builder = local_lopkg.rootbuilder().find_entry_builder(['lo.c'])
         liblo_builder = None
         for b in local_lopkg.rootbuilder().builders():
             if isinstance(b, LibraryBuilder):
@@ -69,7 +69,7 @@ class InterPackageRelate(unittest.TestCase):
             self.fail()
             pass
 
-        hi_c_builder = find.find_entrybuilder(rootbuilder=local_hipkg.rootbuilder(), path=['hi.c'])
+        hi_c_builder = local_hipkg.rootbuilder().find_entry_builder(['hi.c'])
         libhi_builder = None
         for b in local_hipkg.rootbuilder().builders():
             if isinstance(b, LibraryBuilder):

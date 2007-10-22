@@ -23,8 +23,6 @@ from libconfix.core.filesys.file import File
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 
-from libconfix.testutils import find
-
 import unittest
 
 class BasicLocalInstallSuite(unittest.TestSuite):
@@ -91,8 +89,7 @@ class BasicLocalInstallTest(unittest.TestCase):
                                        DefaultDirectorySetup()])
         package.boil(external_nodes=[])
 
-        user_c_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                                path=['user', 'user.c'])
+        user_c_builder = package.rootbuilder().find_entry_builder(['user', 'user.c'])
         self.failIf(user_c_builder is None)
 
         hi_pos = lo_pos = None

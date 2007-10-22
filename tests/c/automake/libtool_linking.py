@@ -27,8 +27,6 @@ from libconfix.core.utils import const
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
-from libconfix.testutils import find
-
 class LibtoolLinkingSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
@@ -109,8 +107,7 @@ class LibtoolLinklineSeeThroughHeaders(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        userlib_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                                 path=['userlib'])
+        userlib_builder = package.rootbuilder().find_entry_builder(['userlib'])
 
         # if we foolishly didn't see through the seethrough1 and
         # seethrough2 nodes until we see a real library, the we'd not
@@ -125,8 +122,7 @@ class LibtoolLinklineSeeThroughHeaders(unittest.TestCase):
             userlib_builder.makefile_am().compound_libadd('libLibtoolLinklineSeeThroughHeaders_userlib_la'),
             ['-L$(top_builddir)/lib', '-lLibtoolLinklineSeeThroughHeaders_lib'])
 
-        userexe_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                                 path=['userexe'])
+        userexe_builder = package.rootbuilder().find_entry_builder(['userexe'])
 
         # for the executables holds the same as for libraries, so this
         # is basically a copy of above, with a few things exchanged.

@@ -29,7 +29,7 @@ from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.library import LibraryBuilder
 
-from libconfix.testutils import dirhier, find
+from libconfix.testutils import dirhier
 
 class ExecutableSuite(unittest.TestSuite):
     def __init__(self):
@@ -87,9 +87,9 @@ class ExecutableBase(unittest.TestCase):
         self.package_.boil(external_nodes=[])
         self.package_.output()
 
-        self.lodir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['lo'])
-        self.hidir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['hi'])
-        self.exedir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['exe'])
+        self.lodir_builder_ = self.package_.rootbuilder().find_entry_builder(['lo'])
+        self.hidir_builder_ = self.package_.rootbuilder().find_entry_builder(['hi'])
+        self.exedir_builder_ = self.package_.rootbuilder().find_entry_builder(['exe'])
         assert self.lodir_builder_
         assert self.hidir_builder_
         assert self.exedir_builder_
@@ -213,7 +213,7 @@ class LDADD(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        exedir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['exe'])
+        exedir_builder = package.rootbuilder().find_entry_builder(['exe'])
         self.failUnless('-lLDADD_lib' in exedir_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
         pass
 
@@ -223,7 +223,7 @@ class LDADD(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        exedir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['exe'])
+        exedir_builder = package.rootbuilder().find_entry_builder(['exe'])
         self.failUnless('-lLDADD_lib' in exedir_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
         pass
 

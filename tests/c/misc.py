@@ -26,8 +26,6 @@ from libconfix.core.utils import const
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
-from libconfix.testutils import find
-
 class MiscellaneousSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
@@ -60,7 +58,7 @@ class IgnoredEntriesTest(unittest.TestCase):
                                        DefaultDirectorySetup()])
         package.boil(external_nodes=[])
 
-        self.failIf(find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['x.cc']) is not None)
+        self.failIf(package.rootbuilder().find_entry_builder(['x.cc']) is not None)
         pass
     pass
 

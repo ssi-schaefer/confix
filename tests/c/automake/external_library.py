@@ -25,8 +25,6 @@ from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.testutils import find
-
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
@@ -88,10 +86,8 @@ class ExternalLibraryTest(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
         
-        hidir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                               path=['hi'])
-        hi_c_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                              path=['hi', 'hi_c.c'])
+        hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
+        hi_c_builder = package.rootbuilder().find_entry_builder(['hi', 'hi_c.c'])
         self.failIf(hidir_builder is None)
         self.failIf(hi_c_builder is None)
 

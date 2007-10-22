@@ -25,8 +25,6 @@ from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.testutils import find
-
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
@@ -82,8 +80,8 @@ class BasicCXXSetup(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        lib_dirbuilder = find.find_entrybuilder(package.rootbuilder(), ['lib'])
-        exe_dirbuilder = find.find_entrybuilder(package.rootbuilder(), ['exe'])
+        lib_dirbuilder = package.rootbuilder().find_entry_builder(['lib'])
+        exe_dirbuilder = package.rootbuilder().find_entry_builder(['exe'])
 
         self.failIf(lib_dirbuilder is None)
         self.failIf(exe_dirbuilder is None)

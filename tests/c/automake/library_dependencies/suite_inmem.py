@@ -20,7 +20,6 @@ from dirstructure import DirectoryStructure
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 
-from libconfix.testutils import find
 from libconfix.testutils import makefileparser
 from libconfix.testutils.persistent import PersistentTestCase
 
@@ -66,8 +65,7 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
 
         # so here, finally, go the tests ...
 
-        exe_builder = find.find_entrybuilder(rootbuilder=third_local_package.rootbuilder(),
-                                                   path=['exe'])
+        exe_builder = third_local_package.rootbuilder().find_entry_builder(['exe'])
         self.failIf(exe_builder is None)
 
         # see if we have the convenience item in makefile_am()

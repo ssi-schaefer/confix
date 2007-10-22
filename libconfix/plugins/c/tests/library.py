@@ -28,7 +28,7 @@ from libconfix.core.utils import const
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 
-from libconfix.testutils import dirhier, find
+from libconfix.testutils import dirhier
 
 class LibrarySuite(unittest.TestSuite):
     def __init__(self):
@@ -66,7 +66,7 @@ class LibraryBase(unittest.TestCase):
         self.package_.boil(external_nodes=[])
         self.package_.output()
 
-        self.lodir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['lo'])
+        self.lodir_builder_ = self.package_.rootbuilder().find_entry_builder(['lo'])
         self.lolib_builder_ = None
         for b in self.lodir_builder_.builders():
             if isinstance(b, LibraryBuilder):
@@ -175,7 +175,7 @@ class LIBADD(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        hidir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['hi'])
+        hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
         self.failUnless('-lLIBADD_lo' in hidir_builder.makefile_am().compound_libadd('libLIBADD_hi_la'))
         pass
 
@@ -185,7 +185,7 @@ class LIBADD(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        hidir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['hi'])
+        hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
         self.failUnless(hidir_builder.makefile_am().compound_libadd('libLIBADD_hi_a') is None)
         pass
 

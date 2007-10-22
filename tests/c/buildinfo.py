@@ -26,7 +26,6 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
-from libconfix.testutils import find
 
 class BuildInfoSuite(unittest.TestSuite):
     def __init__(self):
@@ -80,12 +79,9 @@ class BasicBuildInfoTest(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        hidir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                               path=['hi'])
-        hi_c_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                              path=['hi', 'hi_c.c'])
-        hi_cc_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                               path=['hi', 'hi_cc.cc'])
+        hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
+        hi_c_builder = package.rootbuilder().find_entry_builder(['hi', 'hi_c.c'])
+        hi_cc_builder = package.rootbuilder().find_entry_builder(['hi', 'hi_cc.cc'])
         self.failIf(hidir_builder is None)
         self.failIf(hi_c_builder is None)
         self.failIf(hi_cc_builder is None)
@@ -182,10 +178,8 @@ class UniqueFlags_n_MacrosTest(unittest.TestCase):
                                        DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        hi_file1_cc_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                                     path=['hi', 'file1.cc'])
-        hi_file2_cc_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                                     path=['hi', 'file1.cc'])
+        hi_file1_cc_builder = package.rootbuilder().find_entry_builder(['hi', 'file1.cc'])
+        hi_file2_cc_builder = package.rootbuilder().find_entry_builder(['hi', 'file1.cc'])
         
         # see if each cxx file builder has a unique set of flags.
 
@@ -216,7 +210,7 @@ class UniqueFlags_n_MacrosTest(unittest.TestCase):
 
         package.output()
 
-        hi_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['hi'])
+        hi_builder = package.rootbuilder().find_entry_builder(['hi'])
 
         unique_cflags = set()
         for f in hi_builder.makefile_am().am_cflags():

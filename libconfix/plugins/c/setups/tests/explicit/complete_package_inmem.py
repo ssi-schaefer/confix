@@ -23,7 +23,6 @@ from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.testutils import find
 
 import unittest
 
@@ -42,11 +41,11 @@ class CompletePackageInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         # see if we have got the directories right
-        found_lodir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['lolibrary'])
+        found_lodir_builder = package.rootbuilder().find_entry_builder(['lolibrary'])
         self.failIf(found_lodir_builder is None)
-        found_hidir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['hilibrary'])
+        found_hidir_builder = package.rootbuilder().find_entry_builder(['hilibrary'])
         self.failIf(found_hidir_builder is None)
-        found_exedir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['executable'])
+        found_exedir_builder = package.rootbuilder().find_entry_builder(['executable'])
         self.failIf(found_exedir_builder is None)
 
         # lodirectory has lolibrary has H(lo.h), C(lo1.c), C(lo2.c)

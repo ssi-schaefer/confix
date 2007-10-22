@@ -1,3 +1,7 @@
+2007-10-22 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* removed libconfix/testutils/find.py
+
 2007-10-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* Fixed bug "[ 1654643 ] URGENCY_ERROR require need not be

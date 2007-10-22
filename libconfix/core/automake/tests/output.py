@@ -27,7 +27,7 @@ from libconfix.core.utils import const
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.library import LibraryBuilder
 
-from libconfix.testutils import dirhier, find
+from libconfix.testutils import dirhier
 
 class AutomakeOutputSuite(unittest.TestSuite):
     def __init__(self):
@@ -62,9 +62,9 @@ class AutomakeOutputTest(unittest.TestCase):
         self.package_.boil(external_nodes=[])
         self.package_.output()
 
-        self.subdir1_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['subdir1'])
-        self.subdir2_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['subdir2'])
-        self.subdir3_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['subdir3'])
+        self.subdir1_builder_ = self.package_.rootbuilder().find_entry_builder(['subdir1'])
+        self.subdir2_builder_ = self.package_.rootbuilder().find_entry_builder(['subdir2'])
+        self.subdir3_builder_ = self.package_.rootbuilder().find_entry_builder(['subdir3'])
         assert self.subdir1_builder_
         assert self.subdir2_builder_
         assert self.subdir3_builder_

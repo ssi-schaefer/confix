@@ -29,8 +29,6 @@ from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
 
-from libconfix.testutils import find
-
 class NameManglingSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
@@ -92,10 +90,8 @@ class NamesBase(unittest.TestCase):
                                                      short_libnames=self.short_libnames())])
         package.boil(external_nodes=[])
 
-        libdir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                                path=['lib1', 'lib2'])
-        exedir_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                                path=['exe1', 'exe2'])
+        libdir_builder = package.rootbuilder().find_entry_builder(['lib1', 'lib2'])
+        exedir_builder = package.rootbuilder().find_entry_builder(['exe1', 'exe2'])
         self.failIf(libdir_builder is None)
         self.failIf(exedir_builder is None)
 

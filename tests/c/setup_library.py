@@ -28,7 +28,7 @@ from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.testutils import dirhier, find
+from libconfix.testutils import dirhier
 
 import unittest
 
@@ -99,7 +99,7 @@ class LibraryNames(unittest.TestCase):
         package.boil(external_nodes=[])
 
         dir3lib_builder = None
-        for b in find.find_entrybuilder(package.rootbuilder(), ['dir1', 'dir2', 'dir3']).builders():
+        for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(dir3lib_builder is not None)
                 dir3lib_builder = b
@@ -119,7 +119,7 @@ class LibraryNames(unittest.TestCase):
         package.boil(external_nodes=[])
 
         dir3lib_builder = None
-        for b in find.find_entrybuilder(package.rootbuilder(), ['dir1', 'dir2', 'dir3']).builders():
+        for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(dir3lib_builder is not None)
                 dir3lib_builder = b

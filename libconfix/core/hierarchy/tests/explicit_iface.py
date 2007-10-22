@@ -17,8 +17,6 @@
 
 import unittest
 
-from libconfix.testutils import find
-
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
@@ -56,7 +54,7 @@ class Without_Confix2_dir(unittest.TestCase):
                                setups=[ExplicitDirectorySetup()])
         package.boil(external_nodes=[])
 
-        self.failIf(find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['subdir']) is None)
+        self.failIf(package.rootbuilder().find_entry_builder(['subdir']) is None)
         pass
     pass
 
@@ -89,7 +87,7 @@ class With_Confix2_dir(unittest.TestCase):
                                setups=[ExplicitDirectorySetup()])
         package.boil(external_nodes=[])
 
-        self.failIf(find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['subdir']) is None)
+        self.failIf(package.rootbuilder().find_entry_builder(['subdir']) is None)
         self.failUnlessEqual(dummy_property_receiver_file.get_property('the_property'), 'the_value')
         pass
     pass

@@ -26,8 +26,6 @@ from libconfix.core.utils import const
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 
-from libconfix.testutils import find
-
 from package import make_package
 
 class PlainFileSuiteInMemory(unittest.TestSuite):
@@ -45,8 +43,8 @@ class PlainFileInMemoryTest(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[PlainFileInterfaceSetup()])
         package.boil(external_nodes=[])
         
-        plainfile_data = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['plainfile_data'])
-        plainfile_prefix = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['plainfile_prefix'])
+        plainfile_data = package.rootbuilder().find_entry_builder(['plainfile_data'])
+        plainfile_prefix = package.rootbuilder().find_entry_builder(['plainfile_prefix'])
         self.failIf(plainfile_data is None)
         self.failIf(plainfile_prefix is None)
         self.failUnless(isinstance(plainfile_data, PlainFileBuilder))
@@ -83,10 +81,8 @@ class PlainFileCreatorTest(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
         package.boil(external_nodes=[])
 
-        databuilder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                             path=['file.data'])
-        prefixbuilder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                               path=['file.prefix'])
+        databuilder = package.rootbuilder().find_entry_builder(['file.data'])
+        prefixbuilder = package.rootbuilder().find_entry_builder(['file.prefix'])
         self.failIf(databuilder is None)
         self.failIf(prefixbuilder is None)
 

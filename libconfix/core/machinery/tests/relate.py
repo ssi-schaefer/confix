@@ -23,7 +23,6 @@ from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.testutils import dirhier
-from libconfix.testutils import find
 from libconfix.testutils.ifacetestbuilder import FileInterfaceTestSetup
 
 class RelateTestSuite(unittest.TestSuite):
@@ -56,13 +55,13 @@ class RelateBasic(unittest.TestCase):
                                        FileInterfaceTestSetup()])
         package.boil(external_nodes=[])
 
-        lodirbuilder = find.find_entrybuilder(package.rootbuilder(), ['lo'])
+        lodirbuilder = package.rootbuilder().find_entry_builder(['lo'])
         self.failIf(lodirbuilder is None)
-        hidirbuilder = find.find_entrybuilder(package.rootbuilder(), ['hi'])
+        hidirbuilder = package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidirbuilder is None)
-        lofilebuilder = find.find_entrybuilder(package.rootbuilder(), ['lo', 'lo.iface'])
+        lofilebuilder = package.rootbuilder().find_entry_builder(['lo', 'lo.iface'])
         self.failIf(lofilebuilder is None)
-        hifilebuilder = find.find_entrybuilder(package.rootbuilder(), ['hi', 'hi.iface'])
+        hifilebuilder = package.rootbuilder().find_entry_builder(['hi', 'hi.iface'])
         self.failIf(hifilebuilder is None)
 
         self.failIf(lofilebuilder.successors() is None)

@@ -25,8 +25,6 @@ from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.testutils import find
-
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 
@@ -68,10 +66,8 @@ class ProvideRequireInclude(unittest.TestCase):
                                                      short_libnames=False)])
         package.boil(external_nodes=[])
 
-        lo_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                            path=['lo'])
-        hi_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                            path=['hi'])
+        lo_builder = package.rootbuilder().find_entry_builder(['lo'])
+        hi_builder = package.rootbuilder().find_entry_builder(['hi'])
 
         self.failUnless(lo_builder in package.digraph().successors(hi_builder))
         pass

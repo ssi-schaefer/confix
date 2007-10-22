@@ -23,8 +23,6 @@ from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
 
-from libconfix.testutils import find
-
 import unittest
 
 class HeaderInstallPathInMemorySuite(unittest.TestSuite):
@@ -52,7 +50,7 @@ class HeaderInstallPath(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failUnlessEqual(file_h_builder.visible_in_directory(), ['a', 'b'])
         pass
 

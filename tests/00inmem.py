@@ -22,7 +22,6 @@ from c.suite_inmem import CTestSuiteInMemory
 # possible. seems like a better way.
 from libconfix.tests.suite_inmem import LibConfixInMemorySuite
 
-
 import unittest
 
 if __name__ == '__main__':

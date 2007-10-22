@@ -23,8 +23,6 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.testutils import find
-
 from libconfix.plugins.idl.setup import IDLSetup
 
 class BasicIDLSuiteInMemory(unittest.TestSuite):
@@ -58,8 +56,7 @@ class BasicIDLTest(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[IDLSetup()])
         package.boil(external_nodes=[])
-        idl_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(),
-                                             path=['file.idl'])
+        idl_builder = package.rootbuilder().find_entry_builder(['file.idl'])
         self.failIf(idl_builder is None)
         self.failUnlessEqual(idl_builder.install_path(), ['A', 'B'])
         pass
@@ -109,7 +106,7 @@ class ModuleNotClosedIsFlat(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[IDLSetup()])
         package.boil(external_nodes=[])
-        idl_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.idl'])
+        idl_builder = package.rootbuilder().find_entry_builder(['file.idl'])
         self.failIf(idl_builder is None)
         self.failUnlessEqual(idl_builder.install_path(), [])
         pass

@@ -25,27 +25,25 @@ from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.testutils import find
-
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 class InstallInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-##         self.addTest(FilePropertyOnly('test'))
-##         self.addTest(IfaceOnly('test'))
-##         self.addTest(IfaceFilePropertyConflict('test'))
-##         self.addTest(Namespace('testSimple'))
-##         self.addTest(Namespace('testNested'))
-##         self.addTest(Namespace('testGlobal'))
-##         self.addTest(Namespace('testAmbiguousFlat'))
-##         self.addTest(Namespace('testAmbiguousNested'))
-##         self.addTest(Namespace('testDirectory'))
-##         self.addTest(InstallPriorities('test'))
+        self.addTest(FilePropertyOnly('test'))
+        self.addTest(IfaceOnly('test'))
+        self.addTest(IfaceFilePropertyConflict('test'))
+        self.addTest(Namespace('testSimple'))
+        self.addTest(Namespace('testNested'))
+        self.addTest(Namespace('testGlobal'))
+        self.addTest(Namespace('testAmbiguousFlat'))
+        self.addTest(Namespace('testAmbiguousNested'))
+        self.addTest(Namespace('testDirectory'))
+        self.addTest(InstallPriorities('test'))
         self.addTest(INSTALLDIR_H_EmptyString('test'))
-##         self.addTest(BadNamespace('test'))
-##         self.addTest(BadNamespaceGoodINSTALLDIR_H('test'))
+        self.addTest(BadNamespace('test'))
+        self.addTest(BadNamespaceGoodINSTALLDIR_H('test'))
         pass
     pass
 
@@ -67,7 +65,7 @@ class FilePropertyOnly(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
@@ -92,7 +90,7 @@ class IfaceOnly(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
@@ -118,7 +116,7 @@ class Namespace(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
         
@@ -144,7 +142,7 @@ class Namespace(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
@@ -167,7 +165,7 @@ class Namespace(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
@@ -239,10 +237,11 @@ class Namespace(unittest.TestCase):
         fs.rootdirectory().add(name='file.h', entry=File(lines=[]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[DefaultCSetup(short_libnames=False,
-                                              use_libtool=False)])
+                                                     use_libtool=False),
+                                       DefaultDirectorySetup()])
         package.boil(external_nodes=[])
 
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
@@ -301,7 +300,7 @@ class InstallPriorities(unittest.TestCase):
                                setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        file_h_builder = find.find_entrybuilder(rootbuilder=package.rootbuilder(), path=['file.h'])
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 

@@ -33,7 +33,6 @@ from libconfix.core.utils.error import Error
 from libconfix.core.utils import const
 
 from libconfix.testutils import dirhier
-from libconfix.testutils import find
 from libconfix.testutils.ifacetestbuilder import FileInterfaceTestSetup
 
 class ResolveTestSuite(unittest.TestSuite):
@@ -62,8 +61,8 @@ class BasicResolveTest(unittest.TestCase):
                                        FileInterfaceTestSetup()])
         package.boil(external_nodes=[])
 
-        lodirbuilder = find.find_entrybuilder(package.rootbuilder(), ['lo'])
-        hidirbuilder = find.find_entrybuilder(package.rootbuilder(), ['hi'])
+        lodirbuilder = package.rootbuilder().find_entry_builder(['lo'])
+        hidirbuilder = package.rootbuilder().find_entry_builder(['hi'])
 
         self.assertEqual(len(package.digraph().nodes()), 3 \
                          # plus 1 for confix-admin which is a full-fledged node

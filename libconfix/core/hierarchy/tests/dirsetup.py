@@ -21,7 +21,6 @@ from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.testutils import dirhier
-from libconfix.testutils import find
 
 import unittest
 import types
@@ -48,10 +47,10 @@ class BasicDirectorySetup(unittest.TestCase):
         self.assertEqual(package.rootbuilder().directory().find(['a']), subdir)
         self.assertEqual(package.rootbuilder().directory().find(['a', 'a']), subsubdir)
         
-        subdir_builder = find.find_entrybuilder(package.rootbuilder(), ['a'])
+        subdir_builder = package.rootbuilder().find_entry_builder(['a'])
         self.failIf(subdir_builder is None)
         
-        subsubdir_builder = find.find_entrybuilder(package.rootbuilder(), ['a','a'])
+        subsubdir_builder = package.rootbuilder().find_entry_builder(['a','a'])
         self.failIf(subsubdir_builder is None)
 
         self.assertEqual(subdir_builder.directory(), subdir)

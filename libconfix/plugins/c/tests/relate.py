@@ -30,7 +30,6 @@ from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CIncludePath_NativeLocal, BuildInfo_CLibrary_NativeLocal
 
 from libconfix.testutils import dirhier
-from libconfix.testutils import find
 from libconfix.testutils import packages
 
 class RelateSuite(unittest.TestSuite):
@@ -82,24 +81,23 @@ class RelateBasic(unittest.TestCase):
 
         # directory and file builder instances
 
-        self.lodir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['lo'])
-        self.lodir_lo_h_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['lo', 'lo.h'])
-        self.lodir_lo_c_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['lo', 'lo.c'])
+        self.lodir_builder_ = self.package_.rootbuilder().find_entry_builder(['lo'])
+        self.lodir_lo_h_builder_ = self.package_.rootbuilder().find_entry_builder(['lo', 'lo.h'])
+        self.lodir_lo_c_builder_ = self.package_.rootbuilder().find_entry_builder(['lo', 'lo.c'])
         
-        self.hi1dir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['hi1'])
-        self.hi1dir_hi1_h_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['hi1', 'hi1.h'])
-        self.hi1dir_hi1_c_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['hi1', 'hi1.c'])
+        self.hi1dir_builder_ = self.package_.rootbuilder().find_entry_builder(['hi1'])
+        self.hi1dir_hi1_h_builder_ = self.package_.rootbuilder().find_entry_builder(['hi1', 'hi1.h'])
+        self.hi1dir_hi1_c_builder_ = self.package_.rootbuilder().find_entry_builder(['hi1', 'hi1.c'])
         
-        self.hi2dir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['hi2'])
-        self.hi2dir_hi2_h_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['hi2', 'hi2.h'])
-        self.hi2dir_hi2_c_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['hi2', 'hi2.c'])
+        self.hi2dir_builder_ = self.package_.rootbuilder().find_entry_builder(['hi2'])
+        self.hi2dir_hi2_h_builder_ = self.package_.rootbuilder().find_entry_builder(['hi2', 'hi2.h'])
+        self.hi2dir_hi2_c_builder_ = self.package_.rootbuilder().find_entry_builder(['hi2', 'hi2.c'])
 
-        self.highestdir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['highest'])
-        self.highestdir_highest_c_builder_ = find.find_entrybuilder(self.package_.rootbuilder(),
-                                                               ['highest', 'highest.c'])
+        self.highestdir_builder_ = self.package_.rootbuilder().find_entry_builder(['highest'])
+        self.highestdir_highest_c_builder_ = self.package_.rootbuilder().find_entry_builder(['highest', 'highest.c'])
 
-        self.exedir_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['exe'])
-        self.exedir_main_c_builder_ = find.find_entrybuilder(self.package_.rootbuilder(), ['exe', 'main.c'])
+        self.exedir_builder_ = self.package_.rootbuilder().find_entry_builder(['exe'])
+        self.exedir_main_c_builder_ = self.package_.rootbuilder().find_entry_builder(['exe', 'main.c'])
 
         # library and executable builder instances
         
@@ -197,7 +195,7 @@ class RelateBasic(unittest.TestCase):
         # see if everyone who is involved in the game has the right
         # buildinfo.
 
-        for bi in find.find_entrybuilder(rootbuilder=self.lodir_builder_, path=['lo.h']).buildinfos():
+        for bi in self.lodir_builder_.find_entry_builder(['lo.h']).buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass
@@ -221,7 +219,7 @@ class RelateBasic(unittest.TestCase):
             self.fail()
             pass
         
-        for bi in find.find_entrybuilder(rootbuilder=self.hi1dir_builder_, path=['hi1.h']).buildinfos():
+        for bi in self.hi1dir_builder_.find_entry_builder(['hi1.h']).buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass
@@ -235,7 +233,7 @@ class RelateBasic(unittest.TestCase):
                 continue
             pass
 
-        for bi in find.find_entrybuilder(rootbuilder=self.hi2dir_builder_, path=['hi2.h']).buildinfos():
+        for bi in self.hi2dir_builder_.find_entry_builder(['hi2.h']).buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass

@@ -21,8 +21,6 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
-from libconfix.testutils import find
-
 import unittest
 
 class RelocatedHeaderInMemorySuite(unittest.TestSuite):
@@ -39,15 +37,9 @@ class RelocatedHeaderInMemoryTest(unittest.TestCase):
                                        ExplicitCSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
-        exe_builder = find.find_entrybuilder(
-            rootbuilder=package.rootbuilder(),
-            path=['exe'])
-        lib_implementation_builder = find.find_entrybuilder(
-            rootbuilder=package.rootbuilder(),
-            path=['lib_implementation'])
-        include_builder = find.find_entrybuilder(
-            rootbuilder=package.rootbuilder(),
-            path=['include'])
+        exe_builder = package.rootbuilder().find_entry_builder(['exe'])
+        lib_implementation_builder = package.rootbuilder().find_entry_builder(['lib_implementation'])
+        include_builder = package.rootbuilder().find_entry_builder(['include'])
         self.failIf(exe_builder is None)
         self.failIf(lib_implementation_builder is None)
         self.failIf(include_builder is None)
