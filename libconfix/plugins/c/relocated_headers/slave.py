@@ -43,14 +43,15 @@ class Slave(Builder):
         ret = DependencyInformation()
         ret.add(super(Slave, self).dependency_info())
 
-        # we require the original header
+        # we require the original header for obvious reasons.
         ret.add_require(RequireRelocatedHeader(
             filename=self.__header_builder.file().name(),
             source_directory=self.__header_builder.parentbuilder().directory().relpath(self.package().rootbuilder().directory())))
 
-        # we provide the fake header instead of the original one.
-        ret.add_provide(Provide_CInclude(
-            filename='/'.join(self.__header_builder.visible_in_directory() + [self.__header_builder.file().name()])))
+        # we steal the dependency info from the original header. FIXME
+        # (possibly): what about the "internal provide" stuff?
+        ret.add(self.__header_builder.do_really_get_dependency_info())
+        
         return ret
 
     pass

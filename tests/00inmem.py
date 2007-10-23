@@ -25,7 +25,6 @@ from libconfix.tests.suite_inmem import LibConfixInMemorySuite
 import unittest
 
 if __name__ == '__main__':
-
     suite = unittest.TestSuite()
 
     suite.addTest(CTestSuiteInMemory())

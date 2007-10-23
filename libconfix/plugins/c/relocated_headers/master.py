@@ -90,7 +90,7 @@ class Master(Builder):
 
         self.__slave = Slave(header_builder=self.__header_builder)
         self.__target_directory_builder.add_builder(self.__slave)
-        self.__header_builder.set_not_provided()
+        self.__header_builder.disable_dependency_info()
         pass
 
     def dependency_info(self):

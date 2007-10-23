@@ -19,12 +19,14 @@ import unittest
 
 from basic import BasicSuite
 from inter_package_inmem import InterPackageInMemorySuite
+from bug_1817734 import Bug_1817734
 
 class RelocatedHeadersInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(BasicSuite())
         self.addTest(InterPackageInMemorySuite())
+        self.addTest(Bug_1817734())
         pass
     pass
 

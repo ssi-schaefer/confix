@@ -60,7 +60,10 @@ class HeaderBuilder(CBaseBuilder):
         self.__iface_install_path = None
         self.__external_install_path = None
 
-        self.__is_provided = True
+        # a flag that makes the public dependency_info() method return
+        # nothing. currently only needed for relocating headers, but
+        # not necessarily so.
+        self.__dependency_info_disabled = False
 
         pass
 
@@ -84,10 +87,6 @@ class HeaderBuilder(CBaseBuilder):
             pass
         pass
 
-    def set_not_provided(self):
-        self.__is_provided = False
-        pass
-
     def set_iface_install_path(self, path):
         self.__iface_install_path = path
         pass
@@ -100,20 +99,46 @@ class HeaderBuilder(CBaseBuilder):
     def iface_pieces(self):
         return super(HeaderBuilder, self).iface_pieces() + [HeaderBuilderInterfaceProxy(object=self)]
 
+    def disable_dependency_info(self):
+        """
+        Makes the Builder interface's HeaderBuilder.dependency_info()
+        method do nothing. The local method
+        HeaderBuilder.do_really_get_dependency_info() can then be used
+        to get the information you want.
+        """
+        self.__dependency_info_disabled = True
+        pass
+
     def dependency_info(self):
+        """
+        Get the dependency information of self, but only if
+        disable_dependency_info() has not been called.
+        """
+        # note that we have to pass the request on to the base, since
+        # somebody checks that the base was reached. a good idea
+        # otherwise, but here we have to throw the information away
+        # and return nothing in case we were instructed to do so.
+        ret = self.do_really_get_dependency_info()
+        if self.__dependency_info_disabled:
+            return DependencyInformation()
+        return ret
+
+    def do_really_get_dependency_info(self):
+        """
+        Get the dependency information, regardles if
+        disable_dependency_info() has been called.
+        """
         ret = DependencyInformation()
         ret.add(super(HeaderBuilder, self).dependency_info())
-        outer_name = None
-        if self.__is_provided:
-            outer_name = '/'.join(self.visible_in_directory()+[self.file().name()])
-            ret.add_provide(Provide_CInclude(filename=outer_name))
-            pass
+
+        outer_name = '/'.join(self.visible_in_directory()+[self.file().name()])
+        ret.add_provide(Provide_CInclude(filename=outer_name))
 
         # regardless if we will provide ourselves to the outer world,
         # and regardless of how we will be doing that, we will
         # eventually be included/required by files in the same
         # directory. to neutralize their require objects (a node
-        # eliminates require objects the are resolved internaly),
+        # eliminates require objects the are resolved internally),
         # provide ourselves.
         if outer_name is None or self.file().name() != outer_name:
             ret.add_internal_provide(Provide_CInclude(filename=self.file().name()))
