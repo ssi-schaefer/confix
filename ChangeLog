@@ -1,3 +1,12 @@
+2007-11-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* confix2.py --overlayroot
+	  Makes it possible to "overlay" the package with a separate tree
+	  that contains the Confix2.{pkg,dir} files.
+	* Largely eliminated the --use-libtool parameter, by scanning the
+	  generated configure.ac file for AC_PROG_LIBTOOL. --use-libtool
+	  is still necessary for the damn ConfixSetup default.
+
 2007-10-23 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* Fixed bug "[ 1817734 ] Relocated headers leave require objects

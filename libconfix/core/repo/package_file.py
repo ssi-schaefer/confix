@@ -33,7 +33,7 @@ class PackageFile:
     VERSION = 1
 
     def __init__(self, file):
-        self.file_ = file
+        self.__file = file
         pass
 
     def load(self):
@@ -43,24 +43,25 @@ class PackageFile:
             # them together, and then unpickle the object from the
             # whole buffer. to make this more efficient, we'd need
             # something like File.content().
-            obj = helper_pickle.load_object_from_string('\n'.join(self.file_.lines()))
+            obj = helper_pickle.load_object_from_string('\n'.join(self.__file.lines()))
             if obj['version'] != PackageFile.VERSION:
-                raise Error('Version mismatch in repository file '+os.sep.join(self.file_.abspath())+''
+                raise Error('Version mismatch in repository file '+os.sep.join(self.__file.abspath())+''
                             ' (file: '+str(obj['version'])+','
                             ' current: '+str(PackageFile.VERSION)+')')
             return obj['package']
         except Error, e:
-            raise Error('Could not read package file '+os.sep.join(self.file_.abspath()), [e])
+            raise Error('Could not read package file '+os.sep.join(self.__file.abspath()), [e])
         pass
     
     def dump(self, package):
         try:
-            self.file_.truncate()
-            self.file_.add_line(helper_pickle.dump_object_to_string(
-                {'version': PackageFile.VERSION,
-                 'package': package}))
+            self.__file.truncate()
+            self.__file.add_lines(
+                [helper_pickle.dump_object_to_string({'version': PackageFile.VERSION,
+                                                      'package': package})
+                 ])
         except Error, e:
-            raise Error('Could not write package file '+os.sep.join(self.file_.abspath()), [e])
+            raise Error('Could not write package file '+os.sep.join(self.__file.abspath()), [e])
         pass
     
     pass

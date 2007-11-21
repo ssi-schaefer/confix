@@ -18,7 +18,7 @@
 
 import re
 
-from libconfix.core.filesys.file import File
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.utils.error import Error
 
@@ -50,7 +50,7 @@ class PlainFileCreator(Builder):
     def enlarge(self):
         super(PlainFileCreator, self).enlarge()
         for name, entry in self.parentbuilder().entries():
-            if not isinstance(entry, File):
+            if not isinstance(entry, VFSFile):
                 continue
             if name in self.__handled_entries:
                 continue

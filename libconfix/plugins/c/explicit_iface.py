@@ -49,6 +49,11 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         pass
 
     def H(self, filename, install=[], relocate_to=None):
+        if type(install) is not list:
+            raise Error("H(): 'install' parameter must be list of strings")
+        if type(filename) is not str:
+            raise Error("H(): 'filename' parameter must be string")
+        
         h = HeaderBuilder(file=self.__find_file(filename))
         if install is not None:
             h.set_external_install_path(install)
@@ -80,7 +85,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         if the_basename is None:
             the_basename=LongNameFinder().find_libname(
                 packagename=self.object().package().name(),
-                path=self.object().directory().relpath(dir=self.object().package().rootdirectory()))
+                path=self.object().directory().relpath(from_dir=self.object().package().rootdirectory()))
             pass
         library = LibraryBuilder(basename=the_basename,
                                  use_libtool=self.__use_libtool,
@@ -98,7 +103,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
             center_stem, center_ext = os.path.splitext(center.file().name())
             the_exename = LongNameFinder().find_exename(
                 packagename=self.object().package().name(),
-                path=self.object().directory().relpath(dir=self.object().package().rootdirectory()),
+                path=self.object().directory().relpath(from_dir=self.object().package().rootdirectory()),
                 centername=center_stem)
             pass
         executable = ExecutableBuilder(center=center,

@@ -37,7 +37,7 @@ class HeaderBuilder(CBaseBuilder):
         def __init__(self, header_builder, cur, prev):
             Error.__init__(self,
                            msg='Ambiguous visibility of header "'+\
-                           '/'.join(header_builder.file().relpath(header_builder.package().rootdirectory()))+'": '+\
+                           '/'.join(header_builder.file().relpath(from_dir=header_builder.package().rootdirectory()))+'": '+\
                            cur+'/'+prev)
             pass
         pass
@@ -83,7 +83,7 @@ class HeaderBuilder(CBaseBuilder):
         try:        
             self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
         except Error, e:
-            self.__namespace_error = Error('Could not initialize '+'/'.join(self.file().relpath(dir=self.package())), [e])
+            self.__namespace_error = Error('Could not initialize '+'/'.join(self.file().relpath(from_dir=package.rootdirectory())), [e])
             pass
         pass
 
@@ -155,7 +155,7 @@ class HeaderBuilder(CBaseBuilder):
         # add to his include path. else, only tell him the local
         # install directory.
         direct_includedir = _get_direct_includedir(
-            rootdir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+            rootdir=self.parentbuilder().directory().relpath(from_dir=self.package().rootdirectory()),
             visibledir=self.visible_in_directory())
 
         if direct_includedir is not None:
@@ -173,7 +173,7 @@ class HeaderBuilder(CBaseBuilder):
 
         # see above: see if we need to locally install the file.
         include_dir = _get_direct_includedir(
-            rootdir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+            rootdir=self.parentbuilder().directory().relpath(from_dir=self.package().rootdirectory()),
             visibledir=self.visible_in_directory())
         if include_dir is None:
             self.parentbuilder().file_installer().add_private_header(
@@ -207,7 +207,7 @@ class HeaderBuilder(CBaseBuilder):
         if ret is None:
             # bail out if we had an error recognizing the namespace
             if self.__namespace_error is not None:
-                raise self.BadNamespace(path=self.file().relpath(self.package().rootdirectory()),
+                raise self.BadNamespace(path=self.file().relpath(from_dir=self.package().rootdirectory()),
                                         error=self.__namespace_error)
             ret = self.__namespace_install_path
             pass

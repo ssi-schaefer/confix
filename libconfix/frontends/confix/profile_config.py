@@ -96,6 +96,7 @@ class ProfileConfiguration(Configuration):
 
     # we cannot say anything here because we are package-independent
     def packageroot(self): return None
+    def overlayroot(self): return None
     def packagename(self): return None
     def packageversion(self): return None
     def builddir(self): return None

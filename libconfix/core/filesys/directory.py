@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,84 +16,38 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from entry import DirectoryEntry
+from vfs_directory import VFSDirectory
+from entry import Entry
 
-from libconfix.core.utils.error import Error, NativeError
+from libconfix.core.utils.error import NativeError
 
 import os, types, sys
 
-class DirectoryState:
+class DirectoryState(object):
     INMEMORY = 0
     SYNC = 1
     pass
 
-class Directory(DirectoryEntry):
-    class AlreadyMounted(Error):
-        def __init__(self, dir, name):
-            Error.__init__(self, name+' has already been mounted in '+'/'.join(dir.abspath()))
-            pass
-        pass
-    
+class Directory(VFSDirectory, Entry):
     def __init__(self, mode=None, state=DirectoryState.INMEMORY):
-        DirectoryEntry.__init__(self, mode=mode)
-        self.state_ = state
-        self.entry_by_name_ = {}
-        self.name_by_entry_ = {}
+        VFSDirectory.__init__(self)
+        Entry.__init__(self, mode=mode)
+        self.__state = state
         pass
 
-    def state(self):
-        return self.state_
-
-    def entries(self):
-        return self.entry_by_name_.iteritems()
-
-    def get(self, name):
-        return self.entry_by_name_.get(name)
-
-    def find(self, path):
-        assert type(path) is types.ListType
-        list = path[:]
-        if len(list) == 0:
-            return self
-        elem = self.get(list.pop(0))
-        if elem is None:
-            return None
-        if len(list) == 0:
-            return elem
-        return elem.find(list)
-        
-    def has(self, name):
-        return self.entry_by_name_.has_key(name)
-
-    def add(self, name, entry):
-        assert isinstance(entry, DirectoryEntry)
-        assert entry.filesystem() is None or entry.filesystem() is self.filesystem()
-        if self.entry_by_name_.has_key(name):
-            raise Directory.AlreadyMounted(name=name, dir=self)
-        self.entry_by_name_[name] = entry
-        self.name_by_entry_[entry] = name
-        entry.set_parent(self)
-        if self.filesystem_ is not None:
-            entry.set_filesystem(self.filesystem())
-            pass
-        return entry # for convenience
-
-    def set_filesystem(self, filesystem):
-        assert filesystem is not None
-        assert self.filesystem_ is None
-        self.filesystem_ = filesystem
-        for name, entry in self.entry_by_name_.iteritems():
-            entry.set_filesystem(filesystem)
-            pass
-        pass
-
-    def entryname(self, entry):
-        return self.name_by_entry_[entry]
+    def is_persistent(self):
+        """
+        (VFSEntry implementation)
+        """
+        return self.__state == DirectoryState.SYNC
 
     def sync(self):
-        if self.state_ == DirectoryState.SYNC:
+        """
+        (VFSEntry implementation)
+        """
+        if self.__state == DirectoryState.SYNC:
             pass
-        elif self.state_ == DirectoryState.INMEMORY:
+        elif self.__state == DirectoryState.INMEMORY:
             try:
                 path = os.sep.join(self.abspath())
                 if self.mode() is None:
@@ -101,7 +55,7 @@ class Directory(DirectoryEntry):
                 else:
                     os.mkdir(path, self.mode())
                     pass
-                self.state_ = DirectoryState.SYNC
+                self.__state = DirectoryState.SYNC
                 pass
             except OSError, err:
                 raise Error('Could not create directory '+path, [NativeError(err, sys.exc_traceback)])
@@ -123,5 +77,8 @@ class Directory(DirectoryEntry):
         if len(child_errors):
             raise Error('Could not sync child nodes of directory '+path, child_errors)
         pass
-    
+
+    def state(self):
+        return self.__state
+
     pass

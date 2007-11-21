@@ -75,7 +75,6 @@ class IntraPackageBuildBase(PersistentTestCase):
             bootstrap.bootstrap(
                 packageroot=self.sourcerootpath_,
                 path=None,
-                use_libtool=self.use_libtool(),
                 use_kde_hack=False,
                 argv0=sys.argv[0])
             os.makedirs(os.sep.join(self.buildrootpath_))
@@ -174,7 +173,6 @@ class LocalIncludeDirTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=source.abspath(),
             path=None,
-            use_libtool=False,
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(

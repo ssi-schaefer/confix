@@ -27,6 +27,7 @@ class DefaultConfiguration(Configuration):
 
     def setups(self): return None
     def packageroot(self): return os.getcwd()
+    def overlayroot(self): return None
     def packagename(self): return None
     def packageversion(self): return None
     def prefix(self): return None

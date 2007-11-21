@@ -27,7 +27,11 @@ class EntryBuilder(Builder):
         pass
 
     def __str__(self):
-        return str(self.__class__)+'('+os.sep.join(self.__entry.abspath())+')'
+        ret = str(self.__class__)
+        if self.package() is not None:
+            ret += '('+os.sep.join(self.__entry.relpath(self.package().rootdirectory()))+')'
+            pass
+        return ret
         
     def locally_unique_id(self):
         return str(self.__class__) + ':' + self.__entry.name()

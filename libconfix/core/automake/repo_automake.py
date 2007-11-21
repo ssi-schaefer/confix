@@ -16,8 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.filesys.file import File
-from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.filesys.scan import scan_filesystem
 from libconfix.core.repo.repo import PackageRepository
 from libconfix.core.repo.repo_composite import CompositePackageRepository
@@ -48,7 +47,7 @@ class AutomakePackageRepository(CompositePackageRepository):
         errlist = []
 
         for name, entry in fs.rootdirectory().entries():
-            if not isinstance(entry, File):
+            if not isinstance(entry, VFSFile):
                 continue
             if _re_repo.match(name):
                 try:

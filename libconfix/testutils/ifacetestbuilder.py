@@ -17,7 +17,7 @@
 # USA
 
 from libconfix.core.filesys.directory import Directory
-from libconfix.core.filesys.file import File
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.iface.code_piece import CodePiece
 from libconfix.core.iface.executor import InterfaceExecutor
 from libconfix.core.machinery.builder import Builder
@@ -46,7 +46,7 @@ class FileInterfaceTestCreator(Builder):
     def enlarge(self):
         super(FileInterfaceTestCreator, self).enlarge()
         for name, entry in self.parentbuilder().entries():
-            if not isinstance(entry, File):
+            if not isinstance(entry, VFSFile):
                 continue
             if entry in self.handled_entries_:
                 continue
@@ -61,38 +61,41 @@ class FileInterfaceTestCreator(Builder):
 class FileInterfaceTestBuilder(FileBuilder):
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
-        lines=file.lines()
+        self.__node = None
+        self.__topolist = None
+        self.__successors = None
+        self.__relate_calls = 0
+        self.__enlarge_calls = 0
+        pass
+
+    def initialize(self, package):
+        super(FileInterfaceTestBuilder, self).initialize(package)
+        lines=self.file().lines()
         if len(lines):
             execer = InterfaceExecutor(iface_pieces=self.iface_pieces())
             execer.execute_pieces([CodePiece(start_lineno=1, lines=lines)])
             pass
-
-        self.node_ = None
-        self.topolist_ = None
-        self.successors_ = None
-        self.relate_calls_ = 0
-        self.enlarge_calls_ = 0
         pass
     def node(self):
-        return self.node_
+        return self.__node
     def topolist(self):
-        return self.topolist_
+        return self.__topolist
     def successors(self):
-        return self.successors_
+        return self.__successors
     def enlarge(self):
-        self.enlarge_calls_ += 1
+        self.__enlarge_calls += 1
         return FileBuilder.enlarge(self)
     def relate(self, node, digraph, topolist):
         FileBuilder.relate(self, node, digraph, topolist)
-        self.node_ = node
-        self.topolist_ = topolist
-        self.successors_ = digraph.successors(node)
-        self.relate_calls_ += 1
+        self.__node = node
+        self.__topolist = topolist
+        self.__successors = digraph.successors(node)
+        self.__relate_calls += 1
         pass
     def iface_pieces(self):
         return FileBuilder.iface_pieces(self)
     def relate_calls(self):
-        return self.relate_calls_
+        return self.__relate_calls
     def enlarge_calls(self):
-        return self.enlarge_calls_
+        return self.__enlarge_calls
     pass

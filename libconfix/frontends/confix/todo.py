@@ -23,11 +23,13 @@ from libconfix.core.automake.kde_hack import KDEHackSetup
 from libconfix.core.automake.repo_automake import AutomakePackageRepository
 from libconfix.core.digraph.cycle import CycleError
 from libconfix.core.filesys.scan import scan_filesystem
+from libconfix.core.filesys.overlay_filesys import OverlayFileSystem
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.repo.repo_composite import CompositePackageRepository
 from libconfix.core.utils import debug
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
+from libconfix.core.utils import const
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
@@ -63,6 +65,8 @@ def PACKAGE():
                   CONFIG.verbosity())
 
     if CONFIG.setups() is None:
+        debug.warn('No setup given; using automatic recognition. '
+                   'To avoid this warning, use SETUPS() in your '+const.CONFIX2_PKG+' file.')
         setups = [ConfixSetup(use_libtool=CONFIG.use_libtool(),
                               short_libnames=CONFIG.short_libnames())]
     else:
@@ -78,6 +82,12 @@ def PACKAGE():
         pass
 
     filesystem = scan_filesystem(path=CONFIG.packageroot().split(os.sep))
+
+    if CONFIG.overlayroot() is not None:
+        overlayed_filesystem = scan_filesystem(path=CONFIG.overlayroot().split(os.sep))
+        filesystem = OverlayFileSystem(original=filesystem, overlay=overlayed_filesystem)
+        pass
+
     package = LocalPackage(rootdirectory=filesystem.rootdirectory(),
                            setups=setups)
     DONE_PACKAGE = 1
@@ -189,7 +199,6 @@ def BOOTSTRAP():
 
     debug.message('bootstrapping in '+CONFIG.packageroot()+' ...')
     bootstrap.bootstrap(packageroot=CONFIG.packageroot().split(os.sep),
-                        use_libtool=CONFIG.use_libtool(),
                         use_kde_hack=CONFIG.use_kde_hack(),
                         path=None,
                         argv0=sys.argv[0])

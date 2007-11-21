@@ -54,7 +54,6 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=dirstructure.first_source().abspath(),
             path=None,
-            use_libtool=False,
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(
@@ -76,7 +75,6 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=dirstructure.second_source().abspath(),
             path=None,
-            use_libtool=False,
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(
@@ -101,7 +99,6 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=dirstructure.third_source().abspath(),
             path=None,
-            use_libtool=False,
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(

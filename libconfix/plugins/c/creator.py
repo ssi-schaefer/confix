@@ -18,7 +18,7 @@
 
 import os
 
-from libconfix.core.filesys.file import File
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
 
@@ -46,7 +46,7 @@ class Creator(Builder):
     def enlarge(self):
         super(Creator, self).enlarge()
         for name, entry in self.parentbuilder().entries():
-            if not isinstance(entry, File):
+            if not isinstance(entry, VFSFile):
                 continue
             if name in self.__handled_entries:
                 continue

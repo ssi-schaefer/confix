@@ -30,6 +30,7 @@ class CompositeConfiguration(Configuration):
 
     def setups(self): return self.search_param_('setups')
     def packageroot(self): return self.search_param_('packageroot')
+    def overlayroot(self): return self.search_param_('overlayroot')
     def packagename(self): return self.search_param_('packagename')
     def packageversion(self): return self.search_param_('packageversion')
     def prefix(self): return self.search_param_('prefix')

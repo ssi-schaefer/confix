@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -21,39 +21,50 @@ from directory import Directory
 
 import os
 
-class FileSystem:
+class FileSystem(object):
 
     CLEAR_ON_SYNC = 0
     
     def __init__(self, path, rootdirectory=None, flags=None):
-        self.path_ = path
+        assert type(path) is list
+        self.__path = path
         if rootdirectory is None:
-            self.rootdirectory_ = Directory()
+            self.__rootdirectory = Directory()
         else:
-            self.rootdirectory_ = rootdirectory
+            self.__rootdirectory = rootdirectory
             pass
-        self.rootdirectory_.set_filesystem(self)
+        self.__rootdirectory.set_filesystem(self)
 
         if flags is None:
-            self.flags_ = set()
+            self.__flags = set()
         else:
-            self.flags_ = flags
+            self.__flags = flags
             pass
         
         pass
 
     def flags(self):
-        return self.flags_
+        return self.__flags
     
     def path(self):
-        return self.path_
+        """
+        (VFSFileSystem implementation)
+        """
+        return self.__path
 
     def rootdirectory(self):
-        return self.rootdirectory_
+        """
+        (VFSFileSystem implementation)
+        """
+        return self.__rootdirectory
 
     def sync(self):
-        # ensure that the directory containing the root directory exists.
-        containing_dir = self.path_[0:-1]
+        """
+        (VFSFileSystem implementation)
+        """
+        # ensure that the directory containing the root directory
+        # exists.
+        containing_dir = self.__path[0:-1]
         if len(containing_dir) > 0:
             path = os.sep.join(containing_dir)
             if os.path.exists(path):
@@ -69,7 +80,7 @@ class FileSystem:
             pass
 
         # now finally, sync our rootdirectory
-        self.rootdirectory_.sync()
+        self.__rootdirectory.sync()
         pass
 
     pass

@@ -1,5 +1,4 @@
-# Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,9 +15,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from property import PropertySuite
-from scan import ScanSuite
-
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory, DirectoryState
 from libconfix.core.filesys.file import File, FileState
@@ -29,7 +25,7 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest, os, stat, shutil, sys
 
-class FileSystemTestSuite(unittest.TestSuite):
+class BasicSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(Basics('test'))
@@ -43,9 +39,6 @@ class FileSystemTestSuite(unittest.TestSuite):
         self.addTest(Sync_RootMoreThanOneDirectoryDeep('test'))
         self.addTest(VirtualFile('test'))
         self.addTest(ExplicitMode('test'))
-        
-        self.addTest(PropertySuite())
-        self.addTest(ScanSuite())
         pass
     pass
 
@@ -141,8 +134,7 @@ class Sync(unittest.TestCase):
         fs = FileSystem(path=self.rootpath_)
         file = File(lines=['line 0'])
         fs.rootdirectory().add(name='file', entry=file)
-        file.add_line('line 1')
-        file.add_lines(['line 2', 'line 3'])
+        file.add_lines(['line 1', 'line 2', 'line 3'])
         fs.sync()
 
         # re-read our file and see if everything is there
@@ -153,13 +145,13 @@ class Sync(unittest.TestCase):
         self.failUnlessEqual(lines[1], 'line 1')
         self.failUnlessEqual(lines[2], 'line 2')
         self.failUnlessEqual(lines[3], 'line 3')
-        file.add_line('line 4')
+        file.add_lines(['line 4'])
         fs.sync()
 
         # append to our file without explicitly reading it.
         fs = scan_filesystem(path=self.rootpath_)
         file = fs.rootdirectory().find(['file'])
-        file.add_line('line 5')
+        file.add_lines(['line 5'])
         fs.sync()
 
         # see if there's still everything there.
@@ -179,7 +171,7 @@ class Sync(unittest.TestCase):
         file = File(lines=['line'])
         fs.rootdirectory().add(name='file', entry=file)
         fs.sync()
-        self.failIf(file.lines_ is None)
+        self.failIf(file.raw_lines() is None)
         pass
         
     def test_file_clear_on_sync_true(self):
@@ -187,7 +179,7 @@ class Sync(unittest.TestCase):
         file = File(lines=['line'])
         fs.rootdirectory().add(name='file', entry=file)
         fs.sync()
-        self.failUnless(file.lines_ is None)
+        self.failUnless(file.raw_lines() is None)
         pass
 
     def test_file_truncate_persistent(self):
@@ -219,13 +211,13 @@ class VirtualFile(PersistentTestCase):
             name='file',
             entry=File(state=FileState.VIRTUAL,
                        lines=['some token']))
-        file.add_line('some other token')
+        file.add_lines(['some other token'])
         
         fs.sync()
 
         self.failIf(os.path.exists(os.sep.join(file.abspath())))
         self.failUnless(file.state() == FileState.VIRTUAL)
-        self.failIf(file.lines_ is None)
+        self.failIf(file.raw_lines() is None)
         self.failUnless(file.lines() == ['some token', 'some other token'])
         pass
     pass            
@@ -258,5 +250,5 @@ class ExplicitMode(PersistentTestCase):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(FileSystemTestSuite())
+    unittest.TextTestRunner().run(BasicSuite())
     pass

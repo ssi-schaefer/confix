@@ -16,6 +16,7 @@
 # USA
 
 from libconfix.core.automake.tests.suite_build import AutomakeBuildSuite
+from libconfix.core.filesys.tests.automake.suite import Suite as FileSystemSuite
 
 import unittest
 
@@ -23,6 +24,7 @@ class CoreBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(AutomakeBuildSuite())
+        self.addTest(FileSystemSuite())
         pass
     pass
 

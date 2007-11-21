@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.filesys.file import File
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.machinery.builder import Builder
 
 import builder
@@ -39,7 +39,7 @@ class Creator(Builder):
     def enlarge(self):
         super(Creator, self).enlarge()
         for name, entry in self.parentbuilder().entries():
-            if not isinstance(entry, File):
+            if not isinstance(entry, VFSFile):
                 continue
             if name in self.handled_entries_:
                 continue

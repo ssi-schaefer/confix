@@ -152,7 +152,7 @@ class Index_Provide_String(Unmarshallable):
         if provide.match() == Provide_String.EXACT_MATCH:
             existing_node = self.__exact.get(provide.string())
             if existing_node:
-                raise Error('Conflict: '+str(provide)+' already provided by '+str(existing_node))
+                raise Error('Conflict: '+str(provide)+' of node '+str(node)+' already provided by node '+str(existing_node))
             self.__exact[provide.string()] = node
         elif provide.match() == Provide_String.PREFIX_MATCH:
             self.__prefix.append((provide, node))

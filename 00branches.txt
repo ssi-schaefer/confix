@@ -74,18 +74,16 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |                             |               |
                  354----+                      |               v TRY-visual-studio
                  359<---+                      |
-                 |      v TRY-condlocalinstall |  
+                 |      v TRY-condlocalinstall |
                  |                             |
                  360<--------------------------359
                  |                             |
                  378<--------------------------375
                  385-------------------------- | ---------+
-                 |                             v RB-2.1   |
-                 |                                        |
-                 |                                        |
-                 |                                        v TRY-filesys-overlay
-                 |                                        
-                 v
-               trunk
-
+                 |  <------------------------- | ---------+ 427 
+                 |                             |          v TRY-filesys-overlay
+                 |                             |
+                 v                             |
+               trunk                           |
+                                               v RB-2.1
 

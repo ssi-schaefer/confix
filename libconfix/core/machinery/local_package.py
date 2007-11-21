@@ -35,6 +35,7 @@ from libconfix.core.automake.acinclude_m4 import ACInclude_m4
 from libconfix.core.digraph.digraph import DirectedGraph
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File, FileState
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.repo.package_file import PackageFile
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
@@ -89,7 +90,7 @@ class LocalPackage(Package):
             confix2_dir_file = rootdirectory.get(const.CONFIX2_DIR)
             if confix2_dir_file is None:
                 raise Error(const.CONFIX2_DIR+' missing in '+os.sep.join(rootdirectory.abspath()))
-            if not isinstance(confix2_dir_file, File):
+            if not isinstance(confix2_dir_file, VFSFile):
                 raise Error(os.sep.join(confix2_dir_file.abspath())+' is not a file')
             self.__rootbuilder = DirectoryBuilder(directory=rootdirectory)
             self.__rootbuilder.add_builder(Confix2_dir(file=confix2_dir_file))
@@ -208,8 +209,12 @@ class LocalPackage(Package):
 
     def output(self):
 
-        # distribute the package configuration file
-        self.__rootbuilder.makefile_am().add_extra_dist(const.CONFIX2_PKG)
+        # distribute the package configuration file, but only if it is
+        # part of the physical package structure.
+        confix2_pkg = self.rootdirectory().get(const.CONFIX2_PKG)
+        if not confix2_pkg.is_overlayed():
+            self.__rootbuilder.makefile_am().add_extra_dist(const.CONFIX2_PKG)
+            pass
 
         # we will be writing two files in the package's root
         # directory. configure.ac is our responsbility - we will have
@@ -392,19 +397,27 @@ class LocalPackage(Package):
         # AC_CONFIG_SRCDIR.
 
         goodfile = notsogoodfile = None
+
         for b in self.__collect_builders():
             if not isinstance(b, FileBuilder):
                 continue
-            if b.file().state() == FileState.VIRTUAL:
+            if b.file().is_overlayed():
+                # we won't put files from an overlay into the package
+                # since automake and friends won't be able to find
+                # them.
                 continue
-            goodfile = None
-            notsogoodfile = None
-            if b.file().name() in [const.CONFIX2_PKG, const.CONFIX2_DIR]:
-                notsogoodfile = b.file()
-            else:
+            if isinstance(b.file(), File) and b.file().state() == FileState.VIRTUAL:
+                # also, there may be "virtual" files around (but only
+                # if the file's a "real" file) which we cannot put
+                # into a package. (boy, this sucks!)
+                continue
+
+            if b.file().name() not in [const.CONFIX2_PKG, const.CONFIX2_DIR]:
                 goodfile = b.file()
                 break
+            notsogoodfile = b.file()
             pass
+        
         if goodfile:
             unique_file = goodfile
         elif notsogoodfile:

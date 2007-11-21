@@ -145,7 +145,6 @@ class InterPackageBuildBase(PersistentTestCase):
 
             bootstrap.bootstrap(
                 packageroot=self.lo_sourcedir_,
-                use_libtool=self.use_libtool(),
                 use_kde_hack=False,
                 path=None,
                 argv0=sys.argv[0])
@@ -173,7 +172,6 @@ class InterPackageBuildBase(PersistentTestCase):
 
             bootstrap.bootstrap(
                 packageroot=self.hi_sourcedir_,
-                use_libtool=self.use_libtool(),
                 use_kde_hack=False,
                 path=None,
                 argv0=sys.argv[0])
@@ -275,7 +273,6 @@ class InstalledIncludeDirTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=lo_source.abspath(),
             path=None,
-            use_libtool=False,
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(
@@ -306,7 +303,6 @@ class InstalledIncludeDirTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=hi_source.abspath(),
             path=None,
-            use_libtool=False,
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(

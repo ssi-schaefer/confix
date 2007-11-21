@@ -41,7 +41,7 @@ class NewFileTest(PersistentTestCase):
         
         # we have synced the fs_orig, so a scan should see file1
         fs_dup = scan.scan_filesystem(self.rootpath())
-        self.failUnless(fs_dup.rootdirectory().has('file1'))
+        self.failUnless(fs_dup.rootdirectory().get('file1'))
 
         # now add a file to the directory, via fs_orig
         fs_orig.rootdirectory().add(
@@ -51,7 +51,7 @@ class NewFileTest(PersistentTestCase):
 
         # rescan the fs_dup's rootdirectory. the file must be seen.
         scan.rescan_dir(fs_dup.rootdirectory())
-        self.failUnless(fs_dup.rootdirectory().has('file2'))
+        self.failUnless(fs_dup.rootdirectory().get('file2'))
         pass
     pass
 

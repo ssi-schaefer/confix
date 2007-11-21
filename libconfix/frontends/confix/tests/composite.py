@@ -40,6 +40,7 @@ class CompositeConfigTest(unittest.TestCase):
             configfile=None,
             profile='not that interesting since not part of Configuration interface',
             packageroot='/package/root',
+            overlayroot='/overlay/root',
             packagename='packagename',
             packageversion='packageversion',
             prefix='/the/prefix',
@@ -90,6 +91,7 @@ class CompositeConfigTest(unittest.TestCase):
         config.add(DefaultConfiguration())
 
         self.failUnlessEqual(config.packageroot(), '/package/root') # cmdline
+        self.failUnlessEqual(config.overlayroot(), '/overlay/root') # cmdline
         self.failUnlessEqual(config.packagename(), 'packagename') # cmdline
         self.failUnlessEqual(config.packageversion(), 'packageversion') # cmdline
         self.failUnlessEqual(config.prefix(), '/the/prefix') # cmdline overriding profile

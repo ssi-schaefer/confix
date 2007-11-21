@@ -72,7 +72,6 @@ class ExplicitExecutableNameBuildTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=source.abspath(),
             path=None,
-            use_libtool=False,
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(

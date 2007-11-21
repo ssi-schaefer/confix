@@ -64,7 +64,6 @@ class PlainFileBuildTest(PersistentTestCase):
         bootstrap.bootstrap(
             packageroot=self.rootpath() + ['source'],
             path=None,
-            use_libtool=False, # actually, plain files don't care
             use_kde_hack=False, # (same)
             argv0=sys.argv[0])
         configure.configure(

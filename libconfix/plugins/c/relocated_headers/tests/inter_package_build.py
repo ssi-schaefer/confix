@@ -89,7 +89,6 @@ class InterPackageBuildTest(PersistentTestCase):
         
         bootstrap.bootstrap(
             packageroot=common_source.abspath(),
-            use_libtool=self.use_libtool(),
             use_kde_hack=self.use_kde_hack(),
             argv0=sys.argv[0])
         configure.configure(
@@ -112,7 +111,6 @@ class InterPackageBuildTest(PersistentTestCase):
 
         bootstrap.bootstrap(
             packageroot=lo_source.abspath(),
-            use_libtool=self.use_libtool(),
             use_kde_hack=self.use_kde_hack(),
             argv0=sys.argv[0])
         configure.configure(
@@ -135,7 +133,6 @@ class InterPackageBuildTest(PersistentTestCase):
 
         bootstrap.bootstrap(
             packageroot=hi_source.abspath(),
-            use_libtool=self.use_libtool(),
             use_kde_hack=self.use_kde_hack(),
             argv0=sys.argv[0])
         configure.configure(

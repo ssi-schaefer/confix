@@ -26,11 +26,13 @@ from libconfix.core.utils import debug
 import autoconf_archive
 import kde_hack
 
-def bootstrap(packageroot, use_libtool, use_kde_hack, argv0, path=None):
+def bootstrap(packageroot, use_kde_hack, argv0, path=None):
     aclocal_incdirs = []
     aclocal_incdirs.append(autoconf_archive.include_path(argv0))
-    
-    if use_libtool:
+
+    # if package's configure.ac looks like using libtool, then we
+    # assume that the package must be libtoolize'd.
+    if (_using_libtool(packageroot)):
         libtoolize_prog = external_cmd.search_program('libtoolize', path)
         if libtoolize_prog is None:
             raise Error('libtoolize not found along path')
@@ -96,3 +98,16 @@ def autoconf(packageroot, path):
     external_cmd.exec_program(program='autoconf', dir=packageroot, path=path)
     pass
 
+def _using_libtool(packageroot):
+    try:
+        configure_ac_lines = helper.lines_of_file(os.sep.join(packageroot+['configure.ac']))
+    except Error, e:
+        raise Error('Determining whether to libtoolize or not', [e])
+
+    for l in configure_ac_lines:
+        if l.find('AC_PROG_LIBTOOL') >= 0:
+            return True
+        pass
+
+    return False
+        

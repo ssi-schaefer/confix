@@ -61,7 +61,6 @@ class CompletePackageBuildTestBase(PersistentTestCase):
 
         bootstrap.bootstrap(
             packageroot=source.abspath(),
-            use_libtool=self.use_libtool(),
             use_kde_hack=False,
             argv0=sys.argv[0])
         configure.configure(

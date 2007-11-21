@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,11 +18,12 @@
 
 import os
 
+from vfs_file import VFSFile
+from entry import Entry
+from filesys import FileSystem
+
 from libconfix.core.utils.error import Error, NativeError
 import libconfix.core.utils.helper
-
-from entry import DirectoryEntry
-from filesys import FileSystem
 
 class FileState:
     NEW = 0
@@ -32,172 +33,189 @@ class FileState:
     VIRTUAL = 4
     pass
 
-class File(DirectoryEntry):
+class File(VFSFile, Entry):
 
     def __init__(self, lines=None, mode=None, state=FileState.NEW):
-        DirectoryEntry.__init__(self, mode=mode)
-        self.lines_ = lines
-        self.state_ = state
-        self.filesystem_ = None
+        Entry.__init__(self, mode=mode)
+        self.__lines = lines
+        self.__state = state
 
-        if self.state_ == FileState.NEW:
-            if self.lines_ is None:
-                self.lines_ = []
+        if self.__state == FileState.NEW:
+            if self.__lines is None:
+                self.__lines = []
                 pass
             pass
-        elif self.state_ == FileState.SYNC_INMEM:
-            assert self.lines_ is not None, 'SYNC_INMEM implies lines not None'
+        elif self.__state == FileState.SYNC_INMEM:
+            assert self.__lines is not None, 'SYNC_INMEM implies lines not None'
             pass
-        elif self.state_ == FileState.SYNC_CLEAR:
-            assert self.lines_ is None, 'SYNC_CLEAR implies line not None'
+        elif self.__state == FileState.SYNC_CLEAR:
+            assert self.__lines is None, 'SYNC_CLEAR implies line not None'
             pass
-        elif self.state_ == FileState.DIRTY:
-            assert self.lines_ is not None, 'DIRTY implies lines not None'
+        elif self.__state == FileState.DIRTY:
+            assert self.__lines is not None, 'DIRTY implies lines not None'
             pass
-        elif self.state_ == FileState.VIRTUAL:
-            assert self.lines_ is not None, 'VIRTUAL implies lines not None'
+        elif self.__state == FileState.VIRTUAL:
+            assert self.__lines is not None, 'VIRTUAL implies lines not None'
         else:
             assert 0
             pass
         pass
 
-    def state(self):
-        return self.state_
-
     def is_persistent(self):
-        if self.state_ == FileState.NEW:
+        """
+        (VFSEntry implementation)
+        """
+        if self.__state == FileState.NEW:
             return False
-        if self.state_ == FileState.SYNC_INMEM:
+        if self.__state == FileState.SYNC_INMEM:
             return True
-        if self.state_ == FileState.SYNC_CLEAR:
+        if self.__state == FileState.SYNC_CLEAR:
             return True
-        if self.state_ == FileState.DIRTY:
+        if self.__state == FileState.DIRTY:
             return True
         assert 0
         pass
 
-    def lines(self):
-        self.read_lines_if_necessary_()
-        return self.lines_
-
-    def add_lines(self, lines):
-        self.read_lines_if_necessary_()
-        self.lines_.extend(lines)
-        if self.state_ == FileState.NEW:
-            return
-        if self.state_ == FileState.SYNC_INMEM:
-            self.state_ = FileState.DIRTY
-            return
-        if self.state_ == FileState.SYNC_CLEAR:
-            assert 0
-            return
-        if self.state_ == FileState.DIRTY:
-            return
-        if self.state_ == FileState.VIRTUAL:
-            return
-        assert 0
-        pass
-
-    def add_line(self, line):
-        self.add_lines([line])
-        pass
-
-    def set_filesystem(self, filesystem):
-        assert filesystem is not None
-        assert self.filesystem_ is None
-        self.filesystem_ = filesystem
-        pass
-        
     def sync(self):
+        """
+        (VFSEntry implementation)
+        """
         assert self.filesystem() is not None
 
-        if self.state_ == FileState.NEW:
+        if self.__state == FileState.NEW:
             filename = os.sep.join(self.abspath())
             try:
                 libconfix.core.utils.helper.write_lines_to_file_if_changed(
                     filename=filename,
-                    lines=self.lines_)
+                    lines=self.__lines)
             except Error, err:
                 raise Error('Could not write file '+filename, [err])
-            if self.mode_ is not None:
+            if self.mode() is not None:
                 try:
-                    os.chmod(filename, self.mode_)
+                    os.chmod(filename, self.mode())
                 except OSError, err:
                     raise Error('Could not change mode of file '+filename,
                                 [NativeError(err, sys.exc_traceback)])
                 pass
 
             if FileSystem.CLEAR_ON_SYNC in self.filesystem().flags():
-                self.lines_ = None
-                self.state_ = FileState.SYNC_CLEAR
+                self.__lines = None
+                self.__state = FileState.SYNC_CLEAR
             else:
-                self.state_ = FileState.SYNC_INMEM
+                self.__state = FileState.SYNC_INMEM
                 pass
             return
 
-        if self.state_ == FileState.SYNC_CLEAR:
+        if self.__state == FileState.SYNC_CLEAR:
             return
 
-        if self.state_ == FileState.SYNC_INMEM:
+        if self.__state == FileState.SYNC_INMEM:
             if FileSystem.CLEAR_ON_SYNC in self.filesystem().flags():
-                self.lines_ = None
-                self.state_ = FileState.SYNC_CLEAR
+                self.__lines = None
+                self.__state = FileState.SYNC_CLEAR
                 pass
             return
 
-        if self.state_ == FileState.DIRTY:
+        if self.__state == FileState.DIRTY:
             filename = os.sep.join(self.abspath())
             try:
                 libconfix.core.utils.helper.write_lines_to_file(
                     filename=filename,
-                    lines=self.lines_)
+                    lines=self.__lines)
             except Error, err:
                 raise Error('Could not write file '+filename, [err])
             if FileSystem.CLEAR_ON_SYNC in self.filesystem().flags():
-                self.lines_ = None
-                self.state_ = FileState.SYNC_CLEAR
+                self.__lines = None
+                self.__state = FileState.SYNC_CLEAR
             else:
-                self.state_ = FileState.SYNC_INMEM
+                self.__state = FileState.SYNC_INMEM
                 pass
             return
 
-        if self.state_ == FileState.VIRTUAL:
+        if self.__state == FileState.VIRTUAL:
+            return
+        assert 0
+        pass
+
+    def lines(self):
+        """
+        (VFSFile implementation)
+        """
+        self.__read_lines_if_necessary()
+        return self.__lines
+
+    def add_lines(self, lines):
+        """
+        (VFSFile implementation)
+        """
+        self.__read_lines_if_necessary()
+        self.__lines.extend(lines)
+        if self.__state == FileState.NEW:
+            return
+        if self.__state == FileState.SYNC_INMEM:
+            self.__state = FileState.DIRTY
+            return
+        if self.__state == FileState.SYNC_CLEAR:
+            assert 0
+            return
+        if self.__state == FileState.DIRTY:
+            return
+        if self.__state == FileState.VIRTUAL:
             return
         assert 0
         pass
 
     def truncate(self):
-        if self.state_ == FileState.NEW:
-            self.lines_ = []
+        """
+        (VFSFile implementation)
+        """
+        if self.__state == FileState.NEW:
+            self.__lines = []
             return
-        if self.state_ == FileState.SYNC_INMEM:
-            if self.lines_ != []:
-                self.lines_ = []
-                self.state_ = FileState.DIRTY
+        if self.__state == FileState.SYNC_INMEM:
+            if self.__lines != []:
+                self.__lines = []
+                self.__state = FileState.DIRTY
                 pass
             return
-        if self.state_ == FileState.SYNC_CLEAR:
-            self.lines_ = []
-            self.state_ = FileState.DIRTY
+        if self.__state == FileState.SYNC_CLEAR:
+            self.__lines = []
+            self.__state = FileState.DIRTY
             return
-        if self.state_ == FileState.DIRTY:
-            self.lines_ = []
+        if self.__state == FileState.DIRTY:
+            self.__lines = []
             return
         assert 0
         pass
 
-    def read_lines_if_necessary_(self):
-        if self.state_ == FileState.NEW:
+    def is_overlayed(self):
+        """
+        (VFSFile implementation)
+        """
+        return False
+
+    def state(self):
+        return self.__state
+
+    def raw_lines(self):
+        """
+        Bare access to self.__lines, without reading the file. Used
+        for testing only, meaningless elsewhere.
+        """
+        return self.__lines
+
+    def __read_lines_if_necessary(self):
+        if self.__state == FileState.NEW:
             return
-        if self.state_ == FileState.SYNC_INMEM:
+        if self.__state == FileState.SYNC_INMEM:
             return
-        if self.state_ == FileState.SYNC_CLEAR:
-            self.lines_ = libconfix.core.utils.helper.lines_of_file(os.sep.join(self.abspath()))
-            self.state_ = FileState.SYNC_INMEM
+        if self.__state == FileState.SYNC_CLEAR:
+            self.__lines = libconfix.core.utils.helper.lines_of_file(os.sep.join(self.abspath()))
+            self.__state = FileState.SYNC_INMEM
             return
-        if self.state_ == FileState.DIRTY:
+        if self.__state == FileState.DIRTY:
             return
-        if self.state_ == FileState.VIRTUAL:
+        if self.__state == FileState.VIRTUAL:
             return
         assert 0
         pass

@@ -85,6 +85,7 @@ class BuilderInterface(unittest.TestCase):
                               "                       urgency=URGENCY_ERROR))"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
         builder = FileInterfaceTestBuilder(file=file)
+        builder.initialize(package=package)
         self.assertEqual(len(builder.dependency_info().requires()), 5)
         sym1 = None
         sym2 = None

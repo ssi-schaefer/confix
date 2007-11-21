@@ -24,6 +24,8 @@ class Configuration:
     def setups(self): assert 0, str(self.__class__)
     
     def packageroot(self): assert 0, str(self.__class__)
+    def overlayroot(self): assert 0, str(self.__class__)
+    
     def packagename(self): assert 0, str(self.__class__)
     def packageversion(self): assert 0, str(self.__class__)
     def builddir(self): assert 0, str(self.__class__)

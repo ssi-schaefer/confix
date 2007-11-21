@@ -20,8 +20,8 @@ from dirbuilder import DirectoryBuilder
 from confix2_dir import Confix2_dir
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.filesys.directory import Directory
-from libconfix.core.filesys.file import File
+from libconfix.core.filesys.vfs_directory import VFSDirectory
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
@@ -53,15 +53,15 @@ class SubdirectoryRecognizer(Builder):
 
         errors = []
         for name, entry in self.parentbuilder().entries():
-            if not isinstance(entry, Directory):
+            if not isinstance(entry, VFSDirectory):
                 continue
             if entry in self.__recognized_directories:
                 continue
             confix2_dir_file = entry.get(const.CONFIX2_DIR)
             if confix2_dir_file is None:
                 continue
-            if not isinstance(confix2_dir_file, File):
-                errors.append(Error(confix2_dir_file.relpath()+' is not a file'))
+            if not isinstance(confix2_dir_file, VFSFile):
+                errors.append(Error(os.sep.join(confix2_dir_file.relpath(self.package().rootdirectory()))+' is not a file'))
                 continue
 
             try:

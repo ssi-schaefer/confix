@@ -21,53 +21,57 @@ import sys
 import os
 
 from libconfix.core.utils.error import Error, NativeError
-from libconfix.core.filesys.file import File
-from libconfix.core.filesys.directory import Directory
+from libconfix.core.filesys.vfs_file import VFSFile
+from libconfix.core.filesys.vfs_directory import VFSDirectory
 
 class InterfaceExecutor:
     def __init__(self, iface_pieces):
-        self.context_ = {}
+        self.__context = {}
         for piece in iface_pieces:
             for n, v in piece.get_globals().iteritems():
                 assert type(n) is types.StringType
-                assert not self.context_.has_key(n), n
-                self.context_[n] = v
+                assert not self.__context.has_key(n), n
+                self.__context[n] = v
                 pass
             pass
         pass
 
-    def context(self):
-        return self.context_
-
     def execute_file(self, file):
-        assert isinstance(file, File), file
+        assert isinstance(file, VFSFile), file
         assert file.parent() is not None
-        assert isinstance(file.parent(), Directory)
+        assert isinstance(file.parent(), VFSDirectory)
 
         chdirbackto = None
             
         try:
             if file.is_persistent():
-                chdirbackto = os.getcwd()
-                os.chdir(os.sep.join(file.parent().abspath()))
-                execfile(file.name(), self.context_)
-                os.chdir(chdirbackto)
+                dir_to_change_back_to = os.getcwd()
+                
+                # change to the directory that contains the file. note
+                # that file.parent() is pointless in the days of union
+                # filesystem.
+                dir_to_change_to = os.path.dirname(os.sep.join(file.abspath()))
+                os.chdir(dir_to_change_to)
+                
+                execfile(file.name(), self.__context)
+
+                os.chdir(dir_to_change_back_to)
                 return
             else:
-                exec '\n'.join(file.lines()) in self.context_
+                exec '\n'.join(file.lines()) in self.__context
                 return
             pass
         except Exception, e:
             if chdirbackto is not None:
                 os.chdir(chdirbackto)
                 pass
-            raise Error('Error in '+'/'.join(file.abspath()), [NativeError(e, sys.exc_traceback)])
+            raise Error('Error executing '+'/'.join(file.abspath()), [NativeError(e, sys.exc_traceback)])
         pass
 
     def execute_pieces(self, pieces):
         for p in pieces:
             try:
-                exec '\n'.join(p.lines()) in self.context_
+                exec '\n'.join(p.lines()) in self.__context
             except Exception, e:
                 raise Error('Error in code piece starting at line '+str(p.start_lineno())+' ('+p.lines()[0]+')',
                             [NativeError(e, sys.exc_traceback)])

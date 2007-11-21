@@ -30,5 +30,5 @@ class ConfixSuite(unittest.TestSuite):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ConfigSuite())
+    unittest.TextTestRunner().run(ConfixSuite())
     pass

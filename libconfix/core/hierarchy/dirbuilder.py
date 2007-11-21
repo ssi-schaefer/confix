@@ -21,7 +21,7 @@ import os
 from libconfix.core.automake.file_installer import FileInstaller
 from libconfix.core.automake.makefile_am import Makefile_am
 from libconfix.core.digraph import toposort
-from libconfix.core.filesys.directory import Directory
+from libconfix.core.filesys.vfs_directory import VFSDirectory
 from libconfix.core.filesys.file import File
 from libconfix.core.machinery.buildinfoset import BuildInformationSet
 from libconfix.core.machinery.dependencyset import DependencySet
@@ -49,7 +49,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     
     def __init__(self,
                  directory):
-        assert isinstance(directory, Directory)
+        assert isinstance(directory, VFSDirectory)
 
         EntryBuilder.__init__(
             self,
@@ -282,10 +282,10 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
             # index all provides, to sort out the requires later on.
             for p in builder_dependency_info.provides():
-                internal_provides.add(p, 666)
+                internal_provides.add(p, self)
                 pass
             for p in builder_dependency_info.internal_provides():            
-                internal_provides.add(p, 666)
+                internal_provides.add(p, self)
                 pass
             requires.merge(builder_dependency_info.requires())
 

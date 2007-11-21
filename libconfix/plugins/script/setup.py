@@ -21,7 +21,7 @@ from builder import ScriptBuilder
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.filesys.file import File
+from libconfix.core.filesys.vfs_file import VFSFile
 
 import types
 
@@ -40,7 +40,7 @@ class ScriptInterface_Confix2_dir(Confix2_dir_Contributor):
             file = self.object().parentbuilder().directory().find([filename])
             if file is None:
                 raise Error('ADD_SCRIPT('+filename+'): no such file or directory')
-            if not isinstance(file, File):
+            if not isinstance(file, VFSFile):
                 raise Error('ADD_SCRIPT('+filename+'): not a file')
             
             self.object().add_script(file)

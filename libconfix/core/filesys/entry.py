@@ -16,67 +16,37 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-class DirectoryEntry:
+from vfs_entry import VFSEntry
 
+class Entry(VFSEntry):
     def __init__(self, mode):
-        self.mode_ = mode
-        self.properties_ = {}
-        self.parent_ = None
-        self.filesystem_ = None
+        VFSEntry.__init__(self)
+        self.__mode = mode
         pass
 
     def mode(self):
-        return self.mode_
-
-    def parent(self):
-        return self.parent_
-
-    def set_parent(self, parent):
-        assert self.parent_ is None
-        self.parent_ = parent
-        pass
-
-    def filesystem(self):
-        return self.filesystem_
-
-    def set_filesystem(self, filesystem):
-        assert 0, 'abstract'
-        pass
-
-    def name(self):
-        assert self.parent_ is not None, 'not yet mounted'
-        return self.parent_.entryname(self)
+        return self.__mode
 
     def abspath(self):
-        if self.filesystem_ is None:
-            return []
-        if self.parent_ is None:
-            return self.filesystem_.path()
-        return self.parent_.abspath() + [self.parent_.entryname(self)]
-
-    def relpath(self, dir):
         """
-        Returns the relative path to self as seen from dir
+        (VFSEntry implementation)
         """
-        if dir is self:
+        fs = self.filesystem()
+        parent = self.parent()
+        assert fs is not None
+        if parent is None:
+            return fs.path()
+        return parent.abspath() + [parent.entryname(self)]
+
+    def relpath(self, from_dir):
+        """
+        (VFSEntry implementation)
+        """
+        if from_dir is self:
             return []
-        if self.parent_ is None:
+        parent = self.parent()
+        if parent is None:
             return []
-        return self.parent_.relpath(dir) + [self.parent_.entryname(self)]
-
-    def set_property(self, name, value):
-        self.properties_[name] = value
-        pass
-
-    def get_property(self, name):
-        return self.properties_.get(name)
-
-    def del_property(self, name):
-        del self.properties_[name]
-        pass
-
-    def sync(self):
-        assert 0, 'abstract'
-        pass
-
+        return parent.relpath(from_dir=from_dir) + [parent.entryname(self)]
+        
     pass

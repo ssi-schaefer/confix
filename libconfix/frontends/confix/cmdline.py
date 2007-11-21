@@ -59,6 +59,11 @@ def parse(args):
                       metavar='DIR',
                       help='Top level directory of the package to be scanned '
                       '(default: current working directory).')
+    parser.add_option('--overlayroot',
+                      metavar='DIR',
+                      help='Root of a tree that is "overlayed" over the package. '
+                      'Useful if Confix2.pkg and Confix2.dir stuff has to be external '
+                      'for some reason.')
     parser.add_option('--packagename',
                       metavar='NAME',
                       help='Set the name of the package to NAME.')
@@ -148,6 +153,7 @@ def parse(args):
         configfile=opts.configfile,
         profile=opts.profile,
         packageroot=opts.packageroot,
+        overlayroot=opts.overlayroot,
         packagename=opts.packagename,
         packageversion=opts.packageversion,
         prefix=opts.prefix,

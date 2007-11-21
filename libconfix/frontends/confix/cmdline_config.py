@@ -24,6 +24,7 @@ class CommandlineConfiguration(Configuration):
                  configfile,
                  profile,
                  packageroot,
+                 overlayroot,
                  packagename,
                  packageversion,
                  prefix,
@@ -42,59 +43,61 @@ class CommandlineConfiguration(Configuration):
                  advanced,
                  make_args
                  ):
-        self.configdir_ = configdir
-        self.configfile_ = configfile
-        self.profile_ = profile
-        self.packageroot_ = packageroot
-        self.packagename_ = packagename
-        self.packageversion_ = packageversion
-        self.prefix_ = prefix
-        self.readonly_prefixes_ = readonly_prefixes
-        self.buildroot_ = buildroot
-        self.builddir_ = builddir
-        self.short_libnames_ = short_libnames
-        self.use_libtool_ = use_libtool
-        self.use_bulk_install_ = use_bulk_install
-        self.use_kde_hack_ = use_kde_hack
-        self.print_timings_ = print_timings
-        self.verbosity_ = verbosity
-        self.trace_ = trace
-        self.debug_ = debug
-        self.message_prefix_ = message_prefix
-        self.advanced_ = advanced
-        self.make_args_ = make_args
+        self.__configdir = configdir
+        self.__configfile = configfile
+        self.__profile = profile
+        self.__packageroot = packageroot
+        self.__overlayroot = overlayroot
+        self.__packagename = packagename
+        self.__packageversion = packageversion
+        self.__prefix = prefix
+        self.__readonly_prefixes = readonly_prefixes
+        self.__buildroot = buildroot
+        self.__builddir = builddir
+        self.__short_libnames = short_libnames
+        self.__use_libtool = use_libtool
+        self.__use_bulk_install = use_bulk_install
+        self.__use_kde_hack = use_kde_hack
+        self.__print_timings = print_timings
+        self.__verbosity = verbosity
+        self.__trace = trace
+        self.__debug = debug
+        self.__message_prefix = message_prefix
+        self.__advanced = advanced
+        self.__make_args = make_args
         pass
 
     # things that we read in order for other to have entry points into
     # *their* configuration
-    def configdir(self): return self.configdir_
-    def configfile(self): return self.configfile_
-    def profile(self): return self.profile_
-    def debug(self): return self.debug_
+    def configdir(self): return self.__configdir
+    def configfile(self): return self.__configfile
+    def profile(self): return self.__profile
+    def debug(self): return self.__debug
 
     # Configuration interface
     def setups(self): return None
-    def packageroot(self): return self.packageroot_
-    def packagename(self): return self.packagename_
-    def packageversion(self): return self.packageversion_
-    def prefix(self): return self.prefix_
-    def readonly_prefixes(self): return self.readonly_prefixes_
-    def buildroot(self): return self.buildroot_
-    def builddir(self): return self.builddir_
-    def short_libnames(self): return self.short_libnames_
-    def use_libtool(self): return self.use_libtool_
-    def use_bulk_install(self): return self.use_bulk_install_
-    def use_kde_hack(self): return self.use_kde_hack_
-    def print_timings(self): return self.print_timings_
-    def verbosity(self): return self.verbosity_
-    def trace(self): return self.trace_
-    def message_prefix(self): return self.message_prefix_
-    def advanced(self): return self.advanced_
+    def packageroot(self): return self.__packageroot
+    def overlayroot(self): return self.__overlayroot
+    def packagename(self): return self.__packagename
+    def packageversion(self): return self.__packageversion
+    def prefix(self): return self.__prefix
+    def readonly_prefixes(self): return self.__readonly_prefixes
+    def buildroot(self): return self.__buildroot
+    def builddir(self): return self.__builddir
+    def short_libnames(self): return self.__short_libnames
+    def use_libtool(self): return self.__use_libtool
+    def use_bulk_install(self): return self.__use_bulk_install
+    def use_kde_hack(self): return self.__use_kde_hack
+    def print_timings(self): return self.__print_timings
+    def verbosity(self): return self.__verbosity
+    def trace(self): return self.__trace
+    def message_prefix(self): return self.__message_prefix
+    def advanced(self): return self.__advanced
 
     def configure_args(self): return None
     def configure_env(self): return None
     
-    def make_args(self): return self.make_args_
+    def make_args(self): return self.__make_args
     def make_env(self): return None
     
     pass

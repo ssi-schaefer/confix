@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2007 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ from directory import Directory, DirectoryState
 from file import File, FileState
 
 def scan_filesystem(path):
+    assert type(path) is list
     return FileSystem(path=path, rootdirectory=scan_dir(path))
     
 def scan_dir(path):
