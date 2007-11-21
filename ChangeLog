@@ -6,6 +6,8 @@
 	* Largely eliminated the --use-libtool parameter, by scanning the
 	  generated configure.ac file for AC_PROG_LIBTOOL. --use-libtool
 	  is still necessary for the damn ConfixSetup default.
+	* test cleanup in the outside 'tests' directory: removed 
+	  tests/make and tests/plainfile
 
 2007-10-23 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 

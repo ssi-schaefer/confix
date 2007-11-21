@@ -16,6 +16,7 @@
 # USA
 
 from basic import BasicMakeSuite
+from generated_package import GeneratedPackageSuite
 
 import unittest
 
@@ -23,6 +24,7 @@ class MakeSuiteBuild(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(BasicMakeSuite())
+        self.addTest(GeneratedPackageSuite())
         pass
     pass
 

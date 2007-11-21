@@ -16,12 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from basic.suite_build import BasicTestSuiteBuild
 from c.suite_build import CTestSuiteBuild
-from make.suite_build import MakeSuiteBuild
 from libconfix.tests.suite_build import LibConfixBuildSuite
-
-from libconfix.plugins.plainfile.tests.suite_build import PlainFileSuiteBuild
 
 import unittest
 
@@ -30,10 +26,7 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
 
     suite.addTest(LibConfixBuildSuite())
-    suite.addTest(BasicTestSuiteBuild())
     suite.addTest(CTestSuiteBuild())
-    suite.addTest(PlainFileSuiteBuild())
-    suite.addTest(MakeSuiteBuild())
 
     runner = unittest.TextTestRunner()
     runner.run(suite)

@@ -31,14 +31,14 @@ import unittest
 import sys
 import os
 
-class MakeBasicSuite(unittest.TestSuite):
+class GeneratedPackageSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(MakeBasicTest('test'))
+        self.addTest(GeneratedPackageTest('test'))
         pass
     pass
 
-class MakeBasicTest(PersistentTestCase):
+class GeneratedPackageTest(PersistentTestCase):
     def test(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
@@ -98,6 +98,6 @@ class MakeBasicTest(PersistentTestCase):
                             
         
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(MakeBasicSuite())
+    unittest.TextTestRunner().run(GeneratedPackageSuite())
     pass
 
