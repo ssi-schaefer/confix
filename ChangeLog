@@ -5,7 +5,8 @@
 	  that contains the Confix2.{pkg,dir} files.
 	* Largely eliminated the --use-libtool parameter, by scanning the
 	  generated configure.ac file for AC_PROG_LIBTOOL. --use-libtool
-	  is still necessary for the damn ConfixSetup default.
+	  is still necessary for the damn ConfixSetup default. Thus
+	  consider "[ 1834227 ] ExplicitCSetup and use_libtool" fixed.
 	* test cleanup in the outside 'tests' directory: removed 
 	  tests/make and tests/plainfile
 
