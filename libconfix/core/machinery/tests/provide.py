@@ -19,14 +19,17 @@
 import unittest
 
 from libconfix.core.filesys.file import File
+from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
+from libconfix.core.utils.error import Error
 
 class ProvideSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(ProvideStringUpdateTest('test'))
+        self.addTest(DuplicateProvideTest('test'))
         pass
     pass
 
@@ -47,6 +50,42 @@ class ProvideStringUpdateTest(unittest.TestCase):
                               "PROVIDE_SYMBOL('aaa')"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
         package.boil(external_nodes=[])
+        pass
+    pass
+
+class DuplicateProvideTest(unittest.TestCase):
+    def test(self):
+        fs = FileSystem(path=['don\'t', 'care'])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
+                              "PACKAGE_VERSION('1.2.3')",
+                              "from libconfix.setups.explicit_setup import ExplicitSetup",
+                              "SETUPS([ExplicitSetup(use_libtool=True)])"
+                              ]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["DIRECTORY(['dir1'])",
+                              "DIRECTORY(['dir2'])"]))
+        dir1 = fs.rootdirectory().add(
+            name='dir1',
+            entry=Directory())
+        dir2 = fs.rootdirectory().add(
+            name='dir2',
+            entry=Directory())
+        dir1.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["PROVIDE_SYMBOL('x')"]))
+        dir2.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["PROVIDE_SYMBOL('x')"]))
+        
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        try:
+            package.boil(external_nodes=[])
+            self.fail()
+        except Error:
+            pass
         pass
     pass
 

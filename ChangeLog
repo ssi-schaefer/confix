@@ -1,3 +1,8 @@
+2007-11-26 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Fixed bug "[ 1834223 ] Missing test for duplicate
+	  PROVIDE_SYMBOL"
+
 2007-11-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* confix2.py --overlayroot
