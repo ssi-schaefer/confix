@@ -128,24 +128,23 @@ class LinkedBuilder(Builder):
         pass
 
     def get_linkline(self):
+        """
+        This method is used by derived classes (shared library and
+        executable builder being the most prominent), in order to get
+        the necessary libraries onto their linker command line.
+
+        Returns a list of strings, like ['-L/blah -L/bloh/blah
+        -lonelibrary -lanotherone']
+        """
         native_paths = []
         native_libraries = []
         external_linkline = []
         using_installed_library = False
 
-        if self.__use_libtool:
-            if sys.platform.startswith('interix'):
-                # a Windows-DLL needs all dependencies
-                native_libs_to_use = self.__buildinfo_topo_dependent_native_libs
-            else:
-                # when linking anything with libtool, we don't need to
-                # specify the whole topologically sorted list of
-                # dependencies - libtool does that by itself. we only
-                # specify the direct dependencies.
-                native_libs_to_use = self.__buildinfo_direct_dependent_native_libs
-        else:
-            # not using libtool; have to toposort ourselves
+        if self.__do_deep_linking():
             native_libs_to_use = self.__buildinfo_topo_dependent_native_libs
+        else:
+            native_libs_to_use = self.__buildinfo_direct_dependent_native_libs
             pass
 
         for bi in native_libs_to_use:
@@ -181,6 +180,39 @@ class LinkedBuilder(Builder):
         self.__external_libpath = []
         self.__have_external_libpath = set()
         self.__external_libraries = []
+        pass
+
+    def __do_deep_linking(self):
+        """
+        Returns a boolean value indicating if deep linking is desired
+        or not. 'Deep linking' means that the whole dependency graph
+        is reflected on the command line, in a topologically sorted
+        way. As opposed to flat linking (or how one calls it), where
+        only the direct dependent libraries are mentioned.
+        """
+        if self.__use_libtool:
+            if not sys.platform.startswith('interix'):
+                # when linking anything with libtool, we don't need to
+                # specify the whole topologically sorted list of
+                # dependencies - libtool does that by itself (*). We
+                # only specify the direct dependencies.
+
+                # (*) It is still unclear to me what the Libtool
+                # policy is. I suspect it relies on the fact that the
+                # native linker permits unresolved references (GNU ld
+                # is happy with them, at the very least).
+                return False
+            else:
+                # on Interix, Parity
+                # (http://sourceforge.net/projects/parity) does things
+                # in a way that the Windows native linker is
+                # invoked. That guy likes things rather explicit, and
+                # is very particular about unresolved references:
+                return True
+            pass
+        else:
+            # not using libtool; doing a dumb static link.
+            return True
         pass
 
     pass

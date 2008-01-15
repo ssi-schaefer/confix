@@ -1,3 +1,16 @@
+2008-01-15 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Merged from
+	  https://confix.svn.sourceforge.net/svnroot/confix/confix/branches/RB-2.1,
+	  rev 447:
+	  * InstalledNode.short_description() was left abstract; fixed.
+	  * add test libconfix/core/filesys/tests/scan.py
+	  * small restructuring in plugins.c.linked (deep vs flat linking)
+	* index.html
+	  * converted to validated XHTML (hooray)
+	  * content fixed to give potential users a chance to understand
+	    what I mean
+
 2007-11-26 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* Fixed bug "[ 1834223 ] Missing test for duplicate
