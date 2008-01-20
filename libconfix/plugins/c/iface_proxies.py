@@ -18,4 +18,3 @@
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.provide_string import Provide_String
 from libconfix.core.iface.proxy import InterfaceProxy
-
