@@ -69,11 +69,11 @@ compilation of things that Confix can do for the programmer.</p>
   way. More than that, one often faces the issue of leftover
   directories in the include path - ones that <i>did</i> contain
   needed header files way in the past, but which are either not needed
-  for the compilation anymore, or which have been moved. Include paths
-  tend to grow rather than shrink. Note that this include path problem
-  is one of the reasons why project structures tend to become a maze -
-  the cost of moving files around rises with the size of the
-  project.</p>
+  for the compilation anymore, or which have been moved. As a
+  consequence, include paths tend to grow rather than shrink. Note
+  that this include path problem is one of the reasons why project
+  structures tend to become a maze - the cost of moving files around
+  rises with the size of the project.</p>
 
   <p>Confix knows which compilation needs which header files (by
   simply parsing the files that are subject to compilation), and can
@@ -91,16 +91,15 @@ compilation of things that Confix can do for the programmer.</p>
   path. In addition to determining all the libraries that you need,
   you have to take care to place them on the linker command line in
   the correct order (most linkers are very particular about open
-  references not pointing in the wrong direction). Needless to say
-  that one would rather refrain from changing the library structure
-  when he expects linker lines breaking and people getting
-  annoyed.</p>
+  references pointing in the wrong direction). Needless to say that
+  one would rather refrain from changing the library structure when he
+  expects linker lines breaking and people getting annoyed.</p>
 
   <p>Confix solves this problem similar to the include path problem
-  above. As it knows who needs what, it is not difficult to compose a
-  correct linker line - again without demanding anything from the
-  programmer (except to keep reference cycles out of his project, but
-  this is a matter of hygiene anyway).</p>
+  described above. As it knows who needs what, it is not difficult to
+  compose a correct linker line - again without demanding anything
+  from the programmer (except to keep reference cycles out of the
+  project, but this is a matter of hygiene anyway).</p>
   </li>
 
   <li><b>Independently maintained packages.</b>
@@ -151,8 +150,8 @@ General Public License</a>.</p>
 <h2>Download and Installation</h2>
 
 <p>You can download releases from the <a
-href="http://sourceforge.net/projects/confix">project summary page at
-Sourceforge</a>. The most recent stable release is 2.0. If no release
+href="http://sourceforge.net/projects/confix">project summary page on
+Sourceforge</a>. The most recent stable release is 2.1. If no release
 is recent enough, you may always checkout a <a
 href="http://sourceforge.net/svn/?group_id=68975">development version
 from Subversion</a>. You can also <a
@@ -166,12 +165,94 @@ file</a>.</p>
 <h2>Documentation</h2>
 
 <p>Umm, well. There is a bunch of it, but it has been extremely
-outdated with the 2.0 release. It is a good reading if you want to
-grasp the problems that Confix intends to solve, but it does not
-explain the way Confix is <i>currently</i> trying to solve these
-problems. (You can view the manual here as <a
+outdated since the 2.0 release. It is a good reading if you want to
+grasp how Confix intends to solve the problems it is there to solve,
+but it does not explain the way Confix is <i>currently</i> trying to
+solve these problems. (You can view the manual here as <a
 href="confix.html">HTML</a> and <a href="confix.ps">Postscript</a>, if
 you want.)</p>
+
+<p>For the time being - until the documentation is up to date
+(probably never) - please refer to the Examples section
+below. <code>confix2.py --help</code> gives a great deal of
+information as well.</p>
+
+<h2>Examples</h2>
+
+<p>Fortunately the number of projects that use Confix is not infinite,
+so it is possible to list them in a concise way. As a documentation
+substitute, you may have a view into their project layout and their
+various <code>Confix2.pkg</code> and <code>Confix2.dir</code> files -
+and their source code of course, but that's a different story.</p>
+
+<ul>
+
+  <li><b>jf-unittest</b>. (<a
+  href="http://sourceforge.net/project/showfiles.php?group_id=68975">Download</a>,
+  <a
+  href="http://confix.svn.sourceforge.net/viewvc/confix/unittest">browse
+  source code</a>.)
+
+  <p>A C++ unit test framework, modeled after the way I use the Python
+  unittest module in the Confix test suites. I wrote it out of
+  frustration with the existing unittest frameworks out there. As
+  such, I left off all the bloat: no GUI with colorful progress bars,
+  no dependencies on any other package in the world. It not even
+  depends on the <a href="http://www.boost.org">Boost</a> library
+  which would have come in quite handy, but which has a horrible build
+  system. All one needs is a reasonably standards conformant compiler
+  (which shouldn't be hard to get your hands on these days). For fun
+  and educational purposes, the framework "bootstraps" itself in three
+  stages, testing every aspect of itself before that aspect is used in
+  the next stage.</p>
+
+  <p>The most fancy output one can get looks like this (taken from
+  stage three of its own test suite, just before its completion).</p>
+
+  <pre>
++ jf::unittest::tests::Stage2Suite
+  + jf::unittest::tests::SetupTeardownSuite
+    - jf::unittest::tests::SetupTeardownSuccess...ok
+    - jf::unittest::tests::SetupTeardownSetupFailure...failed
+    - jf::unittest::tests::SetupTeardownSetupError...failed
+    - jf::unittest::tests::SetupTeardownRunFailure...ok
+    - jf::unittest::tests::SetupTeardownRunError...ok
+    - jf::unittest::tests::SetupTeardownTeardownFailure...ok
+    - jf::unittest::tests::SetupTeardownTeardownError...ok
+  + jf::unittest::tests::StartStopSuite
+    - jf::unittest::TestStartStop...ok
+    - jf::unittest::SuiteStartStop...ok
+------------------------
+#Success:  7
+#Failures: 2
+#Errors:   0
+#Tests:    9
+#Suites:   3
+------------------------
+Details follow ...
+------------------------
+  Failure: jf::unittest::tests::SetupTeardownSetupFailure: result.num_error() == 1 (/home/jfasch/work/confix/unittest/trunk/basics/tests/setup_teardown.cc:89)
+  Failure: jf::unittest::tests::SetupTeardownSetupError: result.num_error() == 1 (/home/jfasch/work/confix/unittest/trunk/basics/tests/setup_teardown.cc:117)
+  </pre>
+
+  </li>
+
+  <li><b>TCSystem</b>. (<a
+  href="http://tcsystem.sourceforge.net">Homepage</a>, <a
+  href="http://sourceforge.net/project/showfiles.php?group_id=73675">download</a>,
+  <a href="http://tcsystem.svn.sourceforge.net/viewvc/tcsystem">browse
+  source code</a>.)
+
+  <p>A cross platform (well, Windows/Unix) toolkit with associated
+  applications. The base package nicely abstracts away networking,
+  threading, and a few more aspects of both operating systems. The
+  messenger application uses the <a
+  href="http://www.fox-toolkit.org">Fox cross platform GUI
+  toolkit</a>.</p>
+
+  </li>
+
+</ul>
 
 <h2>Hacking</h2>
 
