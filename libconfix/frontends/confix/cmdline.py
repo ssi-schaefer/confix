@@ -26,7 +26,8 @@ import todo
 
 def parse(args):
 
-    parser = OptionParser(version='%prog '+const.CONFIX_VERSION)
+    parser = OptionParser(version='%prog '+const.CONFIX_VERSION,
+                          description='%prog --prefix=/home/jfasch/sandbox --builddir=/home/jfasch/build --bootstrap --configure --make --targets=install')
 
     parser.add_option('--bootstrap',
                       action='store_true',
