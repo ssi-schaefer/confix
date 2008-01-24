@@ -24,11 +24,11 @@ from libconfix.core.utils.error import Error
 from libconfix.core.filesys.scan import scan_filesystem
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File, FileState
-from libconfix.frontends.confix import cmdline 
-from libconfix.frontends.confix import todo 
-from libconfix.frontends.confix.configfile import ConfigFile 
-from libconfix.frontends.confix.composite_config import CompositeConfiguration 
-from libconfix.frontends.confix.default_config import DefaultConfiguration
+from libconfix.frontends.confix2 import cmdline 
+from libconfix.frontends.confix2 import todo 
+from libconfix.frontends.confix2.configfile import ConfigFile 
+from libconfix.frontends.confix2.composite_config import CompositeConfiguration 
+from libconfix.frontends.confix2.default_config import DefaultConfiguration
 
 def main():
     try:

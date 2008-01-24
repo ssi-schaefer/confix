@@ -1,3 +1,8 @@
+2008-01-24 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Renamed libconfix.frontends.confix to
+	  libconfix.frontends.confix2.
+
 2008-01-15 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* Merged from
