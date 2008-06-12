@@ -74,7 +74,7 @@ setup(
               'libconfix.core.filesys',
               'libconfix.core.machinery',
               'libconfix.frontends',
-              'libconfix.frontends.confix',
+              'libconfix.frontends.confix2',
               'libconfix.plugins',
               'libconfix.plugins.c',
               'libconfix.plugins.c.relocated_headers',
@@ -85,6 +85,7 @@ setup(
               'libconfix.plugins.plainfile',
               'libconfix.plugins.script',
               'libconfix.testutils',
+              'libconfix.setups',
               ],
 
     data_files=datafiles,
