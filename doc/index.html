@@ -18,46 +18,41 @@ href="http://www.cmake.org">CMake</a>, or <a
 href="http://www.scons.org">SCons</a>, try to shield the unfortunate C
 or C++ programmer from crafting compiler and linker commandlines for
 myriads of different compilers and compiler versions. Each of these
-tools has a slightly different focus - some prefer cross-platform
-features, and some focus on fully supporting all of the Unices. Each
-is unbeatable in doing its job. Basically, all you have to tell them
-is, for example, "Compile these files as C, and make a library out of
-them!", and they do what you want.</p>
+build tools has a slightly different focus - some prefer
+cross-platform features, and some focus on fully supporting all of the
+Unices. Each is unbeatable in doing its job. Basically, all you have
+to tell them is, for example, "Compile these files as C, and make a
+library out of them!", and they do what you want.</p>
 
-<p>Automake, CMake, and SCons do not, however, help you in managing
-your project. All of us know that, once the project has grown beyond a
-certain size, restructuring it can become a nightmare. Even moving one
-header file can break the build for a day or two, since everybody has
-to adjust include paths. Or, even worse, consider you split a library
-into two or three separate libraries because it has acquired too many
-responsibilities over time - you'd have to instruct everyone who has
-used the library about the new structure. (People often argue that a
-project's structure does not contribute any quality measure, and that
-the time spent on the structure be better spent on getting the code
-right. This is certainly a valid view of the matter, but it's a
-different story, and I don't argue against. Anyway, if you do not care
-about structure, then you should only be reading on if you want to use
-the features of Automake but don't want to learn its damn syntax.)</p>
+<p>Confix's goal is not to beat the other build tools. It actually
+doesn't build anything itself, but rather leaves this job to those who
+can do it better. It uses other build tools as a kind of a backend
+which it generates input for (currently only an Automake backend is
+available, but work is underway). This way it can focus on other
+things.
+</p>
 
-<p>Project structure maintenance is of course but one of Confix's
-features, although the strongest. The following list is a rough
-compilation of things that Confix can do for the programmer.</p>
+<p>What Automake, CMake, and SCons do not do for you is to help you
+manage your project. All of us know that, once the project has grown
+beyond a certain size, restructuring it can become a nightmare. Even
+moving one header file can break the build for a day or two, since
+everybody has to adjust include paths. Or, even worse, consider you
+split a library into two or three separate libraries because it has
+acquired too many responsibilities over time - you'd have to instruct
+everyone who has used the library about the new structure.<p>
+
+<p>Exactly that is Confix's job. It knows where your header files are,
+for example, and which libraries you want to link when you include one
+of these header files. By knowing "who needs what", it can deduce a
+lot of things - a correct linker line is just one example.</p>
+
+<p>This core functionality is not a feature in itself. Rather, many of
+Confix's abilities are based on the fact the Confix knows about the
+dependencies inside (and outside) your source code package. The
+following list is a rough compilation of things that Confix can do for
+the programmer.</p>
 
 <ul>
-
-  <li><b>Automake input file generation</b>.
-
-  <p>Automake is one of the most widely used build tools in the Unix
-  Open Source community. Everybody who likes hanging around there
-  knows the <code>configure &amp;&amp; make &amp;&amp; make
-  install</code> dance, the hallmark of Automake. But, as comfortable
-  as it is for the end user who is in charge of compiling and
-  installing a package, as odd it is for the maintainer of the
-  package. Confix tries to take away the complexity from the build
-  instructions, and defines it own minimal set of functions which are
-  mapped onto the Automake language. (Actually, Confix project files
-  are written in Python, so chances are you don't have to learn yet
-  another language).</p> </li>
 
   <li><b>Automatic composition of the compilation's include path.</b>
 
@@ -119,6 +114,20 @@ compilation of things that Confix can do for the programmer.</p>
   else (well almost).</p>
   </li>
 
+  <li><b>Automake input file generation</b>.
+
+  <p>Automake is one of the most widely used build tools in the Unix
+  Open Source community. Everybody who likes hanging around there
+  knows the <code>configure &amp;&amp; make &amp;&amp; make
+  install</code> dance, the hallmark of Automake. But, as comfortable
+  as it is for the end user who is in charge of compiling and
+  installing a package, as odd it is for the maintainer of the
+  package. Confix tries to take away the complexity from the build
+  instructions, and defines it own minimal set of functions which are
+  mapped onto the Automake language. (Actually, Confix project files
+  are written in Python, so chances are you don't have to learn yet
+  another language).</p> </li>
+
   <li><b>Lots of other things.</b>
 
   <p>A lot of Confix's energy goes into fighting the overhead of
@@ -128,7 +137,8 @@ compilation of things that Confix can do for the programmer.</p>
   <ul>
     <li><b>Location independent subdirectory installs.</b> You can
     make any header visible as <code>&lt;subdir/file.h&gt;</code>,
-    without putting it into a directory <code>subdir</code>.</li>
+    without putting it into a directory <code>subdir</code> of the
+    source package.</li>
 
     <li><b>Transparent inclusion of Autoconf checks.</b> If one
     project X includes an Autoconf check for some library, for
@@ -193,18 +203,18 @@ and their source code of course, but that's a different story.</p>
   href="http://confix.svn.sourceforge.net/viewvc/confix/unittest">browse
   source code</a>.)
 
-  <p>A C++ unit test framework, modeled after the way I use the Python
-  unittest module in the Confix test suites. I wrote it out of
-  frustration with the existing unittest frameworks out there. As
-  such, I left off all the bloat: no GUI with colorful progress bars,
-  no dependencies on any other package in the world. It not even
-  depends on the <a href="http://www.boost.org">Boost</a> library
-  which would have come in quite handy, but which has a horrible build
-  system. All one needs is a reasonably standards conformant compiler
-  (which shouldn't be hard to get your hands on these days). For fun
-  and educational purposes, the framework "bootstraps" itself in three
-  stages, testing every aspect of itself before that aspect is used in
-  the next stage.</p>
+  <p>A C++ unit test framework, modeled after the way the Python
+  unittest module is used in the Confix test suites. It has been
+  written out of frustration with the existing unittest frameworks out
+  there. As such, there is absolutely no bloat: no GUI with colorful
+  progress bars, no dependencies on any other package in the world. It
+  not even depends on the <a href="http://www.boost.org">Boost</a>
+  library which would have come in quite handy, but which has a
+  horrible build system. All one needs is a reasonably standards
+  conformant compiler (which shouldn't be hard to get your hands on
+  these days). For fun and educational purposes, the framework
+  "bootstraps" itself in three stages, testing every aspect of itself
+  before that aspect is used in the next stage.</p>
 
   <p>The most fancy output one can get looks like this (taken from
   stage three of its own test suite, just before its completion).</p>
@@ -234,6 +244,16 @@ Details follow ...
   Failure: jf::unittest::tests::SetupTeardownSetupFailure: result.num_error() == 1 (/home/jfasch/work/confix/unittest/trunk/basics/tests/setup_teardown.cc:89)
   Failure: jf::unittest::tests::SetupTeardownSetupError: result.num_error() == 1 (/home/jfasch/work/confix/unittest/trunk/basics/tests/setup_teardown.cc:117)
   </pre>
+
+  </li>
+
+  <li><b><a
+  href="http://sourceforge.net/projects/parity">Parity</a></b>.
+  
+  <p>It's purpose is to provide a GCC/LD like interface for the
+  Microsoft Compiler/Linker. It's primary target is Microsoft SUA,
+  where it aids in compiling native Windows Binaries using UNIX like
+  mechanisms (like libtool, etc.).</p>
 
   </li>
 
