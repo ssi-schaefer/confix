@@ -20,7 +20,8 @@ from libconfix.core.utils.error import Error, NativeError
 
 import sys
 
-# pickle segfaults on interix
+# pickle segfaults on interix. this should be fixed in python 2.5, but
+# we leave it in for a while from now.
 mypickle = None
 if sys.platform.startswith('interix'):
     from libconfix.core.utils import debug
