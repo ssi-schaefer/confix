@@ -130,11 +130,7 @@ $ python setup.py sdist --help-formats
 Uploading packages
 ------------------
 
-$ ftp upload.sourceforge.net
-# Give username: anonymous, password: <email address>
-$ bin
-$ cd /incoming
-$ put Confix-2.0.0.tar.bz2
+https://frs.sourceforge.net/webupload
 
 Creating file releases
 ----------------------
