@@ -31,29 +31,29 @@ Developer experiments     TRY-<developer>-<short-desc>
                  131----+
   REL-2.0.0pre14 134    |
   REL-2.0.0pre15 139<---138
-                 |      v TRY-jfasch-kde-hack (dead)
+                 |      v TRY-jfasch-kde-hack(merged,dead)
                  |
                  184----+
   REL-2.0.0pre18 200<---198
-                 |      v devlopment/jfasch/library-dependencies (dead)
+                 |      v devlopment/jfasch/library-dependencies(merged,dead)
                  |
                  200----+
                  213<---212
-                 |      v TRY-jfasch-builder-init-state (dead)
+                 |      v TRY-jfasch-builder-init-state(merged,dead)
                  |
                  216----+
   REL-2.0.0pre19 220    |
   REL-2.0.0pre20 227    |
                  247<---246
-                 |      v TRY-jfasch-nonlocal-headers (dead)
+                 |      v TRY-jfasch-nonlocal-headers(merged,dead)
                  |
                  247----+
   REL-2.0.0pre24 257--- | -------------------------------------+
                  260<---256                                    |
-                 |      v TRY-jfasch-relocated-headers (dead)  |
+                 |      v TRY-jfasch-relocated-headers(merged,dead)
                  |                                          277+REL-2.0.0pre24.1
                  284<------------------------------------------+280
-                 |                TRY-jfasch-bug-1713807(dead) v
+                 |                                             v TRY-jfasch-bug-1713807(merged,dead)
                  |
                  286---------------------------+
                  |                             289 REL-2.0.0
@@ -65,7 +65,7 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |
                  313-----------------------+
                  336<----------------------+333 REL-2.1.0pre1
-                 |                         v TRY-jfasch-initialbuilders-refactoring(dead)
+                 |                         v TRY-jfasch-initialbuilders-refactoring(merged,dead)
                  |
                  336-------------------------------------------+
                  345 REL-2.1.0pre2                             |
@@ -74,27 +74,27 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |                             |               |
                  354----+                      |               v TRY-visual-studio
                  359<---+                      |
-                 |      v TRY-condlocalinstall |
+                 |      v TRY-condlocalinstall(merged,dead)
                  |                             |
                  360<--------------------------359
                  |                             |
                  378<--------------------------375
                  385-------------------------- | ---------+
                  428<------------------------- | ---------+ 427 
-                 |                             |          v TRY-filesys-overlay(dead)
+                 |                             |          v TRY-filesys-overlay(merged,dead)
                  |                             |
                  438-------------------------- | ---------+
-                 |  <--------------------------447        v TRY-relocated-c 
+                 |  <--------------------------447        v TRY-relocated-c(unmaintained,dead)
                  |                             |                           
                  497-------------------------- | ---------+
                  |                             |          |
                  |                             |          v TRY-jfasch-automake-plugin
-                 |                             |                                        
-                 |                             |          
-                 |                             |          
-                 |                             |          
-                 |                             |          
-                 |                             |
+                 640---------+                 |                                        
+                 |           |                 |          
+                 |           641 REL-2.2.0     |          
+                 |           |                 |          
+                 |           |                 |          
+                 |           v RB-2.2          |
                  |                             |
                  v                             |
                trunk                           |
