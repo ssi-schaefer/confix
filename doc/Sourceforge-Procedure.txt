@@ -1,0 +1,10 @@
+* Shell login
+
+  * Create one, "ssh -t jfasch,confix@shell.sourceforge.net create"
+
+  * Login, ssh jfasch@shell.sourceforge.net
+
+* HTML home page is in
+  /home/groups/c/co/confix/htdocs/index.html. This is a redirect into
+  the Wiki, http://confix.wiki.sourceforge.net/Intro.
+
