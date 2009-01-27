@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,7 @@
 import inter_package
 
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
-
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
@@ -36,18 +34,17 @@ class InterPackageInMemoryTest(unittest.TestCase):
         common, lo, hi = inter_package.make_source(classname=self.__class__.__name__)
         
         common_package = LocalPackage(rootdirectory=common,
-                                      setups=[DefaultCSetup(short_libnames=False, use_libtool=False)])
+                                      setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         common_package.boil(external_nodes=[])
         common_installed = common_package.install()
 
         lo_package = LocalPackage(rootdirectory=lo,
-                                  setups=[DefaultCSetup(short_libnames=False, use_libtool=False),
-                                          DefaultDirectorySetup()])
+                                  setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         lo_package.boil(external_nodes=common_installed.nodes())
         lo_installed = lo_package.install()
 
         hi_package = LocalPackage(rootdirectory=hi,
-                                  setups=[DefaultCSetup(short_libnames=False, use_libtool=False)])
+                                  setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         hi_package.boil(external_nodes=common_installed.nodes() + lo_installed.nodes())
 
         pass

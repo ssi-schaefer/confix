@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,13 @@ import unittest
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CIncludePath_NativeLocal, BuildInfo_CLibrary_NativeLocal
+
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils import dirhier
 from libconfix.testutils import packages
@@ -58,8 +58,8 @@ class InternalRequires(unittest.TestCase):
         fs.rootdirectory().add(name='file.c',
                                entry=File(lines=['#include "file.h"']))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(short_libnames=False,
-                                              use_libtool=False)])
+                               setups=[ConfixSetup(short_libnames=False,
+                                                   use_libtool=False)])
         package.boil(external_nodes=[])
         self.failUnlessEqual(len(package.rootbuilder().requires()), 0)
         pass
@@ -71,9 +71,8 @@ class RelateBasic(unittest.TestCase):
                         rootdirectory=packages.lo_hi1_hi2_highest_exe(name='xxx', version='1.2.3'))
         
         self.package_ = LocalPackage(rootdirectory=fs.rootdirectory(),
-                                     setups=[DefaultDirectorySetup(),
-                                             DefaultCSetup(short_libnames=False,
-                                                    use_libtool=False)])
+                                     setups=[ConfixSetup(short_libnames=False,
+                                                         use_libtool=False)])
         self.package_.boil(external_nodes=[])
 
         # from here on, we collect things that we will need in the
@@ -245,40 +244,40 @@ class RelateBasic(unittest.TestCase):
     def testPropagatedLibraryInfo(self):
 
         # hi1 depends on lo
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi1dir_lib_builder_.buildinfo_direct_dependent_native_libs())
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi1dir_lib_builder_.buildinfo_topo_dependent_native_libs())
-        self.failUnlessEqual(len(self.hi1dir_lib_builder_.buildinfo_topo_dependent_native_libs()), 1)
-        self.failUnlessEqual(len(self.hi1dir_lib_builder_.buildinfo_direct_dependent_native_libs()), 1)
+        self.failUnless(self.lodir_lib_libinfo_ in self.hi1dir_lib_builder_.direct_libraries())
+        self.failUnless(self.lodir_lib_libinfo_ in self.hi1dir_lib_builder_.topo_libraries())
+        self.failUnlessEqual(len(self.hi1dir_lib_builder_.topo_libraries()), 1)
+        self.failUnlessEqual(len(self.hi1dir_lib_builder_.direct_libraries()), 1)
 
         # hi2 depends on lo
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi2dir_lib_builder_.buildinfo_direct_dependent_native_libs())
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi2dir_lib_builder_.buildinfo_topo_dependent_native_libs())
-        self.failUnlessEqual(len(self.hi2dir_lib_builder_.buildinfo_topo_dependent_native_libs()), 1)
-        self.failUnlessEqual(len(self.hi2dir_lib_builder_.buildinfo_direct_dependent_native_libs()), 1)
+        self.failUnless(self.lodir_lib_libinfo_ in self.hi2dir_lib_builder_.direct_libraries())
+        self.failUnless(self.lodir_lib_libinfo_ in self.hi2dir_lib_builder_.topo_libraries())
+        self.failUnlessEqual(len(self.hi2dir_lib_builder_.topo_libraries()), 1)
+        self.failUnlessEqual(len(self.hi2dir_lib_builder_.direct_libraries()), 1)
 
         # highest depends on lo (indirect) and hi1, hi2 (direct)
-        self.failIf(self.lodir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_direct_dependent_native_libs())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_direct_dependent_native_libs())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_direct_dependent_native_libs())
+        self.failIf(self.lodir_lib_libinfo_ in self.highestdir_lib_builder_.direct_libraries())
+        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.direct_libraries())
+        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.direct_libraries())
 
-        self.failUnless(self.lodir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs())
+        self.failUnless(self.lodir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries())
+        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries())
+        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries())
 
-        self.failUnlessEqual(len(self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs()), 3)
-        self.failUnlessEqual(len(self.highestdir_lib_builder_.buildinfo_direct_dependent_native_libs()), 2)
+        self.failUnlessEqual(len(self.highestdir_lib_builder_.topo_libraries()), 3)
+        self.failUnlessEqual(len(self.highestdir_lib_builder_.direct_libraries()), 2)
 
         # exe depends on lo (indirect) and hi1, hi2 (direct)
-        self.failIf(self.lodir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_direct_dependent_native_libs())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_direct_dependent_native_libs())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_direct_dependent_native_libs())
+        self.failIf(self.lodir_lib_libinfo_ in self.exedir_exe_builder_.direct_libraries())
+        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.direct_libraries())
+        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.direct_libraries())
 
-        self.failUnless(self.lodir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_topo_dependent_native_libs())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_topo_dependent_native_libs())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_topo_dependent_native_libs())
+        self.failUnless(self.lodir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries())
+        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries())
+        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries())
 
-        self.failUnlessEqual(len(self.exedir_exe_builder_.buildinfo_topo_dependent_native_libs()), 3)
-        self.failUnlessEqual(len(self.exedir_exe_builder_.buildinfo_direct_dependent_native_libs()), 2)
+        self.failUnlessEqual(len(self.exedir_exe_builder_.topo_libraries()), 3)
+        self.failUnlessEqual(len(self.exedir_exe_builder_.direct_libraries()), 2)
 
         pass
 
@@ -299,27 +298,27 @@ class RelateBasic(unittest.TestCase):
         # -------
         
         # highest depends on hi1, hi2, lo
-        self.failUnlessEqual(len(self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs()), 3)
+        self.failUnlessEqual(len(self.highestdir_lib_builder_.topo_libraries()), 3)
 
         # lo is the lowest in the dependency list, so it must come at the end
-        self.failUnless(self.lodir_lib_libinfo_ is self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs()[2])
+        self.failUnless(self.lodir_lib_libinfo_ is self.highestdir_lib_builder_.topo_libraries()[2])
 
         # hi1 and hi2 are equal orders, so they must come either first or second
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs()[0:2])
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs()[0:2])
+        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries()[0:2])
+        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries()[0:2])
 
         # exe
         # ---
         
         # exe depends on hi1, hi2, lo
-        self.failUnlessEqual(len(self.highestdir_lib_builder_.buildinfo_topo_dependent_native_libs()), 3)
+        self.failUnlessEqual(len(self.highestdir_lib_builder_.topo_libraries()), 3)
 
         # lo is the lowest in the dependency list, so it must come at the end
-        self.failUnless(self.lodir_lib_libinfo_ is self.exedir_exe_builder_.buildinfo_topo_dependent_native_libs()[2])
+        self.failUnless(self.lodir_lib_libinfo_ is self.exedir_exe_builder_.topo_libraries()[2])
 
         # hi1 and hi2 are equal orders, so they must come either first or second
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_topo_dependent_native_libs()[0:2])
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.buildinfo_topo_dependent_native_libs()[0:2])
+        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries()[0:2])
+        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries()[0:2])
 
         pass
     

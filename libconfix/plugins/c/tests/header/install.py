@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,17 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
+from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
-from libconfix.plugins.c.h import HeaderBuilder
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
+import unittest
 
 class InstallInMemorySuite(unittest.TestSuite):
     def __init__(self):
@@ -62,14 +60,14 @@ class FilePropertyOnly(unittest.TestCase):
             entry=File(lines=[]))
         file.set_property(name='INSTALLPATH_CINCLUDE', value=['xxx'])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['xxx'])
+        self.failUnlessEqual(file_h_builder.public_visibility(), ['xxx'])
         pass
     pass
 
@@ -87,14 +85,14 @@ class IfaceOnly(unittest.TestCase):
             name='file.h',
             entry=File(lines=["// CONFIX:INSTALLPATH(['xxx'])"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['xxx'])
+        self.failUnlessEqual(file_h_builder.public_visibility(), ['xxx'])
         pass
     pass
 
@@ -113,14 +111,14 @@ class Namespace(unittest.TestCase):
             entry=File(lines=['namespace A {',
                               '}; // /namespace']))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
         
-        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['A'])
+        self.failUnlessEqual(file_h_builder.public_visibility(), ['A'])
         pass
 
     def testNested(self):
@@ -139,14 +137,14 @@ class Namespace(unittest.TestCase):
                               '}; // /namespace',
                               '}; // /namespace']))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['A', 'B'])
+        self.failUnlessEqual(file_h_builder.public_visibility(), ['A', 'B'])
         pass
 
     def testGlobal(self):
@@ -162,14 +160,14 @@ class Namespace(unittest.TestCase):
             name='file.h',
             entry=File(lines=[]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visible_in_directory(), [])
+        self.failUnlessEqual(file_h_builder.public_visibility(), [])
         pass
 
     def testAmbiguousFlat(self):
@@ -189,7 +187,7 @@ class Namespace(unittest.TestCase):
                               '}; // /namespace'
                               ]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         try:
             package.boil(external_nodes=[])
         except HeaderBuilder.BadNamespace:
@@ -217,7 +215,7 @@ class Namespace(unittest.TestCase):
                               '}; // /namespace'
                               ]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         try:
             package.boil(external_nodes=[])
         except HeaderBuilder.BadNamespace:
@@ -236,16 +234,14 @@ class Namespace(unittest.TestCase):
                                                  "    value=['xxx'])"]))
         fs.rootdirectory().add(name='file.h', entry=File(lines=[]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(short_libnames=False,
-                                                     use_libtool=False),
-                                       DefaultDirectorySetup()])
+                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['xxx'])
+        self.failUnlessEqual(file_h_builder.public_visibility(), ['xxx'])
         pass
     pass
 
@@ -265,8 +261,7 @@ class IfaceFilePropertyConflict(unittest.TestCase):
             entry=File(lines=["// CONFIX:INSTALLPATH(['xxx'])"]))
         file.set_property(name='INSTALLPATH_CINCLUDE', value=['xxx'])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(short_libnames=False,
-                                              use_libtool=False)])
+                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         try:
             package.boil(external_nodes=[])
         except HeaderBuilder.AmbiguousVisibility, e:
@@ -297,14 +292,14 @@ class InstallPriorities(unittest.TestCase):
                               '} // /namespace',
                               ]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         self.failIf(file_h_builder is None)
         self.failUnless(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visible_in_directory(), ['install','from','dir','iface'])
+        self.failUnlessEqual(file_h_builder.public_visibility(), ['install','from','dir','iface'])
         pass
     pass
 
@@ -344,8 +339,7 @@ class INSTALLDIR_H_EmptyString(unittest.TestCase):
             entry=File(lines=["//CONFIX:REQUIRE_H('lo.h', REQUIRED)"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultDirectorySetup(),
-                                       DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
         pass
     pass
@@ -369,7 +363,7 @@ class BadNamespace(unittest.TestCase):
                               '}']))
 
         package = LocalPackage(rootdirectory=rootdirectory,
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         try:
             package.boil(external_nodes=[])
         except HeaderBuilder.BadNamespace:
@@ -382,21 +376,21 @@ class BadNamespaceGoodINSTALLDIR_H(unittest.TestCase):
     Explicit INSTALLDIR_H() covers bad namespace.
     """
     def test(self):
-        rootdirectory = Directory()
-        rootdirectory.add(
+        fs = FileSystem(path=["don't", 'care'])
+        fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
             entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
                               "PACKAGE_VERSION('1.2.3')"]))
-        rootdirectory.add(
+        fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
             entry=File(lines=['INSTALLDIR_H("")']))
-        rootdirectory.add(
+        fs.rootdirectory().add(
             name='file.h',
             entry=File(lines=['namespace X {',
                               '}']))
 
-        package = LocalPackage(rootdirectory=rootdirectory,
-                               setups=[DefaultCSetup(use_libtool=False, short_libnames=False)])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
         pass
     pass

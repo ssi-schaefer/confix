@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
-from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
-
-from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.setup import Setup
+from libconfix.core.machinery.creator import Creator
+from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.core.utils import const
 
 from libconfix.testutils import dirhier
@@ -33,85 +32,64 @@ import unittest
 class IgnoredEntriesSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(IgnoredEntries('testDefaultSetup'))
-        self.addTest(IgnoredEntries('testExplicitSetup'))
+        self.addTest(IgnoredEntries('test'))
         pass
     pass
 
-class FileWatcher(Builder):
-    def __init__(self, parentbuilder, package):
-        Builder.__init__(self)
-        self.seen_names_ = set()
+class IgnoreTestSetup(Setup):
+    def setup(self, dirbuilder):
+        dirbuilder.add_builder(IgnoreTestCreator())
+        pass
+    pass
+
+class IgnoreTestCreator(Creator):
+    def __init__(self):
+        Creator.__init__(self)
+        self.__seen_filenames = set()
         pass
     def locally_unique_id(self):
         # I am supposed to be the only one of my kind in any given
         # directory, so my class is a good unique ID.
         return str(self.__class__)
-    def locally_unique_id(self):
-        return str(self.__class__)
-
-    def seen_names(self):
-        return self.seen_names_
-
     def enlarge(self):
-        rv = Builder.enlarge(self)
-        for name, entry in self.parentbuilder().entries():
-            self.seen_names_.add(name)
+        for name, entry in self.parentbuilder().directory().entries():
+            if name in self.__seen_filenames:
+                continue
+            self.__seen_filenames.add(name)
+            if name.endswith('.ignoretest'):
+                Creator.add_candidate_builder(self, name, IgnoreTestBuilder(entry))
+                pass
             pass
-        return rv
+        pass
     pass
 
+class IgnoreTestBuilder(FileBuilder): pass
+
 class IgnoredEntries(unittest.TestCase):
-
-    def testDefaultSetup(self):
+    def test(self):
         fs = FileSystem(path=['a'])
         fs.rootdirectory().add(name=const.CONFIX2_PKG,
-                               entry=File(lines=["PACKAGE_NAME('xxx')",
+                               entry=File(lines=["PACKAGE_NAME('ignore-entries-common')",
                                                  "PACKAGE_VERSION('6.6.6')"]))
         fs.rootdirectory().add(name=const.CONFIX2_DIR,
-                               entry=File(lines=['IGNORE_ENTRIES(["file1"])',
-                                                 'IGNORE_FILE("file2")']))
-        fs.rootdirectory().add(name='file1',
+                               entry=File(lines=['IGNORE_ENTRIES(["ignored1.ignoretest"])',
+                                                 'IGNORE_FILE("ignored2.ignoretest")']))
+        fs.rootdirectory().add(name='ignored1.ignoretest',
                                entry=File())
-        fs.rootdirectory().add(name='file2',
+        fs.rootdirectory().add(name='ignored2.ignoretest',
+                               entry=File())
+        fs.rootdirectory().add(name='not-ignored.ignoretest',
                                entry=File())
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[DefaultDirectorySetup()])
-        filewatcher = FileWatcher(parentbuilder=package.rootbuilder(),
-                                  package=package)
-        package.rootbuilder().add_builder(filewatcher)
+            setups=[ConfixSetup(use_libtool=False, short_libnames=False),
+                    IgnoreTestSetup()])
         package.boil(external_nodes=[])
 
-        self.failIf('file1' in filewatcher.seen_names())
-        self.failIf('file2' in filewatcher.seen_names())
-
-        pass
-
-    def testExplicitSetup(self):
-        fs = FileSystem(path=['a'])
-        fs.rootdirectory().add(name=const.CONFIX2_PKG,
-                               entry=File(lines=["PACKAGE_NAME('xxx')",
-                                                 "PACKAGE_VERSION('6.6.6')"]))
-        fs.rootdirectory().add(name=const.CONFIX2_DIR,
-                               entry=File(lines=['IGNORE_ENTRIES(["file1"])',
-                                                 'IGNORE_FILE("file2")']))
-        fs.rootdirectory().add(name='file1',
-                               entry=File())
-        fs.rootdirectory().add(name='file2',
-                               entry=File())
-        
-        package = LocalPackage(
-            rootdirectory=fs.rootdirectory(),
-            setups=[ExplicitDirectorySetup()])
-        filewatcher = FileWatcher(parentbuilder=package.rootbuilder(),
-                                  package=package)
-        package.rootbuilder().add_builder(filewatcher)
-        package.boil(external_nodes=[])
-
-        self.failIf('file1' in filewatcher.seen_names())
-        self.failIf('file2' in filewatcher.seen_names())
+        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored1.ignoretest']))
+        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored2.ignoretest']))
+        self.failUnless(package.rootbuilder().find_entry_builder(path=['not-ignored.ignoretest']))
 
         pass
 

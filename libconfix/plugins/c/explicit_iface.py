@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.utils.error import Error
-from libconfix.core.utils import helper
-
 from h import HeaderBuilder
 from c import CBuilder
 from cxx import CXXBuilder
@@ -28,15 +24,22 @@ from executable import ExecutableBuilder
 from namefinder import LongNameFinder
 from relocated_headers.master import Master
 
+from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.utils.error import Error
+from libconfix.core.utils import helper
+
 import os
 
 class ExplicitInterfaceProxy(InterfaceProxy):
 
-    def __init__(self, object, use_libtool):
-        InterfaceProxy.__init__(self, object=object)
+    def __init__(self, dirbuilder):
+        assert isinstance(dirbuilder, DirectoryBuilder)
 
-        self.__use_libtool = use_libtool
-        
+        InterfaceProxy.__init__(self)
+
+        self.__dirbuilder = dirbuilder
+
         self.add_global('H', getattr(self, 'H'))
         self.add_global('C', getattr(self, 'C'))
         self.add_global('CXX', getattr(self, 'CXX'))
@@ -59,42 +62,41 @@ class ExplicitInterfaceProxy(InterfaceProxy):
             h.set_external_install_path(install)
             pass
 
-        self.object().add_builder(h)
+        self.__dirbuilder.add_builder(h)
 
         if relocate_to is not None:
             try:
                 the_path_to_relocate_to = helper.make_path(relocate_to)
             except Error, e:
                 raise Error('H(): invalid "relocate_to" value', [e])
-            self.object().add_builder(
+            self.__dirbuilder.add_builder(
                 Master(filename=filename, directory=the_path_to_relocate_to))
         return h
 
     def C(self, filename):
         c = CBuilder(file=self.__find_file(filename))
-        self.object().add_builder(c)
+        self.__dirbuilder.add_builder(c)
         return c
 
     def CXX(self, filename):
         cxx = CXXBuilder(file=self.__find_file(filename))
-        self.object().add_builder(cxx)
+        self.__dirbuilder.add_builder(cxx)
         return cxx
 
     def LIBRARY(self, members, basename=None, libtool_version_info=None):
         the_basename = basename
         if the_basename is None:
             the_basename=LongNameFinder().find_libname(
-                packagename=self.object().package().name(),
-                path=self.object().directory().relpath(from_dir=self.object().package().rootdirectory()))
+                packagename=self.__dirbuilder.package().name(),
+                path=self.__dirbuilder.directory().relpath(from_dir=self.__dirbuilder.package().rootdirectory()))
             pass
         library = LibraryBuilder(basename=the_basename,
-                                 use_libtool=self.__use_libtool,
                                  libtool_version_info=libtool_version_info,
-                                 libtool_release_info=self.object().package().version())
+                                 libtool_release_info=self.__dirbuilder.package().version())
         for m in members:
             library.add_member(m)
             pass
-        self.object().add_builder(library)
+        self.__dirbuilder.add_builder(library)
         return library
 
     def EXECUTABLE(self, center, members=[], exename=None, what=ExecutableBuilder.BIN):
@@ -102,22 +104,21 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         if the_exename is None:
             center_stem, center_ext = os.path.splitext(center.file().name())
             the_exename = LongNameFinder().find_exename(
-                packagename=self.object().package().name(),
-                path=self.object().directory().relpath(from_dir=self.object().package().rootdirectory()),
+                packagename=self.__dirbuilder.package().name(),
+                path=self.__dirbuilder.directory().relpath(from_dir=self.__dirbuilder.package().rootdirectory()),
                 centername=center_stem)
             pass
         executable = ExecutableBuilder(center=center,
                                        exename=the_exename,
-                                       what=what,
-                                       use_libtool=self.__use_libtool)
+                                       what=what)
         for m in members:
             executable.add_member(m)
             pass
-        self.object().add_builder(executable)
+        self.__dirbuilder.add_builder(executable)
         return executable
     
     def __find_file(self, filename):
-        for name, entry in self.object().entries():
+        for name, entry in self.__dirbuilder.directory().entries():
             if name == filename:
                 return entry
             pass

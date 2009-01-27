@@ -16,16 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.setup import Setup
-
-from iface import ADD_PLAINFILE_Confix2_dir
+from iface import ADD_PLAINFILE
 from creator import PlainFileCreator
 
+from libconfix.core.machinery.setup import Setup
+
 class PlainFileInterfaceSetup(Setup):
-    def initial_builders(self):
-        ret = super(PlainFileInterfaceSetup, self).initial_builders()
-        ret.append(ADD_PLAINFILE_Confix2_dir())
-        return ret
+    def setup(self, dirbuilder):
+        dirbuilder.add_interface(ADD_PLAINFILE(dirbuilder=dirbuilder))
+        pass
     pass
 
 class PlainFileCreatorSetup(Setup):
@@ -35,11 +34,10 @@ class PlainFileCreatorSetup(Setup):
         self.__prefixdir = prefixdir
         self.__datadir = datadir
         pass
-    def initial_builders(self):
-        ret = super(PlainFileCreatorSetup, self).initial_builders()
-        ret.append(PlainFileCreator(regex=self.__regex,
-                                    prefixdir=self.__prefixdir,
-                                    datadir=self.__datadir))
-        return ret
-    pass
 
+    def setup(self, dirbuilder):
+        dirbuilder.add_builder(PlainFileCreator(regex=self.__regex,
+                                                prefixdir=self.__prefixdir,
+                                                datadir=self.__datadir))
+        pass
+    pass

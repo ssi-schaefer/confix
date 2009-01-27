@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,9 +20,8 @@ import complete_package
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.c import CBuilder
-from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
-from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
@@ -36,8 +35,7 @@ class CompletePackageInMemorySuite(unittest.TestSuite):
 class CompletePackageInMemoryTest(unittest.TestCase):
     def test(self):
         package = LocalPackage(rootdirectory=complete_package.make_package_source(package_name=self.__class__.__name__),
-                               setups=[ExplicitCSetup(use_libtool=False),
-                                       ExplicitDirectorySetup()])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         # see if we have got the directories right

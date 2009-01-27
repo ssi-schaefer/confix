@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,46 +19,34 @@
 from builder import ScriptBuilder
 
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.filesys.vfs_file import VFSFile
 
 import types
 
-class ScriptInterface_Confix2_dir(Confix2_dir_Contributor):
-
-    class ADD_SCRIPT(InterfaceProxy):
-        def __init__(self, object):
-            InterfaceProxy.__init__(self, object)
-            self.add_global('ADD_SCRIPT', getattr(self, 'ADD_SCRIPT'))
-            pass
-
-        def ADD_SCRIPT(self, filename):
-            if type(filename) is not types.StringType:
-                raise Error('ADD_SCRIPT(): filename must be a string')
-            
-            file = self.object().parentbuilder().directory().find([filename])
-            if file is None:
-                raise Error('ADD_SCRIPT('+filename+'): no such file or directory')
-            if not isinstance(file, VFSFile):
-                raise Error('ADD_SCRIPT('+filename+'): not a file')
-            
-            self.object().add_script(file)
-            pass
+class ADD_SCRIPT(InterfaceProxy):
+    def __init__(self, dirbuilder):
+        InterfaceProxy.__init__(self)
+        self.__dirbuilder = dirbuilder
+        self.add_global('ADD_SCRIPT', getattr(self, 'ADD_SCRIPT'))
         pass
 
-    def add_script(self, file):
-        self.parentbuilder().add_builder(ScriptBuilder(file=file))
+    def ADD_SCRIPT(self, filename):
+        if type(filename) is not types.StringType:
+            raise Error('ADD_SCRIPT(): filename must be a string')
+
+        file = self.__dirbuilder.directory().find([filename])
+        if file is None:
+            raise Error('ADD_SCRIPT('+filename+'): no such file or directory')
+        if not isinstance(file, VFSFile):
+            raise Error('ADD_SCRIPT('+filename+'): not a file')
+
+        self.__dirbuilder.add_builder(ScriptBuilder(file=file))
         pass
-    def get_iface_proxies(self):
-        return [self.ADD_SCRIPT(object=self)]
-    def locally_unique_id(self):
-        return str(self.__class__)
     pass
 
 class ScriptSetup(Setup):
-    def initial_builders(self):
-        ret = super(ScriptSetup, self).initial_builders()
-        ret.append(ScriptInterface_Confix2_dir())
-        return ret
+    def setup(self, dirbuilder):
+        dirbuilder.add_interface(ADD_SCRIPT(dirbuilder=dirbuilder))
+        pass
     pass

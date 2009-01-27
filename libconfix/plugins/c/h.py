@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -56,7 +56,6 @@ class HeaderBuilder(CBaseBuilder):
 
         self.__namespace_install_path = None
         self.__namespace_error = None
-        self.__property_install_path = None
         self.__iface_install_path = None
         self.__external_install_path = None
 
@@ -77,9 +76,6 @@ class HeaderBuilder(CBaseBuilder):
         # self.__iface_install_path.
         super(HeaderBuilder, self).initialize(package)
 
-        if self.file() is not None:
-            self.__property_install_path = self.file().get_property(HeaderBuilder.PROPERTY_INSTALLPATH)
-            pass
         try:        
             self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
         except Error, e:
@@ -88,16 +84,95 @@ class HeaderBuilder(CBaseBuilder):
         pass
 
     def set_iface_install_path(self, path):
+        self.force_enlarge()
         self.__iface_install_path = path
         pass
 
     def set_external_install_path(self, path):
         assert type(path) in (list, tuple)
+        self.force_enlarge()
         self.__external_install_path = path
         pass
 
+    def public_visibility(self):
+        ret = None
+        set_by = None
+
+        if self.__external_install_path is not None:
+            if set_by is not None:
+                raise self.AmbiguousVisibility(header_builder=self, cur='explicit setting', prev=set_by)
+            ret = self.__external_install_path
+            set_by = "explicit setting"
+            pass
+
+        if self.__iface_install_path is not None:
+            if set_by is not None:
+                raise self.AmbiguousVisibility(header_builder=self, cur='file interface invocation', prev=set_by)
+            ret = self.__iface_install_path
+            set_by = 'file interface invocation'
+            pass
+
+        property_install_path = self.file().get_property(HeaderBuilder.PROPERTY_INSTALLPATH)
+        if property_install_path is not None:
+            if set_by is not None:
+                raise self.AmbiguousVisibility(header_builder=self, cur='file property', prev=set_by)
+            ret = property_install_path
+            set_by = 'file property'
+            pass
+
+        if ret is None:
+            # bail out if we had an error recognizing the namespace
+            if self.__namespace_error is not None:
+                raise self.BadNamespace(path=self.file().relpath(from_dir=self.package().rootdirectory()),
+                                        error=self.__namespace_error)
+            ret = self.__namespace_install_path
+            pass
+
+        if ret is None:
+            ret = []
+            pass
+
+        return ret
+
+    LOCAL_INSTALL = 0
+    DIRECT_INCLUDE = 1
+    def local_visibility(self):
+        """
+        Decide if we have to 'locally install' the file, in order to
+        make it visible to the other nodes in the package.
+
+        Two examples:
+
+        1. A file is declared to be visible as 'a/b/file.h', but is
+           physically available as 'c/file.h' (all relative to the
+           package root). This file has to be 'locally installed'
+           because no-one can set an inclue file to get this file.
+
+        2. If, on the other hand, the file is physically available as
+           'c/a/b/file.h', then other can see it by simply adding the
+           directory 'c' to the include path.
+
+        Returns a tuple (what, path) where what is either of
+        LOCAL_INSTALL or DIRECT_INCLUDE, and path is the respective
+        path. Example 1. would return (LOCAL_INSTALL, ['a','b']), to
+        indicate that file.h would have to be copied to some directory
+        'a/b' under some directory (which then has to be put on the
+        include path of the user). Example 2. would return
+        (DIRECT_INCLUDE, ['c']) to indicate that the file doesn't need
+        a copy to be useful, and that directory 'c' has to be put on
+        the user's include path.
+        """
+        complete_path = self.parentbuilder().directory().relpath(from_dir=self.package().rootdirectory())
+        visible_path = self.public_visibility()
+        
+        if len(complete_path) < len(visible_path):
+            return (self.LOCAL_INSTALL, visible_path)
+        if complete_path[len(complete_path)-len(visible_path):] == visible_path:
+            return (self.DIRECT_INCLUDE, complete_path[0:len(complete_path)-len(visible_path)])
+        return (self.LOCAL_INSTALL, visible_path)
+
     def iface_pieces(self):
-        return super(HeaderBuilder, self).iface_pieces() + [HeaderBuilderInterfaceProxy(object=self)]
+        return super(HeaderBuilder, self).iface_pieces() + [HeaderBuilderInterfaceProxy(builder=self)]
 
     def disable_dependency_info(self):
         """
@@ -131,7 +206,7 @@ class HeaderBuilder(CBaseBuilder):
         ret = DependencyInformation()
         ret.add(super(HeaderBuilder, self).dependency_info())
 
-        outer_name = '/'.join(self.visible_in_directory()+[self.file().name()])
+        outer_name = '/'.join(self.public_visibility()+[self.file().name()])
         ret.add_provide(Provide_CInclude(filename=outer_name))
 
         # regardless if we will provide ourselves to the outer world,
@@ -143,95 +218,39 @@ class HeaderBuilder(CBaseBuilder):
         if outer_name is None or self.file().name() != outer_name:
             ret.add_internal_provide(Provide_CInclude(filename=self.file().name()))
             pass
-        
+
         return ret
 
     def buildinfos(self):
         ret = BuildInformationSet()
         ret.merge(super(HeaderBuilder, self).buildinfos())
 
-        # if the receiver can see the file directly (without doing a
-        # local install), then tell him the directory that he has to
-        # add to his include path. else, only tell him the local
-        # install directory.
-        direct_includedir = _get_direct_includedir(
-            rootdir=self.parentbuilder().directory().relpath(from_dir=self.package().rootdirectory()),
-            visibledir=self.visible_in_directory())
-
-        if direct_includedir is not None:
-            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=direct_includedir))
-        else:
+        local_visibility = self.local_visibility()
+        if local_visibility[0] == self.DIRECT_INCLUDE:
+            # receiver can see the file directly, by adding a
+            # directory of the source package to the path.
+            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=local_visibility[1]))
+        elif local_visibility[0] == self.LOCAL_INSTALL:
+            # receiver has to add the directory on the include path
+            # where the locally installed files are
+            # ($(top_srcdir)/confix_include for the automake backend)
             ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=None))
+        else:
+            assert False
             pass
-
+        
         return ret
 
-    def output(self):
-        super(HeaderBuilder, self).output()
-        installdir = self.visible_in_directory()
-        self.parentbuilder().file_installer().add_public_header(filename=self.file().name(), dir=installdir)
-
-        # see above: see if we need to locally install the file.
-        include_dir = _get_direct_includedir(
-            rootdir=self.parentbuilder().directory().relpath(from_dir=self.package().rootdirectory()),
-            visibledir=self.visible_in_directory())
-        if include_dir is None:
-            self.parentbuilder().file_installer().add_private_header(
-                filename=self.file().name(),
-                dir=self.visible_in_directory())
-            pass
-        pass
-
-    def visible_in_directory(self):
-        ret = None
-        set_by = None
-        if self.__external_install_path is not None:
-            if set_by is not None:
-                raise self.AmbiguousVisibility(header_builder=self, cur='explicit setting', prev=set_by)
-            ret = self.__external_install_path
-            set_by = "explicit setting"
-            pass
-        if self.__iface_install_path is not None:
-            if set_by is not None:
-                raise self.AmbiguousVisibility(header_builder=self, cur='file interface invocation', prev=set_by)
-            ret = self.__iface_install_path
-            set_by = 'file interface invocation'
-            pass
-        if self.__property_install_path is not None:
-            if set_by is not None:
-                raise self.AmbiguousVisibility(header_builder=self, cur='file property', prev=set_by)
-            ret = self.__property_install_path
-            set_by = 'file property'
-            pass
-
-        if ret is None:
-            # bail out if we had an error recognizing the namespace
-            if self.__namespace_error is not None:
-                raise self.BadNamespace(path=self.file().relpath(from_dir=self.package().rootdirectory()),
-                                        error=self.__namespace_error)
-            ret = self.__namespace_install_path
-            pass
-
-        if ret is None:
-            ret = []
-            pass
-
-        return ret
     pass
 
 class HeaderBuilderInterfaceProxy(InterfaceProxy):
-    def __init__(self, object):
-        InterfaceProxy.__init__(self, object=object)
+    def __init__(self, builder):
+        InterfaceProxy.__init__(self)
+        self.__builder = builder
         self.add_global('INSTALLPATH', getattr(self, 'INSTALLPATH'))
         pass
     def INSTALLPATH(self, path):
-        self.object().set_iface_install_path(helper.make_path(path))
+        self.__builder.set_iface_install_path(helper.make_path(path))
         pass
     pass
 
-def _get_direct_includedir(rootdir, visibledir):
-    if len(rootdir) < len(visibledir):
-        return None
-    if rootdir[len(rootdir)-len(visibledir):] == visibledir:
-        return rootdir[0:len(rootdir)-len(visibledir)]
-    return None

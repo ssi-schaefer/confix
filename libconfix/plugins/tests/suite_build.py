@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,6 +16,7 @@
 # USA
 
 from libconfix.plugins.c.tests.suite_build import CBuildSuite
+from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
 from libconfix.plugins.plainfile.tests.suite_build import PlainFileSuiteBuild
 from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
 
@@ -25,6 +26,7 @@ class PluginsBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(CBuildSuite())
+        self.addTest(AutomakeBuildSuite())
         self.addTest(PlainFileSuiteBuild())
         self.addTest(MakeSuiteBuild())
         pass

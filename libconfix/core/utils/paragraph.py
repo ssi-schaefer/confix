@@ -60,7 +60,7 @@ class ParagraphSet:
         ret.update(other)
         return ret
 
-    def lines_for_configure_ac(self):
+    def lines(self):
         ret = []
         for p in self.__dict.values():
             ret.extend(['',
@@ -68,9 +68,6 @@ class ParagraphSet:
             ret.extend(p.lines())
             pass
         return ret
-
-    def lines_for_acinclude_m4(self):
-        return self.lines_for_configure_ac()
 
     pass
 
@@ -105,14 +102,14 @@ class OrderedParagraphSet:
         ret.update(other)
         return ret
 
-    def lines_for_configure_ac(self):
+    def lines(self):
         ret = []
         orders = self.__sets_per_order.keys()[:]
         orders.sort()
         for o in orders:
             ret.extend(['',
                         '# order: '+str(o)])
-            ret.extend(self.__sets_per_order[o].lines_for_configure_ac())
+            ret.extend(self.__sets_per_order[o].lines())
             pass
         return ret
 

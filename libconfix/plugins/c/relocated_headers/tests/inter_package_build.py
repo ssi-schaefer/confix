@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,12 +20,9 @@ import inter_package
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.automake import bootstrap, configure, make, helper_automake
-from libconfix.core.automake.repo_automake import AutomakePackageRepository
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
-
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
-
+from libconfix.plugins.automake import bootstrap, configure, make, helper
+from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
@@ -45,7 +42,7 @@ class InterPackageBuildTest(PersistentTestCase):
     
     def test(self):
         common_source, lo_source, hi_source = inter_package.make_source(
-            classname=helper_automake.automake_name(self.__class__.__name__))
+            classname=helper.automake_name(self.__class__.__name__))
 
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
@@ -82,7 +79,7 @@ class InterPackageBuildTest(PersistentTestCase):
         
         common_package = LocalPackage(
             rootdirectory=common_source,
-            setups=[DefaultCSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
+            setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
         common_package.boil(external_nodes=[])
         common_package.output()
         fs.sync()                                      
@@ -103,8 +100,7 @@ class InterPackageBuildTest(PersistentTestCase):
 
         lo_package = LocalPackage(
             rootdirectory=lo_source,
-            setups=[DefaultCSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool()),
-                    DefaultDirectorySetup()])
+            setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
         lo_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
         lo_package.output()
         fs.sync()
@@ -126,7 +122,7 @@ class InterPackageBuildTest(PersistentTestCase):
 
         hi_package = LocalPackage(
             rootdirectory=hi_source,
-            setups=[DefaultDirectorySetup()])
+            setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
         hi_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
         hi_package.output()
         fs.sync()

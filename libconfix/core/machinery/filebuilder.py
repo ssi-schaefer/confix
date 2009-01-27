@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,12 +31,14 @@ class FileBuilder(EntryBuilder):
         return self.entry()
     def iface_pieces(self):
         return EntryBuilder.iface_pieces(self) + \
-               [FileBuilderInterfaceProxy(object=self)]
+               [FileBuilderInterfaceProxy(builder=self)]
     pass
 
 class FileBuilderInterfaceProxy(InterfaceProxy):
-    def __init__(self, object):
-        InterfaceProxy.__init__(self, object=object)
+    def __init__(self, builder):
+        InterfaceProxy.__init__(self)
+
+        self.__builder = builder
 
         self.add_global('SET_FILE_PROPERTIES', getattr(self, 'SET_FILE_PROPERTIES'))
         self.add_global('SET_FILE_PROPERTY', getattr(self, 'SET_FILE_PROPERTY'))
@@ -48,13 +50,20 @@ class FileBuilderInterfaceProxy(InterfaceProxy):
         if not type(properties) is types.DictionaryType:
             raise Error("SET_FILE_PROPERTIES(): 'properties' parameter must be a dictionary")
         for name, value in properties.iteritems():
-            self.object().file().set_property(name=name, value=value)
+            self.__builder.file().set_property(name=name, value=value)
+            # we have modified a property, which at least *might* have
+            # influence on the graph
+            self.__builder.force_enlarge()
             pass
         pass
 
     def SET_FILE_PROPERTY(self, name, value):
         if type(name) is not types.StringType:
             raise Error("SET_FILE_PROPERTY(): 'name' must be a string")
-        self.object().file().set_property(name, value)
+        self.__builder.file().set_property(name, value)
+        # we have modified a property, which at least *might* have
+        # influence on the graph
+        self.__builder.force_enlarge()
         pass
     
+    pass

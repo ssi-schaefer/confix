@@ -15,13 +15,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from explicit_iface import Confix2_dir_ExplicitInterface
-from common_iface import CommonDirectoryInterface_Confix2_dir
+from common_iface import DirectoryBuilderInterfaceProxy
+from explicit_iface import ExplicitDirectoryBuilderInterfaceProxy
+from confix2_dir_creator import Confix2_dir_Creator
 
 from libconfix.core.machinery.setup import Setup
 
 class ExplicitDirectorySetup(Setup):
-    def initial_builders(self):
-        return super(ExplicitDirectorySetup, self).initial_builders() + \
-               [Confix2_dir_ExplicitInterface(), CommonDirectoryInterface_Confix2_dir()]
+    def setup(self, dirbuilder):
+        dirbuilder.add_interface(DirectoryBuilderInterfaceProxy(dirbuilder=dirbuilder))
+        dirbuilder.add_interface(ExplicitDirectoryBuilderInterfaceProxy(dirbuilder=dirbuilder))
+        dirbuilder.add_builder(Confix2_dir_Creator())
+        pass
     pass

@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,10 +20,9 @@ from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.utils import const 
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.automake import bootstrap, configure, make
 
-from libconfix.plugins.make.setup import MakeSetup
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
+from libconfix.plugins.automake import bootstrap, configure, make
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
 
@@ -68,8 +67,7 @@ class GeneratedPackageTest(PersistentTestCase):
         fs.sync()
         
         package = LocalPackage(rootdirectory=source,
-                               setups=[MakeSetup(),
-                                       DefaultCSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         

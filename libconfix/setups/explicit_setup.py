@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,20 +16,27 @@
 # USA
 
 from libconfix.core.machinery.setup import CompositeSetup
+from libconfix.core.machinery.core_setup import CoreSetup
 
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
-from libconfix.plugins.c.library_dependencies import LibraryDependenciesFinderSetup
+from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
+from libconfix.plugins.script.setup import ScriptSetup
+from libconfix.plugins.idl.setup import IDLSetup
+from libconfix.plugins.make.setup import MakeSetup
+from libconfix.plugins.automake.setup import AutomakeSetup
 
 class ExplicitSetup(CompositeSetup):
-    def __init__(self,
-                 use_libtool):
-        setups = [ExplicitDirectorySetup(),
-                  ExplicitCSetup(use_libtool=use_libtool)
+    def __init__(self, use_libtool):
+        setups = [CoreSetup(),
+                  ExplicitDirectorySetup(),
+                  ExplicitCSetup(),
+                  ScriptSetup(),
+                  IDLSetup(),
+                  PlainFileInterfaceSetup(),
+                  MakeSetup(),
+                  AutomakeSetup(use_libtool=use_libtool),
                   ]
-        if not use_libtool:
-            setups.append(LibraryDependenciesFinderSetup())
-            pass
         CompositeSetup.__init__(self, setups)
         pass
     pass

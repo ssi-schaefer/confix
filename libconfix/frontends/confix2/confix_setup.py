@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,13 +17,15 @@
 # USA
 
 from libconfix.core.machinery.setup import CompositeSetup
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
-
+from libconfix.core.machinery.core_setup import CoreSetup
+from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 from libconfix.plugins.script.setup import ScriptSetup
 from libconfix.plugins.idl.setup import IDLSetup
 from libconfix.plugins.make.setup import MakeSetup
+
+from libconfix.plugins.automake.setup import AutomakeSetup
 
 class ConfixSetup(CompositeSetup):
     def __init__(self,
@@ -31,12 +33,14 @@ class ConfixSetup(CompositeSetup):
                  short_libnames):
         CompositeSetup.__init__(
             self,
-            [DefaultDirectorySetup(),
-             DefaultCSetup(short_libnames=short_libnames, use_libtool=use_libtool),
+            [CoreSetup(),
+             ImplicitDirectorySetup(),
+             DefaultCSetup(short_libnames=short_libnames),
              ScriptSetup(),
              IDLSetup(),
              PlainFileInterfaceSetup(),
-             MakeSetup()])
+             MakeSetup(),
+             AutomakeSetup(use_libtool=use_libtool)])
         pass
 
     pass

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
+from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
 
@@ -41,7 +41,7 @@ class BasicDirectorySetup(unittest.TestCase):
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[DefaultDirectorySetup()])
+            setups=[ImplicitDirectorySetup()])
         package.boil(external_nodes=[])
 
         self.assertEqual(package.rootbuilder().directory().find(['a']), subdir)

@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,6 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.c.dependency import Require_CInclude
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
@@ -23,9 +24,7 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.installed_package import InstalledPackage
 from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.require import Require
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
-from libconfix.plugins.c.dependency import Require_CInclude
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
@@ -78,8 +77,7 @@ class Bug1713807Test(unittest.TestCase):
                                                                   buildinfos=[])])
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultCSetup(short_libnames=False, use_libtool=False),
-                                       DefaultDirectorySetup()])
+                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         package.boil(external_nodes=installed_package.nodes())
         pass
     pass

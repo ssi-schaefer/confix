@@ -20,34 +20,27 @@ from h import HeaderBuilder
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
 
 class ExplicitInstaller(Builder):
     """
-    Sit around and wait for user request like,
+    Sit around and wait for user requests like,
     "Ey man, tell all HeaderBuilders that come along to install their files to 'some/directory'".
 
-    User request are usually those from an interface proxy sitting in
+    User requests are usually those from an interface proxy sitting in
     Confix2.dir.
     """
 
-    def __init__(self):
+    def __init__(self, installdir):
         Builder.__init__(self)
-        self.__installdir = None
+        self.__installdir = installdir
         self.__seen_header_builders = set()
         pass
 
     def locally_unique_id(self):
         return str(self.__class__.__name__)
-
-    def set_installdir(self, path):
-        if self.__installdir is not None:
-            raise Error('Header install directory has already been set to '+'/'.join(self.__installdir))
-        self.__installdir = path
-        pass
 
     def enlarge(self):
         super(ExplicitInstaller, self).enlarge()
@@ -59,40 +52,32 @@ class ExplicitInstaller(Builder):
             if b in self.__seen_header_builders:
                 continue
             b.set_external_install_path(self.__installdir)
+            self.__seen_header_builders.add(b)
+            # we just have modified dependency information, so another
+            # round must be made.
+            self.force_enlarge()
             pass
         pass
+    pass
 
-class ExplicitInstaller_Confix2_dir(Confix2_dir_Contributor):
-    class INSTALLDIR_H(InterfaceProxy):
-        def __init__(self, object):
-            assert isinstance(object, ExplicitInstaller)
-            InterfaceProxy.__init__(self, object=object)
-            self.add_global('INSTALLDIR_H', getattr(self, 'INSTALLDIR_H'))
-            pass
-        def INSTALLDIR_H(self, dir):
-            try:
-                the_dir = helper.make_path(dir)
-            except Error, e:
-                raise Error('INSTALLDIR_H(): dir argument must either '
-                            'be a string or a list of path components', [e])
-            self.object().set_installdir(the_dir)
-            pass
+class INSTALLDIR_H(InterfaceProxy):
+    def __init__(self, dirbuilder):
+        InterfaceProxy.__init__(self)
+        self.__dirbuilder = dirbuilder
+        self.add_global('INSTALLDIR_H', getattr(self, 'INSTALLDIR_H'))
         pass
-    def __init__(self, explicit_installer):
-        Confix2_dir_Contributor.__init__(self)
-        self.__explicit_installer = explicit_installer
+    def INSTALLDIR_H(self, dir):
+        try:
+            the_dir = helper.make_path(dir)
+        except Error, e:
+            raise Error('INSTALLDIR_H(): dir argument must either '
+                        'be a string or a list of path components', [e])
+        self.__dirbuilder.add_builder(ExplicitInstaller(installdir=the_dir))
         pass
-    def get_iface_proxies(self):
-        return [self.INSTALLDIR_H(object=self.__explicit_installer)]
-    def locally_unique_id(self):
-        return str(self.__class__)
     pass
 
 class ExplicitInstallerSetup(Setup):
-    def initial_builders(self):
-        ret = super(ExplicitInstallerSetup, self).initial_builders()
-        installer = ExplicitInstaller()
-        ret.extend([
-            installer,            ExplicitInstaller_Confix2_dir(explicit_installer=installer)])
-        return ret
+    def setup(self, dirbuilder):
+        dirbuilder.add_interface(INSTALLDIR_H(dirbuilder=dirbuilder))
+        pass
     pass

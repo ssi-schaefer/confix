@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,19 +18,9 @@
 
 from compiled import CompiledCBuilder
 
-from libconfix.core.utils.paragraph import Paragraph, OrderedParagraphSet
-from libconfix.core.automake.configure_ac import Configure_ac
-
 class CBuilder(CompiledCBuilder):
     def __init__(self, file):
         CompiledCBuilder.__init__(self, file=file)
-        pass
-
-    def output(self):
-        CompiledCBuilder.output(self)
-        self.package().configure_ac().add_paragraph(
-            paragraph=Paragraph(['AC_PROG_CC']),
-            order=Configure_ac.PROGRAMS)
         pass
     
     pass

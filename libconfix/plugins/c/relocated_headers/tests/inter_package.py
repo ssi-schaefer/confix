@@ -96,7 +96,7 @@ def make_source(classname):
     hi.add(
         name='hi.c',
         entry=File(lines=['#include <lo.h>',
-                          '#include <common.h>'
+                          '#include <common.h>',
                           'int main(void) {',
                           '    (void)lo();',
                           '    (void)common();',

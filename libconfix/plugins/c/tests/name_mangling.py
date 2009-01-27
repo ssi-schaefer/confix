@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,18 +16,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
+from libconfix.plugins.c.library import LibraryBuilder
+from libconfix.plugins.c.executable import ExecutableBuilder
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
-from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.plugins.c.executable import ExecutableBuilder
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
+
+import unittest
 
 class NameManglingSuite(unittest.TestSuite):
     def __init__(self):
@@ -85,9 +85,8 @@ class NamesBase(unittest.TestCase):
             entry=File(lines=['int main(void) { return 0; }']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultDirectorySetup(),
-                                       DefaultCSetup(use_libtool=self.use_libtool(),
-                                                     short_libnames=self.short_libnames())])
+                               setups=[ConfixSetup(use_libtool=self.use_libtool(),
+                                                   short_libnames=self.short_libnames())])
         package.boil(external_nodes=[])
 
         libdir_builder = package.rootbuilder().find_entry_builder(['lib1', 'lib2'])

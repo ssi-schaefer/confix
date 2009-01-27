@@ -22,7 +22,7 @@ from libconfix.core.digraph.cycle import CycleError
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
+from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.machinery.edgefinder import EdgeFinder
 from libconfix.core.machinery.local_package import LocalPackage
@@ -57,7 +57,7 @@ class BasicResolveTest(unittest.TestCase):
                            entry=File(lines=['REQUIRE_SYMBOL(symbol="lo", urgency=URGENCY_ERROR)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultDirectorySetup(),
+                               setups=[ImplicitDirectorySetup(),
                                        FileInterfaceTestSetup()])
         package.boil(external_nodes=[])
 
@@ -154,7 +154,7 @@ class CycleTest(unittest.TestCase):
                                            'REQUIRE_SYMBOL(symbol="A")']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[DefaultDirectorySetup(),
+                               setups=[ImplicitDirectorySetup(),
                                        FileInterfaceTestSetup()])
         try:
             package.boil(external_nodes=[])

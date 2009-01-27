@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -25,13 +25,9 @@ from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.setup import Setup
 
 class FileInterfaceTestSetup(Setup):
-    def __init__(self):
-        Setup.__init__(self)
+    def setup(self, dirbuilder):
+        dirbuilder.add_builder(FileInterfaceTestCreator())
         pass
-    def initial_builders(self):
-        ret = super(FileInterfaceTestSetup, self).initial_builders()
-        ret.append(FileInterfaceTestCreator())
-        return ret
     pass
 
 class FileInterfaceTestCreator(Builder):
@@ -45,7 +41,7 @@ class FileInterfaceTestCreator(Builder):
 
     def enlarge(self):
         super(FileInterfaceTestCreator, self).enlarge()
-        for name, entry in self.parentbuilder().entries():
+        for name, entry in self.parentbuilder().directory().entries():
             if not isinstance(entry, VFSFile):
                 continue
             if entry in self.handled_entries_:

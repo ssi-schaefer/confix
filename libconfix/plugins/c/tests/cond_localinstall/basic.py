@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,12 +16,12 @@
 # USA
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
-
 from libconfix.core.utils import const
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
+from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
@@ -85,8 +85,7 @@ class BasicLocalInstallTest(unittest.TestCase):
             entry=File(lines=['#include <hi.h>']))
 
         package = LocalPackage(rootdirectory=rootdirectory,
-                               setups=[DefaultCSetup(short_libnames=False, use_libtool=False),
-                                       DefaultDirectorySetup()])
+                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
         package.boil(external_nodes=[])
 
         user_c_builder = package.rootbuilder().find_entry_builder(['user', 'user.c'])

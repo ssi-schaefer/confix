@@ -16,32 +16,32 @@
 # USA
 
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.filesys.union_filesys import UnionFileSystem
+from libconfix.core.filesys.overlay_filesys import OverlayFileSystem
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.frontends.confix.confix_setup import ConfixSetup
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
 
-from libconfix.core.automake import bootstrap
-from libconfix.core.automake import configure
-from libconfix.core.automake import make
+from libconfix.plugins.automake import bootstrap
+from libconfix.plugins.automake import configure
+from libconfix.plugins.automake import make
 
 import unittest
 import sys
 import os
 
-class UnionBasicSuite(unittest.TestSuite):
+class OverlayBasicSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(UnionBasicTest('test'))
+        self.addTest(OverlayBasicTest('test'))
         pass
     pass
 
-class UnionBasicTest(PersistentTestCase):
+class OverlayBasicTest(PersistentTestCase):
     def test(self):
         source = self.rootpath() + ['source']
         build = self.rootpath() + ['build']
@@ -117,9 +117,9 @@ class UnionBasicTest(PersistentTestCase):
 
         # union of both, and boil-build-install
         
-        union_fs = UnionFileSystem(first=source_fs, second=overlay_fs)
+        overlay_fs = OverlayFileSystem(original=source_fs, overlay=overlay_fs)
         
-        package = LocalPackage(rootdirectory=union_fs.rootdirectory(),
+        package = LocalPackage(rootdirectory=overlay_fs.rootdirectory(),
                                setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
         package.output()
@@ -131,13 +131,13 @@ class UnionBasicTest(PersistentTestCase):
         self.failUnless(source_fs.rootdirectory().find(['exe', const.CONFIX2_DIR]) is None)
         self.failUnless(source_fs.rootdirectory().find(['library', const.CONFIX2_DIR]) is None)
 
-        union_fs.sync()
+        overlay_fs.sync()
 
         os.makedirs(os.sep.join(build))
-        bootstrap.bootstrap(packageroot=union_fs.rootdirectory().abspath(),
+        bootstrap.bootstrap(packageroot=overlay_fs.rootdirectory().abspath(),
                             use_kde_hack=False,
                             argv0=sys.argv[0])
-        configure.configure(packageroot=union_fs.rootdirectory().abspath(),
+        configure.configure(packageroot=overlay_fs.rootdirectory().abspath(),
                             builddir=build,
                             prefix=install)
         make.make(builddir=build,
@@ -152,6 +152,6 @@ class UnionBasicTest(PersistentTestCase):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(UnionBasicSuite())
+    unittest.TextTestRunner().run(OverlayBasicSuite())
     pass
 

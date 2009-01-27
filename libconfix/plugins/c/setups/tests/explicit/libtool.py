@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,9 +19,9 @@ from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.library import LibraryBuilder
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
@@ -29,7 +29,6 @@ class LibtoolInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(LibtoolInMemoryTest('testLibrary'))
-        self.addTest(LibtoolInMemoryTest('testExecutable'))
         pass
     pass
 
@@ -48,8 +47,9 @@ class LibtoolInMemoryTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=rootdir,
-                               setups=[ExplicitCSetup(use_libtool=True)])
+                               setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
+        package.output()
 
         library_builder = None
         for b in package.rootbuilder().builders():
@@ -58,34 +58,7 @@ class LibtoolInMemoryTest(unittest.TestCase):
                 library_builder = b
                 pass
             pass
-        self.failUnless(library_builder.use_libtool())
-        pass
-
-    def testExecutable(self):
-        rootdir = Directory()
-        rootdir.add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=["PACKAGE_NAME('LibtoolInMemoryTest.testExecutable')",
-                              "PACKAGE_VERSION('1.2.3')"]))
-        rootdir.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=["EXECUTABLE(center=C(filename='file.c'))"]))
-        rootdir.add(
-            name='file.c',
-            entry=File())
-
-        package = LocalPackage(rootdirectory=rootdir,
-                               setups=[ExplicitCSetup(use_libtool=True)])
-        package.boil(external_nodes=[])
-
-        exe_builder = None
-        for b in package.rootbuilder().builders():
-            if isinstance(b, ExecutableBuilder):
-                self.failUnless(exe_builder is None)
-                exe_builder = b
-                pass
-            pass
-        self.failUnless(exe_builder.use_libtool())
+        self.failUnless('lib'+library_builder.basename()+'.la' in package.rootbuilder().makefile_am().ltlibraries())
         pass
     pass
 

@@ -1,4 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,10 +17,11 @@
 # USA
 
 from libconfix.core.utils.error import Error
-from libconfix.core.automake.list import List
-from libconfix.core.automake.rule import Rule
-from libconfix.core.automake.include import Include
-from libconfix.core.automake.white import White
+
+from libconfix.plugins.automake.list import List
+from libconfix.plugins.automake.rule import Rule
+from libconfix.plugins.automake.include import Include
+from libconfix.plugins.automake.white import White
 
 import re
 

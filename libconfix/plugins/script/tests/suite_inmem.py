@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.filesys.file import File
+from libconfix.core.filesys.directory import Directory
+from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
 
-from libconfix.plugins.script.setup import ScriptSetup
-
-from package import make_package
+import unittest
 
 class ScriptSuiteInMemory(unittest.TestSuite):
     def __init__(self):
@@ -34,9 +35,20 @@ class ScriptSuiteInMemory(unittest.TestSuite):
 
 class ScriptInMemoryTest(unittest.TestCase):
     def test(self):
-        fs = FileSystem(path=['don\'t', 'care'], rootdirectory=make_package())
+        fs = FileSystem(path=['don\'t', 'care'])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('ScriptPluginTest')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["ADD_SCRIPT(filename='script')"]))
+        fs.rootdirectory().add(
+            name='script',
+            entry=File())
+        
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ScriptSetup()])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

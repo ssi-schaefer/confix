@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,36 +16,36 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-
-from libconfix.core.filesys.vfs_file import VFSFile
-from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.setup import Setup
-
 from c import CBuilder
 from cxx import CXXBuilder
 from h import HeaderBuilder
 from lex import LexBuilder
 from yacc import YaccBuilder
 
-class Creator(Builder):
+from libconfix.core.filesys.vfs_file import VFSFile
+from libconfix.core.machinery.creator import Creator
+from libconfix.core.machinery.setup import Setup
+
+import os
+
+class CCreator(Creator):
     def __init__(self):
-        Builder.__init__(self)
+        Creator.__init__(self)
         self.__handled_entries = set()
         pass
 
     def shortname(self):
-        return 'C.Creator'
+        return 'CCreator'
 
     def locally_unique_id(self):
-        # I am supposed to the only one of my kind among all the
+        # I am supposed to be the only one of my kind among all the
         # builders in a directory, so my class suffices as a unique
         # id.
         return str(self.__class__)
     
     def enlarge(self):
-        super(Creator, self).enlarge()
-        for name, entry in self.parentbuilder().entries():
+        super(CCreator, self).enlarge()
+        for name, entry in self.parentbuilder().directory().entries():
             if not isinstance(entry, VFSFile):
                 continue
             if name in self.__handled_entries:
@@ -54,7 +54,7 @@ class Creator(Builder):
             if builder is None:
                 continue
             self.__handled_entries.add(name)
-            self.parentbuilder().add_builder(builder)
+            Creator.add_candidate_builder(self, name, builder)
             pass
         pass
     pass
@@ -73,9 +73,8 @@ def do_create_builder(name, entry):
         return YaccBuilder(file=entry)
     return None
 
-class CreatorSetup(Setup):
-    def initial_builders(self):
-        ret = super(CreatorSetup, self).initial_builders()
-        ret.append(Creator())
-        return ret
+class CCreatorSetup(Setup):
+    def setup(self, dirbuilder):
+        dirbuilder.add_builder(CCreator())
+        pass
     pass

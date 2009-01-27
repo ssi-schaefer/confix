@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@ import relocated_header
 
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
-from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
@@ -33,8 +33,7 @@ class RelocatedHeaderInMemorySuite(unittest.TestSuite):
 class RelocatedHeaderInMemoryTest(unittest.TestCase):
     def test(self):
         package = LocalPackage(rootdirectory=relocated_header.make_package_source(package_name=self.__class__.__name__),
-                               setups=[ExplicitDirectorySetup(),
-                                       ExplicitCSetup(use_libtool=False)])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         exe_builder = package.rootbuilder().find_entry_builder(['exe'])

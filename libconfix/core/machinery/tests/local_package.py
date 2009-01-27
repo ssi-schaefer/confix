@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,8 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.installed_node import InstalledNode
@@ -29,6 +27,8 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.repo.package_file import PackageFile
 from libconfix.core.utils import const
+
+import unittest
 
 class LocalPackageSuite(unittest.TestSuite):
     def __init__(self):
@@ -67,13 +67,17 @@ class PackageFileTest(unittest.TestCase):
     pass
 
 class PackageInterfaceTest(unittest.TestCase):
-    class DummySetup1(Setup): pass
+    class DummySetup1(Setup):
+        def setup(self, dirbuilder): pass
+        pass
     def test(self):
         fs = FileSystem(path=['dont\'t', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
             entry=File(lines=["from libconfix.core.machinery.setup import Setup",
-                              "class DummySetup2(Setup): pass",
+                              "class DummySetup2(Setup): ",
+                              "    def setup(self, dirbuilder): pass",
+                              "    pass",
                               "PACKAGE_NAME('PackageInterfaceTest')",
                               "PACKAGE_VERSION('1.2.3')",
                               "ADD_SETUP(DummySetup2())"]))
@@ -90,9 +94,16 @@ class PackageInterfaceTest(unittest.TestCase):
 
         self.failUnlessEqual(package.name(), 'PackageInterfaceTest')
         self.failUnlessEqual(package.version(), '1.2.3')
-        # we don't have DummySetup1's definition at hand (we defined
-        # it inside Confix2.pkg), so we have to check for its name.
-        self.failUnless(type(package.setups()[1]).__name__ != 'DummySetup1')
+        dummy1_seen = dummy2_seen = None
+        for s in package.setup():
+            if type(s) == self.DummySetup1:
+                dummy1_seen = s
+            elif type(s).__name__ == 'DummySetup2': # defined in Confix2.pkg, so we compare strings
+                dummy2_seen = s
+                pass
+            pass
+        self.failIf(dummy1_seen is None)
+        self.failIf(dummy2_seen is None)
         pass
     pass
 

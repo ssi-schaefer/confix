@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,13 +17,13 @@
 # USA
 
 from libconfix.core.filesys.vfs_file import VFSFile
-from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.creator import Creator
 
 import builder
 
-class Creator(Builder):
+class IDLCreator(Creator):
     def __init__(self):
-        Builder.__init__(self)
+        Creator.__init__(self)
         self.handled_entries_ = set()
         pass
 
@@ -34,11 +34,11 @@ class Creator(Builder):
         return str(self.__class__)
 
     def shortname(self):
-        return 'IDL.Creator'
+        return 'IDLCreator'
 
     def enlarge(self):
         super(Creator, self).enlarge()
-        for name, entry in self.parentbuilder().entries():
+        for name, entry in self.parentbuilder().directory().entries():
             if not isinstance(entry, VFSFile):
                 continue
             if name in self.handled_entries_:
@@ -47,7 +47,7 @@ class Creator(Builder):
                 continue
 
             self.handled_entries_.add(name)
-            self.parentbuilder().add_builder(builder.Builder(file=entry))
+            Creator.add_candidate_builder(self, name, builder.Builder(file=entry))
             pass
         pass
     pass

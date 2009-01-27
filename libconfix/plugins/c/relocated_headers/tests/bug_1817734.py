@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,10 +19,8 @@ from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
-from libconfix.plugins.c.setups.explicit_iface_setup import ExplicitInterfaceSetup
-from libconfix.plugins.c.relocated_headers.setup import RelocatedHeadersSetup
 from libconfix.plugins.c.dependency import Require_CInclude
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
@@ -63,9 +61,7 @@ class Bug_1817734_Test(unittest.TestCase):
             entry=File(lines=[]))
 
         package = LocalPackage(rootdirectory=rootdirectory,
-                               setups=[ExplicitInterfaceSetup(use_libtool=False),
-                                       ExplicitDirectorySetup(),
-                                       RelocatedHeadersSetup()])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         include_builder = package.rootbuilder().find_entry_builder(path=['include'])

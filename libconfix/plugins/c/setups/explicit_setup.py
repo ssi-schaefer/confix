@@ -21,10 +21,10 @@ from common_iface_setup import CommonInterfaceSetup
 from explicit_iface_setup import ExplicitInterfaceSetup
 
 class ExplicitCSetup(CompositeSetup):
-    def __init__(self, use_libtool):
+    def __init__(self):
         CompositeSetup.__init__(
             self,
             setups=[CommonInterfaceSetup(),
-                    ExplicitInterfaceSetup(use_libtool=use_libtool)])
+                    ExplicitInterfaceSetup()])
         pass
     pass

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,59 +20,49 @@ from caller import MakeCaller
 
 from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import external_cmd
 from libconfix.core.filesys import scan
 
-class _MakeInterface_Confix2_dir(Confix2_dir_Contributor):
-    class MakeCallerInterfaceProxy(InterfaceProxy):
-        def __init__(self, object):
-            InterfaceProxy.__init__(self, object)
-            self.add_global('CALL_MAKE_AND_RESCAN', getattr(self, 'CALL_MAKE_AND_RESCAN'))
-            self.add_global('CALL_MAKE_AND_RESCAN_SYNC', getattr(self, 'CALL_MAKE_AND_RESCAN_SYNC'))
-            pass
-        def CALL_MAKE_AND_RESCAN(self, filename='Makefile', args=[]):
-            """
-            Create a builder object that calls make when it is
-            enlarge()d. This means that make is called in a deferred
-            way, not at the time the method is called.
-            """
-            self.object().add_call(filename=filename, args=args)
-            pass
-        def CALL_MAKE_AND_RESCAN_SYNC(self, filename='Makefile', args=[]):
-            """
-            Call make immediately, and rescan the directory. This is
-            done synchronously, so that the caller can be sure that
-            make has been called when the function returns.
-            """
-            cwd = self.object().parentbuilder().directory()
-
-            external_cmd.exec_program(
-                program='make',
-                dir=cwd.abspath(),
-                args=['-f', filename] + args)
-            pass
-
-            # make might have had side effects that we want to see
-            scan.rescan_dir(cwd)
-
-            pass
-        pass
-
+class MakeCallerInterfaceProxy(InterfaceProxy):
     def __init__(self, caller):
-        Confix2_dir_Contributor.__init__(self)
+        InterfaceProxy.__init__(self)
         self.__caller = caller
+        self.add_global('CALL_MAKE_AND_RESCAN', getattr(self, 'CALL_MAKE_AND_RESCAN'))
+        self.add_global('CALL_MAKE_AND_RESCAN_SYNC', getattr(self, 'CALL_MAKE_AND_RESCAN_SYNC'))
         pass
-    def get_iface_proxies(self):
-        return [self.MakeCallerInterfaceProxy(object=self.__caller)]
-    def locally_unique_id(self):
-        return str(self.__class__)
+    def CALL_MAKE_AND_RESCAN(self, filename='Makefile', args=[]):
+        """
+        Create a builder object that calls make when it is
+        enlarge()d. This means that make is called in a deferred way,
+        not at the time the method is called.
+        """
+        self.__caller.add_call(filename=filename, args=args)
+        pass
+    def CALL_MAKE_AND_RESCAN_SYNC(self, filename='Makefile', args=[]):
+        """
+        Call make immediately, and rescan the directory. This is done
+        synchronously, so that the caller can be sure that make has
+        been called when the function returns.
+        """
+        cwd = self.__caller.parentbuilder().directory()
+
+        external_cmd.exec_program(
+            program='make',
+            dir=cwd.abspath(),
+            args=['-f', filename] + args)
+        pass
+
+        # make might have had side effects that we want to see
+        scan.rescan_dir(cwd)
+
+        pass
     pass
 
 class MakeSetup(Setup):
-    def initial_builders(self):
+    def setup(self, dirbuilder):
         caller = MakeCaller()
-        return super(MakeSetup, self).initial_builders() + \
-               [caller, _MakeInterface_Confix2_dir(caller=caller)]
+        dirbuilder.add_builder(caller)
+        dirbuilder.add_interface(MakeCallerInterfaceProxy(caller=caller))
+        pass
     pass

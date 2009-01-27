@@ -90,7 +90,7 @@ class OverlayBasicTest(unittest.TestCase):
         union = OverlayFileSystem(original=original, overlay=overlay)
 
         # root has d10 from original and d11 from overlay
-        self.failUnless(len(union.rootdirectory().entries()) == 2)
+        self.failUnless(len([e for e in union.rootdirectory().entries()]) == 2)
         union_d10 = union.rootdirectory().find(['d10'])
         union_d11 = union.rootdirectory().find(['d11'])
         self.failIf(union_d10 is None)
@@ -100,7 +100,7 @@ class OverlayBasicTest(unittest.TestCase):
         # these using three different ways: using the directory
         # union_d10 directly (get() and find()), and using the root
         # directory (the "absolute path", so to say)
-        self.failUnless(len(union_d10.entries()) == 3)
+        self.failUnless(len([ e for e in union_d10.entries()]) == 3)
 
         found_f0_0 = union_d10.find(['f0'])
         found_f0_1 = union_d10.get('f0')

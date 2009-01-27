@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -60,7 +60,7 @@ class CBaseBuilder(FileBuilder):
 
     def iface_pieces(self):
         return FileBuilder.iface_pieces(self) + \
-               [REQUIRE_H(object=self), PROVIDE_H(object=self)]
+               [REQUIRE_H(builder=self), PROVIDE_H(builder=self)]
     
     def __eval_iface(self):
 

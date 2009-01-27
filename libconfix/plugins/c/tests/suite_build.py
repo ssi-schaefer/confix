@@ -16,6 +16,8 @@
 # USA
 
 from check.suite_build import CheckProgramBuildSuite
+from intra_package_build import IntraPackageBuildSuite
+from inter_package_build import InterPackageBuildSuite
 
 from libconfix.plugins.c.relocated_headers.tests.suite_build import RelocatedHeadersBuildSuite
 from libconfix.plugins.c.setups.tests.suite_build import SetupsBuildSuite
@@ -28,6 +30,8 @@ class CBuildSuite(unittest.TestSuite):
         self.addTest(CheckProgramBuildSuite())
         self.addTest(RelocatedHeadersBuildSuite())
         self.addTest(SetupsBuildSuite())
+        self.addTest(IntraPackageBuildSuite())
+        self.addTest(InterPackageBuildSuite())
         pass
     pass
 

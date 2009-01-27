@@ -15,11 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os, sys, unittest
-
-from libconfix.core.automake import bootstrap, configure, make
-
 from check import CheckProgramBase
+
+from libconfix.plugins.automake import bootstrap, configure, make
+
+import os, sys, unittest
 
 class CheckProgramBuildSuite(unittest.TestSuite):
     def __init__(self):

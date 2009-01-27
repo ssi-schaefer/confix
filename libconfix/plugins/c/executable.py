@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,14 +28,13 @@ class ExecutableBuilder(LinkedBuilder):
     def __init__(self,
                  center,
                  exename,
-                 what,
-                 use_libtool):
+                 what):
 
         assert what in [ExecutableBuilder.BIN,
                         ExecutableBuilder.CHECK,
                         ExecutableBuilder.NOINST]
 
-        LinkedBuilder.__init__(self, use_libtool=use_libtool)
+        LinkedBuilder.__init__(self)
 
         LinkedBuilder.add_member(self, center)
 
@@ -60,31 +59,4 @@ class ExecutableBuilder(LinkedBuilder):
     def what(self):
         return self.__what
 
-    def am_compound_name(self):
-        return self.__exename
-
-    def output(self):
-        LinkedBuilder.output(self)
-
-        mf_am = self.parentbuilder().makefile_am()
-
-        if self.__what == ExecutableBuilder.BIN:
-            mf_am.add_bin_program(self.__exename)
-        elif self.__what == ExecutableBuilder.CHECK:
-            mf_am.add_check_program(self.__exename)
-        elif self.__what == ExecutableBuilder.NOINST:
-            mf_am.add_noinst_program(self.__exename)
-        else: assert 0
-
-        for m in self.members():
-            mf_am.add_compound_sources(self.am_compound_name(), m.file().name())
-            pass
-
-        for fragment in LinkedBuilder.get_linkline(self):
-            mf_am.add_compound_ldadd(
-                compound_name=self.am_compound_name(),
-                lib=fragment)
-            pass
-        pass
-        
     pass

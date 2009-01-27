@@ -15,6 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.core.tests.suite_build import CoreBuildSuite
 from libconfix.plugins.tests.suite_build import PluginsBuildSuite
 
 import unittest
@@ -22,6 +23,7 @@ import unittest
 class LibConfixBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(CoreBuildSuite())
         self.addTest(PluginsBuildSuite())
         pass
     pass

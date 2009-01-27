@@ -19,13 +19,9 @@
 from libconfix.core.utils.error import Error
 
 class InterfaceProxy:
-    def __init__(self, object):
-        self.__object = object
+    def __init__(self):
         self.__globals = {}
         pass
-
-    def object(self):
-        return self.__object
 
     def add_global(self, key, value):
         if self.__globals.has_key(key):

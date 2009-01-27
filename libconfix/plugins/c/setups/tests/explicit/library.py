@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.c import CBuilder
-from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
@@ -48,7 +48,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File(lines=["LIBRARY(basename='hansi', members=[])"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup(use_libtool=False)])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_lib_builder = None
@@ -73,7 +73,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File(lines=["LIBRARY(members=[])"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup(use_libtool=False)])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_lib_builder = None
@@ -113,7 +113,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup(use_libtool=False)])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_lib_builder = None
@@ -123,6 +123,7 @@ class LibraryInMemoryTest(unittest.TestCase):
                 found_lib_builder = b
                 continue
             pass
+        self.failIf(found_lib_builder is None)
 
         # see if the library contains what we asked it for.
         found_h1 = found_h2 = found_c1 = found_c2 = None

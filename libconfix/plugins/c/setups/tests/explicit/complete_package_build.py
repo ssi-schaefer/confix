@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,15 +17,14 @@
 
 import complete_package
 
-from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
-from libconfix.core.automake import \
+from libconfix.plugins.automake import \
      bootstrap, \
      configure, \
      make
+from libconfix.setups.explicit_setup import ExplicitSetup
 from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
@@ -53,8 +52,7 @@ class CompletePackageBuildTestBase(PersistentTestCase):
             entry=Directory())
 
         package = LocalPackage(rootdirectory=source,
-                               setups=[ExplicitDirectorySetup(),
-                                       ExplicitCSetup(use_libtool=self.use_libtool())])
+                               setups=[ExplicitSetup(use_libtool=self.use_libtool())])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()

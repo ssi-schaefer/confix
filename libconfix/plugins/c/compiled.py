@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,6 @@
 # USA
 
 from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.machinery import readonly_prefixes
 from libconfix.core.utils import const
 import libconfix.core.utils.helper
 
@@ -25,7 +24,6 @@ from base import CBaseBuilder
 from buildinfo import \
      BuildInfo_CIncludePath_NativeLocal, \
      BuildInfo_CIncludePath_NativeInstalled, \
-     BuildInfo_CIncludePath_External, \
      BuildInfo_CommandlineMacros, \
      BuildInfo_CFLAGS
 
@@ -71,16 +69,41 @@ class CompiledCBuilder(CBaseBuilder):
         return self.__is_main
 
     def cmdlinemacros(self):
+        """
+        Compiler commandline macros (usually passed to the compiler
+        like -Dname=value, or -Dname) are tuples of the form (name,
+        value). Both are strings, and value can be None if -Dname is
+        desired.
+
+        Returns an dictionary {name: value}, where value can be None.
+        """
         return self.__cmdlinemacros
+    
     def cflags(self):
+        """
+        Flags for every C-like compilation (which can be C, C++, or
+        even Lex and Yacc).
+
+        Returns a list of strings that are passed to the compiler
+        literally.
+        """
         return self.__cflags
-    def external_include_path(self):
-        return self.__external_include_path
 
     def native_local_include_dirs(self):
+        """
+        List of package-local directories that have to put on the
+        compiler command line, as include path. In good old tradition,
+        this is a list of lists of strings.
+        """
         return self.__native_local_include_dirs
 
-    def buildinfo_includepath_native_installed(self):
+    def have_locally_installed_includes(self):
+        """
+        Are there locally installed headers?
+        """
+        return self.__have_locally_installed_includes
+
+    def using_native_installed(self):
         return self.__buildinfo_includepath_native_installed
 
     def relate(self, node, digraph, topolist):
@@ -102,14 +125,6 @@ class CompiledCBuilder(CBaseBuilder):
                 if isinstance(bi, BuildInfo_CIncludePath_NativeInstalled):
                     self.__buildinfo_includepath_native_installed = True
                     continue
-                if isinstance(bi, BuildInfo_CIncludePath_External):
-                    incpath = bi.incpath()
-                    key = '.'.join(incpath)
-                    if not key in self.__have_external_include_path:
-                        self.__external_include_path.insert(0, incpath)
-                        self.__have_external_include_path.add(key)
-                        pass
-                    continue
                 if isinstance(bi, BuildInfo_CommandlineMacros):
                     for (k, v) in bi.macros().iteritems():
                         self.__insert_cmdlinemacro(k, v)
@@ -122,44 +137,8 @@ class CompiledCBuilder(CBaseBuilder):
             pass
         pass
 
-    def output(self):
-        CBaseBuilder.output(self)
-
-        # native includes of the same package come first
-        if len(self.__native_local_include_dirs) > 0:
-            for d in self.__native_local_include_dirs:
-                self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(['$(top_srcdir)']+d))
-                pass
-            pass
-        if self.__have_locally_installed_includes:
-            self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(['$(top_builddir)', const.LOCAL_INCLUDE_DIR]))
-            pass
-        # native includes of other packages (i.e., native installed
-        # includes) come next.
-        if self.__buildinfo_includepath_native_installed:
-            self.parentbuilder().makefile_am().add_includepath(
-                '-I$(includedir)')
-            self.parentbuilder().makefile_am().add_includepath(
-                '$('+readonly_prefixes.incpath_var+')')
-            pass
-        # external includes.
-        for p in self.__external_include_path:
-            for item in p:
-                self.parentbuilder().makefile_am().add_includepath(item)
-                pass
-            pass
-        # commandline macros
-        for macro, value in self.__cmdlinemacros.iteritems():
-            self.parentbuilder().makefile_am().add_cmdlinemacro(macro, value)
-            pass
-        # cflags
-        for cflag in self.__cflags:
-            self.parentbuilder().makefile_am().add_am_cflags(cflag)
-            pass
-        pass
-
     def iface_pieces(self):
-        return CBaseBuilder.iface_pieces(self) + [CompiledCBuilderInterfaceProxy(object=self)]
+        return CBaseBuilder.iface_pieces(self) + [CompiledCBuilderInterfaceProxy(builder=self)]
 
     def __init_buildinfo(self):
         # a list of directories in the local package that have to be
@@ -185,23 +164,6 @@ class CompiledCBuilder(CBaseBuilder):
         # more compiler commandline options.
         self.__cflags = []
 
-        # include path for external modules. this is a list of lists,
-        # of the form
-
-        # [['-I/dir1'],
-        #  ['-I/this/dir/include', '-I/that/dir/include']]
-
-        # each list has been distributed to us by one module, and we
-        # must not change the order inside the individual lists - they
-        # may be significant, and the distributing modules surely
-        # don't expect us to mess with the order.
-
-        # the complete list is accompanied with a set which serves us
-        # to sort out duplicates from the beginning.
-        
-        self.__external_include_path = []
-        self.__have_external_include_path = set()
-
         pass
 
     def __insert_cmdlinemacro(self, key, value):
@@ -213,15 +175,17 @@ class CompiledCBuilder(CBaseBuilder):
                             '"'+existing_value+'"/"'+value+'"')
             return
         self.__cmdlinemacros[key] = value
+        pass
     
     pass
 
 class CompiledCBuilderInterfaceProxy(InterfaceProxy):
-    def __init__(self, object):
-        InterfaceProxy.__init__(self, object=object)
+    def __init__(self, builder):
+        InterfaceProxy.__init__(self)
+        self.__builder = builder
         self.add_global('EXENAME', getattr(self, 'EXENAME'))
         pass
     def EXENAME(self, name):
-        self.object().set_exename(name)
+        self.__builder.set_exename(name)
         pass
     pass

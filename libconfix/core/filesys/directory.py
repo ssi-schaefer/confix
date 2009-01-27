@@ -20,6 +20,7 @@ from vfs_directory import VFSDirectory
 from entry import Entry
 
 from libconfix.core.utils.error import NativeError
+from libconfix.core.utils.error import Error
 
 import os, types, sys
 

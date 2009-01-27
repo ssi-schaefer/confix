@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-import sys
-import unittest
+from package import make_package
 
-from libconfix.core.automake import bootstrap, configure, make
+from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
+from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
@@ -31,7 +29,9 @@ from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
 
-from package import make_package
+import os
+import sys
+import unittest
 
 class PlainFileSuiteBuild(unittest.TestSuite):
     def __init__(self):
@@ -56,7 +56,7 @@ class PlainFileBuildTest(PersistentTestCase):
             entry=Directory())
 
         package = LocalPackage(rootdirectory=source,
-                               setups=[DefaultDirectorySetup(), PlainFileInterfaceSetup()])
+                               setups=[ImplicitDirectorySetup(), PlainFileInterfaceSetup()])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()

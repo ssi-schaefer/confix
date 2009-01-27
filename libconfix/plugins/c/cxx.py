@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,9 +15,6 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
-
-from libconfix.core.utils.paragraph import Paragraph
-from libconfix.core.automake.configure_ac import Configure_ac
 
 from compiled import CompiledCBuilder
 from buildinfo import BuildInfo_CXXFLAGS
@@ -45,17 +42,7 @@ class CXXBuilder(CompiledCBuilder):
                 pass
             pass
         pass
-
-    def output(self):
-        CompiledCBuilder.output(self)
-        self.package().configure_ac().add_paragraph(
-            paragraph=Paragraph(['AC_PROG_CXX']),
-            order=Configure_ac.PROGRAMS)
-        for cxxflag in self.__cxxflags:
-            self.parentbuilder().makefile_am().add_am_cxxflags(cxxflag)
-            pass
-        pass
-
+    
     def __init_buildinfo(self):
         self.__cxxflags = []
         pass

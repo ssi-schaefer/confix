@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,18 +15,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.c.relocated_headers.setup import RelocatedHeadersSetup
-
-from libconfix.plugins.c.creator import CreatorSetup
-from libconfix.plugins.c.clusterer import CClustererSetup
-from libconfix.plugins.c.explicit_install import ExplicitInstallerSetup
-
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
@@ -177,18 +171,7 @@ class BasicTest(unittest.TestCase):
 
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[
-            # recognize subdirectories
-            DefaultDirectorySetup(),
-            # create C and Header builders
-            CreatorSetup(),
-            # cluster them together in libraries and executables, and
-            # don't care about libtool and names.
-            CClustererSetup(short_libnames=False, use_libtool=False),
-            # install headers as everybody likes (not).
-            ExplicitInstallerSetup(),
-            # And finally: make the relocated header stuff work.
-            RelocatedHeadersSetup()])
+            setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
 
         package.boil(external_nodes=[])
 
@@ -291,18 +274,7 @@ class RelocatedHeaderRequiresRelocatedHeaderTest(unittest.TestCase):
 
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[
-            # recognize subdirectories
-            DefaultDirectorySetup(),
-            # create C and Header builders
-            CreatorSetup(),
-            # cluster them together in libraries and executables, and
-            # don't care about libtool and names.
-            CClustererSetup(short_libnames=False, use_libtool=False),
-            # install headers as everybody likes (not).
-            ExplicitInstallerSetup(),
-            # And finally: make the relocated header stuff work.
-            RelocatedHeadersSetup()])
+            setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
 
         package.boil(external_nodes=[])
 

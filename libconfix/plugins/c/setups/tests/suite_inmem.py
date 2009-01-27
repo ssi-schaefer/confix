@@ -18,11 +18,13 @@
 import unittest
 
 from explicit.suite_inmem import ExplicitCSetupInMemorySuite
+from ignored_entries import IgnoredEntriesSuite
 
 class SetupsInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(ExplicitCSetupInMemorySuite())
+        self.addTest(IgnoredEntriesSuite())
         pass
     pass
 

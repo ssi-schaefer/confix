@@ -22,7 +22,7 @@ from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 class ExplicitInterfaceInMemorySuite(unittest.TestSuite):
     def __init__(self):
@@ -51,7 +51,7 @@ class Without_Confix2_dir(unittest.TestCase):
             entry=Directory())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitDirectorySetup()])
+                               setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
         self.failIf(package.rootbuilder().find_entry_builder(['subdir']) is None)
@@ -61,7 +61,11 @@ class Without_Confix2_dir(unittest.TestCase):
 class With_Confix2_dir(unittest.TestCase):
 
     """ Explicitly adding 'subdir' as subdirectory to be built, we
-    check that an eventual Confix2.dir file is recognized an executed."""
+    check that an eventual Confix2.dir file is recognized an executed.
+
+    This is done by adding a file to the subdirectory, and then adding
+    a file property to it from the subdir's Confix2.dir file.
+    """
     
     def test(self):
         fs = FileSystem(path=[])
@@ -84,7 +88,7 @@ class With_Confix2_dir(unittest.TestCase):
                               "                  name='the_property',",
                               "                  value='the_value')"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitDirectorySetup()])
+                               setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
         self.failIf(package.rootbuilder().find_entry_builder(['subdir']) is None)

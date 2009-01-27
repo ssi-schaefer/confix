@@ -16,26 +16,16 @@
 # USA
 
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.hierarchy.confix2_dir_contributor import Confix2_dir_Contributor
 
 from libconfix.plugins.c.common_iface import \
-     EXTERNAL_LIBRARY, \
      REQUIRE_H, \
      PROVIDE_H, \
      TESTS_ENVIRONMENT
 
-class CommonInterface_Confix2_dir(Confix2_dir_Contributor):
-    def get_iface_proxies(self):
-        return [EXTERNAL_LIBRARY(object=self),
-                REQUIRE_H(object=self),
-                PROVIDE_H(object=self),
-                TESTS_ENVIRONMENT(object=self.parentbuilder())]
-    def locally_unique_id(self):
-        return str(self.__class__)
-    pass
-
 class CommonInterfaceSetup(Setup):
-    def initial_builders(self):
-        return super(CommonInterfaceSetup, self).initial_builders() + \
-               [CommonInterface_Confix2_dir()]
+    def setup(self, dirbuilder):
+        dirbuilder.add_interface(REQUIRE_H(builder=dirbuilder))
+        dirbuilder.add_interface(PROVIDE_H(builder=dirbuilder))
+        dirbuilder.add_interface(TESTS_ENVIRONMENT(dirbuilder=dirbuilder))
+        pass
     pass

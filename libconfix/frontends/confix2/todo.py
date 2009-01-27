@@ -18,9 +18,9 @@
 
 import os, sys, profile
 
-from libconfix.core.automake import bootstrap, configure, make
-from libconfix.core.automake.kde_hack import KDEHackSetup
-from libconfix.core.automake.repo_automake import AutomakePackageRepository
+from libconfix.plugins.automake import bootstrap, configure, make
+from libconfix.plugins.automake.kde_hack import KDEHackSetup
+from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
 from libconfix.core.digraph.cycle import CycleError
 from libconfix.core.filesys.scan import scan_filesystem
 from libconfix.core.filesys.overlay_filesys import OverlayFileSystem

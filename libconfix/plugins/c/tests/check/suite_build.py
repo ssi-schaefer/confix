@@ -18,7 +18,7 @@
 
 import os, sys, unittest
 
-from libconfix.core.automake import bootstrap, configure, make
+from libconfix.plugins.automake import bootstrap, configure, make
 
 from check import CheckProgramBase
 

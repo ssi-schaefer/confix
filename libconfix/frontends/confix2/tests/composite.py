@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,10 +18,10 @@
 
 import unittest
 
-from libconfix.frontends.confix.composite_config import CompositeConfiguration 
-from libconfix.frontends.confix.cmdline_config import CommandlineConfiguration 
-from libconfix.frontends.confix.default_config import DefaultConfiguration
-from libconfix.frontends.confix.configfile import ConfigFile
+from libconfix.frontends.confix2.composite_config import CompositeConfiguration 
+from libconfix.frontends.confix2.cmdline_config import CommandlineConfiguration 
+from libconfix.frontends.confix2.default_config import DefaultConfiguration
+from libconfix.frontends.confix2.configfile import ConfigFile
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 

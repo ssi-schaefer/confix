@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,10 @@ import unittest
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.default_setup import DefaultDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
-
-from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.c.library import LibraryBuilder
-
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.testutils import dirhier
 
 class LibrarySuite(unittest.TestSuite):
@@ -60,9 +57,8 @@ class LibraryBase(unittest.TestCase):
         
         self.package_ = LocalPackage(
             rootdirectory=self.fs_.rootdirectory(),
-            setups=[DefaultDirectorySetup(),
-                    DefaultCSetup(short_libnames=False, # there is already a test for it, elsewhere
-                           use_libtool=self.use_libtool())])
+            setups=[ConfixSetup(short_libnames=False,
+                                use_libtool=self.use_libtool())])
         self.package_.boil(external_nodes=[])
         self.package_.output()
 
@@ -89,8 +85,7 @@ class LibraryBase(unittest.TestCase):
 
         # we ought to be building a library here
         self.failUnlessEqual(self.lolib_builder_.basename(), 'blah_lo')
-        self.failUnlessEqual(self.lolib_builder_.libname(), self.libname())
-        self.failUnless(self.lolib_builder_.libname() in mf_am.dir_primary(dir='lib', primary=self.primary()))
+        self.failUnless(self.libname() in mf_am.dir_primary(dir='lib', primary=self.primary()))
 
         # lo.{h,c} are the sources
 
@@ -171,17 +166,18 @@ class LIBADD(unittest.TestCase):
 
     def test_libtool(self):
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[DefaultDirectorySetup(), DefaultCSetup(use_libtool=True, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=True, short_libnames=False)])
         package.boil(external_nodes=[])
         package.output()
 
         hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
+
         self.failUnless('-lLIBADD_lo' in hidir_builder.makefile_am().compound_libadd('libLIBADD_hi_la'))
         pass
 
     def test_no_libtool(self):
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[DefaultDirectorySetup(), DefaultCSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
         package.output()
 

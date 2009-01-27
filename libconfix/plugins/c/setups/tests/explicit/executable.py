@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.c import CBuilder
-from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
@@ -50,7 +50,7 @@ class ExecutableInMemoryTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup(use_libtool=False)])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_exe_builder = None
@@ -78,7 +78,7 @@ class ExecutableInMemoryTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitCSetup(use_libtool=False)])
+                               setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         found_exe_builder = None

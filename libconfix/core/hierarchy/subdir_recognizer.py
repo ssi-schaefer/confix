@@ -17,9 +17,8 @@
 # USA
 
 from dirbuilder import DirectoryBuilder
-from confix2_dir import Confix2_dir
 
-from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.creator import Creator
 from libconfix.core.filesys.vfs_directory import VFSDirectory
 from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.utils import const
@@ -27,9 +26,9 @@ from libconfix.core.utils.error import Error
 
 import os
 
-class SubdirectoryRecognizer(Builder):
+class SubdirectoryRecognizer(Creator):
     def __init__(self):
-        Builder.__init__(self)
+        Creator.__init__(self)
         # remember directories that we already saw.
         self.__recognized_directories = set()
         pass
@@ -49,10 +48,10 @@ class SubdirectoryRecognizer(Builder):
         objects around them and add them to the parentbuilder.
         """
         
-        Builder.enlarge(self)
+        Creator.enlarge(self)
 
         errors = []
-        for name, entry in self.parentbuilder().entries():
+        for name, entry in self.parentbuilder().directory().entries():
             if not isinstance(entry, VFSDirectory):
                 continue
             if entry in self.__recognized_directories:
@@ -64,15 +63,8 @@ class SubdirectoryRecognizer(Builder):
                 errors.append(Error(os.sep.join(confix2_dir_file.relpath(self.package().rootdirectory()))+' is not a file'))
                 continue
 
-            try:
-                self.__recognized_directories.add(entry)
-                dirbuilder = DirectoryBuilder(directory=entry)
-                dirbuilder.add_builder(Confix2_dir(file=confix2_dir_file))
-                self.parentbuilder().add_builder(dirbuilder)
-            except Error, e:
-                errors.append(Error('Error creating directory builder for '+\
-                                    os.sep.join(self.parentbuilder().directory().relpath(self.package().rootdirectory())), [e]))
-                pass
+            Creator.add_candidate_builder(self, name, DirectoryBuilder(directory=entry))
+            self.__recognized_directories.add(entry)
             pass
         if len(errors):
             raise Error('There were errors in directory '+\

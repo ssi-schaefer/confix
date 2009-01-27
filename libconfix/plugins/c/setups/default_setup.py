@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,30 +16,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.setup import CompositeSetup
-
-from libconfix.plugins.c.clusterer import CClustererSetup
-from libconfix.plugins.c.creator import CreatorSetup
-from libconfix.plugins.c.explicit_install import ExplicitInstallerSetup
-from libconfix.plugins.c.relocated_headers.setup import RelocatedHeadersSetup
-from libconfix.plugins.c.interix import InterixSetup
-
 from common_iface_setup import CommonInterfaceSetup
 
-def make_core_setups(short_libnames, use_libtool):
-    return [CClustererSetup(short_libnames=short_libnames,
-                            use_libtool=use_libtool),
-            CreatorSetup(),
+from libconfix.plugins.c.clusterer import CClustererSetup
+from libconfix.plugins.c.creator import CCreatorSetup
+from libconfix.plugins.c.explicit_install import ExplicitInstallerSetup
+from libconfix.plugins.c.relocated_headers.setup import RelocatedHeadersSetup
+
+from libconfix.core.machinery.setup import CompositeSetup
+
+def make_core_setups(short_libnames):
+    return [CClustererSetup(short_libnames=short_libnames),
+            CCreatorSetup(),
             CommonInterfaceSetup(),
             RelocatedHeadersSetup(),
-            InterixSetup()
             ]
 
 class DefaultCSetup(CompositeSetup):
     def __init__(self,
-                 short_libnames,
-                 use_libtool):
-        setups = make_core_setups(short_libnames=short_libnames, use_libtool=use_libtool)
+                 short_libnames):
+        setups = make_core_setups(short_libnames=short_libnames)
         setups.append(ExplicitInstallerSetup())
         CompositeSetup.__init__(
             self,

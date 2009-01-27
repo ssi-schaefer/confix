@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -30,65 +30,14 @@ from dependency import \
      Require_CInclude
 
 from buildinfo import \
-    BuildInfo_CIncludePath_External, \
     BuildInfo_CFLAGS, \
     BuildInfo_CXXFLAGS, \
-    BuildInfo_CommandlineMacros, \
-    BuildInfo_CLibrary_External
+    BuildInfo_CommandlineMacros
 
-class EXTERNAL_LIBRARY(InterfaceProxy):
-    def __init__(self, object):
-        InterfaceProxy.__init__(self, object)
-        self.add_global('EXTERNAL_LIBRARY', getattr(self, 'EXTERNAL_LIBRARY'))
-        pass
-    def EXTERNAL_LIBRARY(
-        self,
-        incpath=[],
-        cflags=[],
-        cxxflags=[],
-        cmdlinemacros={},
-        libpath=[],
-        libs=[]):
-
-        if type(incpath) is not types.ListType:
-            raise Error("EXTERNAL_LIBRARY(): 'incpath' argument must be a list")
-        if type(cflags) is not types.ListType:
-            raise Error("EXTERNAL_LIBRARY(): 'cflags' argument must be a list")
-        if type(cxxflags) is not types.ListType:
-            raise Error("EXTERNAL_LIBRARY(): 'cxxflags' argument must be a list")
-        if type(cmdlinemacros) is not types.DictionaryType:
-            raise Error("EXTERNAL_LIBRARY(): 'cmdlinemacros' argument must be a dictionary")
-        if type(libpath) is not types.ListType:
-            raise Error("EXTERNAL_LIBRARY(): 'libpath' argument must be a list")
-        if type(libs) is not types.ListType:
-            raise Error("EXTERNAL_LIBRARY(): 'libs' argument must be a list")
-
-        if len(incpath) > 0:
-            self.object().add_buildinfo(
-                BuildInfo_CIncludePath_External(incpath=incpath))
-            pass
-        if len(cflags) > 0:
-            self.object().add_buildinfo(
-                BuildInfo_CFLAGS(cflags=cflags))
-            pass
-        if len(cxxflags) > 0:
-            self.object().add_buildinfo(
-                BuildInfo_CXXFLAGS(cxxflags=cxxflags))
-            pass
-        if len(cmdlinemacros) > 0:
-            self.object().add_buildinfo(
-                BuildInfo_CommandlineMacros(macros=cmdlinemacros))
-            pass
-        if len(libpath) > 0 or len(libs) > 0:
-            self.object().add_buildinfo(
-                BuildInfo_CLibrary_External(libpath=libpath, libs=libs))
-            pass
-        pass
-    pass
-    
 class REQUIRE_H(InterfaceProxy):
-    def __init__(self, object):
-        InterfaceProxy.__init__(self, object=object)
+    def __init__(self, builder):
+        InterfaceProxy.__init__(self)
+        self.__builder = builder
         self.add_global('REQUIRE_H', getattr(self, 'REQUIRE_H'))
         pass
     def REQUIRE_H(self, filename, urgency=Require.URGENCY_IGNORE):
@@ -100,16 +49,17 @@ class REQUIRE_H(InterfaceProxy):
             raise Error("REQUIRE_H(): need a non-zero 'filename' parameter")
         if not urgency in [Require.URGENCY_IGNORE, Require.URGENCY_WARN, Require.URGENCY_ERROR]:
             raise Error('REQUIRE_H(): urgency must be one of URGENCY_IGNORE, URGENCY_WARN, URGENCY_ERROR')
-        self.object().add_require(Require_CInclude(
+        self.__builder.add_require(Require_CInclude(
             filename=filename,
-            found_in=str(self.object()),
+            found_in=str(self.__builder),
             urgency=urgency))
         pass
     pass
 
 class PROVIDE_H(InterfaceProxy):
-    def __init__(self, object):
-        InterfaceProxy.__init__(self, object=object)
+    def __init__(self, builder):
+        InterfaceProxy.__init__(self)
+        self.__builder = builder
         self.add_global('PROVIDE_H', getattr(self, 'PROVIDE_H'))
         pass
     def PROVIDE_H(self, filename, match=Provide_String.AUTO_MATCH):
@@ -120,14 +70,15 @@ class PROVIDE_H(InterfaceProxy):
                          Provide_String.GLOB_MATCH,
                          Provide_String.AUTO_MATCH]:
             raise Error('PROVIDE_H(): match parameter must be one of EXACT_MATCH, PREFIX_MATCH, GLOB_MATCH, AUTO_MATCH')
-        self.object().add_provide(Provide_CInclude(filename, match))
+        self.__builder.add_provide(Provide_CInclude(filename, match))
         pass
     pass
 
 class TESTS_ENVIRONMENT(InterfaceProxy):
-    def __init__(self, object):
-        assert isinstance(object, DirectoryBuilder)
-        InterfaceProxy.__init__(self, object=object)
+    def __init__(self, dirbuilder):
+        assert isinstance(dirbuilder, DirectoryBuilder)
+        InterfaceProxy.__init__(self)
+        self.__dirbuilder = dirbuilder
         self.add_global('TESTS_ENVIRONMENT', getattr(self, 'TESTS_ENVIRONMENT'))
         pass
     def TESTS_ENVIRONMENT(self, name, value):
@@ -135,6 +86,6 @@ class TESTS_ENVIRONMENT(InterfaceProxy):
             raise Error('TESTS_ENVIRONMENT(): key must be a string')
         if type(value) is not types.StringType:
             raise Error('TESTS_ENVIRONMENT(): value must be a string')
-        self.object().makefile_am().add_tests_environment(name, value)
+        self.__dirbuilder.makefile_am().add_tests_environment(name, value)
         pass
     pass
