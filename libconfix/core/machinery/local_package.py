@@ -334,11 +334,13 @@ class LocalPackage(Package):
             relpath = dirnode.directory().relpath(self.__rootdirectory)
             if len(relpath):
                 dirstr = '/'.join(relpath)
+                self.__rootbuilder.makefile_am().add_subdir(dirstr)
+                self.configure_ac().add_ac_config_files('/'.join(relpath+['Makefile']))
             else:
                 dirstr = '.'
+                self.__rootbuilder.makefile_am().add_subdir(dirstr)
+                self.configure_ac().add_ac_config_files('Makefile')
                 pass
-            self.__rootbuilder.makefile_am().add_subdir(dirstr)
-            self.configure_ac().add_ac_config_files('/'.join([dirstr, 'Makefile']))
             pass
 
         pass
