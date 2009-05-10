@@ -23,10 +23,11 @@ import sys
 from libconfix.core.utils.error import Error
 from libconfix.core.repo.package_file import PackageFile
 from libconfix.core.filesys.file import File
-from libconfix.core.utils import helper
+from libconfix.core.utils.helper import lines_of_file
 from libconfix.core.digraph.digraph import DirectedGraph
 from libconfix.core.machinery.edgefinder import EdgeFinder
-from libconfix.core.automake import helper_automake
+
+from libconfix.plugins.automake.helper import automake_name
 
 def write_graph(graph):
 
@@ -42,9 +43,9 @@ def write_graph(graph):
         pass
 
     for package, nodes in clusters.iteritems():
-        lines.append('  subgraph cluster_'+helper_automake.automake_name(package.name())+' {')
+        lines.append('  subgraph cluster_'+automake_name(package.name())+' {')
         for n in nodes:
-            lines.append('    '+helper_automake.automake_name('_'.join([package.name()]+n.name()))+\
+            lines.append('    '+automake_name('_'.join([package.name()]+n.name()))+\
                          '[label="'+'.'.join([package.name()]+n.name())+'"];')
             pass
         lines.append('  };')
@@ -55,8 +56,8 @@ def write_graph(graph):
     # edges
 
     for e in graph.edges():
-        lines.append('  '+helper_automake.automake_name('_'.join([e.tail().package().name()]+e.tail().name()))+' -> '
-                     ''+helper_automake.automake_name('_'.join([e.head().package().name()]+e.head().name()))+';')
+        lines.append('  '+automake_name('_'.join([e.tail().package().name()]+e.tail().name()))+' -> '
+                     ''+automake_name('_'.join([e.head().package().name()]+e.head().name()))+';')
         pass
 
     lines.append('}')
@@ -68,7 +69,7 @@ def main():
     try:
         nodes = []
         for filename in sys.argv[1:]:
-            pkg = PackageFile(File(lines=helper.lines_of_file(filename))).load()
+            pkg = PackageFile(File(lines=lines_of_file(filename))).load()
             nodes.extend(pkg.nodes())
             pass
         
