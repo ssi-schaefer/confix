@@ -281,7 +281,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         internal_provides = ProvideMap(permissive=False)
         requires = DependencySet(klass=Require, string_klass=Require_String)
 
-        for b in self.node_managed_builders():
+        for b in self.__node_managed_builders():
             builder_dependency_info = b.dependency_info()
             assert builder_dependency_info is not None, str(b)
             assert b.base_dependency_info_called(), str(b)
@@ -293,7 +293,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
             for p in builder_dependency_info.provides():
                 internal_provides.add(p, self)
                 pass
-            for p in builder_dependency_info.internal_provides():            
+            for p in builder_dependency_info.internal_provides():
                 internal_provides.add(p, self)
                 pass
             requires.merge(builder_dependency_info.requires())
@@ -314,20 +314,20 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         return not (self.__prev_provides.is_equal(self.__provides) and \
                     self.__prev_requires.is_equal(self.__requires))
 
-    def node_managed_builders(self):
-        ret = [self]
+    def __node_managed_builders(self):
+        yield self
         for b in self.__builders:
             if not isinstance(b, Node):
-                ret.append(b)
+                yield b
                 pass
             pass
-        return ret
+        pass
 
     def node_relate_managed_builders(self, digraph):
         topolist = toposort.toposort(digraph=digraph, nodes=[self])
         assert topolist[-1] is self
         topolist = topolist[0:-1]
-        for b in self.node_managed_builders():
+        for b in self.__node_managed_builders():
             b.relate(node=self, digraph=digraph, topolist=topolist)
             assert b.base_relate_called(), str(b)
             pass
