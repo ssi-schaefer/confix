@@ -416,7 +416,7 @@ class Makefile_am(object):
         # macros.
 
         am_cppflags = List(name='AM_CPPFLAGS', values=self.includepath_, mitigate=True)
-        for m in self.cmdlinemacros_.keys():
+        for m in self.cmdlinemacros_.iterkeys():
             macro = '-D' + m
             if self.cmdlinemacros_[m] is not None:
                 macro = macro + '=' + self.cmdlinemacros_[m]
@@ -427,7 +427,7 @@ class Makefile_am(object):
  
         # primaries
 
-        for dp in self.dir_primary_.keys():
+        for dp in self.dir_primary_.iterkeys():
             assert len(self.dir_primary_[dp])
             lines.extend(List(name=dp, values=self.dir_primary_[dp], mitigate=False).lines())
             pass
@@ -476,7 +476,7 @@ class Makefile_am(object):
             if len(self.tests_environment_):
                 lines.extend(List(name='TESTS_ENVIRONMENT',
                                   values=[k+'='+self.tests_environment_[k] \
-                                          for k in self.tests_environment_.keys()],
+                                          for k in self.tests_environment_.iterkeys()],
                                   mitigate=True)
                              .lines())
                 pass

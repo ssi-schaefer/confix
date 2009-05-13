@@ -251,7 +251,7 @@ def clone_value(v):
 
     if type(v) is types.DictionaryType:
         ret = {}
-        for k in v.keys():
+        for k in v.iterkeys():
             ret[k] = clone_value(v[k])
         return ret
 

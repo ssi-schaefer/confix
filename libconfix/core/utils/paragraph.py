@@ -24,7 +24,7 @@ class Paragraph:
     fingerprint. """
 
     def __init__(self, lines, md5=None):
-        self.lines_ = lines
+        self.__lines = lines
         if md5 is None:
             self.__fingerprint = helper.md5_hexdigest_from_lines(lines)
         else:
@@ -33,7 +33,7 @@ class Paragraph:
         pass
 
     def fingerprint(self): return self.__fingerprint
-    def lines(self): return self.lines_
+    def lines(self): return self.__lines
 
     pass
 
