@@ -165,7 +165,7 @@ class LocalPackage(Package):
                 b.recollect_dependency_info()
                 if b.node_dependency_info_changed():
                     do_next_round = True
-                    break
+                    pass
                 pass
 
             if do_next_round:
@@ -246,7 +246,7 @@ class LocalPackage(Package):
         Enlarge our current set of builders by calling the
         Builder.enlarge() on each. Returns the new set of builders, or
         None if we want the caller to repeat.
-        """        
+        """
         builders = self.__collect_builders()
 
         prev_builder_props = {}

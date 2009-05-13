@@ -16,15 +16,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
+import autoconf_archive
+import kde_hack
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import external_cmd
 from libconfix.core.utils import helper
 from libconfix.core.utils import debug
 
-import autoconf_archive
-import kde_hack
+import time
+import os
 
 def bootstrap(packageroot, use_kde_hack, argv0, path=None):
     aclocal_incdirs = []
@@ -38,13 +39,26 @@ def bootstrap(packageroot, use_kde_hack, argv0, path=None):
             raise Error('libtoolize not found along path')
         aclocal_incdirs.append(os.path.join(os.path.dirname(libtoolize_prog), '../share/aclocal'))
         args = ['--force', '--copy']
-        debug.message(' '.join([libtoolize_prog]+args+['...']))
-        external_cmd.exec_program(program=libtoolize_prog, dir=packageroot, args=args, path=path)
+        debug.message('libtoolize ...')
+        before = time.time()
+        external_cmd.exec_program(program=libtoolize_prog, dir=packageroot, args=args, path=path, print_cmdline=True)
+        debug.message('done libtoolize ('+str(time.time()-before)+' seconds)')
         pass
 
+    debug.message('aclocal ...')
+    before = time.time()
     aclocal(packageroot=packageroot, includedirs=aclocal_incdirs, path=path)
+    debug.message('done aclocal ('+str(time.time()-before)+' seconds)')
+
+    debug.message('autoheader ...')
+    before = time.time()
     autoheader(packageroot=packageroot, path=path)
+    debug.message('done autoheader ('+str(time.time()-before)+' seconds)')
+
+    debug.message('automake ...')
+    before = time.time()
     automake(packageroot=packageroot, path=path)
+    debug.message('done automake ('+str(time.time()-before)+' seconds)')
 
     if use_kde_hack:
         # somehow autoconf will not create a new configure script when
@@ -61,7 +75,10 @@ def bootstrap(packageroot, use_kde_hack, argv0, path=None):
             pass
         pass
     
+    debug.message('autoconf ...')
+    before = time.time()
     autoconf(packageroot=packageroot, path=path)
+    debug.message('done autoconf ('+str(time.time()-before)+' seconds)')
 
     if use_kde_hack:
         debug.message('KDE hack: patching configure script...')            
@@ -75,27 +92,24 @@ def aclocal(packageroot, includedirs, path):
     for d in includedirs:
         aclocal_args.extend(['-I', d])
         pass
-    debug.message(' '.join(['aclocal']+aclocal_args+['...']))
-    external_cmd.exec_program(program='aclocal', args=aclocal_args, dir=packageroot, path=path)
+    external_cmd.exec_program(program='aclocal', args=aclocal_args, dir=packageroot, path=path, print_cmdline=True)
     pass
 
 def autoheader(packageroot, path):
-    debug.message('autoheader ...')
-    external_cmd.exec_program(program='autoheader', dir=packageroot, path=path)
+    external_cmd.exec_program(program='autoheader', dir=packageroot, path=path, print_cmdline=True)
     pass
 
 def automake(packageroot, path):
     args = ['--foreign', '--add-missing', '--copy']
-    debug.message(' '.join(['automake']+args+['...']))
     external_cmd.exec_program(program='automake',
                               args=args,
                               dir=packageroot,
-                              path=path)
+                              path=path,
+                              print_cmdline=True)
     pass
 
 def autoconf(packageroot, path):
-    debug.message('autoconf ...')
-    external_cmd.exec_program(program='autoconf', dir=packageroot, path=path)
+    external_cmd.exec_program(program='autoconf', dir=packageroot, path=path, print_cmdline=True)
     pass
 
 def _using_libtool(packageroot):

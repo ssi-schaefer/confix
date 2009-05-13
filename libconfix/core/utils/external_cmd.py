@@ -16,12 +16,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os, types
-
 from error import Error
 import debug
 
-def exec_program(program, dir, args=None, env=None, path=None):
+import os
+import types
+import time
+
+def exec_program(program, dir, args=None, env=None, path=None, print_cmdline=False):
     assert type(dir) in [types.ListType, types.TupleType], dir
 
     if os.path.isabs(program):
@@ -46,6 +48,11 @@ def exec_program(program, dir, args=None, env=None, path=None):
 
     chdirbackto = os.getcwd()
     os.chdir(os.sep.join(dir))
+
+    if print_cmdline:
+        debug.message(the_program+' '+' '.join(the_args))
+        pass
+
     try:
         debug.trace(['exec'], 'Calling program: '+str([the_program]+the_args)+'; env='+str(the_env))
         rv = os.spawnve(os.P_WAIT, the_program, [the_program] + the_args, the_env)
@@ -56,6 +63,7 @@ def exec_program(program, dir, args=None, env=None, path=None):
         os.chdir(chdirbackto)
         raise Error("Could not execute '"+the_program+' '+' '.join(the_args)+"' in directory '"+os.sep.join(dir)+"'", [e])
     os.chdir(chdirbackto)
+
     pass
 
 def search_program(program, path):

@@ -16,8 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os, sys, profile
-
 from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.plugins.automake.kde_hack import KDEHackSetup
 from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
@@ -35,6 +33,11 @@ from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 from confix_setup import ConfixSetup
 from debug import DebugSetup
+
+import os
+import sys
+import time
+import profile
 
 TODO = []
 CONFIG = None
@@ -61,8 +64,8 @@ def PACKAGE():
 
     SETTINGS()
 
-    debug.message("scanning package in %s ..." % CONFIG.packageroot(),
-                  CONFIG.verbosity())
+    debug.message("scanning package in %s ..." % CONFIG.packageroot())
+    before = time.time()
 
     if CONFIG.setups() is None:
         debug.warn('No setup given; using automatic recognition. '
@@ -91,6 +94,9 @@ def PACKAGE():
     package = LocalPackage(rootdirectory=filesystem.rootdirectory(),
                            setups=setups)
     DONE_PACKAGE = 1
+
+    debug.message('done scanning ('+str(time.time()-before)+' seconds)')
+    
     return 0
 
 DONE_READREPO = 0
@@ -125,11 +131,18 @@ def READ_REPO():
 
     # finally, do our job
     repository = CompositePackageRepository()
+    num_repos = len(prefixes) + len(CONFIG.readonly_prefixes())
+
+    debug.message('reading '+str(num_repos)+' repositories...')
+    before = time.time()
+
     for prefix in prefixes + CONFIG.readonly_prefixes():
-        debug.message("reading repository "+prefix+" ...", CONFIG.verbosity())
+        debug.message('reading repository '+prefix+' ...')
         repository.add_repo(AutomakePackageRepository(prefix=prefix.split(os.sep)))
         pass
 
+    debug.message('done reading respositories ('+str(time.time()-before)+' seconds)')
+    
     DONE_READREPO = 1
     return 0
 
@@ -154,7 +167,8 @@ def BOIL():
             pass
         pass
 
-    debug.message("boiling package ...", CONFIG.verbosity())
+    debug.message('boiling package ...')
+    before = time.time()
     try:
         #profile.runctx('package.boil(external_nodes=external_nodes)', {'package':package, 'external_nodes':external_nodes} ,{})
         package.boil(external_nodes=external_nodes)
@@ -163,6 +177,8 @@ def BOIL():
             sys.stderr.write(l+'\n')
             pass
         return 1
+
+    debug.message('done boiling ('+str(time.time()-before)+' seconds)')
 
     DONE_RESOLVE = 1
     return 0
@@ -197,7 +213,6 @@ def BOOTSTRAP():
     SETTINGS()
     if OUTPUT(): return -1
 
-    debug.message('bootstrapping in '+CONFIG.packageroot()+' ...')
     bootstrap.bootstrap(packageroot=CONFIG.packageroot().split(os.sep),
                         use_kde_hack=CONFIG.use_kde_hack(),
                         path=None,
@@ -217,9 +232,11 @@ def OUTPUT():
     if BOIL(): return -1
     SETTINGS()
 
-    debug.message("generating output ...", CONFIG.verbosity())
+    debug.message('generating ...')
+    before = time.time()
     package.output()
     filesystem.sync()
+    debug.message('done generating ('+str(time.time()-before)+' seconds)')
 
     DONE_OUTPUT = 1
     return 0
@@ -268,6 +285,9 @@ def CONFIGURE():
     if CONFIG.advanced() and not os.path.exists(builddir):
         os.makedirs(builddir)
         pass
+
+    debug.message('configure ...')
+    before = time.time()
     
     try:
         ro_pfxs = []
@@ -287,6 +307,8 @@ def CONFIGURE():
         pass
     except Error, e:
         raise Error("Error calling configure:", [e])
+
+    debug.message('done configure ('+str(time.time()-before)+' seconds)')
 
     DONE_CONFIGURE = 1
     return 0
@@ -308,6 +330,9 @@ def MAKE():
         builddir = deduce_builddir()
     except Error, e:
         raise Error('Cannot call make: build directory unknown', [e])
+
+    debug.message('make ...')
+    before = time.time()
     
     try:
         make.make(builddir=builddir.split(os.sep),
@@ -315,6 +340,8 @@ def MAKE():
                   env=make_env)
     except Error, e:
         raise Error("Error calling make:", [e])
+
+    debug.message('done make ('+str(time.time()-before)+' seconds)')
 
     DONE_MAKE = 1
     return 0

@@ -16,11 +16,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os, types
-
 from libconfix.core.utils import external_cmd
 
+import os
+import types
+
 def configure(packageroot, builddir, prefix, readonly_prefixes=None, args=None, env=None):
+    """ Calls configure. Returns the time taken, in seconds."""
+    
     assert type(packageroot) in [types.ListType, types.TupleType]
     assert type(builddir) in [types.ListType, types.TupleType]
     assert type(prefix) in [types.NoneType, types.ListType, types.TupleType]
@@ -44,8 +47,8 @@ def configure(packageroot, builddir, prefix, readonly_prefixes=None, args=None, 
         argv.extend(args)
         pass
 
-    external_cmd.exec_program(program=os.sep.join(packageroot + ['configure']),
-                              args=argv,
-                              env=env,
-                              dir=builddir)
-    pass
+    return external_cmd.exec_program(program=os.sep.join(packageroot + ['configure']),
+                                     args=argv,
+                                     env=env,
+                                     dir=builddir,
+                                     print_cmdline=True)

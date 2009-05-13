@@ -1,3 +1,8 @@
+2009-05-13    <joerg.faschingbauer@aon.at>
+
+	* Performance bugfix (local_package.py). Was quadratic with number
+	  of directories.
+
 2008-01-24 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
 
 	* Renamed libconfix.frontends.confix to
