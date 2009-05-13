@@ -82,11 +82,12 @@ class DependencySet(Unmarshallable):
 
     def __iter__(self): return self.values().__iter__()
     def values(self):
-        ret = []
         for klass, klass_dict in self.string_.iteritems():
-            ret.extend(klass_dict.values())
+            for v in klass_dict.itervalues():
+                yield v
+                pass
             pass
-        return ret
+        pass
 
     def is_equal(self, other):
         if self.size() != other.size():
