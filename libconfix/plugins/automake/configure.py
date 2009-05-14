@@ -22,8 +22,6 @@ import os
 import types
 
 def configure(packageroot, builddir, prefix, readonly_prefixes=None, args=None, env=None):
-    """ Calls configure. Returns the time taken, in seconds."""
-    
     assert type(packageroot) in [types.ListType, types.TupleType]
     assert type(builddir) in [types.ListType, types.TupleType]
     assert type(prefix) in [types.NoneType, types.ListType, types.TupleType]
@@ -47,8 +45,9 @@ def configure(packageroot, builddir, prefix, readonly_prefixes=None, args=None, 
         argv.extend(args)
         pass
 
-    return external_cmd.exec_program(program=os.sep.join(packageroot + ['configure']),
-                                     args=argv,
-                                     env=env,
-                                     dir=builddir,
-                                     print_cmdline=True)
+    external_cmd.exec_program(program=os.sep.join(packageroot + ['configure']),
+                              args=argv,
+                              env=env,
+                              dir=builddir,
+                              print_cmdline=True)
+    pass
