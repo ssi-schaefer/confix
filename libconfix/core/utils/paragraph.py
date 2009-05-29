@@ -62,7 +62,7 @@ class ParagraphSet:
 
     def lines(self):
         ret = []
-        for p in self.__dict.values():
+        for p in self.__dict.itervalues():
             ret.extend(['',
                         '# '+p.fingerprint()])
             ret.extend(p.lines())
