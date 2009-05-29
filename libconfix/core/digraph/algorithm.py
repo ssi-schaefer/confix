@@ -61,7 +61,7 @@ def subgraph(digraph, nodes):
     assert nodes.issubset(digraph.nodes())
     return DirectedGraph(
         nodes=nodes,
-        edges=select_containing_edges(nodes=nodes,
+        edges=iterate_containing_edges(nodes=nodes,
                                       edges=digraph.edges()))
 
 def combine_graphs(digraphs):
@@ -87,24 +87,21 @@ def subtract_nodes(digraph, nodes):
     remaining_nodes = set(digraph.nodes()) - set(nodes)
     return DirectedGraph(
         nodes=remaining_nodes,
-        edges=select_containing_edges(nodes=remaining_nodes,
+        edges=iterate_containing_edges(nodes=remaining_nodes,
                                       edges=digraph.edges()))
     
-def select_containing_edges(nodes, edges):
+def iterate_containing_edges(nodes, edges):
 
-    """ From edges, select those whose ends are members of nodes (and
-    return them). """
+    """ Iterate over those edges whose ends are members of nodes. """
 
     node_set = set(nodes)
-    ret_edges = []
 
     for e in edges:
         if e.head() in node_set and e.tail() in node_set:
-            ret_edges.append(e)
+            yield e
             pass
         pass
-
-    return ret_edges
+    pass
 
 def nearest_property(digraph, entrypoint, property):
 
