@@ -160,7 +160,7 @@ class CClusterer(Builder):
                     self.__library.add_member(b)
                     pass
                 pass
-            for e in self.__executables.values():
+            for e in self.__executables.itervalues():
                 if b not in e.members():
                     e.add_member(b)
                     pass
