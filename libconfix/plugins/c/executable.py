@@ -44,10 +44,7 @@ class ExecutableBuilder(LinkedBuilder):
         pass
 
     def locally_unique_id(self):
-        # careful: we cannot have exename as part of the builder's
-        # id. exename can be manipulated at will by the user during
-        # the lifetime of the object.
-        return str(self.__class__) + ':' + self.center().file().name()
+        return str(self.__class__) + ':' + self.__exename + '(' + self.center().file().name() + ')'
 
     def shortname(self):
         return 'C.ExecutableBuilder('+self.exename()+',center='+self.__center.file().name()+')'
