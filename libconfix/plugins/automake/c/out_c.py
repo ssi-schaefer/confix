@@ -458,10 +458,10 @@ class LibraryOutputBuilder(LinkedOutputBuilder):
 
             if self.use_libtool():
                 mf_am.add_ltlibrary(filelibname)
-                if b.libtool_version_info() is not None:
-                    mf_am.add_compound_ldflags(automakelibname, '-version-info %d:%d:%d' % b.libtool_version_info())
-                elif b.libtool_release_info() is not None:
-                    mf_am.add_compound_ldflags(automakelibname, '-release '+b.libtool_release_info())
+                if b.version() is not None:
+                    mf_am.add_compound_ldflags(automakelibname, '-version-info %d:%d:%d' % b.version())
+                elif b.default_version() is not None:
+                    mf_am.add_compound_ldflags(automakelibname, '-release '+b.default_version())
                     pass
                 pass
             else:

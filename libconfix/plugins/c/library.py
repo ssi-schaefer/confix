@@ -24,28 +24,22 @@ import types
 class LibraryBuilder(LinkedBuilder):
     def __init__(self,
                  basename,
-                 libtool_version_info,
-                 libtool_release_info):
+                 version,
+                 default_version):
 
-        # libtool version information; to be passed to libtool
-        # -version-info <current>:<revision>:<age>
+        # library version. passed to libtool as "-version-info
+        # <current>:<revision>:<age>", for example.
+        assert version is None or type(version) in [types.ListType, types.TupleType] and len(version) == 3
 
-        # jjj get rid of that since it is automaek specific.
-        assert libtool_version_info is None or \
-               type(libtool_version_info) in [types.ListType, types.TupleType] and len(libtool_version_info) == 3
-
-        # libtool release information; to be passed as -release
-        # <package-version>
-
-        # jjj get rid of that since it is automaek specific.
-        assert libtool_release_info is None or \
-               type(libtool_release_info) is types.StringType
+        # default library version. passed to libtool as "-release
+        # <package-version>"
+        assert default_version is None or type(default_version) is types.StringType
         
         LinkedBuilder.__init__(self)
 
         self.__basename = basename
-        self.__libtool_version_info = libtool_version_info
-        self.__libtool_release_info = libtool_release_info
+        self.__version = version
+        self.__default_version = default_version
 
         self.__buildinfo_added = False
         
@@ -77,22 +71,18 @@ class LibraryBuilder(LinkedBuilder):
             name=self.__basename))
         pass
 
-    # jjj
-    def set_libtool_version_info(self, version_info):
-        self.__libtool_version_info = version_info
+    def set_version(self, version):
+        self.__version = version
         pass
 
-    # jjj
-    def set_libname(self, name):
+    def set_basename(self, name):
         self.__basename = name
         pass
 
-    # jjj
-    def libtool_version_info(self):
-        return self.__libtool_version_info
+    def version(self):
+        return self.__version
 
-    # jjj
-    def libtool_release_info(self):
-        return self.__libtool_release_info
+    def default_version(self):
+        return self.__default_version
 
     pass

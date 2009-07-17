@@ -29,26 +29,26 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
-class LibtoolVersionSuite(unittest.TestSuite):
+class LibraryVersionsSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ExplicitLibtoolVersionTest('test'))
-        self.addTest(DefaultLibtoolVersionTest('testExactPackageVersion'))
-        self.addTest(DefaultLibtoolVersionTest('testPostfixedPackageVersion'))
-        self.addTest(DefaultLibtoolVersionTest('testUnparseablePackageVersion'))
+        self.addTest(ExplicitLibraryVersionTest('test'))
+        self.addTest(DefaultLibraryVersionTest('testExactPackageVersion'))
+        self.addTest(DefaultLibraryVersionTest('testPostfixedPackageVersion'))
+        self.addTest(DefaultLibraryVersionTest('testUnparseablePackageVersion'))
         pass
     pass
 
-class ExplicitLibtoolVersionTest(unittest.TestCase):
+class ExplicitLibraryVersionTest(unittest.TestCase):
     def test(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=["PACKAGE_NAME('ExplicitLibtoolVersionTest')",
+            entry=File(lines=["PACKAGE_NAME('ExplicitLibraryVersionTest')",
                               "PACKAGE_VERSION('1.2.3')"]))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=["LIBTOOL_LIBRARY_VERSION((6,6,6))"]))
+            entry=File(lines=["LIBRARY_VERSION((6,6,6))"]))
         fs.rootdirectory().add(
             name='file.c',
             entry=File())
@@ -65,16 +65,17 @@ class ExplicitLibtoolVersionTest(unittest.TestCase):
             self.fail()
             pass
 
-        self.failUnlessEqual(lib_builder.libtool_version_info(), (6,6,6))
+        self.failUnlessEqual(lib_builder.version(), (6,6,6))
+        self.failUnlessEqual(lib_builder.default_version(), "1.2.3")
         pass
     pass
 
-class DefaultLibtoolVersionTest(unittest.TestCase):
-    def make_package_and_return_libtool_release_version(self, package_version):
+class DefaultLibraryVersionTest(unittest.TestCase):
+    def make_package_and_return_library_builder(self, package_version):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=["PACKAGE_NAME('DefaultLibtoolVersionTest')",
+            entry=File(lines=["PACKAGE_NAME('DefaultLibraryVersionTest')",
                               "PACKAGE_VERSION('"+package_version+"')"]))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
@@ -88,8 +89,7 @@ class DefaultLibtoolVersionTest(unittest.TestCase):
 
         for b in package.rootbuilder().builders():
             if isinstance(b, LibraryBuilder):
-                return b.libtool_release_info()
-                break
+                return b
             pass
         else:
             self.fail()
@@ -98,17 +98,22 @@ class DefaultLibtoolVersionTest(unittest.TestCase):
     pass
 
     def testExactPackageVersion(self):
-        self.failUnlessEqual(self.make_package_and_return_libtool_release_version('1.2.3'), '1.2.3')
+        library_builder = self.make_package_and_return_library_builder('1.2.3')
+        self.failUnless(library_builder.version() is None)
+        self.failUnlessEqual(library_builder.default_version(), '1.2.3')
         pass
     def testPostfixedPackageVersion(self):
-        self.failUnlessEqual(self.make_package_and_return_libtool_release_version('2.0.0pre7'), '2.0.0pre7')
+        library_builder = self.make_package_and_return_library_builder('2.0.0pre7')
+        self.failUnless(library_builder.version() is None)
+        self.failUnlessEqual(library_builder.default_version(), '2.0.0pre7')
         pass
     def testUnparseablePackageVersion(self):
-        self.failUnlessEqual(self.make_package_and_return_libtool_release_version('unparseable'), 'unparseable')
-        self.failUnlessEqual(self.make_package_and_return_libtool_release_version('2.0'), '2.0')
+        library_builder = self.make_package_and_return_library_builder('unparseable')
+        self.failUnless(library_builder.version() is None)
+        self.failUnlessEqual(library_builder.default_version(), 'unparseable')
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibtoolVersionSuite())
+    unittest.TextTestRunner().run(LibraryVersionsSuite())
     pass

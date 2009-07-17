@@ -55,14 +55,14 @@ class CClusterer(Builder):
     def set_libname(self, name):
         self.__libname = name
         if self.__library is not None:
-            self.__library.set_libname(name)
+            self.__library.set_basename(name)
             pass
         pass
 
     def set_libtool_version_info(self, version_tuple):
         self.__libtool_version_info = version_tuple
         if self.__library is not None:
-            self.__library.set_libtool_version_info(version_tuple)
+            self.__library.set_version(version_tuple)
             pass
         pass
 
@@ -151,8 +151,8 @@ class CClusterer(Builder):
                 
                 self.__library = LibraryBuilder(
                     basename=libname,
-                    libtool_version_info=self.__libtool_version_info,
-                    libtool_release_info=self.package().version())
+                    version=self.__libtool_version_info,
+                    default_version=self.package().version())
                 self.parentbuilder().add_builder(self.__library)
                 pass
             if self.__library is not None:
@@ -175,7 +175,7 @@ class CClustererInterfaceProxy(InterfaceProxy):
         InterfaceProxy.__init__(self)
         self.__clusterer = clusterer
         self.add_global('LIBNAME', getattr(self, 'LIBNAME'))
-        self.add_global('LIBTOOL_LIBRARY_VERSION', getattr(self, 'LIBTOOL_LIBRARY_VERSION'))
+        self.add_global('LIBRARY_VERSION', getattr(self, 'LIBRARY_VERSION'))
         pass
 
     def LIBNAME(self, name):
@@ -184,14 +184,14 @@ class CClustererInterfaceProxy(InterfaceProxy):
         self.__clusterer.set_libname(name)
         pass
 
-    def LIBTOOL_LIBRARY_VERSION(self, version):
+    def LIBRARY_VERSION(self, version):
         if type(version) not in [types.ListType, types.TupleType]:
-            raise Error("LIBTOOL_LIBRARY_VERSION(): 'version' argument must be a tuple")
+            raise Error("LIBRARY_VERSION(): 'version' argument must be a tuple")
         if len(version) != 3:
-            raise Error("LIBTOOL_LIBRARY_VERSION(): 'version' argument must be a tuple of 3 integers")
+            raise Error("LIBRARY_VERSION(): 'version' argument must be a tuple of 3 integers")
         for i in range(len(version)):
             if type(version[i]) is not types.IntType:
-                raise Error("LIBTOOL_LIBRARY_VERSION(): part "+str(i)+" of version is not an integer")
+                raise Error("LIBRARY_VERSION(): part "+str(i)+" of version is not an integer")
             pass
         self.__clusterer.set_libtool_version_info(version)
         pass

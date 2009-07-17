@@ -83,7 +83,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         self.__dirbuilder.add_builder(cxx)
         return cxx
 
-    def LIBRARY(self, members, basename=None, libtool_version_info=None):
+    def LIBRARY(self, members, basename=None, version=None):
         the_basename = basename
         if the_basename is None:
             the_basename=LongNameFinder().find_libname(
@@ -91,8 +91,8 @@ class ExplicitInterfaceProxy(InterfaceProxy):
                 path=self.__dirbuilder.directory().relpath(from_dir=self.__dirbuilder.package().rootdirectory()))
             pass
         library = LibraryBuilder(basename=the_basename,
-                                 libtool_version_info=libtool_version_info,
-                                 libtool_release_info=self.__dirbuilder.package().version())
+                                 version=version,
+                                 default_version=self.__dirbuilder.package().version())
         for m in members:
             library.add_member(m)
             pass

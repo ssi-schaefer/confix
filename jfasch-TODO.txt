@@ -1,6 +1,11 @@
 * STACK
 
-  * add_builder -> append_builder -> makefile_am/master/slave (?)
+* CMAKE
+
+  * Library output, consuming information from LibraryBuilder. Create
+    tests for basic output, and for the versions.
+
+* TODO
 
   * ripping out DirectoryBuilder.makefile_am()
 
@@ -11,8 +16,6 @@
       AutomakeMaster's.
 
       => rework the bloody interface stuff!!!!
-
-* TODO
 
   * Objects to relieve from automake stuff
 

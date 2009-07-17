@@ -17,6 +17,7 @@
 
 from library_dependencies.suite_inmem import LibraryDependenciesInMemorySuite
 from external_library import ExternalLibraryInMemorySuite
+from library import LibraryInMemorySuite
 
 import unittest
 
@@ -25,6 +26,7 @@ class AutomakeCInMemorySuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(ExternalLibraryInMemorySuite())
         self.addTest(LibraryDependenciesInMemorySuite())
+        self.addTest(LibraryInMemorySuite())
         pass
 
     pass

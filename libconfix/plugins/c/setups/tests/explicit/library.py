@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,10 +18,11 @@
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.c import CBuilder
-from libconfix.setups.explicit_setup import ExplicitSetup
+from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
+from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
@@ -48,7 +49,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File(lines=["LIBRARY(basename='hansi', members=[])"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitSetup(use_libtool=False)])
+                               setups=[ExplicitDirectorySetup(), ExplicitCSetup()])
         package.boil(external_nodes=[])
 
         found_lib_builder = None
@@ -73,7 +74,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File(lines=["LIBRARY(members=[])"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitSetup(use_libtool=False)])
+                               setups=[ExplicitDirectorySetup(), ExplicitCSetup()])
         package.boil(external_nodes=[])
 
         found_lib_builder = None
@@ -113,7 +114,7 @@ class LibraryInMemoryTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitSetup(use_libtool=False)])
+                               setups=[ExplicitDirectorySetup(), ExplicitCSetup()])
         package.boil(external_nodes=[])
 
         found_lib_builder = None

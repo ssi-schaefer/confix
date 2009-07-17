@@ -208,7 +208,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
                 if len(tmp_path) == 0:
                     return b
                 else:
-                    raise Error('Found FileBuilder ('+str(b)+') and rest of path ('+tmp_path+')remains')
+                    raise Error('Found FileBuilder ('+str(b)+') and rest of path ('+tmp_path+') remains')
                 pass
             pass
         return None
