@@ -20,9 +20,7 @@ from name_mangling import NameManglingSuite
 from provide_require import Provide_CInclude_and_Require_CInclude_Suite
 from requires import RequireTestSuite
 from relate import RelateSuite
-from inter_package_inmem import InterPackageInMemorySuite
 from library import LibrarySuite
-from check.suite_inmem import CheckProgramInMemorySuite
 from regressions.suite_inmem import RegressionsInMemorySuite
 from header.suite_inmem import HeaderInMemorySuite
 from cond_localinstall.suite_inmem import ConditionalLocalInstallInMemorySuite
@@ -48,9 +46,7 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(Provide_CInclude_and_Require_CInclude_Suite())
         self.addTest(RequireTestSuite())
         self.addTest(RelateSuite())
-        self.addTest(InterPackageInMemorySuite())
         self.addTest(LibrarySuite())
-        self.addTest(CheckProgramInMemorySuite())
         self.addTest(NameManglingSuite())
         self.addTest(SetupsInMemorySuite())
         self.addTest(RelocatedHeadersInMemorySuite())

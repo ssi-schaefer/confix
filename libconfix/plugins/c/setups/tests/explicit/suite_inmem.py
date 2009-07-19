@@ -20,7 +20,6 @@ from executable import ExecutableInMemorySuite
 from relocated_header_inmem import RelocatedHeaderInMemorySuite
 from complete_package_inmem import CompletePackageInMemorySuite
 from libtool import LibtoolInMemorySuite
-from check_inmem import CheckProgramInMemorySuite
 
 import unittest
 
@@ -32,7 +31,6 @@ class ExplicitCSetupInMemorySuite(unittest.TestSuite):
         self.addTest(RelocatedHeaderInMemorySuite())
         self.addTest(CompletePackageInMemorySuite())
         self.addTest(LibtoolInMemorySuite())
-        self.addTest(CheckProgramInMemorySuite())
         pass
     pass
 

@@ -21,6 +21,12 @@ from autoconf_archive import AutoConfArchiveSuite
 from exename.suite_build import ExecutableNameBuildSuite
 from readonly_prefixes.suite_build import ReadonlyPrefixesBuildSuite
 from interix_link import InterixLinkSuite
+from inter_package_build import InterPackageBuildSuite
+from intra_package_build import IntraPackageBuildSuite
+from check.suite_build import CheckProgramBuildSuite
+from relocated_headers.suite_build import RelocatedHeadersBuildSuite
+from explicit_package_build import ExplicitPackageBuildSuite
+
 from libconfix.plugins.automake.c.tests.suite_build import AutomakeCBuildSuite
 
 import unittest
@@ -35,6 +41,11 @@ class AutomakeBuildSuite(unittest.TestSuite):
         self.addTest(ReadonlyPrefixesBuildSuite())
         self.addTest(InterixLinkSuite())
         self.addTest(AutomakeCBuildSuite())
+        self.addTest(InterPackageBuildSuite())
+        self.addTest(IntraPackageBuildSuite())
+        self.addTest(CheckProgramBuildSuite())
+        self.addTest(RelocatedHeadersBuildSuite())
+        self.addTest(ExplicitPackageBuildSuite())
         pass
     pass
 

@@ -15,7 +15,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.c.tests.suite_build import CBuildSuite
 from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
 from libconfix.plugins.plainfile.tests.suite_build import PlainFileSuiteBuild
 from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
@@ -25,7 +24,6 @@ import unittest
 class PluginsBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CBuildSuite())
         self.addTest(AutomakeBuildSuite())
         self.addTest(PlainFileSuiteBuild())
         self.addTest(MakeSuiteBuild())

@@ -28,6 +28,8 @@ import readonly_prefixes.suite_inmem
 from libtool_linking import LibtoolLinkingSuite
 from buildinfo import BuildInfoSuite
 from ac_config_srcdir_suite import AC_CONFIG_SRCDIR_Suite
+from inter_package_inmem import InterPackageInMemorySuite
+from check.suite_inmem import CheckProgramInMemorySuite
 
 from libconfix.plugins.automake.pkg_config.tests.suite_inmem import PkgConfigInMemorySuite
 from libconfix.plugins.automake.c.tests.suite_inmem import AutomakeCInMemorySuite
@@ -53,6 +55,8 @@ class AutomakeInMemorySuite(unittest.TestSuite):
         self.addTest(PkgConfigInMemorySuite())
         self.addTest(AutomakeCInMemorySuite())
         self.addTest(AC_CONFIG_SRCDIR_Suite())
+        self.addTest(InterPackageInMemorySuite())
+        self.addTest(CheckProgramInMemorySuite())
         pass
 
     pass

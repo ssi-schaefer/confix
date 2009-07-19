@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,44 +15,59 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.plugins.c.h import HeaderBuilder
-from libconfix.plugins.c.c import CBuilder
+from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
+from libconfix.plugins.automake import \
+     bootstrap, \
+     configure, \
+     make
 from libconfix.setups.explicit_setup import ExplicitSetup
+from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
+import sys
 
-class CompletePackageInMemorySuite(unittest.TestSuite):
+class ExplicitPackageBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CompletePackageInMemoryTest('test'))
+        self.addTest(ExplicitPackageBuildTestWithLibtool('test'))
+        self.addTest(ExplicitPackageBuildTestWithoutLibtool('test'))
         pass
     pass
 
-class CompletePackageInMemoryTest(unittest.TestCase):
+class ExplicitPackageBuildTestBase(PersistentTestCase):
+    def use_libtool(self):
+        assert 0, 'abstract'
+        pass
     def test(self):
-        sourcedir = Directory()
-        sourcedir.add(
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
             name=const.CONFIX2_PKG,
             entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
                               "PACKAGE_VERSION('1.2.3')"]))
-        sourcedir.add(
+        source.add(
             name=const.CONFIX2_DIR,
             entry=File(lines=["DIRECTORY(['lolibrary'])",
                               "DIRECTORY(['hilibrary'])",
                               "DIRECTORY(['executable'])"]))
 
-        lolibrary_dir = sourcedir.add(
+        lolibrary_dir = source.add(
             name='lolibrary',
             entry=Directory())
-        hilibrary_dir = sourcedir.add(
+        hilibrary_dir = source.add(
             name='hilibrary',
             entry=Directory())
-        executable_dir = sourcedir.add(
+        executable_dir = source.add(
             name='executable',
             entry=Directory())
 
@@ -111,77 +126,36 @@ class CompletePackageInMemoryTest(unittest.TestCase):
                               '    hi();',
                               '    return 0;',
                               '}']))
-        
-        package = LocalPackage(rootdirectory=sourcedir,
-                               setups=[ExplicitSetup(use_libtool=False)])
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[ExplicitSetup(use_libtool=self.use_libtool())])
         package.boil(external_nodes=[])
+        package.output()
+        fs.sync()
 
-        # see if we have got the directories right
-        found_lodir_builder = package.rootbuilder().find_entry_builder(['lolibrary'])
-        self.failIf(found_lodir_builder is None)
-        found_hidir_builder = package.rootbuilder().find_entry_builder(['hilibrary'])
-        self.failIf(found_hidir_builder is None)
-        found_exedir_builder = package.rootbuilder().find_entry_builder(['executable'])
-        self.failIf(found_exedir_builder is None)
-
-        # lodirectory has lolibrary has H(lo.h), C(lo1.c), C(lo2.c)
-        # ---------------------------------------------------------
-
-        # we called H() and C() in the directory's Confix2.dir, as
-        # arguments of LIBRARY(). the side effect of this must have
-        # been to add the corresponding source files to the directory.
-        found_lo_lo_h = None
-        found_lo_lo1_c = None
-        found_lo_lo2_c = None
-        for b in found_lodir_builder.builders():
-            if type(b) is HeaderBuilder and b.file().name() == 'lo.h':
-                found_lo_lo_h = b
-                pass
-            if type(b) is CBuilder and b.file().name() == 'lo1.c':
-                found_lo_lo1_c = b
-                pass
-            if type(b) is CBuilder and b.file().name() == 'lo2.c':
-                found_lo_lo2_c = b
-                pass
-            pass
-        self.failIf(found_lo_lo_h is None)
-        self.failIf(found_lo_lo1_c is None)
-        self.failIf(found_lo_lo2_c is None)
-
-        # find the library itself and see if it has the right
-        # properties.
-        found_lolib_builder = None
-        for b in found_lodir_builder.builders():
-            if type(b) is LibraryBuilder:
-                self.failUnless(found_lolib_builder is None, str(b)) # we build only one library
-                found_lolib_builder = b
-                pass
-            pass
-        self.failIf(found_lolib_builder is None)
-        self.failUnless(found_lolib_builder.basename() == 'hansi')
-
-        # see if it has the right members
-        found_lo_lo_h = None
-        found_lo_lo1_c = None
-        found_lo_lo2_c = None
-        for b in found_lolib_builder.members():
-            if type(b) is HeaderBuilder and b.file().name() == 'lo.h':
-                found_lo_lo_h = b
-                continue
-            if type(b) is CBuilder and b.file().name() == 'lo1.c':
-                found_lo_lo1_c = b
-                continue
-            if type(b) is CBuilder and b.file().name() == 'lo2.c':
-                found_lo_lo2_c = b
-                continue
-            pass
-        self.failIf(found_lo_lo_h is None)
-        self.failIf(found_lo_lo1_c is None)
-        self.failIf(found_lo_lo2_c is None)
+        bootstrap.bootstrap(
+            packageroot=source.abspath(),
+            use_kde_hack=False,
+            argv0=sys.argv[0])
+        configure.configure(
+            packageroot=source.abspath(),
+            builddir=build.abspath(),
+            prefix=None)
+        make.make(
+            builddir=build.abspath(),
+            args=[])
 
         pass
     pass
+        
+class ExplicitPackageBuildTestWithoutLibtool(ExplicitPackageBuildTestBase):
+    def use_libtool(self): return False
+    pass
+
+class ExplicitPackageBuildTestWithLibtool(ExplicitPackageBuildTestBase):
+    def use_libtool(self): return True
+    pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CompletePackageInMemorySuite())
+    unittest.TextTestRunner().run(ExplicitPackageBuildSuite())
     pass

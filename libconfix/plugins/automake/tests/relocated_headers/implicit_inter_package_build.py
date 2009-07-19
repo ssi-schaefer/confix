@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import inter_package
+import libconfix.plugins.c.relocated_headers.tests.inter_package as inter_package
 
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
@@ -28,7 +28,7 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import sys
 
-class InterPackageBuildSuite(unittest.TestSuite):
+class ImplicitInterPackageBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(InterPackageBuildTest('test'))

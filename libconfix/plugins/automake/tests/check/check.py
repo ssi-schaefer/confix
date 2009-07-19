@@ -37,6 +37,7 @@ class CheckProgramBase(PersistentTestCase):
     def use_libtool(self): assert 0
 
     def setUp(self):
+        assert False
         PersistentTestCase.setUp(self)
         self.fs_ = FileSystem(path=self.rootpath())
 
@@ -61,7 +62,7 @@ class CheckProgramBase(PersistentTestCase):
                               '#include <fcntl.h>',
                               '#include <stdlib.h>',
                               '#include <string.h>',
-                              
+
                               'int main(void) {',
                               '    const char* name = getenv("name");',
                               '    if (!name)',

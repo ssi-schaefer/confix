@@ -16,8 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
@@ -26,7 +24,9 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils import dirhier, makefileparser
 
-class AutomakeInstallInMemorySuite(unittest.TestSuite):
+import unittest
+
+class HeaderInstallInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(BasicHeaderInstallTest('test_zerodeep'))
@@ -134,5 +134,5 @@ class BasicHeaderInstallTest(unittest.TestCase):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeInstallInMemorySuite())
+    unittest.TextTestRunner().run(HeaderInstallInMemorySuite())
     pass

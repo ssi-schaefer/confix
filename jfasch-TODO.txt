@@ -1,5 +1,20 @@
 * STACK
 
+  *
+    libconfix/plugins/c/setups/tests/explicit/relocated_header_build.py
+    -> automake/tests/relocated_headers
+
+    * clean libconfix/plugins/c/setups/tests/explicit/suite_build.py
+
+  * libconfix/plugins/c/setups/tests/explicit/relocated_header*.py
+
+  * clean out c plugin from automake tests
+
+    197 inmem
+    29 build
+
+  * plan: push FileInstaller down to automake plugin.
+
 * CMAKE
 
   * Library output, consuming information from LibraryBuilder. Create

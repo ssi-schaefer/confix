@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import complete_package
+import libconfix.plugins.c.setups.tests.explicit.relocated_header as relocated_header
 
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
@@ -24,21 +24,21 @@ from libconfix.plugins.automake import \
      bootstrap, \
      configure, \
      make
-from libconfix.setups.explicit_setup import ExplicitSetup
 from libconfix.testutils.persistent import PersistentTestCase
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 import sys
 
-class CompletePackageBuildSuite(unittest.TestSuite):
+class ExplicitBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CompletePackageBuildTestWithLibtool('test'))
-        self.addTest(CompletePackageBuildTestWithoutLibtool('test'))
+        self.addTest(RelocatedHeaderBuildTestWithLibTool('test'))
+        self.addTest(RelocatedHeaderBuildTestWithoutLibTool('test'))
         pass
     pass
 
-class CompletePackageBuildTestBase(PersistentTestCase):
+class RelocatedHeaderBuildTestBase(PersistentTestCase):
     def use_libtool(self):
         assert 0, 'abstract'
         pass
@@ -46,7 +46,7 @@ class CompletePackageBuildTestBase(PersistentTestCase):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
-            entry=complete_package.make_package_source(package_name=self.__class__.__name__))
+            entry=relocated_header.make_package_source(package_name=self.__class__.__name__))
         build = fs.rootdirectory().add(
             name='build',
             entry=Directory())
@@ -71,15 +71,15 @@ class CompletePackageBuildTestBase(PersistentTestCase):
 
         pass
     pass
-        
-class CompletePackageBuildTestWithoutLibtool(CompletePackageBuildTestBase):
+
+class RelocatedHeaderBuildTestWithoutLibTool(RelocatedHeaderBuildTestBase):
     def use_libtool(self): return False
     pass
 
-class CompletePackageBuildTestWithLibtool(CompletePackageBuildTestBase):
+class RelocatedHeaderBuildTestWithLibTool(RelocatedHeaderBuildTestBase):
     def use_libtool(self): return True
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CompletePackageBuildSuite())
+    unittest.TextTestRunner().run(ExplicitBuildSuite())
     pass

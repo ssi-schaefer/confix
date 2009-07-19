@@ -17,7 +17,6 @@
 
 from install_path import HeaderInstallPathInMemorySuite
 from install import InstallInMemorySuite
-from automake_install import AutomakeInstallInMemorySuite
 
 import unittest
 
@@ -26,7 +25,6 @@ class HeaderInMemorySuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(HeaderInstallPathInMemorySuite())
         self.addTest(InstallInMemorySuite())
-        self.addTest(AutomakeInstallInMemorySuite())
         pass
     pass
 

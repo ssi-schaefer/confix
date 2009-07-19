@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 from library_dependencies.suite_inmem import LibraryDependenciesInMemorySuite
 from external_library import ExternalLibraryInMemorySuite
 from library import LibraryInMemorySuite
+from header_install import HeaderInstallInMemorySuite
 
 import unittest
 
@@ -27,6 +28,7 @@ class AutomakeCInMemorySuite(unittest.TestSuite):
         self.addTest(ExternalLibraryInMemorySuite())
         self.addTest(LibraryDependenciesInMemorySuite())
         self.addTest(LibraryInMemorySuite())
+        self.addTest(HeaderInstallInMemorySuite())
         pass
 
     pass

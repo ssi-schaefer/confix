@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -14,19 +14,4 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
-
-from explicit.suite_build import ExplicitCSetupBuildSuite
-
-import unittest
-
-class SetupsBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExplicitCSetupBuildSuite())
-        pass
-    pass
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(SetupsBuildSuite())
-    pass
 

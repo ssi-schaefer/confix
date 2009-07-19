@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,26 +15,20 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from check.suite_build import CheckProgramBuildSuite
-from intra_package_build import IntraPackageBuildSuite
-from inter_package_build import InterPackageBuildSuite
-
-from libconfix.plugins.c.relocated_headers.tests.suite_build import RelocatedHeadersBuildSuite
-from libconfix.plugins.c.setups.tests.suite_build import SetupsBuildSuite
+from implicit_inter_package_build import ImplicitInterPackageBuildSuite
+from explicit_build import ExplicitBuildSuite
 
 import unittest
 
-class CBuildSuite(unittest.TestSuite):
+class RelocatedHeadersBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CheckProgramBuildSuite())
-        self.addTest(RelocatedHeadersBuildSuite())
-        self.addTest(SetupsBuildSuite())
-        self.addTest(IntraPackageBuildSuite())
-        self.addTest(InterPackageBuildSuite())
+        self.addTest(ImplicitInterPackageBuildSuite())
+        self.addTest(ExplicitBuildSuite())
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CBuildSuite())
+    unittest.TextTestRunner().run(RelocatedHeadersBuildSuite())
     pass
+
