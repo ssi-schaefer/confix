@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -56,7 +56,7 @@ class ExplicitLibraryVersionTest(unittest.TestCase):
                                setups=[ConfixSetup(short_libnames=False, use_libtool=True)])
         package.boil(external_nodes=[])
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
                 lib_builder = b
                 break
@@ -87,7 +87,7 @@ class DefaultLibraryVersionTest(unittest.TestCase):
                                setups=[ConfixSetup(short_libnames=False, use_libtool=True)])
         package.boil(external_nodes=[])
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
                 return b
             pass

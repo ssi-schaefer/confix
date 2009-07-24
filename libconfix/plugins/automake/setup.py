@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,16 +16,26 @@
 # USA
 
 from iface import AutomakeInterfaceSetup
+from out_automake import AutomakeBackendOutputBuilder
 from c.setup import CSetup
+from script.setup import AutomakeScriptSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
+from libconfix.core.machinery.setup import Setup
 
 class AutomakeSetup(CompositeSetup):
     def __init__(self, use_libtool):
         CompositeSetup.__init__(
             self,
             setups=[AutomakeInterfaceSetup(),
-                    CSetup(use_libtool=use_libtool)])
+                    CSetup(use_libtool=use_libtool),
+                    AutomakeScriptSetup(),
+                    InfraStructureSetup()])
         pass
-        
+    pass
+
+class InfraStructureSetup(Setup):
+    def setup(self, dirbuilder):
+        dirbuilder.add_backend_dirbuilder(AutomakeBackendOutputBuilder())
+        pass
     pass

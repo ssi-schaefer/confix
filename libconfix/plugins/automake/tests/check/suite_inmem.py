@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.setups.explicit_setup import ExplicitSetup
 from libconfix.core.filesys.filesys import FileSystem
@@ -52,10 +53,13 @@ class CheckProgramInMemory(unittest.TestCase):
                                setups=ConfixSetup(use_libtool=False, short_libnames=False))
         package.boil(external_nodes=[])
         package.output()
+
+        rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
+        self.failIf(rootdir_output_builder is None)
         
-        self.failUnless('CheckProgramTest__check_proggy' in package.rootbuilder().makefile_am().check_programs())
-        self.failUnlessEqual(len(package.rootbuilder().makefile_am().tests_environment()), 1)
-        self.failUnlessEqual(package.rootbuilder().makefile_am().tests_environment()['name'], 'value')
+        self.failUnless('CheckProgramTest__check_proggy' in rootdir_output_builder.makefile_am().check_programs())
+        self.failUnlessEqual(len(rootdir_output_builder.makefile_am().tests_environment()), 1)
+        self.failUnlessEqual(rootdir_output_builder.makefile_am().tests_environment()['name'], 'value')
         pass
 
     def test_with_explicit_setup(self):
@@ -78,10 +82,13 @@ class CheckProgramInMemory(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
+
+        rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
+        self.failIf(rootdir_output_builder is None)
         
-        self.failUnless('the-test-program' in package.rootbuilder().makefile_am().check_programs())
-        self.failUnlessEqual(len(package.rootbuilder().makefile_am().tests_environment()), 1)
-        self.failUnlessEqual(package.rootbuilder().makefile_am().tests_environment()['name'], 'value')
+        self.failUnless('the-test-program' in rootdir_output_builder.makefile_am().check_programs())
+        self.failUnlessEqual(len(rootdir_output_builder.makefile_am().tests_environment()), 1)
+        self.failUnlessEqual(rootdir_output_builder.makefile_am().tests_environment()['name'], 'value')
     
     pass
 

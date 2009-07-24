@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -46,7 +46,7 @@ class ExplicitInstaller(Builder):
         super(ExplicitInstaller, self).enlarge()
         if self.__installdir is None:
             return
-        for b in self.parentbuilder().builders():
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, HeaderBuilder):
                 continue
             if b in self.__seen_header_builders:

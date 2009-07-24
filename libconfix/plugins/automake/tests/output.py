@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+from libconfix.plugins.automake.setup import AutomakeSetup
+
+from libconfix.plugins.c.executable import ExecutableBuilder
+from libconfix.plugins.c.library import LibraryBuilder
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -24,10 +28,9 @@ from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
-from libconfix.plugins.c.executable import ExecutableBuilder
-from libconfix.plugins.c.library import LibraryBuilder
-
 from libconfix.testutils import dirhier
+
+import unittest
 
 class AutomakeOutputSuite(unittest.TestSuite):
     def __init__(self):
@@ -44,42 +47,44 @@ class AutomakeOutputSuite(unittest.TestSuite):
 
 class AutomakeOutputTest(unittest.TestCase):
     def setUp(self):
-        self.fs_ = dirhier.packageroot()
-        subdir1 = self.fs_.rootdirectory().add(name='subdir1', entry=Directory())
+        self.__fs = dirhier.packageroot()
+        subdir1 = self.__fs.rootdirectory().add(name='subdir1', entry=Directory())
         subdir1.add(name=const.CONFIX2_DIR,
                     entry=File(lines=['PROVIDE_SYMBOL("subdir1")']))
         
-        subdir2 = self.fs_.rootdirectory().add(name='subdir2', entry=Directory())
+        subdir2 = self.__fs.rootdirectory().add(name='subdir2', entry=Directory())
         subdir2.add(name=const.CONFIX2_DIR,
                     entry=File(lines=['PROVIDE_SYMBOL("subdir2")',
                                       'REQUIRE_SYMBOL("subdir1")']))
-        subdir3 = self.fs_.rootdirectory().add(name='subdir3', entry=Directory())
+        subdir3 = self.__fs.rootdirectory().add(name='subdir3', entry=Directory())
         subdir3.add(name=const.CONFIX2_DIR,
                     entry=File(lines=['REQUIRE_SYMBOL("subdir2")']))
         
-        self.package_ = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                                     setups=[ImplicitDirectorySetup()])
-        self.package_.boil(external_nodes=[])
-        self.package_.output()
+        self.__package = LocalPackage(rootdirectory=self.__fs.rootdirectory(),
+                                     setups=[ImplicitDirectorySetup(), AutomakeSetup(use_libtool=False)])
+        self.__package.boil(external_nodes=[])
+        self.__package.output()
 
-        self.subdir1_builder_ = self.package_.rootbuilder().find_entry_builder(['subdir1'])
-        self.subdir2_builder_ = self.package_.rootbuilder().find_entry_builder(['subdir2'])
-        self.subdir3_builder_ = self.package_.rootbuilder().find_entry_builder(['subdir3'])
-        assert self.subdir1_builder_
-        assert self.subdir2_builder_
-        assert self.subdir3_builder_
+        self.__subdir1_builder = self.__package.rootbuilder().find_entry_builder(['subdir1'])
+        self.__subdir2_builder = self.__package.rootbuilder().find_entry_builder(['subdir2'])
+        self.__subdir3_builder = self.__package.rootbuilder().find_entry_builder(['subdir3'])
+        assert self.__subdir1_builder
+        assert self.__subdir2_builder
+        assert self.__subdir3_builder
 
         pass
 
     def tearDown(self):
-        self.fs_ = None
-        self.package_ = None
+        self.__fs = None
+        self.__package = None
         pass
 
     def test_subdirs(self):
-        self.failIfEqual(self.fs_.rootdirectory().find(['Makefile.am']), None)
-        self.failUnless(const.CONFIX2_DIR in self.package_.rootbuilder().makefile_am().extra_dist())
-        self.failUnless(const.CONFIX2_PKG in self.package_.rootbuilder().makefile_am().extra_dist())
+        rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
+
+        self.failIfEqual(self.__fs.rootdirectory().find(['Makefile.am']), None)
+        self.failUnless(const.CONFIX2_DIR in rootdir_automake_builder.makefile_am().extra_dist())
+        self.failUnless(const.CONFIX2_PKG in rootdir_automake_builder.makefile_am().extra_dist())
 
         # relative positions of subdir1, subdir2, subdir3 in toplevel
         # Makefile.am's SUBDIRS must be subdir1 < subdir2 <
@@ -89,28 +94,28 @@ class AutomakeOutputTest(unittest.TestCase):
 
         aux = dot = subdir1 = subdir2 = subdir3 = None
 
-        for i in range(len(self.package_.rootbuilder().makefile_am().subdirs())):
-            if self.package_.rootbuilder().makefile_am().subdirs()[i] == 'confix-admin':
+        for i in range(len(rootdir_automake_builder.makefile_am().subdirs())):
+            if rootdir_automake_builder.makefile_am().subdirs()[i] == 'confix-admin':
                 self.failUnless(aux is None)
                 aux = i
-            elif self.package_.rootbuilder().makefile_am().subdirs()[i] == 'subdir1':
+            elif rootdir_automake_builder.makefile_am().subdirs()[i] == 'subdir1':
                 self.failUnless(subdir1 is None)
                 subdir1 = i
-            elif self.package_.rootbuilder().makefile_am().subdirs()[i] == 'subdir2':
+            elif rootdir_automake_builder.makefile_am().subdirs()[i] == 'subdir2':
                 self.failUnless(subdir2 is None)
                 subdir2 = i
-            elif self.package_.rootbuilder().makefile_am().subdirs()[i] == 'subdir3':
+            elif rootdir_automake_builder.makefile_am().subdirs()[i] == 'subdir3':
                 self.failUnless(subdir3 is None)
                 subdir3 = i
                 pass
-            elif self.package_.rootbuilder().makefile_am().subdirs()[i] == '.':
+            elif rootdir_automake_builder.makefile_am().subdirs()[i] == '.':
                 self.failUnless(dot is None)
                 dot = i
                 pass
             pass
 
         # see if there is anything in there at all
-        self.failIfEqual(len(self.fs_.rootdirectory().find(['Makefile.am']).lines()), 0)
+        self.failIfEqual(len(self.__fs.rootdirectory().find(['Makefile.am']).lines()), 0)
 
         self.failIf(aux is None)
         self.failIf(dot is None)
@@ -121,62 +126,76 @@ class AutomakeOutputTest(unittest.TestCase):
         self.failUnless(subdir1 < subdir2 < subdir3)
 
         # see if we have our subdir's Makefiles registered for output
-        self.failUnless('Makefile' in self.package_.configure_ac().ac_config_files() or \
-                        './Makefile' in self.package_.configure_ac().ac_config_files())
-        self.failUnless('subdir1/Makefile' in self.package_.configure_ac().ac_config_files())
-        self.failUnless('subdir2/Makefile' in self.package_.configure_ac().ac_config_files())
-        self.failUnless('subdir3/Makefile' in self.package_.configure_ac().ac_config_files())
+        self.failUnless('Makefile' in rootdir_automake_builder.configure_ac().ac_config_files() or \
+                        './Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
+        self.failUnless('subdir1/Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
+        self.failUnless('subdir2/Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
+        self.failUnless('subdir3/Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
         
         pass
 
     def test_configure_ac(self):
-        self.failIfEqual(self.fs_.rootdirectory().find(['configure.ac']), None)
-        self.failUnless('config.h' in self.package_.configure_ac().ac_config_headers())
-        self.failIf(self.package_.configure_ac().packagename() is None)
-        self.failIf(self.package_.configure_ac().packageversion() is None)
+        rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
+
+        self.failIfEqual(self.__fs.rootdirectory().find(['configure.ac']), None)
+        self.failUnless('config.h' in rootdir_automake_builder.configure_ac().ac_config_headers())
+        self.failIf(rootdir_automake_builder.configure_ac().packagename() is None)
+        self.failIf(rootdir_automake_builder.configure_ac().packageversion() is None)
         pass
 
     def test_auxdir(self):
-        auxdir = self.package_.rootbuilder().directory().find(['confix-admin'])
+        rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
+
+        auxdir = self.__package.rootbuilder().directory().find(['confix-admin'])
         self.failIf(auxdir is None)
         mf_am = auxdir.find(['Makefile.am'])
         self.failIf(mf_am is None)
-        self.failUnlessEqual(self.package_.configure_ac().ac_config_aux_dir(), 'confix-admin')
-        self.failUnless('confix-admin/Makefile' in self.package_.configure_ac().ac_config_files())
+        self.failUnlessEqual(rootdir_automake_builder.configure_ac().ac_config_aux_dir(), 'confix-admin')
+        self.failUnless('confix-admin/Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
         pass
 
     def test_toplevel_makefile_am(self):
-        mf_am = self.package_.rootbuilder().makefile_am()
-        self.failUnless('1.9' in mf_am.automake_options())
-        self.failUnless('dist-bzip2' in mf_am.automake_options())
-        self.failUnless('dist-shar' in mf_am.automake_options())
-        self.failUnless('dist-zip' in mf_am.automake_options())
-        self.failUnless(const.CONFIX2_DIR in mf_am.extra_dist())
-        self.failUnless(const.CONFIX2_PKG in mf_am.extra_dist())
-        self.failUnless(self.package_.name()+'.repo' in mf_am.extra_dist())
-        self.failUnless('Makefile.in' in mf_am.maintainercleanfiles())
-        self.failUnless('Makefile.am' in mf_am.maintainercleanfiles())
+        rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
+
+        self.failUnless('1.9' in rootdir_automake_builder.makefile_am().automake_options())
+        self.failUnless('dist-bzip2' in rootdir_automake_builder.makefile_am().automake_options())
+        self.failUnless('dist-shar' in rootdir_automake_builder.makefile_am().automake_options())
+        self.failUnless('dist-zip' in rootdir_automake_builder.makefile_am().automake_options())
+        self.failUnless(const.CONFIX2_DIR in rootdir_automake_builder.makefile_am().extra_dist())
+        self.failUnless(const.CONFIX2_PKG in rootdir_automake_builder.makefile_am().extra_dist())
+        self.failUnless(self.__package.name()+'.repo' in rootdir_automake_builder.makefile_am().extra_dist())
+        self.failUnless('Makefile.in' in rootdir_automake_builder.makefile_am().maintainercleanfiles())
+        self.failUnless('Makefile.am' in rootdir_automake_builder.makefile_am().maintainercleanfiles())
         pass
 
     def test_subdir1_makefile_am(self):
-        self.failIfEqual(self.fs_.rootdirectory().find(['subdir1', 'Makefile.am']), None)
-        self.failUnless(const.CONFIX2_DIR in self.subdir1_builder_.makefile_am().extra_dist())
-        self.failUnless('Makefile.in' in self.subdir1_builder_.makefile_am().maintainercleanfiles())
-        self.failUnless('Makefile.am' in self.subdir1_builder_.makefile_am().maintainercleanfiles())
+        subdir1_automake_builder = find_automake_output_builder(
+            self.__package.rootbuilder().find_entry_builder(['subdir1']))
+
+        self.failIfEqual(self.__fs.rootdirectory().find(['subdir1', 'Makefile.am']), None)
+        self.failUnless(const.CONFIX2_DIR in subdir1_automake_builder.makefile_am().extra_dist())
+        self.failUnless('Makefile.in' in subdir1_automake_builder.makefile_am().maintainercleanfiles())
+        self.failUnless('Makefile.am' in subdir1_automake_builder.makefile_am().maintainercleanfiles())
         pass
 
     def test_subdir2_makefile_am(self):
-        self.failIfEqual(self.fs_.rootdirectory().find(['subdir2', 'Makefile.am']), None)
-        self.failUnless(const.CONFIX2_DIR in self.subdir2_builder_.makefile_am().extra_dist())
-        self.failUnless('Makefile.in' in self.subdir2_builder_.makefile_am().maintainercleanfiles())
-        self.failUnless('Makefile.am' in self.subdir2_builder_.makefile_am().maintainercleanfiles())
+        subdir2_automake_builder = find_automake_output_builder(
+            self.__package.rootbuilder().find_entry_builder(['subdir2']))
+
+        self.failIfEqual(self.__fs.rootdirectory().find(['subdir2', 'Makefile.am']), None)
+        self.failUnless(const.CONFIX2_DIR in subdir2_automake_builder.makefile_am().extra_dist())
+        self.failUnless('Makefile.in' in subdir2_automake_builder.makefile_am().maintainercleanfiles())
+        self.failUnless('Makefile.am' in subdir2_automake_builder.makefile_am().maintainercleanfiles())
         pass
 
     def test_subdir3_makefile_am(self):
-        self.failIfEqual(self.fs_.rootdirectory().find(['subdir3', 'Makefile.am']), None)
-        self.failUnless(const.CONFIX2_DIR in self.subdir3_builder_.makefile_am().extra_dist())
-        self.failUnless('Makefile.in' in self.subdir3_builder_.makefile_am().maintainercleanfiles())
-        self.failUnless('Makefile.am' in self.subdir3_builder_.makefile_am().maintainercleanfiles())
+        subdir3_automake_builder = find_automake_output_builder(
+            self.__package.rootbuilder().find_entry_builder(['subdir3']))
+
+        self.failIfEqual(self.__fs.rootdirectory().find(['subdir3', 'Makefile.am']), None)
+        self.failUnless(const.CONFIX2_DIR in subdir3_automake_builder.makefile_am().extra_dist())
+        self.failUnless('Makefile.in' in subdir3_automake_builder.makefile_am().maintainercleanfiles())
+        self.failUnless('Makefile.am' in subdir3_automake_builder.makefile_am().maintainercleanfiles())
         pass
 
     pass

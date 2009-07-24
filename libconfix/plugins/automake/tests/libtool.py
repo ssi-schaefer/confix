@@ -16,7 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
+from libconfix.plugins.c.library import LibraryBuilder
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -26,18 +29,51 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
+from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
-class LibtoolLinkingSuite(unittest.TestSuite):
+class LibtoolSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(LibtoolLinklineSeeThroughHeaders('test'))
+        self.addTest(LibtoolTest('testLibrary'))
+        self.addTest(LibtoolTest('testSeeThroughHeaders'))
         pass
     pass
 
-class LibtoolLinklineSeeThroughHeaders(unittest.TestCase):
-    def test(self):
+class LibtoolTest(unittest.TestCase):
+    def testLibrary(self):
+        rootdir = Directory()
+        rootdir.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('LibtoolInMemoryTest.testLibrary')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        rootdir.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["LIBRARY(members=[C(filename='file.c')])"]))
+        rootdir.add(
+            name='file.c',
+            entry=File())
+
+        package = LocalPackage(rootdirectory=rootdir,
+                               setups=[ExplicitSetup(use_libtool=True)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        library_builder = None
+        for b in package.rootbuilder().iter_builders():
+            if isinstance(b, LibraryBuilder):
+                self.failUnless(library_builder is None)
+                library_builder = b
+                pass
+            pass
+        self.failIf(library_builder is None)
+
+        automake_output_builder = find_automake_output_builder(package.rootbuilder())
+        self.failUnless('lib'+library_builder.basename()+'.la' in automake_output_builder.makefile_am().ltlibraries())
+        pass
+    
+    def testSeeThroughHeaders(self):
         fs = FileSystem(path=['don\'t', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -109,34 +145,38 @@ class LibtoolLinklineSeeThroughHeaders(unittest.TestCase):
         package.output()
 
         userlib_builder = package.rootbuilder().find_entry_builder(['userlib'])
+        self.failIf(userlib_builder is None)
+        userlib_automake_builder = find_automake_output_builder(userlib_builder)
 
         # if we foolishly didn't see through the seethrough1 and
         # seethrough2 nodes until we see a real library, the we'd not
         # have anything to link in.
-        self.failIf(userlib_builder.makefile_am().compound_libadd(
+        self.failIf(userlib_automake_builder.makefile_am().compound_libadd(
             'libLibtoolLinklineSeeThroughHeaders_userlib_la') is None)
 
         # when we see through both seethrough1 and seethrough2, then
         # we see the 'lo' library. we see it twice because we have two
         # paths, and we're expected to sort this out.
         self.failUnlessEqual(
-            userlib_builder.makefile_am().compound_libadd('libLibtoolLinklineSeeThroughHeaders_userlib_la'),
+            userlib_automake_builder.makefile_am().compound_libadd('libLibtoolLinklineSeeThroughHeaders_userlib_la'),
             ['-L$(top_builddir)/lib', '-lLibtoolLinklineSeeThroughHeaders_lib'])
 
         userexe_builder = package.rootbuilder().find_entry_builder(['userexe'])
+        self.failIf(userexe_builder is None)
+        userexe_automake_builder = find_automake_output_builder(userexe_builder)
 
         # for the executables holds the same as for libraries, so this
         # is basically a copy of above, with a few things exchanged.
-        self.failIf(userexe_builder.makefile_am().compound_ldadd(
+        self.failIf(userexe_automake_builder.makefile_am().compound_ldadd(
             'LibtoolLinklineSeeThroughHeaders_userexe_main') is None)
 
         self.failUnlessEqual(
-            userexe_builder.makefile_am().compound_ldadd('LibtoolLinklineSeeThroughHeaders_userexe_main'),
+            userexe_automake_builder.makefile_am().compound_ldadd('LibtoolLinklineSeeThroughHeaders_userexe_main'),
             ['-L$(top_builddir)/lib', '-lLibtoolLinklineSeeThroughHeaders_lib'])
 
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibtoolLinkingSuite())
+    unittest.TextTestRunner().run(LibtoolSuite())
     pass

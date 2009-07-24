@@ -52,7 +52,7 @@ class ExplicitExecutableNameInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, ExecutableBuilder) and b.exename() == 'explicit-name':
                 break
             pass

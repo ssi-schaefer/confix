@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,15 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os, types
-
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.machinery.provide_string import Provide_String
-from libconfix.core.machinery.require import Require
-from libconfix.core.machinery.setup import Setup
-from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
-from libconfix.core.utils.error import Error
-
 from dependency import \
      Provide_CInclude, \
      Require_CInclude
@@ -33,6 +24,18 @@ from buildinfo import \
     BuildInfo_CFLAGS, \
     BuildInfo_CXXFLAGS, \
     BuildInfo_CommandlineMacros
+
+# jjj remove automake dependency
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+
+from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.machinery.require import Require
+from libconfix.core.machinery.setup import Setup
+from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.utils.error import Error
+
+import os, types
 
 class REQUIRE_H(InterfaceProxy):
     def __init__(self, builder):
@@ -86,6 +89,12 @@ class TESTS_ENVIRONMENT(InterfaceProxy):
             raise Error('TESTS_ENVIRONMENT(): key must be a string')
         if type(value) is not types.StringType:
             raise Error('TESTS_ENVIRONMENT(): value must be a string')
-        self.__dirbuilder.makefile_am().add_tests_environment(name, value)
+
+        # jjj this is coupled to automake, but should rather be
+        # anonymous. CMake as well may have the functionality of
+        # providing tests with an enviroment.
+
+        automake_output_builder = find_automake_output_builder(self.__dirbuilder)
+        automake_output_builder.makefile_am().add_tests_environment(name, value)
         pass
     pass

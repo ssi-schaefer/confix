@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.plugins.automake.repo_automake import AutomakeCascadedPackageRepository
 from libconfix.core.filesys.directory import Directory
@@ -139,6 +140,10 @@ class InterPackageBuildBase(PersistentTestCase):
             self.lo_package_.boil(external_nodes=[])
             self.lo_package_.output()
             self.lo_fs_.sync()
+
+            # once I suspected the error to be of that root.
+            lo_dir_output_builder = find_automake_output_builder(self.lo_package_.rootbuilder())
+            self.failUnless('confixrepo' in lo_dir_output_builder.makefile_am().install_directories())
 
             bootstrap.bootstrap(
                 packageroot=self.lo_sourcedir_,

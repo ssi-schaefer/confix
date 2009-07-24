@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -14,6 +14,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
+
+from libconfix.plugins.c.h import HeaderBuilder
 
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
@@ -74,13 +76,15 @@ class LocalInstallStillWorks(unittest.TestCase):
                                                    use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
-        
-        # assert that the local install is done.
-        root_fileinstaller = package.rootbuilder().file_installer()
-        self.failUnless(root_fileinstaller.is_private_header_in_dir(filename='file.h', dir=['x','y']))
-        # and, for completeness only, that the public install is also
-        # done.
-        self.failUnless(root_fileinstaller.is_public_header_in_dir(filename='file.h', dir=['x','y']))
+
+        file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
+        self.failIf(file_h_builder is None)
+        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+
+        local_visibility = file_h_builder.local_visibility()
+
+        self.failUnless(local_visibility[0] is HeaderBuilder.LOCAL_INSTALL)
+        self.failUnless(local_visibility[1] == ['x', 'y'])
         pass
     pass
 

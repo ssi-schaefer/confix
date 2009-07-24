@@ -82,7 +82,7 @@ class BasicCXXSetup(unittest.TestCase):
         self.failIf(lib_dirbuilder is None)
         self.failIf(exe_dirbuilder is None)
 
-        for b in lib_dirbuilder.builders():
+        for b in lib_dirbuilder.iter_builders():
             if isinstance(b, LibraryBuilder):
                 found_lib_h = False
                 found_lib_cc = False
@@ -102,7 +102,7 @@ class BasicCXXSetup(unittest.TestCase):
             self.fail()
             pass
 
-        for b in exe_dirbuilder.builders():
+        for b in exe_dirbuilder.iter_builders():
             if isinstance(b, ExecutableBuilder):
                 self.failUnless(isinstance(b.center(), CXXBuilder) and b.center().file().name() == 'main.cc')
                 self.failUnlessEqual(len(b.members()), 1)
@@ -137,7 +137,7 @@ class HeadersOnlyMakeNoLibrary(unittest.TestCase):
                                setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.fail()
                 pass

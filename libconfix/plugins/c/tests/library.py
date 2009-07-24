@@ -65,7 +65,7 @@ class LibraryTest(unittest.TestCase):
         self.failIf(lo_c_builder is None)
 
         lo_lib_builder = None
-        for b in lo_builder.builders():
+        for b in lo_builder.iter_builders():
             if isinstance(b, LibraryBuilder):
                 if b.basename() == 'Blah_lo':
                     lo_lib_builder = b

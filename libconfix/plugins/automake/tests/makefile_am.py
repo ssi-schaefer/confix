@@ -17,7 +17,8 @@
 # USA
 
 from libconfix.plugins.automake.makefile_am import Makefile_am
-from libconfix.testutils import makefileparser
+import libconfix.plugins.automake.makefileparser as makefileparser
+
 from libconfix.core.utils.error import Error
 
 import unittest

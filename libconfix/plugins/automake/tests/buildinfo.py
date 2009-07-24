@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,8 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.core.filesys.directory import Directory
@@ -26,6 +25,8 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
+
+import unittest
 
 class BuildInfoSuite(unittest.TestSuite):
     def __init__(self):
@@ -103,12 +104,15 @@ class BasicBuildInfoTest(unittest.TestCase):
 
         # see if the builders let the info flow into their surrounding
         # Makefile.am.
-        self.failUnless(hidir_builder.makefile_am().cmdlinemacros()['macro_key'] == 'macro_value')
-        self.failUnless(hidir_builder.makefile_am().cmdlinemacros()['macro'] == None)
-        self.failUnless('some_cflag' in hidir_builder.makefile_am().am_cflags())
-        self.failUnless('some_other_cflag' in hidir_builder.makefile_am().am_cflags())
-        self.failUnless('some_cxxflag' in hidir_builder.makefile_am().am_cxxflags())
-        self.failUnless('some_other_cxxflag' in hidir_builder.makefile_am().am_cxxflags())
+        hi_dir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hi_dir_output_builder is None)
+        
+        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros()['macro_key'] == 'macro_value')
+        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros()['macro'] == None)
+        self.failUnless('some_cflag' in hi_dir_output_builder.makefile_am().am_cflags())
+        self.failUnless('some_other_cflag' in hi_dir_output_builder.makefile_am().am_cflags())
+        self.failUnless('some_cxxflag' in hi_dir_output_builder.makefile_am().am_cxxflags())
+        self.failUnless('some_other_cxxflag' in hi_dir_output_builder.makefile_am().am_cxxflags())
         pass
     pass
 
@@ -179,32 +183,34 @@ class UniqueFlags_n_MacrosTest(unittest.TestCase):
 
         hi_dirbuilder = package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hi_dirbuilder is None)
+        hi_dir_output_builder = find_automake_output_builder(hi_dirbuilder)
+        self.failIf(hi_dir_output_builder is None)
 
         # see if lo's build information (cflags, cxxflags,
         # cmdlinemacros) made it into hi's build.
 
-        self.failUnless('cflags_token' in hi_dirbuilder.makefile_am().am_cflags())
-        self.failUnless('cxxflags_token' in hi_dirbuilder.makefile_am().am_cxxflags())
-        self.failUnless(hi_dirbuilder.makefile_am().cmdlinemacros().has_key('key'))
-        self.failUnless(hi_dirbuilder.makefile_am().cmdlinemacros()['key'] == 'value')
+        self.failUnless('cflags_token' in hi_dir_output_builder.makefile_am().am_cflags())
+        self.failUnless('cxxflags_token' in hi_dir_output_builder.makefile_am().am_cxxflags())
+        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros().has_key('key'))
+        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros()['key'] == 'value')
         
         # hi's build should not contain duplicates of either of lo's
         # build information.
 
         unique_cflags = set()
-        for f in hi_dirbuilder.makefile_am().am_cflags():
+        for f in hi_dir_output_builder.makefile_am().am_cflags():
             self.failIf(f in unique_cflags)
             unique_cflags.add(f)
             pass
 
         unique_cxxflags = set()
-        for f in hi_dirbuilder.makefile_am().am_cxxflags():
+        for f in hi_dir_output_builder.makefile_am().am_cxxflags():
             self.failIf(f in unique_cxxflags)
             unique_cxxflags.add(f)
             pass
 
         cmdlinemacros = {}
-        for macro, value in hi_dirbuilder.makefile_am().cmdlinemacros().iteritems():
+        for macro, value in hi_dir_output_builder.makefile_am().cmdlinemacros().iteritems():
             self.failIf(macro in cmdlinemacros)
             cmdlinemacros[macro] = value
             pass

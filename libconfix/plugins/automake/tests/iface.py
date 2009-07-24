@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,13 +16,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+
+from libconfix.setups.explicit_setup import ExplicitSetup
+
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
-from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
@@ -53,8 +56,8 @@ class MAKEFILE_AM_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        makefile_am = package.rootbuilder().makefile_am()
-        self.failUnless(token in makefile_am.lines())
+        rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
+        self.failUnless(token in rootdir_automake_builder.makefile_am().lines())
         pass
     pass
         
@@ -76,8 +79,8 @@ class ADD_EXTRA_DIST_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        makefile_am = package.rootbuilder().makefile_am()
-        self.failUnless('file' in makefile_am.extra_dist())
+        rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
+        self.failUnless('file' in rootdir_automake_builder.makefile_am().extra_dist())
         pass
     pass
         

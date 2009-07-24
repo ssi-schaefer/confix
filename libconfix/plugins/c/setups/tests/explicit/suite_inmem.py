@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@ from library import LibraryInMemorySuite
 from executable import ExecutableInMemorySuite
 from relocated_header_inmem import RelocatedHeaderInMemorySuite
 from complete_package_inmem import CompletePackageInMemorySuite
-from libtool import LibtoolInMemorySuite
 
 import unittest
 
@@ -30,7 +29,6 @@ class ExplicitCSetupInMemorySuite(unittest.TestSuite):
         self.addTest(ExecutableInMemorySuite())
         self.addTest(RelocatedHeaderInMemorySuite())
         self.addTest(CompletePackageInMemorySuite())
-        self.addTest(LibtoolInMemorySuite())
         pass
     pass
 

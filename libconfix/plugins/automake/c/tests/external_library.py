@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.plugins.automake.c.out_c import LibraryOutputBuilder
 
 from libconfix.core.filesys.directory import Directory
@@ -114,16 +115,22 @@ class ExternalLibraryTest(unittest.TestCase):
         # built there
         lodir_builder = self.__package.rootbuilder().find_entry_builder(['lo'])
         self.failIf(lodir_builder is None) # paranoia
-        self.failIf('-I/the/include/path/of/lolo' in lodir_builder.makefile_am().includepath())
+        lodir_output_builder = find_automake_output_builder(lodir_builder)
+        self.failIf(lodir_output_builder is None)
+        
+        self.failIf('-I/the/include/path/of/lolo' in lodir_output_builder.makefile_am().includepath())
         
         # hi is building something, so we should definitely see
         # include paths. lo must come before lolo in hi's include
         # path.
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
+        hidir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hidir_output_builder is None)
+        
         pos_lo = pos_lolo = None
         i = -1
-        for ip in hidir_builder.makefile_am().includepath():
+        for ip in hidir_output_builder.makefile_am().includepath():
             i += 1
             if ip == '-I/the/include/path/of/lolo':
                 pos_lolo = i
@@ -141,32 +148,40 @@ class ExternalLibraryTest(unittest.TestCase):
     def testCmdlineMacros(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
+        hidir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hidir_output_builder is None)
 
-        self.failIf(hidir_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') is None)
-        self.failUnless(hidir_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') == 'value_lolo')
-        self.failIf(hidir_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') is None)
-        self.failUnless(hidir_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') == 'value_lo')
+        self.failIf(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') is None)
+        self.failUnless(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') == 'value_lolo')
+        self.failIf(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') is None)
+        self.failUnless(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') == 'value_lo')
         pass
 
     def testCFlags(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
+        hidir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hidir_output_builder is None)
         
-        self.failUnless('lolo_cflags' in hidir_builder.makefile_am().am_cflags())
-        self.failUnless('lo_cflags' in hidir_builder.makefile_am().am_cflags())
+        self.failUnless('lolo_cflags' in hidir_output_builder.makefile_am().am_cflags())
+        self.failUnless('lo_cflags' in hidir_output_builder.makefile_am().am_cflags())
         pass
 
     def testCXXFlags(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
+        hidir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hidir_output_builder is None)
 
-        self.failUnless('lolo_cxxflags' in hidir_builder.makefile_am().am_cxxflags())
-        self.failUnless('lo_cxxflags' in hidir_builder.makefile_am().am_cxxflags())
+        self.failUnless('lolo_cxxflags' in hidir_output_builder.makefile_am().am_cxxflags())
+        self.failUnless('lo_cxxflags' in hidir_output_builder.makefile_am().am_cxxflags())
         pass
 
     def testLinkery(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
+        hidir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hidir_output_builder is None)
 
         # paths (-L): lo (first and second) must come before lolo
         # (first and second). the order of lo's and lolo's both paths
@@ -175,7 +190,7 @@ class ExternalLibraryTest(unittest.TestCase):
         # libraries (-l): lo before lolo.
         pos_Llo_first = pos_Llo_second = pos_Llolo_first = pos_Llolo_second = pos_llolo = pos_llo = None
         i = -1
-        for lp in hidir_builder.makefile_am().compound_libadd(compound_name='libhi_la'):
+        for lp in hidir_output_builder.makefile_am().compound_libadd(compound_name='libhi_la'):
             i += 1
             if lp == '-L/the/first/library/path/of/lo':
                 pos_Llo_first = i

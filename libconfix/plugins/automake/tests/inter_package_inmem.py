@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,11 +16,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.setup import AutomakeSetup
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 
+from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.filesys.file import File
+from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.utils import const
 
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
@@ -37,8 +43,31 @@ class InterPackageInMemorySuite(unittest.TestSuite):
     
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(RepoInstall('test'))
         self.addTest(InterPackageRelate('test'))
         pass
+    pass
+
+class RepoInstall(unittest.TestCase):
+    def test(self):
+        rootdir = Directory()
+        rootdir.add(name=const.CONFIX2_PKG,
+                    entry=File(lines=["PACKAGE_NAME('blah')",
+                                      "PACKAGE_VERSION('1.2.3')"]))
+        rootdir.add(name=const.CONFIX2_DIR,
+                    entry=File())
+
+        package = LocalPackage(rootdirectory=rootdir, setups=[ExplicitDirectorySetup(), AutomakeSetup(use_libtool=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
+        self.failIf(rootdir_output_builder is None)
+
+        self.failUnless('confixrepo' in rootdir_output_builder.makefile_am().install_directories())
+
+        pass
+
     pass
 
 class InterPackageRelate(unittest.TestCase):
@@ -61,7 +90,7 @@ class InterPackageRelate(unittest.TestCase):
         lo_h_builder = local_lopkg.rootbuilder().find_entry_builder(['lo.h'])
         lo_c_builder = local_lopkg.rootbuilder().find_entry_builder(['lo.c'])
         liblo_builder = None
-        for b in local_lopkg.rootbuilder().builders():
+        for b in local_lopkg.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
                 liblo_builder = b
                 break
@@ -72,7 +101,7 @@ class InterPackageRelate(unittest.TestCase):
 
         hi_c_builder = local_hipkg.rootbuilder().find_entry_builder(['hi.c'])
         libhi_builder = None
-        for b in local_hipkg.rootbuilder().builders():
+        for b in local_hipkg.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
                 libhi_builder = b
                 break

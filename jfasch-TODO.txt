@@ -1,24 +1,43 @@
 * STACK
 
-  *
-    libconfix/plugins/c/setups/tests/explicit/relocated_header_build.py
-    -> automake/tests/relocated_headers
+  * plainfile is in the way. 00build.py. make it like the 'script'
+    plugin - halfway through. good night.
 
-    * clean libconfix/plugins/c/setups/tests/explicit/suite_build.py
+  * argh. error. order dependency. can have *only one* backen output
+    builder per directory. collapse PackageOutputBuilder and
+    DirectoryOutputBuilder into one big builder that has everything.
 
-  * libconfix/plugins/c/setups/tests/explicit/relocated_header*.py
+  * rip out Builder.relate()
 
-  * clean out c plugin from automake tests
+  * remove LocalPackage.configure_ac() and LocalPackage.acinclude_m4()
 
-    197 inmem
-    29 build
+  * plan
 
-  * plan: push FileInstaller down to automake plugin.
+    * rewrite DirectoryBuilder.iter_builders() to iterate over the
+      builders.
+
+    * remove makefile_am() and file_installer() from DirectoryBuilder
+      (including jjj and remove_me_jjj_file_installer())
 
 * CMAKE
 
   * Library output, consuming information from LibraryBuilder. Create
     tests for basic output, and for the versions.
+
+  * script plugin
+
+  * repofile install
+
+  * Confix2.dir, Confix2.pkg -> out_automake.py (translate that shit
+    to CMake).
+
+  * interfaces:
+
+    * TESTS_ENVIRONMENT is currently coupled to automake. probably
+      introduce some property mechanism in Builder where we can hook
+      any kind of information for the backends.
+
+      this will require some extra work, and some tests.
 
 * TODO
 

@@ -25,7 +25,7 @@ from c import CSuite
 from exe import ExecutableSuite
 from exename.suite_inmem import ExecutableNameInMemorySuite
 import readonly_prefixes.suite_inmem
-from libtool_linking import LibtoolLinkingSuite
+from libtool import LibtoolSuite
 from buildinfo import BuildInfoSuite
 from ac_config_srcdir_suite import AC_CONFIG_SRCDIR_Suite
 from inter_package_inmem import InterPackageInMemorySuite
@@ -33,6 +33,7 @@ from check.suite_inmem import CheckProgramInMemorySuite
 
 from libconfix.plugins.automake.pkg_config.tests.suite_inmem import PkgConfigInMemorySuite
 from libconfix.plugins.automake.c.tests.suite_inmem import AutomakeCInMemorySuite
+from libconfix.plugins.automake.script.tests.suite_inmem import AutomakeScriptInMemorySuite
 
 import unittest
 
@@ -50,13 +51,14 @@ class AutomakeInMemorySuite(unittest.TestSuite):
         self.addTest(ExecutableSuite())
         self.addTest(ExecutableNameInMemorySuite())
         self.addTest(readonly_prefixes.suite_inmem.InMemorySuite())
-        self.addTest(LibtoolLinkingSuite())
+        self.addTest(LibtoolSuite())
         self.addTest(BuildInfoSuite())
         self.addTest(PkgConfigInMemorySuite())
         self.addTest(AutomakeCInMemorySuite())
         self.addTest(AC_CONFIG_SRCDIR_Suite())
         self.addTest(InterPackageInMemorySuite())
         self.addTest(CheckProgramInMemorySuite())
+        self.addTest(AutomakeScriptInMemorySuite())
         pass
 
     pass

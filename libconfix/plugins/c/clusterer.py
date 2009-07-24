@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -70,7 +70,11 @@ class CClusterer(Builder):
         super(CClusterer, self).enlarge()
         # copy what we will be iterating over because we will change
         # its size
-        for b in self.parentbuilder().builders()[:]:
+        builders = []
+        for b in self.parentbuilder().iter_builders():
+            builders.append(b)
+            pass
+        for b in builders:
             if not isinstance(b, CBaseBuilder):
                 continue
 

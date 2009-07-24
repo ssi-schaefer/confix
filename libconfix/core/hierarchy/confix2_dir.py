@@ -58,14 +58,4 @@ class Confix2_dir(FileBuilder):
                         os.sep.join(self.file().relpath(self.package().rootdirectory()))+'"', [e])
         pass
 
-    def output(self):
-        super(Confix2_dir, self).output()
-
-        # only add it to the distribution package if it is part of the
-        # physical package structure
-        if not self.file().is_overlayed():
-            self.parentbuilder().makefile_am().add_extra_dist(self.file().name())
-            pass
-        pass
-
     pass

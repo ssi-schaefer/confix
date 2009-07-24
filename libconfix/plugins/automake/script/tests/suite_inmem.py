@@ -26,7 +26,7 @@ from libconfix.core.machinery.local_package import LocalPackage
 
 import unittest
 
-class ScriptSuiteInMemory(unittest.TestSuite):
+class AutomakeScriptInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(ScriptInMemoryTest('test'))
@@ -58,5 +58,5 @@ class ScriptInMemoryTest(unittest.TestCase):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ScriptSuiteInMemory())
+    unittest.TextTestRunner().run(AutomakeScriptInMemorySuite())
     pass

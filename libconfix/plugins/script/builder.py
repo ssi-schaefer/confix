@@ -24,10 +24,4 @@ class ScriptBuilder(FileBuilder):
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
         pass
-
-    def output(self):
-        FileBuilder.output(self)
-        self.parentbuilder().makefile_am().add_bin_script(scriptname=self.file().name())
-        pass
-
     pass

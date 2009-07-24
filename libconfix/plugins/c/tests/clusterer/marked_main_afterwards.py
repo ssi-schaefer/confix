@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -84,7 +84,7 @@ class MarkedMainAfterwardsTest(unittest.TestCase):
         main1_exe_builder = None
         main2_exe_builder = None
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if not isinstance(b, ExecutableBuilder):
                 continue
             if b.center().file().name() == 'main1.c':
@@ -201,7 +201,7 @@ class TestHelper(Builder):
             raise TestHelper.Error(str(self.__round)+' rounds; stopping')
 
         if self.__state == TestHelper.INIT:
-            for b in self.parentbuilder().builders():
+            for b in self.parentbuilder().iter_builders():
                 if isinstance(b, LibraryBuilder):
                     self.__state = TestHelper.LIBRARY_SEEN
                     break
@@ -211,7 +211,7 @@ class TestHelper(Builder):
 
         if self.__state == TestHelper.LIBRARY_SEEN:
             # set one C builder as "main"
-            for b in self.parentbuilder().builders():
+            for b in self.parentbuilder().iter_builders():
                 if isinstance(b, CBuilder) and b.file().name() == 'main1.c':
                     if b.is_main():
                         raise TestHelper.Error('main1.c is marked main')
@@ -228,7 +228,7 @@ class TestHelper(Builder):
         if self.__state == TestHelper.FIRST_C_FLAGGED_AS_MAIN:
             # verify that we see *one* executable.
             exe = None
-            for b in self.parentbuilder().builders():
+            for b in self.parentbuilder().iter_builders():
                 if isinstance(b, ExecutableBuilder):
                     if exe:
                         raise TestHelper.Error('two exes found; marked only one so far')
@@ -248,7 +248,7 @@ class TestHelper(Builder):
             # been dissolved.
             if len(exe.members()) != 2:
                 raise TestHelper.Error('main1.c does not have 2 members')
-            for b in self.parentbuilder().builders():
+            for b in self.parentbuilder().iter_builders():
                 if isinstance(b, LibraryBuilder):
                     raise TestHelper.Error('library not dissolved')
                 pass
@@ -258,7 +258,7 @@ class TestHelper(Builder):
 
         if self.__state == TestHelper.FIRST_EXECUTABLE_SEEN:
             # mark next C builder as main
-            for b in self.parentbuilder().builders():
+            for b in self.parentbuilder().iter_builders():
                 if isinstance(b, CBuilder) and not b.is_main():
                     b.file().set_property('MAIN', True)
                     break
@@ -273,7 +273,7 @@ class TestHelper(Builder):
             # wait for two executables with one member each. no
             # library of course.
             exe1 = exe2 = None
-            for b in self.parentbuilder().builders():
+            for b in self.parentbuilder().iter_builders():
                 if isinstance(b, ExecutableBuilder):
                     if b.center().file().name() == 'main1.c':
                         exe1 = b

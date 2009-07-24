@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -27,6 +27,8 @@ from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.testutils import dirhier
+
+import unittest
 
 class ExecutableSuite(unittest.TestSuite):
     def __init__(self):
@@ -94,17 +96,17 @@ class ExecutableBase(unittest.TestCase):
         self.hilib_builder_ = None
         self.exe_builder_ = None
 
-        for b in self.lodir_builder_.builders():
+        for b in self.lodir_builder_.iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.lolib_builder_ = b
                 pass
             pass
-        for b in self.hidir_builder_.builders():
+        for b in self.hidir_builder_.iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.hilib_builder_ = b
                 pass
             pass
-        for b in self.exedir_builder_.builders():
+        for b in self.exedir_builder_.iter_builders():
             if isinstance(b, ExecutableBuilder):
                 self.exe_builder_ = b
                 pass
@@ -117,9 +119,11 @@ class ExecutableBase(unittest.TestCase):
         pass
 
     def common_test(self):
-        self.failUnless('blah_exe_main' in self.exedir_builder_.makefile_am().bin_programs())
-        self.failUnless('main.c' in self.exedir_builder_.makefile_am().compound_sources('blah_exe_main'))
-        self.failUnless('something.c' in self.exedir_builder_.makefile_am().compound_sources('blah_exe_main'))
+        exedir_automake_builder = find_automake_output_builder(self.exedir_builder_)
+        
+        self.failUnless('blah_exe_main' in exedir_automake_builder.makefile_am().bin_programs())
+        self.failUnless('main.c' in exedir_automake_builder.makefile_am().compound_sources('blah_exe_main'))
+        self.failUnless('something.c' in exedir_automake_builder.makefile_am().compound_sources('blah_exe_main'))
         pass
     pass
 
@@ -130,7 +134,10 @@ class LibtoolExecutable(ExecutableBase):
     # the link line.
 
     def test(self):
-        self.failUnlessEqual(self.exedir_builder_.makefile_am().compound_ldadd('blah_exe_main'),
+        exedir_output_builder = find_automake_output_builder(self.exedir_builder_)
+        self.failIf(exedir_output_builder is None)
+        
+        self.failUnlessEqual(exedir_output_builder.makefile_am().compound_ldadd('blah_exe_main'),
                              ['-L$(top_builddir)/hi',
                               '-lblah_hi'])
         pass
@@ -143,7 +150,10 @@ class StandardExecutable(ExecutableBase):
     # dependencies, in reverse-topological order.
 
     def test(self):
-        self.failUnlessEqual(self.exedir_builder_.makefile_am().compound_ldadd('blah_exe_main'),
+        exedir_output_builder = find_automake_output_builder(self.exedir_builder_)
+        self.failIf(exedir_output_builder is None)
+        
+        self.failUnlessEqual(exedir_output_builder.makefile_am().compound_ldadd('blah_exe_main'),
                              ['-L$(top_builddir)/hi',
                               '-L$(top_builddir)/lo',
                               '-lblah_hi',
@@ -163,8 +173,11 @@ class CheckAndNoinstProgram(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        self.failUnless('blah__check_proggy' in package.rootbuilder().makefile_am().check_programs())
-        self.failUnless('blah__proggy' in package.rootbuilder().makefile_am().noinst_programs())
+        rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
+        self.failIf(rootdir_output_builder is None)
+
+        self.failUnless('blah__check_proggy' in rootdir_output_builder.makefile_am().check_programs())
+        self.failUnless('blah__proggy' in rootdir_output_builder.makefile_am().noinst_programs())
         pass
     pass
 
@@ -210,7 +223,11 @@ class LDADD(unittest.TestCase):
         package.output()
 
         exedir_builder = package.rootbuilder().find_entry_builder(['exe'])
-        self.failUnless('-lLDADD_lib' in exedir_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
+        self.failIf(exedir_builder is None)
+        exedir_output_builder = find_automake_output_builder(exedir_builder)
+        self.failIf(exedir_output_builder is None)
+
+        self.failUnless('-lLDADD_lib' in exedir_output_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
         pass
 
     def test_no_libtool(self):
@@ -220,7 +237,11 @@ class LDADD(unittest.TestCase):
         package.output()
 
         exedir_builder = package.rootbuilder().find_entry_builder(['exe'])
-        self.failUnless('-lLDADD_lib' in exedir_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
+        self.failIf(exedir_builder is None)
+        exedir_output_builder = find_automake_output_builder(exedir_builder)
+        self.failIf(exedir_output_builder is None)
+
+        self.failUnless('-lLDADD_lib' in exedir_output_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
         pass
 
     pass

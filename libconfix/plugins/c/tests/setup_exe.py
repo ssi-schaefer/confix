@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -69,7 +69,7 @@ class ExecutableSetupTest(unittest.TestCase):
         library_builder = None
         main_builder = None
         main2_builder = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, FileBuilder):
                 if b.file().name() == 'file.h' and isinstance(b, HeaderBuilder):
                     file_h_builder = b

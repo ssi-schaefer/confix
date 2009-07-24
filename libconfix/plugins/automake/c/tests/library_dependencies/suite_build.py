@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,7 @@
 
 from dirstructure import DirectoryStructure
 
-from libconfix.plugins.automake import bootstrap, configure, make
+from libconfix.plugins.automake import bootstrap, configure, make, makefileparser
 from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
 
 from libconfix.core.machinery.local_package import LocalPackage
@@ -26,7 +26,6 @@ from libconfix.core.filesys import scan
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
-from libconfix.testutils import makefileparser
 
 import unittest
 import sys

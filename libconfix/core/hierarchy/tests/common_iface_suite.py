@@ -199,7 +199,7 @@ class ADD_BUILDER_Test(PersistentTestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if b.locally_unique_id() == 'my_builder_id':
                 break
             pass

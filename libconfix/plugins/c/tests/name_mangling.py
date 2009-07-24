@@ -94,7 +94,7 @@ class NamesBase(unittest.TestCase):
         self.failIf(libdir_builder is None)
         self.failIf(exedir_builder is None)
 
-        for builder in libdir_builder.builders():
+        for builder in libdir_builder.iter_builders():
             if isinstance(builder, LibraryBuilder):
                 self.lib_builder_ = builder
                 break
@@ -103,7 +103,7 @@ class NamesBase(unittest.TestCase):
             self.fail()
             pass
 
-        for builder in exedir_builder.builders():
+        for builder in exedir_builder.iter_builders():
             if isinstance(builder, ExecutableBuilder):
                 self.exe_builder_ = builder
                 break

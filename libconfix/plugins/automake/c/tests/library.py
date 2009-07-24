@@ -15,6 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.plugins.c.library import LibraryBuilder
 
 from libconfix.core.filesys.directory import Directory
@@ -64,8 +65,12 @@ class LibraryBase(unittest.TestCase):
         self.package_.output()
 
         self.lodir_builder_ = self.package_.rootbuilder().find_entry_builder(['lo'])
+        self.failIf(self.lodir_builder_ is None)
+        self.lodir_output_builder_ = find_automake_output_builder(self.lodir_builder_)
+        self.failIf(self.lodir_output_builder_ is None)
+        
         self.lolib_builder_ = None
-        for b in self.lodir_builder_.builders():
+        for b in self.lodir_builder_.iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.lolib_builder_ = b
                 pass
@@ -81,7 +86,7 @@ class LibraryBase(unittest.TestCase):
         pass
         
     def test_library_alone(self):
-        mf_am = self.lodir_builder_.makefile_am()
+        mf_am = self.lodir_output_builder_.makefile_am()
         self.failIfEqual(mf_am, None)
 
         # we ought to be building a library here
@@ -90,7 +95,7 @@ class LibraryBase(unittest.TestCase):
 
         # lo.{h,c} are the sources
 
-        sources = self.lodir_builder_.makefile_am().compound_sources(self.amlibname())
+        sources = mf_am.compound_sources(self.amlibname())
         self.failIf(sources is None)
         self.failUnless('lo.h' in sources)
         self.failUnless('lo.c' in sources)
@@ -106,7 +111,7 @@ class LibtoolLibrary(LibraryBase):
     def primary(self): return 'LTLIBRARIES'
 
     def test_version(self):
-        flags = self.lodir_builder_.makefile_am().compound_ldflags(self.amlibname())
+        flags = self.lodir_output_builder_.makefile_am().compound_ldflags(self.amlibname())
         self.failIf(flags is None)
         self.failUnless('-version-info 1:2:3' in flags)
         pass
@@ -172,8 +177,11 @@ class LIBADD(unittest.TestCase):
         package.output()
 
         hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
+        self.failIf(hidir_builder is None)
+        hidir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hidir_output_builder is None)
 
-        self.failUnless('-lLIBADD_lo' in hidir_builder.makefile_am().compound_libadd('libLIBADD_hi_la'))
+        self.failUnless('-lLIBADD_lo' in hidir_output_builder.makefile_am().compound_libadd('libLIBADD_hi_la'))
         pass
 
     def test_no_libtool(self):
@@ -183,7 +191,11 @@ class LIBADD(unittest.TestCase):
         package.output()
 
         hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
-        self.failUnless(hidir_builder.makefile_am().compound_libadd('libLIBADD_hi_a') is None)
+        self.failIf(hidir_builder is None)
+        hidir_output_builder = find_automake_output_builder(hidir_builder)
+        self.failIf(hidir_output_builder is None)
+        
+        self.failUnless(hidir_output_builder.makefile_am().compound_libadd('libLIBADD_hi_a') is None)
         pass
 
     pass

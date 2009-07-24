@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,6 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.setups.explicit_setup import ExplicitSetup
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
@@ -45,8 +46,11 @@ class NoFiles(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        self.failIf(package.configure_ac().unique_file_in_srcdir() is None)
-        self.failUnless(package.configure_ac().unique_file_in_srcdir() in ('Confix2.dir', 'Confix2.pkg'))
+        rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
+        self.failIf(rootdir_automake_builder is None)
+
+        self.failIf(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() is None)
+        self.failUnless(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() in ('Confix2.dir', 'Confix2.pkg'))
 
         pass
     pass
@@ -68,8 +72,11 @@ class NonTrivialFiles(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        self.failIf(package.configure_ac().unique_file_in_srcdir() is None)
-        self.failUnless(package.configure_ac().unique_file_in_srcdir() == 'file.h')
+        rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
+        self.failIf(rootdir_automake_builder is None)
+
+        self.failIf(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() is None)
+        self.failUnless(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() == 'file.h')
 
         pass
     pass

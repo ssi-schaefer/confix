@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -53,7 +53,7 @@ class LibrarySetupBasic(unittest.TestCase):
         file_h_builder = None
         file_c_builder = None
         library_builder = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, FileBuilder):
                 if b.file().name() == 'file.h' and isinstance(b, HeaderBuilder):
                     file_h_builder = b
@@ -95,7 +95,7 @@ class LibraryNames(unittest.TestCase):
         package.boil(external_nodes=[])
 
         dir3lib_builder = None
-        for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).builders():
+        for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(dir3lib_builder is not None)
                 dir3lib_builder = b
@@ -113,7 +113,7 @@ class LibraryNames(unittest.TestCase):
         package.boil(external_nodes=[])
 
         dir3lib_builder = None
-        for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).builders():
+        for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(dir3lib_builder is not None)
                 dir3lib_builder = b
@@ -141,7 +141,7 @@ class LibraryNames(unittest.TestCase):
                                setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
         package.boil(external_nodes=[])
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.failUnlessEqual(b.basename(), 'myownname')
                 break

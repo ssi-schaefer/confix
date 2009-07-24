@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ from external_library import \
 from libconfix.plugins.automake.configure_ac import Configure_ac
 from libconfix.plugins.automake import readonly_prefixes
 from libconfix.plugins.automake import helper
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.plugins.c.h import HeaderBuilder
 from libconfix.plugins.c.compiled import CompiledCBuilder
@@ -66,19 +67,21 @@ class HeaderOutputBuilder(Builder):
     def locally_unique_id(self):
         return str(self.__class__)
     def output(self):
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        
         super(HeaderOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, HeaderBuilder):
                 continue
 
             public_visibility = b.public_visibility()
             local_visibility = b.local_visibility()
 
-            self.parentbuilder().file_installer().add_public_header(filename=b.file().name(), dir=public_visibility)
+            automake_output_builder.file_installer().add_public_header(filename=b.file().name(), dir=public_visibility)
 
             assert local_visibility[0] in (HeaderBuilder.LOCAL_INSTALL, HeaderBuilder.DIRECT_INCLUDE)
             if local_visibility[0] == HeaderBuilder.LOCAL_INSTALL:
-                self.parentbuilder().file_installer().add_private_header(
+                automake_output_builder.file_installer().add_private_header(
                     filename=b.file().name(),
                     dir=local_visibility[1])
                 pass
@@ -152,7 +155,10 @@ class CompiledOutputBuilder(Builder):
 
     def output(self):
         super(CompiledOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, CompiledCBuilder):
                 continue
 
@@ -160,38 +166,37 @@ class CompiledOutputBuilder(Builder):
             # automake/external include paths, macros, and whatnot.
 
             for name, value in b.cmdlinemacros().iteritems():
-                self.parentbuilder().makefile_am().add_cmdlinemacro(name, value)
+                automake_output_builder.makefile_am().add_cmdlinemacro(name, value)
                 pass
             for f in b.cflags():
-                self.parentbuilder().makefile_am().add_am_cflags(f)
+                automake_output_builder.makefile_am().add_am_cflags(f)
                 pass
     
             # native includes of the same package come first
             for d in b.native_local_include_dirs():
-                self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(['$(top_srcdir)']+d))
+                automake_output_builder.makefile_am().add_includepath('-I'+'/'.join(['$(top_srcdir)']+d))
                 pass
             # if files have been locally installed, we have to add
             # $(top_builddir)/confix_include to the include path.
             if b.have_locally_installed_includes():
-                self.parentbuilder().makefile_am().add_includepath('-I'+'/'.join(['$(top_builddir)', const.LOCAL_INCLUDE_DIR]))
+                automake_output_builder.makefile_am().add_includepath('-I'+'/'.join(['$(top_builddir)', const.LOCAL_INCLUDE_DIR]))
                 pass
             # native includes of other packages (i.e., native
             # installed includes) come next.
             if b.using_native_installed():
-                self.parentbuilder().makefile_am().add_includepath('-I$(includedir)')
-                self.parentbuilder().makefile_am().add_includepath('$('+readonly_prefixes.incpath_var+')')
+                automake_output_builder.makefile_am().add_includepath('-I$(includedir)')
+                automake_output_builder.makefile_am().add_includepath('$('+readonly_prefixes.incpath_var+')')
                 pass
-
 
             for name, value in self.__external_cmdlinemacros.iteritems():
-                self.parentbuilder().makefile_am().add_cmdlinemacro(name, value)
+                automake_output_builder.makefile_am().add_cmdlinemacro(name, value)
                 pass
             for f in self.__external_cflags:
-                self.parentbuilder().makefile_am().add_am_cflags(f)
+                automake_output_builder.makefile_am().add_am_cflags(f)
                 pass
             for p in self.__external_incpath:
                 for item in p:
-                    self.parentbuilder().makefile_am().add_includepath(item)
+                    automake_output_builder.makefile_am().add_includepath(item)
                     pass
                 pass
             pass
@@ -203,11 +208,11 @@ class COutputBuilder(CompiledOutputBuilder):
         return str(self.__class__)
     def output(self):
         super(COutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, CBuilder):
                 continue
-
-            self.package().configure_ac().add_paragraph(
+            automake_output_builder.configure_ac().add_paragraph(
                 paragraph=Paragraph(['AC_PROG_CC']),
                 order=Configure_ac.PROGRAMS)
             pass
@@ -237,15 +242,18 @@ class CXXOutputBuilder(CompiledOutputBuilder):
 
     def output(self):
         super(CXXOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, CXXBuilder):
                 continue
 
-            self.package().configure_ac().add_paragraph(
+            automake_output_builder.configure_ac().add_paragraph(
                 paragraph=Paragraph(['AC_PROG_CXX']),
                 order=Configure_ac.PROGRAMS)
             for f in b.cxxflags() + self.__external_cxxflags:
-                self.parentbuilder().makefile_am().add_am_cxxflags(f)
+                automake_output_builder.makefile_am().add_am_cxxflags(f)
                 pass
             pass
         pass
@@ -256,32 +264,36 @@ class LexOutputBuilder(CompiledOutputBuilder):
         return str(self.__class__)
     def output(self):
         super(LexOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, LexBuilder):
                 continue
 
-            self.package().configure_ac().add_paragraph(
+            automake_output_builder.configure_ac().add_paragraph(
                 paragraph=Paragraph(['AC_PROG_LEX']),
                 order=Configure_ac.PROGRAMS)
             root, ext = os.path.splitext(b.file().name())
             if ext == '.l':
-                self.package().configure_ac().add_paragraph(
+                automake_output_builder.configure_ac().add_paragraph(
                     paragraph=Paragraph(['AC_PROG_CC']),
                     order=Configure_ac.PROGRAMS)
-                self.parentbuilder().makefile_am().add_built_sources(root + '.c')
+                automake_output_builder.makefile_am().add_built_sources(root + '.c')
             elif ext == '.ll':
-                self.package().configure_ac().add_paragraph(
+                automake_output_builder.configure_ac().add_paragraph(
                     paragraph=Paragraph(['AC_PROG_CXX']),
                     order=Configure_ac.PROGRAMS)
-                self.parentbuilder().makefile_am().add_built_sources(root + '.cc')
-                # argh: when using "%option c++" in the lex source file,
-                # flex generates lex.yy.cc, which automake doesn't seem to
-                # be aware of. force it to generate the file automake is
-                # aware of. this is not supposed to work with other lexers
-                # however. but, as the documentation states, it is better
-                # to not use the C++ feature of lex since it is inherently
+                automake_output_builder.makefile_am().add_built_sources(root + '.cc')
+                # argh: when using "%option c++" in the lex source
+                # file, flex generates lex.yy.cc, which automake
+                # doesn't seem to be aware of. force it to generate
+                # the file automake is aware of. this is not supposed
+                # to work with other lexers however. but, as the
+                # documentation states, it is better to not use the
+                # C++ feature of lex since it is inherently
                 # non-portable anyway.
-                self.parentbuilder().makefile_am().add_am_lflags('-olex.yy.c')
+                automake_output_builder.makefile_am().add_am_lflags('-olex.yy.c')
             else:
                 assert 0
                 pass
@@ -294,26 +306,29 @@ class YaccOutputBuilder(CompiledOutputBuilder):
         return str(self.__class__)
     def output(self):
         super(YaccOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, YaccBuilder):
                 continue
 
-            self.package().configure_ac().add_paragraph(
+            automake_output_builder.configure_ac().add_paragraph(
                 paragraph=Paragraph(['AC_PROG_YACC']),
                 order=Configure_ac.PROGRAMS)
             root, ext = os.path.splitext(b.file().name())
             if ext == '.y':
-                self.package().configure_ac().add_paragraph(
+                automake_output_builder.configure_ac().add_paragraph(
                     paragraph=Paragraph(['AC_PROG_CC']),
                     order=Configure_ac.PROGRAMS)
-                self.parentbuilder().makefile_am().add_built_sources(root + '.c')
+                automake_output_builder.makefile_am().add_built_sources(root + '.c')
             elif ext == '.yy':
-                self.package().configure_ac().add_paragraph(
+                automake_output_builder.configure_ac().add_paragraph(
                     paragraph=Paragraph(['AC_PROG_CXX']),
                     order=Configure_ac.PROGRAMS)
-                self.parentbuilder().makefile_am().add_built_sources(root + '.cc')
+                automake_output_builder.makefile_am().add_built_sources(root + '.cc')
                 # force Yacc to output files named y.tab.h
-                self.parentbuilder().makefile_am().add_am_yflags('-d');
+                automake_output_builder.makefile_am().add_am_yflags('-d');
             else:
                 assert 0
                 pass
@@ -360,12 +375,13 @@ class LinkedOutputBuilder(Builder):
 
     def output(self):
         super(LinkedOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, LinkedBuilder):
                 continue
-
+            
             if self.__use_libtool:
-                self.package().configure_ac().add_paragraph(
+                automake_output_builder.configure_ac().add_paragraph(
                     paragraph=Paragraph(['AC_LIBTOOL_DLOPEN',
                                          'AC_LIBTOOL_WIN32_DLL',
                                          'AC_PROG_LIBTOOL']),
@@ -443,7 +459,10 @@ class LibraryOutputBuilder(LinkedOutputBuilder):
         return str(self.__class__)
     def output(self):
         super(LibraryOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, LibraryBuilder):
                 continue
 
@@ -454,30 +473,28 @@ class LibraryOutputBuilder(LinkedOutputBuilder):
                 pass
             automakelibname = helper.automake_name(filelibname)
 
-            mf_am = self.parentbuilder().makefile_am()
-
             if self.use_libtool():
-                mf_am.add_ltlibrary(filelibname)
+                automake_output_builder.makefile_am().add_ltlibrary(filelibname)
                 if b.version() is not None:
-                    mf_am.add_compound_ldflags(automakelibname, '-version-info %d:%d:%d' % b.version())
+                    automake_output_builder.makefile_am().add_compound_ldflags(automakelibname, '-version-info %d:%d:%d' % b.version())
                 elif b.default_version() is not None:
-                    mf_am.add_compound_ldflags(automakelibname, '-release '+b.default_version())
+                    automake_output_builder.makefile_am().add_compound_ldflags(automakelibname, '-release '+b.default_version())
                     pass
                 pass
             else:
-                self.package().configure_ac().add_paragraph(
+                automake_output_builder.configure_ac().add_paragraph(
                     paragraph=Paragraph(['AC_PROG_RANLIB']),
                     order=Configure_ac.PROGRAMS)
-                mf_am.add_library(filelibname)
+                automake_output_builder.makefile_am().add_library(filelibname)
                 pass
 
             for m in b.members():
-                mf_am.add_compound_sources(automakelibname, m.file().name())
+                automake_output_builder.makefile_am().add_compound_sources(automakelibname, m.file().name())
                 pass
 
             if self.use_libtool():
                 for fragment in self.get_linkline(linked_builder=b):
-                    mf_am.add_compound_libadd(
+                    automake_output_builder.makefile_am().add_compound_libadd(
                         compound_name=automakelibname,
                         lib=fragment)
                     pass
@@ -494,28 +511,29 @@ class ExecutableOutputBuilder(LinkedOutputBuilder):
         return str(self.__class__)
     def output(self):
         super(ExecutableOutputBuilder, self).output()
-        for b in self.parentbuilder().builders():
+
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+        
+        for b in self.parentbuilder().iter_builders():
             if not isinstance(b, ExecutableBuilder):
                 continue
 
-            mf_am = self.parentbuilder().makefile_am()
-
             if b.what() == ExecutableBuilder.BIN:
-                mf_am.add_bin_program(b.exename())
+                automake_output_builder.makefile_am().add_bin_program(b.exename())
             elif b.what() == ExecutableBuilder.CHECK:
-                mf_am.add_check_program(b.exename())
+                automake_output_builder.makefile_am().add_check_program(b.exename())
             elif b.what() == ExecutableBuilder.NOINST:
-                mf_am.add_noinst_program(b.exename())
+                automake_output_builder.makefile_am().add_noinst_program(b.exename())
             else: assert 0
 
             automakeexename = helper.automake_name(b.exename())
 
             for m in b.members():
-                mf_am.add_compound_sources(automakeexename, m.file().name())
+                automake_output_builder.makefile_am().add_compound_sources(automakeexename, m.file().name())
                 pass
-
+            
             for fragment in self.get_linkline(linked_builder=b):
-                mf_am.add_compound_ldadd(
+                automake_output_builder.makefile_am().add_compound_ldadd(
                     compound_name=automakeexename,
                     lib=fragment)
                 pass

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,7 @@
 # USA
 
 from libconfix.plugins.automake import helper
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
@@ -43,7 +44,7 @@ class InterixMacroDefiner(Builder):
 
     def output(self):
         super(InterixMacroDefiner, self).output()
-        self.parentbuilder().makefile_am().add_cmdlinemacro(self.__macroname(), '1')
+        find_automake_output_builder(self.parentbuilder()).makefile_am().add_cmdlinemacro(self.__macroname(), '1')
         pass
 
     def __macroname(self):

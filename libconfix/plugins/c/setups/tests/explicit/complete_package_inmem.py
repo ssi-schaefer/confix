@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -133,7 +133,7 @@ class CompletePackageInMemoryTest(unittest.TestCase):
         found_lo_lo_h = None
         found_lo_lo1_c = None
         found_lo_lo2_c = None
-        for b in found_lodir_builder.builders():
+        for b in found_lodir_builder.iter_builders():
             if type(b) is HeaderBuilder and b.file().name() == 'lo.h':
                 found_lo_lo_h = b
                 pass
@@ -151,7 +151,7 @@ class CompletePackageInMemoryTest(unittest.TestCase):
         # find the library itself and see if it has the right
         # properties.
         found_lolib_builder = None
-        for b in found_lodir_builder.builders():
+        for b in found_lodir_builder.iter_builders():
             if type(b) is LibraryBuilder:
                 self.failUnless(found_lolib_builder is None, str(b)) # we build only one library
                 found_lolib_builder = b

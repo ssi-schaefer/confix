@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,11 +17,12 @@
 
 from dirstructure import DirectoryStructure
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.plugins.automake.c.library_dependencies import LibraryDependenciesFinderSetup
+from libconfix.plugins.automake import makefileparser
 
 from libconfix.core.machinery.local_package import LocalPackage
 
-from libconfix.testutils import makefileparser
 from libconfix.testutils.persistent import PersistentTestCase
 
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
@@ -60,11 +61,12 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
 
         # so here, finally, go the tests ...
 
-        exe_builder = third_local_package.rootbuilder().find_entry_builder(['exe'])
-        self.failIf(exe_builder is None)
+        exedir_builder = third_local_package.rootbuilder().find_entry_builder(['exe'])
+        self.failIf(exedir_builder is None)
+        exedir_output_builder = find_automake_output_builder(exedir_builder)
 
         # see if we have the convenience item in makefile_am()
-        convenience_deps = exe_builder.makefile_am().compound_dependencies('ThirdPackage_exe_exe')
+        convenience_deps = exedir_output_builder.makefile_am().compound_dependencies('ThirdPackage_exe_exe')
         self.failIf(convenience_deps is None)
 
         # see if the convenience item has all it should have
@@ -74,7 +76,7 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
 
         # see if it got correctly written to the Makefile.am
         real_deps = makefileparser.find_list(
-            elements=makefileparser.parse_makefile(exe_builder.makefile_am().lines()),
+            elements=makefileparser.parse_makefile(exedir_output_builder.makefile_am().lines()),
             name='ThirdPackage_exe_exe_DEPENDENCIES')
         self.failIf(real_deps is None)
         self.failUnless('$(top_builddir)/library/libThirdPackage_library.a' in real_deps)

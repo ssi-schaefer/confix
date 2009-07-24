@@ -16,8 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.setup import AutomakeSetup
 from libconfix.plugins.automake.kde_hack import KDEHackSetup
-from libconfix.plugins.automake.auxdir import AutoconfAuxDirBuilder
+from libconfix.plugins.automake.out_automake import AutoconfAuxDirBuilder
 from libconfix.plugins.automake import bootstrap, configure, make
 
 from libconfix.core.utils import const
@@ -66,12 +67,13 @@ class KDEHackTest(PersistentTestCase):
             entry=Directory())
 
         package=LocalPackage(rootdirectory=source,
-                             setups=[KDEHackSetup(),
+                             setups=[AutomakeSetup(use_libtool=False),
+                                     KDEHackSetup(),
                                      ImplicitDirectorySetup()])
         package.boil(external_nodes=[])
         package.output()
 
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, AutoconfAuxDirBuilder):
                 auxdirbuilder = b
                 break

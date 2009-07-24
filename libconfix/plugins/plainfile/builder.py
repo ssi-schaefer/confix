@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -60,20 +60,21 @@ class PlainFileBuilder(FileBuilder):
     def prefixdir(self):
         return self.prefixdir_
 
-    def output(self):
-        FileBuilder.output(self)
+# jjjj
+##     def output(self):
+##         FileBuilder.output(self)
 
-        if self.datadir_ is not None:
-            self.parentbuilder().file_installer().add_datafile(
-                filename=self.file().name(),
-                dir=self.datadir_)
-        elif self.prefixdir_ is not None:
-            self.parentbuilder().file_installer().add_prefixfile(
-                filename=self.file().name(),
-                dir=self.prefixdir_)
-        else:
-            assert 0
-            pass
-        pass
+##         if self.datadir_ is not None:
+##             self.parentbuilder().remove_me_jjj_file_installer().add_datafile(
+##                 filename=self.file().name(),
+##                 dir=self.datadir_)
+##         elif self.prefixdir_ is not None:
+##             self.parentbuilder().remove_me_jjj_file_installer().add_prefixfile(
+##                 filename=self.file().name(),
+##                 dir=self.prefixdir_)
+##         else:
+##             assert 0
+##             pass
+##         pass
 
     pass

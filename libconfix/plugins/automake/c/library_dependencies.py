@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 from libconfix.plugins.automake import readonly_prefixes
 from libconfix.plugins.automake import helper
 from libconfix.plugins.automake.configure_ac import Configure_ac
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled
@@ -58,7 +59,11 @@ class ExecutableWatcher(Builder):
         super(ExecutableWatcher, self).enlarge()
         # copy what we will be iterating over because we will change
         # its size
-        for b in self.parentbuilder().builders()[:]:
+        builders = []
+        for b in self.parentbuilder().iter_builders():
+            builders.append(b)
+            pass
+        for b in builders:
             if not isinstance(b, ExecutableBuilder):
                 continue
             if b in self.__seen_executable_builders:
@@ -91,6 +96,8 @@ class LibraryDependenciesFinder(Builder):
     def output(self):
         super(LibraryDependenciesFinder, self).output()
 
+        automake_output_builder = find_automake_output_builder(self.parentbuilder())
+
         # sort out local and installed library infos for later use
         # below.
         local_libs = []
@@ -106,17 +113,17 @@ class LibraryDependenciesFinder(Builder):
 
         # provide a "function" (yeah, in M4, you know :-) to search
         # for our libraries. acinclude.m4.
-        self.package().acinclude_m4().add_paragraph(
+        automake_output_builder.acinclude_m4().add_paragraph(
             paragraph=Paragraph(lines=[m4_installed_libsearch_func]))
 
         # write Makefile.am stuff: blah_DEPENDENCIES
         for lib_buildinfo in local_libs:
-            self.parentbuilder().makefile_am().add_compound_dependencies(
+            automake_output_builder.makefile_am().add_compound_dependencies(
                 compound_name=helper.automake_name(self.__exe_builder.exename()),
                 dependency='$(top_builddir)/'+'/'.join(lib_buildinfo.dir())+'/lib'+lib_buildinfo.name()+'.a')
             pass
         for lib_buildinfo in installed_libs:
-            self.parentbuilder().makefile_am().add_compound_dependencies(
+            automake_output_builder.makefile_am().add_compound_dependencies(
                 compound_name=helper.automake_name(self.__exe_builder.exename()),
                 dependency='@'+self.installed_substname(lib_buildinfo.name())+'@')
             pass
@@ -124,7 +131,7 @@ class LibraryDependenciesFinder(Builder):
         # add code to configure.ac which searches for our libraries,
         # and substitutes the output variables.
         for lib_buildinfo in installed_libs:
-            self.package().configure_ac().add_paragraph(
+            automake_output_builder.configure_ac().add_paragraph(
                 paragraph=Paragraph(lines=['CONFIX_LIBDEPS_SEARCH_INSTALLED_LIBRARY(',
                                            '    ['+self.installed_substname(lib_buildinfo.name())+'],',
                                            # cannot use ${libdir}

@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ from relocated_headers.suite_build import RelocatedHeadersBuildSuite
 from explicit_package_build import ExplicitPackageBuildSuite
 
 from libconfix.plugins.automake.c.tests.suite_build import AutomakeCBuildSuite
+from libconfix.plugins.automake.plainfile.tests.suite_build import AutomakePlainfileBuildSuite
 
 import unittest
 
@@ -46,6 +47,7 @@ class AutomakeBuildSuite(unittest.TestSuite):
         self.addTest(CheckProgramBuildSuite())
         self.addTest(RelocatedHeadersBuildSuite())
         self.addTest(ExplicitPackageBuildSuite())
+        self.addTest(AutomakePlainfileBuildSuite())
         pass
     pass
 

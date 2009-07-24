@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import re, os, types
+import helper
+import makefile
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils.paragraph import Paragraph
 from libconfix.core.utils import const
 
-import helper
-from rule import Rule
+import re, os, types
 
 class FileInstaller:
 
@@ -145,8 +145,8 @@ class FileInstaller:
         makefile_am.add_all_local('confix-install-local')
         makefile_am.add_clean_local('confix-clean-local')
 
-        install_local_rule = Rule(targets=['confix-install-local'], prerequisites=[], commands=[])
-        clean_local_rule = Rule(targets=['confix-clean-local'], prerequisites=[], commands=[])
+        install_local_rule = makefile.Rule(targets=['confix-install-local'], prerequisites=[], commands=[])
+        clean_local_rule = makefile.Rule(targets=['confix-clean-local'], prerequisites=[], commands=[])
         makefile_am.add_element(install_local_rule)        
         makefile_am.add_element(clean_local_rule)
 
@@ -159,23 +159,23 @@ class FileInstaller:
             
             # add mkdir rules for every subdirectory
             makefile_am.add_element(
-                Rule(targets=[targetdir],
-                     prerequisites=[],
-                     commands=['-$(mkinstalldirs) '+targetdir]))
+                makefile.Rule(targets=[targetdir],
+                              prerequisites=[],
+                              commands=['-$(mkinstalldirs) '+targetdir]))
 
             # copy files
             for f in files:
                 targetfile = '/'.join([targetdir, f])
                 makefile_am.add_element(
-                    Rule(targets=[targetfile],
-                         prerequisites=[f],
-                         commands=['-@$(mkinstalldirs) '+targetdir,
-                                   'cp -fp $? '+' '+targetdir,
-                                   'chmod 0444 '+targetfile]))
+                    makefile.Rule(targets=[targetfile],
+                                  prerequisites=[f],
+                                  commands=['-@$(mkinstalldirs) '+targetdir,
+                                            'cp -fp $? '+' '+targetdir,
+                                            'chmod 0444 '+targetfile]))
                 makefile_am.add_element(
-                    Rule(targets=[targetfile+'-clean'],
-                         prerequisites=[],
-                         commands=['rm -f '+targetfile]))
+                    makefile.Rule(targets=[targetfile+'-clean'],
+                                  prerequisites=[],
+                                  commands=['rm -f '+targetfile]))
                 install_local_rule.add_prerequisite(targetfile)
                 clean_local_rule.add_prerequisite(targetfile+'-clean')
                 pass

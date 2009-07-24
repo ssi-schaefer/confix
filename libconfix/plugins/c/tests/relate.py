@@ -106,35 +106,35 @@ class RelateBasic(unittest.TestCase):
         self.highestdir_lib_builder_ = None
         self.exedir_exe_builder_ = None
 
-        for b in self.lodir_builder_.builders():
+        for b in self.lodir_builder_.iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(self.lodir_lib_builder_ is not None)
                 self.lodir_lib_builder_ = b
                 pass
             pass
 
-        for b in self.hi1dir_builder_.builders():
+        for b in self.hi1dir_builder_.iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(self.hi1dir_lib_builder_ is not None)
                 self.hi1dir_lib_builder_ = b
                 pass
             pass
 
-        for b in self.hi2dir_builder_.builders():
+        for b in self.hi2dir_builder_.iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(self.hi2dir_lib_builder_ is not None)
                 self.hi2dir_lib_builder_ = b
                 pass
             pass
 
-        for b in self.highestdir_builder_.builders():
+        for b in self.highestdir_builder_.iter_builders():
             if isinstance(b, LibraryBuilder):
                 self.failIf(self.highestdir_lib_builder_ is not None)
                 self.highestdir_lib_builder_ = b
                 pass
             pass
 
-        for b in self.exedir_builder_.builders():
+        for b in self.exedir_builder_.iter_builders():
             if isinstance(b, ExecutableBuilder):
                 self.failIf(self.exedir_exe_builder_ is not None)
                 self.exedir_exe_builder_ = b

@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,6 +16,7 @@
 # USA
 
 from libconfix.plugins.automake.pkg_config.setup import PkgConfigSetup
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -74,10 +75,13 @@ class BasicTest(unittest.TestCase):
         maindir_builder = package.rootbuilder().find_entry_builder(['main'])
         self.failIf(maindir_builder is None)
 
-        self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_builder.makefile_am().am_cflags())
-        self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_builder.makefile_am().am_cxxflags())
+        maindir_output_builder = find_automake_output_builder(maindir_builder)
+        self.failIf(maindir_output_builder is None)
+        
+        self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_output_builder.makefile_am().am_cflags())
+        self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_output_builder.makefile_am().am_cxxflags())
 
-        main_ldadd = maindir_builder.makefile_am().compound_ldadd(compound_name='the_exe')
+        main_ldadd = maindir_output_builder.makefile_am().compound_ldadd(compound_name='the_exe')
         self.failIf(main_ldadd is None)
         
         self.failUnless('$(ext_lib_PKG_CONFIG_LIBS)' in main_ldadd)

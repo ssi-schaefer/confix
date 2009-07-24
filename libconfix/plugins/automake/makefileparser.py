@@ -16,18 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.utils.error import Error
+from libconfix.plugins.automake import makefile
 
-from libconfix.plugins.automake.list import List
-from libconfix.plugins.automake.rule import Rule
-from libconfix.plugins.automake.include import Include
-from libconfix.plugins.automake.white import White
+from libconfix.core.utils.error import Error
 
 import re
 
 def find_list(elements, name):
     for e in elements:
-        if isinstance(e, List):
+        if isinstance(e, makefile.List):
             if e.name() == name:
                 return e
             continue
@@ -36,7 +33,7 @@ def find_list(elements, name):
 
 def find_rule(elements, targets):
     for e in elements:
-        if isinstance(e, Rule):
+        if isinstance(e, makefile.Rule):
             if e.targets() == targets:
                 return e
             continue
@@ -75,7 +72,7 @@ def consume_list(lines):
     if len(values) > 0 and values[-1] == '$(CONFIX_BACKSLASH_MITIGATOR)':
         del values[-1]
         pass
-    return List(name=match.group(1), values=values, mitigate=False)
+    return makefile.List(name=match.group(1), values=values, mitigate=False)
 
 rex_comment = re.compile(r'^\s*#')
 rex_white = re.compile(r'^\s*$')
@@ -90,7 +87,7 @@ def consume_white(lines):
             break
         pass
     if len(white_lines) > 0:
-        return White(lines=white_lines)
+        return makefile.White(lines=white_lines)
     return None
 
 rex_target_prerequisite = re.compile(r'^\s*(.*)\s*:\s*(.*)\s*$')
@@ -106,8 +103,8 @@ def consume_rule(lines):
     targets = rex_listelem.findall(match.group(1))
     prerequisites=rex_listelem.findall(match.group(2))
     
-    rule = Rule(targets=targets,
-                prerequisites=prerequisites)
+    rule = makefile.Rule(targets=targets,
+                         prerequisites=prerequisites)
     while True:
         if len(lines) == 0:
             break
@@ -127,7 +124,7 @@ def consume_include(lines):
     if match is None:
         raise Error('Error parsing include: '+lines[0])
     del lines[0]
-    return Include(file=match.group(1))
+    return makefile.Include(file=match.group(1))
 
 def collapse_continuations(lines):
     ret = []

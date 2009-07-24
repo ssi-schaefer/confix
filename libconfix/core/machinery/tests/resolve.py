@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,8 +15,6 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
-
-import unittest
 
 from libconfix.core.digraph.cycle import CycleError
 from libconfix.core.filesys.filesys import FileSystem
@@ -34,6 +32,8 @@ from libconfix.core.utils import const
 
 from libconfix.testutils import dirhier
 from libconfix.testutils.ifacetestbuilder import FileInterfaceTestSetup
+
+import unittest
 
 class ResolveTestSuite(unittest.TestSuite):
     def __init__(self):
@@ -64,9 +64,9 @@ class BasicResolveTest(unittest.TestCase):
         lodirbuilder = package.rootbuilder().find_entry_builder(['lo'])
         hidirbuilder = package.rootbuilder().find_entry_builder(['hi'])
 
-        self.assertEqual(len(package.digraph().nodes()), 3 \
-                         # plus 1 for confix-admin which is a full-fledged node
-                         +1)
+        # root, lo, hi
+        self.assertEqual(len(package.digraph().nodes()), 3)
+        
         rootnode = None
         lonode = None
         hinode = None

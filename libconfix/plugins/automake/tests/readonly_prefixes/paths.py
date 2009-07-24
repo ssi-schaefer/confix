@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,6 +16,8 @@
 # USA
 
 from source import source_tree
+
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
@@ -43,7 +45,9 @@ class PathsInMemoryTest(unittest.TestCase):
         hi_pkg.boil(external_nodes=lo_pkg_inst.nodes())
         hi_pkg.output()
 
-        makefile_am = hi_pkg.rootbuilder().makefile_am()
+        hi_pkg_rootdir_output_builder = find_automake_output_builder(hi_pkg.rootbuilder())
+        self.failIf(hi_pkg_rootdir_output_builder is None)
+        makefile_am = hi_pkg_rootdir_output_builder.makefile_am()
         self.failUnless('$(readonly_prefixes_incpath)' in makefile_am.includepath())
         print 
         hi_ldadd = makefile_am.compound_ldadd(self.__class__.__name__+'-hi_main')

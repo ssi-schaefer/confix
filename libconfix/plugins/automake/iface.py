@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,7 @@
 
 from configure_ac import Configure_ac
 from buildinfo import BuildInfo_Configure_in, BuildInfo_ACInclude_m4
+from out_automake import find_automake_output_builder
 
 from libconfix.core.utils.paragraph import Paragraph
 from libconfix.core.machinery.setup import Setup
@@ -60,7 +61,9 @@ class AutomakeInterfaceProxy(InterfaceProxy):
         if type(order) not in [types.IntType or types.LongType]:
             raise Error('CONFIGURE_AC(): "order" parameter must be an integer')
         if flags is None or self.AC_BUILDINFO_TRANSPORT_LOCAL in flags:
-            self.__dirbuilder.package().configure_ac().add_paragraph(
+            automake_output_builder = find_automake_output_builder(self.__dirbuilder)
+            assert automake_output_builder
+            automake_output_builder.configure_ac().add_paragraph(
                 paragraph=Paragraph(lines=lines),
                 order=order)
             pass
@@ -73,7 +76,9 @@ class AutomakeInterfaceProxy(InterfaceProxy):
 
     def ACINCLUDE_M4(self, lines, flags=None):
         if flags is None or self.AC_BUILDINFO_TRANSPORT_LOCAL in flags:
-            self.__dirbuilder.package().acinclude_m4().add_paragraph(
+            automake_output_builder = find_automake_output_builder(self.__dirbuilder)
+            assert automake_output_builder
+            automake_output_builder.acinclude_m4().add_paragraph(
                 paragraph=Paragraph(lines=lines))
             pass
         if flags is None or self.AC_BUILDINFO_TRANSPORT_PROPAGATE in flags:
@@ -83,11 +88,15 @@ class AutomakeInterfaceProxy(InterfaceProxy):
         pass
 
     def ADD_EXTRA_DIST(self, filename):
-        self.__dirbuilder.makefile_am().add_extra_dist(filename)
+        automake_output_builder = find_automake_output_builder(self.__dirbuilder)
+        assert automake_output_builder
+        automake_output_builder.makefile_am().add_extra_dist(filename)
         pass
 
     def MAKEFILE_AM(self, line):
-        self.__dirbuilder.makefile_am().add_line(line)
+        automake_output_builder = find_automake_output_builder(self.__dirbuilder)
+        assert automake_output_builder
+        automake_output_builder.makefile_am().add_line(line)
         pass
         
     pass

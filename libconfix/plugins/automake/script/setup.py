@@ -1,5 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,17 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from element import MakefileElement
+from libconfix.core.machinery.setup import Setup
 
-class Include(MakefileElement):
-    def __init__(self, file):
-        MakefileElement.__init__(self)
-        self.__file = file
+class AutomakeScriptSetup(Setup):
+    def setup(self, dirbuilder):
+        dirbuilder.add_builder(ScriptOutputBuilder())
         pass
-    def __str__(self):
-        return 'include '+self.__file
-    def file(self):
-        return self.__file
-    def lines(self):
-        return ['include '+self.__file]
     pass
+

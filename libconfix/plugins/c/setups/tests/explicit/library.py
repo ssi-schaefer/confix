@@ -53,7 +53,7 @@ class LibraryInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         found_lib_builder = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if type(b) is LibraryBuilder:
                 self.failUnless(found_lib_builder is None)
                 found_lib_builder = b
@@ -78,7 +78,7 @@ class LibraryInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         found_lib_builder = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if type(b) is LibraryBuilder:
                 self.failUnless(found_lib_builder is None)
                 found_lib_builder = b
@@ -118,7 +118,7 @@ class LibraryInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         found_lib_builder = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if type(b) is LibraryBuilder:
                 self.failUnless(found_lib_builder is None)
                 found_lib_builder = b
@@ -156,7 +156,7 @@ class LibraryInMemoryTest(unittest.TestCase):
         # 'macros' which should have added them to the containing
         # directory builder as a side effect.
         found_h1 = found_h2 = found_c1 = found_c2 = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, HeaderBuilder) and b.file().name() == 'member1.h':
                 self.failUnless(found_h1 is None)
                 found_h1 = b

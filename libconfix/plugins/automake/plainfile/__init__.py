@@ -1,5 +1,4 @@
-# Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,13 +15,3 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from element import MakefileElement
-
-class White(MakefileElement):
-    def __init__(self, lines):
-        MakefileElement.__init__(self)
-        self.lines_ = lines
-        pass
-    def lines(self):
-        return self.lines_
-    pass

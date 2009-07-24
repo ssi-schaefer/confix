@@ -54,7 +54,7 @@ class ExecutableInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         found_exe_builder = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, ExecutableBuilder):
                 self.failUnless(found_exe_builder is None)
                 found_exe_builder = b
@@ -82,7 +82,7 @@ class ExecutableInMemoryTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         found_exe_builder = None
-        for b in package.rootbuilder().builders():
+        for b in package.rootbuilder().iter_builders():
             if isinstance(b, ExecutableBuilder):
                 self.failUnless(found_exe_builder is None)
                 found_exe_builder = b

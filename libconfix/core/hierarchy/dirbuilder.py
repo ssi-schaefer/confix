@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,16 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-
 # jjj remove this >>> 
-from libconfix.plugins.automake.file_installer import FileInstaller
-from libconfix.plugins.automake.makefile_am import Makefile_am
+## from libconfix.plugins.automake.file_installer import FileInstaller
+## from libconfix.plugins.automake.makefile_am import Makefile_am
 # jjj remove this <<<
 
 from libconfix.core.digraph import toposort
 from libconfix.core.filesys.vfs_directory import VFSDirectory
 from libconfix.core.filesys.file import File
+from libconfix.core.machinery.builderset import BuilderSet
 from libconfix.core.machinery.buildinfoset import BuildInformationSet
 from libconfix.core.machinery.dependencyset import DependencySet
 from libconfix.core.machinery.depindex import ProvideMap
@@ -42,16 +41,11 @@ from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
+import os
+
 class DirectoryBuilder(EntryBuilder, LocalNode):
 
-    class DuplicateBuilderError(Error):
-        def __init__(self, existing_builder, new_builder):
-            Error.__init__(self, msg='Duplicate builder: existing "'+str(existing_builder)+'", new "'+str(new_builder)+'"')
-            pass
-        pass
-    
-    def __init__(self,
-                 directory):
+    def __init__(self, directory):
         assert isinstance(directory, VFSDirectory)
 
         EntryBuilder.__init__(
@@ -60,24 +54,28 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         
         self.__directory = directory        
 
-        # the builders that I maintain, compositely. an *ordered* list
-        # of builders, together with a set of unique builder IDs which
-        # helps in detecting errors.
-        self.__builders = []
-        self.__builder_ids = set()
+        # the builders that I maintain, compositely.
+        self.__regular_builders = BuilderSet()
+
+        # builders that generate directory-wide output, such as
+        # automake's Makefile.am. I maintain them as separate set of
+        # builders because others use them to dump their stuff in, and
+        # only when all is done they can write output.
+        self.__backend_dirbuilders = BuilderSet()
 
         # a list of interface proxy objects that are added initially
         # by the different setup objects. we only keep them for future
         # use by any Confix2.dir objects.
         self.__interfaces = []
 
-        # the (contents of the) Makefile.am we will be writing on
-        # output()
-        self.__makefile_am = Makefile_am()
+        # jjjj
+##         # the (contents of the) Makefile.am we will be writing on
+##         # output()
+##         self.__makefile_am = Makefile_am()
 
-        # a helper that we use to install files intelligently (well,
-        # more or less so).
-        self.__file_installer = FileInstaller()
+##         # a helper that we use to install files intelligently (well,
+##         # more or less so).
+##         self.__file_installer = FileInstaller()
 
         self.__pseudo_handwritten_mgr = PseudoHandWrittenFileManager(directory)
 
@@ -107,7 +105,15 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
         # then, initialize my builders, recursively. copy the initial
         # list because it may change under the hood.
-        for b in self.__builders[:]:
+        builders = []
+        for b in self.__regular_builders.iter_builders():
+            builders.append(b)
+            pass
+        for b in self.__backend_dirbuilders.iter_builders():
+            builders.append(b)
+            pass
+        
+        for b in builders:
             assert not b.is_initialized(), 'self: '+str(self)+', builder: '+str(b)
             b.initialize(package=self.package())
             # verify that initialize() has reached the Builder base
@@ -129,61 +135,35 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     def directory(self):
         return self.entry()
 
-    def makefile_am(self):
-        return self.__makefile_am
+    # jjj
+##     def makefile_am(self):
+##         return self.__makefile_am
 
-    def file_installer(self):
-        return self.__file_installer
+##     def remove_me_jjj_file_installer(self):
+##         return self.__file_installer
 
-    def builders(self):
-        return self.__builders
-
-    def add_builder(self, b):
-        """
-        Add one builder to my managees. Check for its uniqueness.
-        Initialize it if I am already initialized myself.
-        """
-        b.set_parentbuilder(self)
-        unique_id = b.locally_unique_id()
-        if unique_id in self.__builder_ids:
-            for member in self.__builders:
-                if member.locally_unique_id() is unique_id:
-                    existing_builder = member
-                    pass
-                pass
-            else:
-                assert False
-                pass
-            raise DirectoryBuilder.DuplicateBuilderError(existing_builder=existing_builder, new_builder=b)
-        
-        self.__builders.append(b)
-        self.__builder_ids.add(unique_id)
-
-        # if I am initialized, then I must ensure that any builder is
-        # initialized before anybody can get his hands on it.
-
-        if self.is_initialized():
-            assert self.package(), self
-            if not b.is_initialized():
-                b.initialize(package=self.package())
-                assert b.is_initialized(), b
-                pass
+    def iter_builders(self):
+        for b in self.__backend_dirbuilders.iter_builders():
+            yield b
+            pass
+        for b in self.__regular_builders.iter_builders():
+            yield b
             pass
         pass
 
+    def add_builder(self, b):
+        self.__regular_builders.add_builder(b)
+        self.__init_builder(b)
+        pass
+
     def remove_builder(self, b):
-        unique_id = b.locally_unique_id()
-        assert unique_id in self.__builder_ids, unique_id
-        for i in range(len(self.__builders)):
-            if self.__builders[i] is b:
-                b.set_parentbuilder(None)
-                del self.__builders[i]
-                self.__builder_ids.remove(unique_id)
-                return
-            pass
-        else:
-            assert False
-            pass
+        self.__regular_builders.remove_builder(b)
+        b.set_parentbuilder(None)
+        pass
+
+    def add_backend_dirbuilder(self, b):
+        self.__backend_dirbuilders.add_builder(b)
+        self.__init_builder(b)
         pass
 
     def find_entry_builder(self, path):
@@ -197,7 +177,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         if len(tmp_path) == 0:
             return self
         entryname = tmp_path.pop(0)
-        for b in self.builders():
+        for b in self.iter_builders():
             if isinstance(b, DirectoryBuilder) and b.directory().name() == entryname:
                 if len(tmp_path) == 0:
                     return b
@@ -222,47 +202,49 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
     def output(self):
         EntryBuilder.output(self)
+
+        # jjjj
+##         # 'make maintainer-clean' should remove the file we generate
         
-        # 'make maintainer-clean' should remove the file we generate
-        
-        self.__makefile_am.add_maintainercleanfiles('Makefile.am')
-        self.__makefile_am.add_maintainercleanfiles('Makefile.in')
+##         self.__makefile_am.add_maintainercleanfiles('Makefile.am')
+##         self.__makefile_am.add_maintainercleanfiles('Makefile.in')
 
         # let our builders write their output, recursively
-        for b in self.__builders:
+        for b in self.__regular_builders.iter_builders():
             b.output()
             assert b.base_output_called() == True, str(b)
             pass
 
-        # ... comment needed badly ...
-        prev_registry_file = self.__directory.get(const.PSEUDO_HANDWRITTEN_LIST_FILENAME)
-        # what to do here?
-        # ...
+        # jjjj
+##         # the file installer is a little helper that relieves our
+##         # builders from having to care of how files are installed. our
+##         # builders use it to format their install wishes down to our
+##         # Makefile.am. so, basically, what I want to say is that we
+##         # have to flush the file installer into self.__makefile_am
+##         # *after* flushing the builders, and before flushing
+##         # self.__makefile_am
 
-        # the file installer is a little helper that relieves our
-        # builders from having to care of how files are installed. our
-        # builders use it to format their install wishes down to our
-        # Makefile.am. so, basically, what I want to say is that we
-        # have to flush the file installer into self.__makefile_am
-        # *after* flushing the builders, and before flushing
-        # self.__makefile_am
+##         # prepare the raw file object, and wrap a Makefile_am instance
+##         # around it.
 
-        # prepare the raw file object, and wrap a Makefile_am instance
-        # around it.
+##         self.__file_installer.output(makefile_am=self.__makefile_am)
 
-        self.__file_installer.output(makefile_am=self.__makefile_am)
-
-        # finally, write our Makefile.am.
+##         # finally, write our Makefile.am.
         
-        mf_am = self.__directory.find(['Makefile.am'])
-        if mf_am is None:
-            mf_am = File()
-            self.__directory.add(name='Makefile.am', entry=mf_am)
-        else:
-            mf_am.truncate()
-            pass
+##         mf_am = self.__directory.find(['Makefile.am'])
+##         if mf_am is None:
+##             mf_am = File()
+##             self.__directory.add(name='Makefile.am', entry=mf_am)
+##         else:
+##             mf_am.truncate()
+##             pass
 
-        mf_am.add_lines(self.__makefile_am.lines())
+##         mf_am.add_lines(self.__makefile_am.lines())
+
+        for b in self.__backend_dirbuilders.iter_builders():
+            b.output()
+            pass
+        
         pass
      
     # Node
@@ -316,7 +298,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
     def __node_managed_builders(self):
         yield self
-        for b in self.__builders:
+        for b in self.iter_builders():
             if not isinstance(b, Node):
                 yield b
                 pass
@@ -327,6 +309,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         topolist = toposort.toposort(digraph=digraph, nodes=[self])
         assert topolist[-1] is self
         topolist = topolist[0:-1]
+
         for b in self.__node_managed_builders():
             b.relate(node=self, digraph=digraph, topolist=topolist)
             assert b.base_relate_called(), str(b)
@@ -343,7 +326,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     def buildinfos(self):
         ret = BuildInformationSet()
         ret.merge(EntryBuilder.buildinfos(self))
-        for b in self.__builders:
+        for b in self.iter_builders():
             if not isinstance(b, Node):
                 ret.merge(b.buildinfos())
                 pass
@@ -364,5 +347,20 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         self.__provides = DependencySet(klass=Provide, string_klass=Provide_String)
         self.__requires = DependencySet(klass=Require, string_klass=Require_String)
         pass
+
+    def __init_builder(self, b):
+        b.set_parentbuilder(self)
+
+        # if I am initialized, then I must ensure that any builder is
+        # initialized before anybody can get his hands on it.
+        if self.is_initialized():
+            assert self.package(), self
+            if not b.is_initialized():
+                b.initialize(package=self.package())
+                assert b.is_initialized(), b
+                pass
+            pass
+        pass
+        
 
     pass

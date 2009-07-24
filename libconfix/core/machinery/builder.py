@@ -16,21 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-import types
-
-from libconfix.core.utils.error import Error
-from libconfix.core.utils.paragraph import Paragraph
-
-# jjj remove this >>> 
-from libconfix.plugins.automake.configure_ac import Configure_ac
-from libconfix.plugins.automake.buildinfo import \
-     BuildInfo_Configure_in, \
-     BuildInfo_ACInclude_m4
-# jjj remove this <<<
-
-from libconfix.core.iface.proxy import InterfaceProxy
-
 from depinfo import DependencyInformation
 from provide import Provide
 from provide_string import Provide_String
@@ -40,6 +25,14 @@ from require import Require
 from require_symbol import Require_Symbol
 from require_callable import Require_Callable
 from buildinfoset import BuildInformationSet
+
+from libconfix.core.utils.error import Error
+from libconfix.core.utils.paragraph import Paragraph
+
+from libconfix.core.iface.proxy import InterfaceProxy
+
+import os
+import types
 
 class Builder(object):
     def __init__(self):
@@ -154,20 +147,6 @@ class Builder(object):
     
     def relate(self, node, digraph, topolist):
         self.__base_relate_called = True
-
-        for n in topolist:
-            for bi in n.buildinfos():
-                if isinstance(bi, BuildInfo_Configure_in):
-                    self.package().configure_ac().add_paragraph(
-                        paragraph=Paragraph(lines=bi.lines(), md5=bi.md5()),
-                        order=bi.order())
-                    continue
-                if isinstance(bi, BuildInfo_ACInclude_m4):
-                    self.package().acinclude_m4().add_paragraph(
-                        paragraph=Paragraph(lines=bi.lines(), md5=bi.md5()))
-                    continue
-                pass
-            pass
         pass
 
     def node(self):

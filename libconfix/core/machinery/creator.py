@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -44,7 +44,7 @@ class Creator(Builder):
         super(Creator, self).initialize(package)
         # add slave to parent if we don't have one yet
         if self.__slave is None:
-            for b in self.parentbuilder().builders():
+            for b in self.parentbuilder().iter_builders():
                 if isinstance(b, CreatorSlave):
                     self.__slave = b
                     break
