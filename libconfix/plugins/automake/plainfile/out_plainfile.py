@@ -15,14 +15,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+from libconfix.plugins.plainfile.builder import PlainFileBuilder
+from libconfix.core.machinery.builder import Builder
+
 class AutomakePlainfileOutputBuilder(Builder):
+    def locally_unique_id(self):
+        return str(self.__class__)
+
     def output(self):
         super(AutomakePlainfileOutputBuilder, self).output()
 
         output_builder = None
         
         for b in self.parentbuilder().iter_builders():
-            if isinstance(PlainFileBuilder, b):
+            if isinstance(b, PlainFileBuilder):
 
                 if output_builder is None:
                     output_builder = find_automake_output_builder(self.parentbuilder())
@@ -31,11 +38,11 @@ class AutomakePlainfileOutputBuilder(Builder):
 
                 if b.datadir() is not None:
                     output_builder.file_installer().add_datafile(
-                        filename=self.file().name(),
+                        filename=b.file().name(),
                         dir=b.datadir())
                 elif b.prefixdir() is not None:
                     output_builder.file_installer().add_prefixfile(
-                        filename=self.file().name(),
+                        filename=b.file().name(),
                         dir=b.prefixdir())
                 else:
                     assert 0

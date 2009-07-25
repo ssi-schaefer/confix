@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from package import make_package
+from libconfix.plugins.plainfile.tests.package import make_package
+from libconfix.plugins.automake.setup import AutomakeSetup
 
 from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.core.filesys.directory import Directory
@@ -33,14 +34,18 @@ import os
 import sys
 import unittest
 
-class PlainFileSuiteBuild(unittest.TestSuite):
+class AutomakePlainfileBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(PlainFileBuildTest('test'))
+        self.addTest(AutomakePlainfileBuildTest('test'))
         pass
     pass
 
-class PlainFileBuildTest(PersistentTestCase):
+class AutomakePlainfileBuildTest(PersistentTestCase):
+    def __init__(self, methodname):
+        PersistentTestCase.__init__(self, methodname)
+        pass
+    
     def test(self):
         source = make_package()
     
@@ -56,7 +61,7 @@ class PlainFileBuildTest(PersistentTestCase):
             entry=Directory())
 
         package = LocalPackage(rootdirectory=source,
-                               setups=[ImplicitDirectorySetup(), PlainFileInterfaceSetup()])
+                               setups=[ImplicitDirectorySetup(), PlainFileInterfaceSetup(), AutomakeSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()
@@ -82,5 +87,5 @@ class PlainFileBuildTest(PersistentTestCase):
     pass        
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PlainFileSuiteBuild())
+    unittest.TextTestRunner().run(AutomakePlainfileBuildSuite())
     pass

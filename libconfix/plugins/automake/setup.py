@@ -19,6 +19,7 @@ from iface import AutomakeInterfaceSetup
 from out_automake import AutomakeBackendOutputBuilder
 from c.setup import CSetup
 from script.setup import AutomakeScriptSetup
+from plainfile.setup import AutomakePlainfileSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.machinery.setup import Setup
@@ -30,6 +31,7 @@ class AutomakeSetup(CompositeSetup):
             setups=[AutomakeInterfaceSetup(),
                     CSetup(use_libtool=use_libtool),
                     AutomakeScriptSetup(),
+                    AutomakePlainfileSetup(),
                     InfraStructureSetup()])
         pass
     pass

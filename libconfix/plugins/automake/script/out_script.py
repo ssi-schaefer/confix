@@ -15,22 +15,27 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+from libconfix.plugins.script.builder import ScriptBuilder
+from libconfix.core.machinery.builder import Builder
+
 class AutomakeScriptOutputBuilder(Builder):
-    def __init__(self):
-        Builder.__init__(self)
-        self.__directory_output_builder = None
-        pass
+    def locally_unique_id(self):
+        return str(self.__class__)
     
     def output(self):
         super(AutomakeScriptOutputBuilder, self).output()
+
+        output_builder = None
+
         for b in self.parentbuilder().iter_builders():
-            if isinstance(ScriptBuilder, b):
-                if self.__directory_output_builder is None:
-                    self.__directory_output_builder = find_directory_output_builder(self.parentbuilder())
-                    assert self.__directory_output_builder is not None
+            if isinstance(b, ScriptBuilder):
+                if output_builder is None:
+                    output_builder = find_automake_output_builder(self.parentbuilder())
+                    assert output_builder is not None
                     pass
 
-                self.__directory_output_builder.makefile_am().add_bin_script(scriptname=b.file().name())
+                output_builder.makefile_am().add_bin_script(scriptname=b.file().name())
                 pass
             pass
         pass

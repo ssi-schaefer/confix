@@ -15,13 +15,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from out_script import AutomakeScriptOutputBuilder
+from out_plainfile import AutomakePlainfileOutputBuilder
 
 from libconfix.core.machinery.setup import Setup
 
-class AutomakeScriptSetup(Setup):
+class AutomakePlainfileSetup(Setup):
     def setup(self, dirbuilder):
-        dirbuilder.add_builder(AutomakeScriptOutputBuilder())
+        dirbuilder.add_builder(AutomakePlainfileOutputBuilder())
         pass
     pass
 

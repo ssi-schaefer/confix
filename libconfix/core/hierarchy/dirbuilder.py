@@ -16,11 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-# jjj remove this >>> 
-## from libconfix.plugins.automake.file_installer import FileInstaller
-## from libconfix.plugins.automake.makefile_am import Makefile_am
-# jjj remove this <<<
-
 from libconfix.core.digraph import toposort
 from libconfix.core.filesys.vfs_directory import VFSDirectory
 from libconfix.core.filesys.file import File
@@ -40,8 +35,6 @@ from libconfix.core.machinery.require_string import Require_String
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
-
-import os
 
 class DirectoryBuilder(EntryBuilder, LocalNode):
 
@@ -67,15 +60,6 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         # by the different setup objects. we only keep them for future
         # use by any Confix2.dir objects.
         self.__interfaces = []
-
-        # jjjj
-##         # the (contents of the) Makefile.am we will be writing on
-##         # output()
-##         self.__makefile_am = Makefile_am()
-
-##         # a helper that we use to install files intelligently (well,
-##         # more or less so).
-##         self.__file_installer = FileInstaller()
 
         self.__pseudo_handwritten_mgr = PseudoHandWrittenFileManager(directory)
 
@@ -134,13 +118,6 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
     def directory(self):
         return self.entry()
-
-    # jjj
-##     def makefile_am(self):
-##         return self.__makefile_am
-
-##     def remove_me_jjj_file_installer(self):
-##         return self.__file_installer
 
     def iter_builders(self):
         for b in self.__backend_dirbuilders.iter_builders():
@@ -203,46 +180,17 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     def output(self):
         EntryBuilder.output(self)
 
-        # jjjj
-##         # 'make maintainer-clean' should remove the file we generate
+        # regular builder first! they'll dump their stuff into the
+        # backend builders, so these will have to come last.
         
-##         self.__makefile_am.add_maintainercleanfiles('Makefile.am')
-##         self.__makefile_am.add_maintainercleanfiles('Makefile.in')
-
-        # let our builders write their output, recursively
         for b in self.__regular_builders.iter_builders():
             b.output()
             assert b.base_output_called() == True, str(b)
             pass
 
-        # jjjj
-##         # the file installer is a little helper that relieves our
-##         # builders from having to care of how files are installed. our
-##         # builders use it to format their install wishes down to our
-##         # Makefile.am. so, basically, what I want to say is that we
-##         # have to flush the file installer into self.__makefile_am
-##         # *after* flushing the builders, and before flushing
-##         # self.__makefile_am
-
-##         # prepare the raw file object, and wrap a Makefile_am instance
-##         # around it.
-
-##         self.__file_installer.output(makefile_am=self.__makefile_am)
-
-##         # finally, write our Makefile.am.
-        
-##         mf_am = self.__directory.find(['Makefile.am'])
-##         if mf_am is None:
-##             mf_am = File()
-##             self.__directory.add(name='Makefile.am', entry=mf_am)
-##         else:
-##             mf_am.truncate()
-##             pass
-
-##         mf_am.add_lines(self.__makefile_am.lines())
-
         for b in self.__backend_dirbuilders.iter_builders():
             b.output()
+            assert b.base_output_called() == True, str(b)
             pass
         
         pass

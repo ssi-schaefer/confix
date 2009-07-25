@@ -1,14 +1,5 @@
 * STACK
 
-  * plainfile is in the way. 00build.py. make it like the 'script'
-    plugin - halfway through. good night.
-
-  * argh. error. order dependency. can have *only one* backen output
-    builder per directory. collapse PackageOutputBuilder and
-    DirectoryOutputBuilder into one big builder that has everything.
-
-  * rip out Builder.relate()
-
   * remove LocalPackage.configure_ac() and LocalPackage.acinclude_m4()
 
   * plan

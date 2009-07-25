@@ -26,14 +26,6 @@ from filebuilder import FileBuilder
 from require import Require
 from resolve_error import NotResolved
 
-# jjj remove this >>>
-## from libconfix.plugins.automake import readonly_prefixes
-## from libconfix.plugins.automake import repo_automake
-## from libconfix.plugins.automake.auxdir import AutoconfAuxDirBuilder
-## from libconfix.plugins.automake.configure_ac import Configure_ac 
-## from libconfix.plugins.automake.acinclude_m4 import ACInclude_m4 
-# jjj <<<
-
 from libconfix.core.digraph import algorithm
 from libconfix.core.digraph import toposort
 from libconfix.core.digraph.digraph import DirectedGraph
@@ -68,11 +60,6 @@ class LocalPackage(Package):
 
         self.__current_digraph = None
 
-        # the (contents of) configure.ac and acinclude.m4 we will be
-        # writing jjjj remove these
-##         self.__configure_ac = Configure_ac()
-##         self.__acinclude_m4 = ACInclude_m4()
-
         # our directory builders, sorted topologically for output by
         # our backends.
         self.__topo_directories = None
@@ -89,18 +76,6 @@ class LocalPackage(Package):
 
         # create our root builder
         self.__rootbuilder = DirectoryBuilder(directory=rootdirectory)
-
-        # jjj
-##         # setup our autoconf auxiliary directory. this a regular
-##         # builder by itself, but plays a special role for us because
-##         # we use it to put, well, auxiliary files in.
-##         dir = self.__rootdirectory.find([const.AUXDIR])
-##         if dir is None:
-##             dir = Directory()
-##             self.__rootdirectory.add(name=const.AUXDIR, entry=dir)
-##             pass
-##         self.__auxdir = AutoconfAuxDirBuilder(directory=dir)
-##         self.__rootbuilder.add_builder(self.__auxdir)
 
         # now's the time to make everyone aware that we're no fun
         # anymore.
@@ -135,12 +110,6 @@ class LocalPackage(Package):
     def set_setups(self, ss):
         self.__setup = CompositeSetup(ss)
         pass
-
-    # jjj
-##     def configure_ac(self):
-##         return self.__configure_ac
-##     def acinclude_m4(self):
-##         return self.__acinclude_m4
 
     def rootbuilder(self):
         return self.__rootbuilder
@@ -220,48 +189,10 @@ class LocalPackage(Package):
             pass
 
         PackageFile(file=repofile).dump(package=self.install())
-        
-
-        # jjjj
-##         # distribute the package configuration file, but only if it is
-##         # part of the physical package structure.
-##         confix2_pkg = self.rootdirectory().get(const.CONFIX2_PKG)
-##         if not confix2_pkg.is_overlayed():
-##             self.__rootbuilder.makefile_am().add_extra_dist(const.CONFIX2_PKG)
-##             pass
-
-        # we will be writing two files in the package's root
-        # directory. configure.ac is our responsbility - we will have
-        # to create it etc.. the other file, Makefile.am, is not our
-        # responsbility, but that of our rootbuilder; we only use it
-        # to put our stuff in (SUBDIRS, for example).
-
-##         self.output_stock_autoconf_()
-##         self.output_options_()
-##         self.output_subdirs_()
-##         self.output_repo_()
-##         self.output_unique_file_()
 
         # recursively write the package's output
         self.__rootbuilder.output()
  
-##         # write my configure.ac and acinclude.m4
-        
-##         configure_ac = self.__rootdirectory.find(['configure.ac'])
-##         if configure_ac is None:
-##             configure_ac = self.__rootdirectory.add(name='configure.ac', entry=File())
-##         else:
-##             configure_ac.truncate()
-##             pass
-##         configure_ac.add_lines(self.__configure_ac.lines())
-
-##         acinclude_m4 = self.__rootdirectory.find(['acinclude.m4'])
-##         if acinclude_m4 is None:
-##             acinclude_m4 = self.__rootdirectory.add(name='acinclude.m4', entry=File())
-##         else:
-##             acinclude_m4.truncate()
-##             pass
-##         acinclude_m4.add_lines(self.__acinclude_m4.lines())
         pass
 
     def install(self):
@@ -322,126 +253,6 @@ class LocalPackage(Package):
             pass
 
         return builders
-
-    # jjj
-##     def output_stock_autoconf_(self):
-##         self.__configure_ac.set_packagename(self.name())
-##         self.__configure_ac.set_packageversion(self.version())
-
-##         # we require autoconf 2.52 because it has (possibly among
-##         # others) AC_HELP_STRING(), and can go into subsubdirs from
-##         # the toplevel.
-
-##         self.__configure_ac.set_minimum_autoconf_version('2.52')
-
-##         # we never pass AC_DEFINE'd macros on the commandline
-
-##         self.__configure_ac.add_ac_config_headers('config.h')
-##         pass
-
-##     def output_options_(self):
-##         # our minimum required automake version is 1.9 
-##         self.__rootbuilder.makefile_am().add_automake_options('1.9')
-
-##         # enable dist'ing in the following formats
-##         self.__rootbuilder.makefile_am().add_automake_options('dist-bzip2')
-##         self.__rootbuilder.makefile_am().add_automake_options('dist-shar')
-##         self.__rootbuilder.makefile_am().add_automake_options('dist-zip')
-
-##         # the ubiquitous readonly-prefixes: add the configure option
-##         # and stuff.
-##         self.__configure_ac.add_paragraph(
-##             paragraph=readonly_prefixes.commandline_option_paragraph,
-##             order=Configure_ac.OPTIONS)
-##         pass
-
-#    def output_subdirs_(self):
-        # jjj
-##         for dirnode in self.__topo_directories:
-##             assert isinstance(dirnode, DirectoryBuilder)
-##             relpath = dirnode.directory().relpath(self.__rootdirectory)
-##             if len(relpath):
-##                 dirstr = '/'.join(relpath)
-##                 self.__rootbuilder.makefile_am().add_subdir(dirstr)
-##                 self.configure_ac().add_ac_config_files('/'.join(relpath+['Makefile']))
-##             else:
-##                 dirstr = '.'
-##                 self.__rootbuilder.makefile_am().add_subdir(dirstr)
-##                 self.configure_ac().add_ac_config_files('Makefile')
-##                 pass
-##             pass
-
-##         pass
-
-##     def output_repo_(self):
-##         # write package description file. add stuff to Makefile.am
-##         # that takes care to install it. put it into the dist-package.
-
-##         repofilename = self.name() + '.repo'
-##         repofile = self.__rootdirectory.find([repofilename])
-##         if repofile is None:
-##             repofile = self.__rootdirectory.add(name=repofilename, entry=File())
-##         else:
-##             repofile.truncate()
-##             pass
-
-##         PackageFile(file=repofile).dump(package=self.install())
-
-##         self.__rootbuilder.makefile_am().define_install_directory(
-##             symbolicname='confixrepo',
-##             dirname=repo_automake.dir_for_automake())
-##         self.__rootbuilder.makefile_am().add_to_install_directory(
-##             symbolicname='confixrepo',
-##             family='DATA',
-##             files=[repofilename])
-##         self.__rootbuilder.makefile_am().add_extra_dist(
-##             name=repofilename)
-        
-##         pass
-
-
-
-##     def output_unique_file_(self):
-        # jjj
-##         # AC_CONFIG_SRCDIR (for paranoia and sanity checks): we need
-##         # one unique file in the tree, as a meaningful argument to
-##         # AC_CONFIG_SRCDIR.
-
-##         goodfile = notsogoodfile = None
-
-##         for b in self.__collect_builders():
-##             if not isinstance(b, FileBuilder):
-##                 continue
-##             if b.file().is_overlayed():
-##                 # we won't put files from an overlay into the package
-##                 # since automake and friends won't be able to find
-##                 # them.
-##                 continue
-##             if isinstance(b.file(), File) and b.file().state() == FileState.VIRTUAL:
-##                 # also, there may be "virtual" files around (but only
-##                 # if the file's a "real" file) which we cannot put
-##                 # into a package. (boy, this sucks!)
-##                 continue
-
-##             if b.file().name() not in [const.CONFIX2_PKG, const.CONFIX2_DIR]:
-##                 goodfile = b.file()
-##                 break
-##             notsogoodfile = b.file()
-##             pass
-        
-##         if goodfile:
-##             unique_file = goodfile
-##         elif notsogoodfile:
-##             unique_file = notsogoodfile
-##         else:
-##             raise Error('Not even one file handled by any submodule of '
-##                         'package '+self.name()+"; "
-##                         "probably the current working directory "
-##                         "("+os.getcwd()+") is not "
-##                         "the package root directory?")
-
-##         self.__configure_ac.set_unique_file_in_srcdir('/'.join(unique_file.relpath(self.__rootdirectory)))
-        pass
 
     def __sort_subdirs(self):
         # sort subdirectories topologically for our backends.
