@@ -19,20 +19,19 @@
 from libconfix.core.digraph import toposort
 from libconfix.core.filesys.vfs_directory import VFSDirectory
 from libconfix.core.filesys.file import File
-from libconfix.core.machinery.builderset import BuilderSet
-from libconfix.core.machinery.buildinfoset import BuildInformationSet
-from libconfix.core.machinery.dependencyset import DependencySet
-from libconfix.core.machinery.depindex import ProvideMap
+from libconfix.core.machinery.buildinfo import BuildInformationSet
+from libconfix.core.machinery.dependency_utils import DependencySet
+from libconfix.core.machinery.dependency_utils import ProvideMap
 from libconfix.core.machinery.entrybuilder import EntryBuilder
 from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.local_node import LocalNode
 from libconfix.core.machinery.node import Node
 from libconfix.core.machinery.provide import Provide
-from libconfix.core.machinery.provide_string import Provide_String
-from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileManager
+from libconfix.core.machinery.provide import Provide_String
 from libconfix.core.machinery.require import Require
-from libconfix.core.machinery.require_string import Require_String
+from libconfix.core.machinery.require import Require_String
 from libconfix.core.machinery.filebuilder import FileBuilder
+from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileManager
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
@@ -311,4 +310,34 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         pass
         
 
+    pass
+
+class BuilderSet:
+    class DuplicateBuilderError(Error):
+        def __init__(self, existing_builder, new_builder):
+            Error.__init__(self, msg='Duplicate builder: existing "'+str(existing_builder)+'", new "'+str(new_builder)+'"')
+            pass
+        pass
+    
+    def __init__(self):
+        self.__builders = {}
+        pass
+
+    def iter_builders(self):
+        return self.__builders.itervalues()
+
+    def add_builder(self, b):
+        id = b.locally_unique_id()
+        existing_builder = self.__builders.get(id)
+        if existing_builder is not None:
+            raise BuilderSet.DuplicateBuilderError(existing_builder=existing_builder, new_builder=b)
+        self.__builders[id] = b
+        pass
+
+    def remove_builder(self, b):
+        id = b.locally_unique_id()
+        assert id in self.__builders
+        del self.__builders[id]
+        pass
+        
     pass

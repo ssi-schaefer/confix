@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.repo.marshalling import Marshallable
+from repo import Marshallable
+from repo import Unmarshallable
 
 class BuildInformation(Marshallable):
     def get_marshalling_data(self):
@@ -42,3 +43,22 @@ class BuildInformation(Marshallable):
         duplicates. """
 
         assert 0, self.__class__
+
+class BuildInformationSet(Unmarshallable):
+
+    def __init__(self):
+        self.dict_ = {}
+        pass
+
+    def add(self, b):
+        self.dict_[b.unique_key()] = b
+        pass
+
+    def merge(self, other):
+        self.dict_.update(other.dict_)
+        pass
+
+    def __iter__(self):
+        return self.dict_.itervalues()
+
+    pass

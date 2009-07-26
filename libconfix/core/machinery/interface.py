@@ -1,5 +1,4 @@
-# Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,13 +15,24 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.core.utils.error import Error, NativeError
+from libconfix.core.filesys.vfs_file import VFSFile
+from libconfix.core.filesys.vfs_directory import VFSDirectory
+
 import types
 import sys
 import os
 
-from libconfix.core.utils.error import Error, NativeError
-from libconfix.core.filesys.vfs_file import VFSFile
-from libconfix.core.filesys.vfs_directory import VFSDirectory
+class CodePiece:
+    def __init__(self, start_lineno, lines):
+        self.start_lineno_ = start_lineno
+        self.lines_ = lines
+        pass
+    def start_lineno(self):
+        return self.start_lineno_
+    def lines(self):
+        return self.lines_
+    pass
 
 class InterfaceExecutor:
     def __init__(self, iface_pieces):
@@ -77,4 +87,20 @@ class InterfaceExecutor:
                             [NativeError(e, sys.exc_traceback)])
             pass
         pass
+    pass
+
+class InterfaceProxy:
+    def __init__(self):
+        self.__globals = {}
+        pass
+
+    def add_global(self, key, value):
+        if self.__globals.has_key(key):
+            raise Error('"'+key+'" is already set')
+        self.__globals[key] = value
+        pass
+
+    def get_globals(self):
+        return self.__globals
+
     pass

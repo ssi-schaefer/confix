@@ -25,7 +25,7 @@ from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.provide_symbol import Provide_Symbol
+from libconfix.core.machinery.provide import Provide_Symbol
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest

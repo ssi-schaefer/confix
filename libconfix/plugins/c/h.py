@@ -21,9 +21,9 @@ from dependency import Provide_CInclude
 from buildinfo import BuildInfo_CIncludePath_NativeLocal
 import namespace
 
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.machinery.depinfo import DependencyInformation
-from libconfix.core.machinery.buildinfoset import BuildInformationSet
+from libconfix.core.machinery.interface import InterfaceProxy
+from libconfix.core.machinery.dependency_utils import DependencyInformation
+from libconfix.core.machinery.buildinfo import BuildInformationSet
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
 from libconfix.core.utils import const

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,9 +17,9 @@
 
 from adapter import PkgConfigLibraryAdapter
 
-from libconfix.core.utils.error import Error
-from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.setup import Setup
+from libconfix.core.utils.error import Error
 
 class PKG_CONFIG_LIBRARY(InterfaceProxy):
     def __init__(self, dirbuilder):

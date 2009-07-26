@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@
 from builder import ScriptBuilder
 
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.filesys.vfs_file import VFSFile
 
 import types

@@ -24,8 +24,8 @@ from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.machinery.edgefinder import EdgeFinder
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.machinery.require_symbol import Require_Symbol
-from libconfix.core.machinery.provide_symbol import Provide_Symbol
+from libconfix.core.machinery.require import Require_Symbol
+from libconfix.core.machinery.provide import Provide_Symbol
 from libconfix.core.machinery.resolve_error import NotResolved, AmbiguouslyResolved
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import const

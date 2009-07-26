@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,9 @@
 
 from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.filesys.scan import scan_filesystem
-from libconfix.core.repo.repo import PackageRepository
-from libconfix.core.repo.repo_composite import CompositePackageRepository
-from libconfix.core.repo.repo_file import PackageFileRepository
+from libconfix.core.machinery.repo import PackageRepository
+from libconfix.core.machinery.repo import CompositePackageRepository
+from libconfix.core.machinery.repo import PackageFileRepository
 from libconfix.core.utils import helper_pickle, debug
 from libconfix.core.utils.error import Error
 

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,11 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
+from libconfix.core.machinery.dependency_utils import DependencyInformation
+from libconfix.core.machinery.provide import Provide_String
+from libconfix.core.machinery.require import Require_String
 
-from libconfix.core.machinery.depinfo import DependencyInformation
-from libconfix.core.machinery.provide_string import Provide_String
-from libconfix.core.machinery.require_string import Require_String
+import unittest
 
 class DependencyInformationSuite(unittest.TestSuite):
     def __init__(self):

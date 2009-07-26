@@ -28,8 +28,8 @@ from buildinfo import \
 # jjj remove automake dependency
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.machinery.provide_string import Provide_String
+from libconfix.core.machinery.interface import InterfaceProxy
+from libconfix.core.machinery.provide import Provide_String
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder

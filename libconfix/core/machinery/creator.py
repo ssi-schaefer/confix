@@ -17,8 +17,7 @@
 
 from builder import Builder
 from setup import Setup
-
-from libconfix.core.iface.proxy import InterfaceProxy
+from interface import InterfaceProxy
 
 import types
 

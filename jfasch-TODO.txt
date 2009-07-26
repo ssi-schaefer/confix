@@ -1,8 +1,10 @@
 * STACK
 
-  * remove LocalPackage.configure_ac() and LocalPackage.acinclude_m4()
+  * collapsing core.machinery.{require,provide}* into ...dependency
 
   * plan
+
+    * collapse buildinfo and ...Set into one file.
 
     * rewrite DirectoryBuilder.iter_builders() to iterate over the
       builders.

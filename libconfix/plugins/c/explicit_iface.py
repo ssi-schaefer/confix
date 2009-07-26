@@ -25,7 +25,7 @@ from namefinder import LongNameFinder
 from relocated_headers.master import Master
 
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
-from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
 

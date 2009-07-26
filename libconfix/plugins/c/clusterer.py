@@ -24,7 +24,7 @@ from library import LibraryBuilder
 from namefinder import ShortNameFinder, LongNameFinder
 import helper
 
-from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
 

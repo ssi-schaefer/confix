@@ -21,11 +21,11 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.installed_package import InstalledPackage
-from libconfix.core.machinery.provide_symbol import Provide_Symbol
-from libconfix.core.machinery.require_symbol import Require_Symbol
+from libconfix.core.machinery.provide import Provide_Symbol
+from libconfix.core.machinery.require import Require_Symbol
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.repo.package_file import PackageFile
+from libconfix.core.machinery.repo import PackageFile
 from libconfix.core.utils import const
 
 import unittest

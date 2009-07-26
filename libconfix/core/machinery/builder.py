@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,20 +16,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from depinfo import DependencyInformation
+from dependency_utils import DependencyInformation
 from provide import Provide
-from provide_string import Provide_String
-from provide_callable import Provide_Callable
-from provide_symbol import Provide_Symbol
+from provide import Provide_String
+from provide import Provide_Symbol
 from require import Require
-from require_symbol import Require_Symbol
-from require_callable import Require_Callable
-from buildinfoset import BuildInformationSet
+from require import Require_Symbol
+from require import Require_Callable
+from buildinfo import BuildInformationSet
+from interface import InterfaceProxy
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils.paragraph import Paragraph
-
-from libconfix.core.iface.proxy import InterfaceProxy
 
 import os
 import types

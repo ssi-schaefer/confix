@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,17 +16,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-import types
+from builder import PlainFileBuilder
 
+from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
-from libconfix.core.machinery.builder import Builder
-from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
-from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.filesys.vfs_file import VFSFile
 
-from builder import PlainFileBuilder
+import os
+import types
 
 class ADD_PLAINFILE(InterfaceProxy):
     def __init__(self, dirbuilder):

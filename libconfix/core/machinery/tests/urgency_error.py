@@ -19,8 +19,8 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.machinery.provide_symbol import Provide_Symbol
-from libconfix.core.machinery.require_symbol import Require_Symbol
+from libconfix.core.machinery.provide import Provide_Symbol
+from libconfix.core.machinery.require import Require_Symbol
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder

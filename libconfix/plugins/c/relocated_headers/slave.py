@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ from dependency import RequireRelocatedHeader
 from libconfix.plugins.c.dependency import Provide_CInclude
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.depinfo import DependencyInformation
+from libconfix.core.machinery.dependency_utils import DependencyInformation
 
 class Slave(Builder):
     def __init__(self, header_builder):

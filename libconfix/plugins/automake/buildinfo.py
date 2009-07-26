@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 from libconfix.core.machinery.buildinfo import BuildInformation
 from libconfix.core.utils import helper
-from libconfix.core.repo.marshalling import \
+from libconfix.core.machinery.repo import \
      update_marshalling_data, \
      Marshallable, \
      MarshalledVersionUnknownError

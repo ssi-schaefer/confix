@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
 # USA
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.utils.error import Error
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys import scan

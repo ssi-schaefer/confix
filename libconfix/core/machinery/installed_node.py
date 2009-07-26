@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,11 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import types
-
-from libconfix.core.repo.marshalling import Marshallable, update_marshalling_data
-
+from repo import Marshallable, update_marshalling_data
 from node import Node
+
+import types
 
 class InstalledNode(Node):
     def get_marshalling_data(self):

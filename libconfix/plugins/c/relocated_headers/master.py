@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -21,9 +21,9 @@ from dependency import ProvideRelocatedHeader
 from libconfix.plugins.c.h import HeaderBuilder
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.depinfo import DependencyInformation
+from libconfix.core.machinery.dependency_utils import DependencyInformation
+from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
-from libconfix.core.iface.proxy import InterfaceProxy
 from libconfix.core.utils.error import Error
 
 class Master(Builder):

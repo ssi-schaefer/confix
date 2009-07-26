@@ -1,5 +1,4 @@
-# Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,9 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import pickle
-
 from libconfix.core.utils.error import Error
+from libconfix.core.utils import helper_pickle
+
+import pickle
+import os
 
 # use this like debug.trace([marshalling.REPOVERSION_TRACENAME], 'Upgrading class XXX from version 3 to version 100')
 REPOVERSION_TRACENAME = 'repoversion'
@@ -142,3 +143,103 @@ def update_marshalling_data(marshalling_data,
     marshalling_data[Marshallable.VERSIONS].update(version)
 
     return marshalling_data
+
+class PackageFile:
+
+    """ A utility class that helps us storing a package into a file,
+    and reading it back from it.
+
+    :todo: the functions suffice; shouldn't force the user to create
+    and destroy an object for that purpose.
+
+    """
+    VERSION = 1
+
+    def __init__(self, file):
+        self.__file = file
+        pass
+
+    def load(self):
+        try:
+            # fixme: File.lines() is currently the only method of
+            # reading the content of a file. we read the lines, join
+            # them together, and then unpickle the object from the
+            # whole buffer. to make this more efficient, we'd need
+            # something like File.content().
+            obj = helper_pickle.load_object_from_string('\n'.join(self.__file.lines()))
+            if obj['version'] != PackageFile.VERSION:
+                raise Error('Version mismatch in repository file '+os.sep.join(self.__file.abspath())+''
+                            ' (file: '+str(obj['version'])+','
+                            ' current: '+str(PackageFile.VERSION)+')')
+            return obj['package']
+        except Error, e:
+            raise Error('Could not read package file '+os.sep.join(self.__file.abspath()), [e])
+        pass
+    
+    def dump(self, package):
+        try:
+            self.__file.truncate()
+            self.__file.add_lines(
+                [helper_pickle.dump_object_to_string({'version': PackageFile.VERSION,
+                                                      'package': package})
+                 ])
+        except Error, e:
+            raise Error('Could not write package file '+os.sep.join(self.__file.abspath()), [e])
+        pass
+    
+    pass
+
+class PackageRepository:
+    
+    def __init__(self): pass
+
+    def packages(self): assert 0 # abstract
+
+    def nodes(self): assert 0 # abstract
+
+    pass
+
+class CompositePackageRepository(PackageRepository):
+    def __init__(self):
+        PackageRepository.__init__(self)
+        self.repositories_ = []
+        pass
+
+    def add_repo(self, repo):
+        self.repositories_.append(repo)
+        pass
+
+    def packages(self):
+        ret_packages = []
+        have_packages = set()
+
+        for r in self.repositories_:
+            for p in r.packages():
+                if p.name() in have_packages:
+                    continue
+                have_packages.add(p.name())
+                ret_packages.append(p)
+                pass
+            pass
+
+        return ret_packages
+
+    def nodes(self):
+        ret_nodes = []
+        for p in self.packages():
+            ret_nodes.extend(p.nodes())
+            pass
+        return ret_nodes
+
+    pass
+
+class PackageFileRepository(PackageRepository):
+    def __init__(self, file):
+        PackageRepository.__init__(self)
+        self.package_ = PackageFile(file).load()
+        pass
+    def packages(self):
+        return [self.package_]
+    def nodes(self):
+        return self.package_.nodes()
+    pass

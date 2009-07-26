@@ -25,17 +25,17 @@ from edgefinder import EdgeFinder
 from filebuilder import FileBuilder
 from require import Require
 from resolve_error import NotResolved
+from interface import InterfaceProxy
+from interface import InterfaceExecutor
+from repo import PackageFile
 
 from libconfix.core.digraph import algorithm
 from libconfix.core.digraph import toposort
 from libconfix.core.digraph.digraph import DirectedGraph
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
-from libconfix.core.repo.package_file import PackageFile
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.iface.executor import InterfaceExecutor
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 
 import os

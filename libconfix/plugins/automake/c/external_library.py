@@ -17,10 +17,10 @@
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.buildinfo import BuildInformation
-from libconfix.core.machinery.buildinfoset import BuildInformationSet
+from libconfix.core.machinery.buildinfo import BuildInformationSet
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.repo.marshalling import \
+from libconfix.core.machinery.interface import InterfaceProxy
+from libconfix.core.machinery.repo import \
      update_marshalling_data, \
      MarshalledVersionUnknownError, \
      Marshallable

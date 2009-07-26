@@ -16,7 +16,7 @@
 # USA
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.provide_symbol import Provide_Symbol
+from libconfix.core.machinery.provide import Provide_Symbol
 from libconfix.core.utils import external_cmd
 from libconfix.core.filesys import scan
 

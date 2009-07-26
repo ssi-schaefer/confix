@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,21 +16,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-import re
-import types
+from dependency import Require_CInclude
+from common_iface import REQUIRE_H, PROVIDE_H
+import helper
 
-from libconfix.core.iface.code_piece import CodePiece
-from libconfix.core.iface.executor import InterfaceExecutor
-from libconfix.core.iface.proxy import InterfaceProxy
-from libconfix.core.machinery.depinfo import DependencyInformation
+from libconfix.core.machinery.interface import CodePiece
+from libconfix.core.machinery.interface import InterfaceExecutor
+from libconfix.core.machinery.interface import InterfaceProxy
+from libconfix.core.machinery.dependency_utils import DependencyInformation
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.require import Require
 from libconfix.core.utils.error import Error
 
-from dependency import Require_CInclude
-from common_iface import REQUIRE_H, PROVIDE_H
-import helper
+import os
+import re
+import types
 
 # argh: '$' does not hit doze-like carriage return, but rather leaves
 # it at the end of the match.

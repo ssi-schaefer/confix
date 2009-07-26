@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,9 @@
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.vfs_file import VFSFile
-from libconfix.core.iface.code_piece import CodePiece
-from libconfix.core.iface.executor import InterfaceExecutor
+from libconfix.core.machinery.interface import CodePiece
+from libconfix.core.machinery.interface import InterfaceExecutor
+
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.setup import Setup

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.automake import makefileparser
+from libconfix.plugins.automake import makefile
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.core.filesys.file import File
@@ -91,13 +91,13 @@ class BasicHeaderInstallTest(unittest.TestCase):
 
         # all-local -> confix-install-local -> $(top_builddir)/confix_include/file.h -> $(top_builddir)/confix_include
 
-        confix_install_local = makefileparser.find_rule(
+        confix_install_local = makefile.find_rule(
             targets=['confix-install-local'],
             elements=rootdir_output_builder.makefile_am().elements())
-        install_file_h = makefileparser.find_rule(
+        install_file_h = makefile.find_rule(
             targets=['$(top_builddir)/confix_include/xxx/file.h'],
             elements=rootdir_output_builder.makefile_am().elements())
-        mkdir = makefileparser.find_rule(
+        mkdir = makefile.find_rule(
             targets=['$(top_builddir)/confix_include/xxx'],
             elements=rootdir_output_builder.makefile_am().elements())
         self.failIf(confix_install_local is None)
@@ -108,10 +108,10 @@ class BasicHeaderInstallTest(unittest.TestCase):
 
         # clean-local -> confix-clean-local -> $(top_builddir)/confix_include/file.h-clean
 
-        confix_clean_local = makefileparser.find_rule(
+        confix_clean_local = makefile.find_rule(
             targets=['confix-clean-local'],
             elements=rootdir_output_builder.makefile_am().elements())
-        clean_file_h = makefileparser.find_rule(
+        clean_file_h = makefile.find_rule(
             targets=['$(top_builddir)/confix_include/xxx/file.h-clean'],
             elements=rootdir_output_builder.makefile_am().elements())
         self.failIf(confix_clean_local is None)

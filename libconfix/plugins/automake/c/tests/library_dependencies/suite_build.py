@@ -17,7 +17,7 @@
 
 from dirstructure import DirectoryStructure
 
-from libconfix.plugins.automake import bootstrap, configure, make, makefileparser
+from libconfix.plugins.automake import bootstrap, configure, make, makefile
 from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
 
 from libconfix.core.machinery.local_package import LocalPackage
@@ -117,9 +117,9 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
         self.failIf(third_library is None)
         self.failIf(third_exe_Makefile is None)
 
-        elements = makefileparser.parse_makefile(third_exe_Makefile.lines())
-        deps = makefileparser.find_list(name='ThirdPackage_exe_exe_DEPENDENCIES',
-                                        elements=elements)
+        elements = makefile.parse_makefile(third_exe_Makefile.lines())
+        deps = makefile.find_list(name='ThirdPackage_exe_exe_DEPENDENCIES',
+                                  elements=elements)
         self.failIf(deps is None)
 
         self.failUnless(os.sep.join(first_library.abspath()) in deps)

@@ -19,7 +19,7 @@ from dirstructure import DirectoryStructure
 
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.plugins.automake.c.library_dependencies import LibraryDependenciesFinderSetup
-from libconfix.plugins.automake import makefileparser
+from libconfix.plugins.automake import makefile
 
 from libconfix.core.machinery.local_package import LocalPackage
 
@@ -75,8 +75,8 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
         self.failUnless('@installeddeplib_SecondPackage@' in convenience_deps)
 
         # see if it got correctly written to the Makefile.am
-        real_deps = makefileparser.find_list(
-            elements=makefileparser.parse_makefile(exedir_output_builder.makefile_am().lines()),
+        real_deps = makefile.find_list(
+            elements=makefile.parse_makefile(exedir_output_builder.makefile_am().lines()),
             name='ThirdPackage_exe_exe_DEPENDENCIES')
         self.failIf(real_deps is None)
         self.failUnless('$(top_builddir)/library/libThirdPackage_library.a' in real_deps)

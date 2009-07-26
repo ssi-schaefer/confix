@@ -21,7 +21,7 @@ from out_automake import find_automake_output_builder
 
 from libconfix.core.utils.paragraph import Paragraph
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.iface.proxy import InterfaceProxy
+from libconfix.core.machinery.interface import InterfaceProxy
 
 import types
 
