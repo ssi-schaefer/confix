@@ -1,4 +1,5 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2002-2006 Salomon Automation
+# Copyright (C) 2006-2008 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,23 +16,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
-from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
-from libconfix.plugins.cmake.tests.suite_build import CMakeBuildSuite
+from libconfix.core.utils import external_cmd
+from libconfix.core.utils.error import Error
 
-import unittest
+import os
 
-class PluginsBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeBuildSuite())
-        self.addTest(MakeSuiteBuild())
-        self.addTest(CMakeBuildSuite())
-        pass
+def cmake(packageroot, builddir, path=None):
+    cmake_prog = external_cmd.search_program('cmake', path)
+    if cmake_prog is None:
+        raise Error('cmake not found along path')
+    external_cmd.exec_program(
+        program=cmake_prog,
+        dir=os.path.join(builddir),
+        args=[os.sep.join(packageroot)],
+        path=path,
+        print_cmdline=True)
     pass
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(PluginsBuildSuite())
+def make(builddir, args, env=None):
+    external_cmd.exec_program(program='make', dir=builddir, args=args, env=env)
     pass
-
-

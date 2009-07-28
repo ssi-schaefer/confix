@@ -15,23 +15,32 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
-from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
-from libconfix.plugins.cmake.tests.suite_build import CMakeBuildSuite
+from check import CheckProgramBase
 
 import unittest
 
-class PluginsBuildSuite(unittest.TestSuite):
+class CheckProgramInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeBuildSuite())
-        self.addTest(MakeSuiteBuild())
-        self.addTest(CMakeBuildSuite())
+        self.addTest(CheckProgramInMemory('test'))
+        pass
+    pass
+
+class CheckProgramInMemory(CheckProgramBase):
+    def __init__(self, methodName):
+        CheckProgramBase.__init__(self, methodName)
+        pass
+
+    def use_libtool(self): return False
+
+    def test(self):
+        self.failUnless('the-test-program' in self.package_.rootbuilder().makefile_am().check_programs())
+        self.failUnlessEqual(len(self.package_.rootbuilder().makefile_am().tests_environment()), 1)
+        self.failUnlessEqual(self.package_.rootbuilder().makefile_am().tests_environment()['name'], 'value')
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PluginsBuildSuite())
+    unittest.TextTestRunner().run(CheckProgramInMemorySuite())
     pass
-
 

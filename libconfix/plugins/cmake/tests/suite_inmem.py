@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,23 +15,20 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
-from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
-from libconfix.plugins.cmake.tests.suite_build import CMakeBuildSuite
+from toplevel_boilerplate import ToplevelBoilerplateInMemorySuite
+from libconfix.plugins.cmake.c.tests.suite_inmem import CMakeCInMemorySuite
 
 import unittest
 
-class PluginsBuildSuite(unittest.TestSuite):
+class CMakeInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeBuildSuite())
-        self.addTest(MakeSuiteBuild())
-        self.addTest(CMakeBuildSuite())
+        self.addTest(ToplevelBoilerplateInMemorySuite())
+        self.addTest(CMakeCInMemorySuite())
         pass
+
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PluginsBuildSuite())
+    unittest.TextTestRunner().run(CMakeInMemorySuite())
     pass
-
-

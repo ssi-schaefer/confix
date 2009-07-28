@@ -19,6 +19,7 @@ from libconfix.plugins.c.tests.suite_inmem import CInMemoryTestSuite
 from libconfix.plugins.plainfile.tests.suite_inmem import PlainFileSuiteInMemory
 from libconfix.plugins.idl.tests.suite_inmem import IDLSuiteInMemory
 from libconfix.plugins.automake.tests.suite_inmem import AutomakeInMemorySuite
+from libconfix.plugins.cmake.tests.suite_inmem import CMakeInMemorySuite
 
 import unittest
 
@@ -29,6 +30,7 @@ class PluginsInMemorySuite(unittest.TestSuite):
         self.addTest(PlainFileSuiteInMemory())
         self.addTest(IDLSuiteInMemory())
         self.addTest(AutomakeInMemorySuite())
+        self.addTest(CMakeInMemorySuite())
         pass
     pass
 

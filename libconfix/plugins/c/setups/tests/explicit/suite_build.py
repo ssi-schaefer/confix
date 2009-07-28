@@ -15,23 +15,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
-from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
-from libconfix.plugins.cmake.tests.suite_build import CMakeBuildSuite
+
+assert False
+#from relocated_header_build import RelocatedHeaderBuildSuite
 
 import unittest
 
-class PluginsBuildSuite(unittest.TestSuite):
+class ExplicitCSetupBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeBuildSuite())
-        self.addTest(MakeSuiteBuild())
-        self.addTest(CMakeBuildSuite())
+#        self.addTest(RelocatedHeaderBuildSuite())
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PluginsBuildSuite())
+    unittest.TextTestRunner().run(ExplicitCSetupBuildSuite())
     pass
-
-

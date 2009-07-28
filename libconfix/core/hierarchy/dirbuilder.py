@@ -184,7 +184,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
         
         for b in self.__regular_builders.iter_builders():
             b.output()
-            assert b.base_output_called() == True, str(b)
+            assert b.base_output_called() == True, str(b)+" (Call the base class output() from your own output() method)"
             pass
 
         for b in self.__backend_dirbuilders.iter_builders():

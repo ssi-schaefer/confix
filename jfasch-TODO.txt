@@ -4,7 +4,7 @@
 
   * plan
 
-    * collapse buildinfo and ...Set into one file.
+    * collapse machinery.*builder into one file.
 
     * rewrite DirectoryBuilder.iter_builders() to iterate over the
       builders.

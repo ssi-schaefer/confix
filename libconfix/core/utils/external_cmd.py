@@ -50,6 +50,8 @@ def exec_program(program, dir, args=None, env=None, path=None, print_cmdline=Fal
     os.chdir(os.sep.join(dir))
 
     if print_cmdline:
+        print program
+        print the_args
         debug.message(the_program+' '+' '.join(the_args))
         pass
 

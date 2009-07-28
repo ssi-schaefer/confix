@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,23 +15,24 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
-from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
-from libconfix.plugins.cmake.tests.suite_build import CMakeBuildSuite
 
-import unittest
+from out_cmake import CMakeBackendOutputBuilder
+from c.setup import CMakeCSetup
 
-class PluginsBuildSuite(unittest.TestSuite):
+from libconfix.core.machinery.setup import CompositeSetup
+from libconfix.core.machinery.setup import Setup
+
+class CMakeSetup(CompositeSetup):
     def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeBuildSuite())
-        self.addTest(MakeSuiteBuild())
-        self.addTest(CMakeBuildSuite())
+        CompositeSetup.__init__(
+            self,
+            setups=[CMakeCSetup(),
+                    InfraStructureSetup()])
         pass
     pass
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(PluginsBuildSuite())
+class InfraStructureSetup(Setup):
+    def setup(self, dirbuilder):
+        dirbuilder.add_backend_dirbuilder(CMakeBackendOutputBuilder())
+        pass
     pass
-
-
