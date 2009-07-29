@@ -1,8 +1,10 @@
 * STACK
 
-  * collapsing core.machinery.{require,provide}* into ...dependency
+  * cmake native local libraries.
 
   * plan
+
+    * rename BuildInfo_CLibrary_NativeLocal.name() to basename().
 
     * collapse machinery.*builder into one file.
 

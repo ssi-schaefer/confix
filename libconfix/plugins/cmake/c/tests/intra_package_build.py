@@ -31,38 +31,76 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
 
-class LibraryBuildSuite(unittest.TestSuite):
+class IntraPackageBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(LibraryTest('single_library'))
+        self.addTest(IntraPackageTest('libraries_with_native_local_dependencies'))
         pass
     pass
 
-class LibraryTest(PersistentTestCase):
-    def single_library(self):
+class IntraPackageTest(PersistentTestCase):
+    def libraries_with_native_local_dependencies(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
             entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+        
         source.add(
             name=const.CONFIX2_PKG,
             entry=File(lines=['PACKAGE_NAME("LibraryTest.basic_test")',
                               'PACKAGE_VERSION("1.2.3")']))
         source.add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="the-library",',
-                              '        members=[C(filename="file.c"),',
-                              '                 H(filename="file.h")])']))
-        source.add(
-            name='file.h',
-            entry=File())
-        source.add(
-            name='file.c',
-            entry=File())
-
-        build = fs.rootdirectory().add(
-            name='build',
+            entry=File(lines=['DIRECTORY(["lo"])',
+                              'DIRECTORY(["hi"])',
+                              'DIRECTORY(["hiest"])']))
+        lo = source.add(
+            name='lo',
             entry=Directory())
+        lo.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['LIBRARY(basename="lo",',
+                              '        members=[C(filename="lo.c"),',
+                              '                 H(filename="lo.h")])']))
+        lo.add(
+            name='lo.h',
+            entry=File())
+        lo.add(
+            name='lo.c',
+            entry=File())
+        
+        hi = source.add(
+            name='hi',
+            entry=Directory())
+        hi.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['LIBRARY(basename="hi",',
+                              '        members=[C(filename="hi.c"),',
+                              '                 H(filename="hi.h")])']))
+        hi.add(
+            name='hi.h',
+            entry=File())
+        hi.add(
+            name='hi.c',
+            entry=File(lines=['#include <lo.h>']))
+
+        hiest = source.add(
+            name='hiest',
+            entry=Directory())
+        hiest.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['LIBRARY(basename="hiest",',
+                              '        members=[C(filename="hiest.c"),',
+                              '                 H(filename="hiest.h")])']))
+        hiest.add(
+            name='hiest.h',
+            entry=File())
+        hiest.add(
+            name='hiest.c',
+            entry=File(lines=['#include <hi.h>']))
 
         package = LocalPackage(rootdirectory=source,
                                setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
@@ -76,13 +114,16 @@ class LibraryTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        # I don't know if this will hold under Windows :-)
-        self.failUnless(build.get('libthe-library.a'))
+        # I don't know if this will hold under Windows. if it becomes
+        # an issue we will skip this check
+        self.failUnless(build.find(['lo', 'liblo.a']))
+        self.failUnless(build.find(['hi', 'libhi.a']))
+        self.failUnless(build.find(['hiest', 'libhiest.a']))
 
         pass
 
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibraryBuildSuite())
+    unittest.TextTestRunner().run(IntraPackageBuildSuite())
     pass

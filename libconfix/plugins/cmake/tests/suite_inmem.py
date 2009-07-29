@@ -16,6 +16,7 @@
 # USA
 
 from toplevel_boilerplate import ToplevelBoilerplateInMemorySuite
+from hierarchy_inmem import HierarchyInMemorySuite
 from libconfix.plugins.cmake.c.tests.suite_inmem import CMakeCInMemorySuite
 
 import unittest
@@ -24,6 +25,7 @@ class CMakeInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(ToplevelBoilerplateInMemorySuite())
+        self.addTest(HierarchyInMemorySuite())
         self.addTest(CMakeCInMemorySuite())
         pass
 

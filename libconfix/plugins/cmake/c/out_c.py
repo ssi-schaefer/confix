@@ -18,6 +18,7 @@
 from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 
 from libconfix.plugins.c.library import LibraryBuilder
+from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeLocal
 
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.machinery.builder import Builder
@@ -38,9 +39,26 @@ class LibraryOutputBuilder(Builder):
         for library in self.parentbuilder().iter_builders():
             if not isinstance(library, LibraryBuilder):
                 continue
-            cmake_output_builder.local_cmakelists().add_library_definition(
+
+            native_local_libraries = []
+
+            for bi in library.topo_libraries():
+                if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
+                    native_local_libraries.append(bi.name())
+                    continue
+                if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
+                    assert False, "implement me!"
+                    continue
+                assert 0, 'missed some relevant build info type'
+                pass
+
+            cmake_output_builder.local_cmakelists().add_library(
                 library.basename(),
                 [member.file().name() for member in library.members()])
+            if len(native_local_libraries):
+                cmake_output_builder.local_cmakelists().target_link_libraries(library.basename(), native_local_libraries)
+                pass
+            
             pass
         pass
 
