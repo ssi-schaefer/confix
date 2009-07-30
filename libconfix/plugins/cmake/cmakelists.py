@@ -22,7 +22,11 @@ class CMakeLists:
 
         # CMake: project()
         # string
-        self.__project = '[project-name-not-set]'
+        self.__project = None
+
+        # CMake: cmake_minimum_required()
+        # {"name": "value"}
+        self.__cmake_minimum_required = {}
 
         # CMake: include()
         # set("cmake-package-name")
@@ -36,9 +40,17 @@ class CMakeLists:
         # {"basename": ["member-filename"]}
         self.__libraries = {}
 
+        # CMake: add_executable()
+        # {"exename": ["member-filename"]}
+        self.__executables = {}
+
         # CMake: target_link_libraries()
         # {"target": ["link-library"]}
         self.__target_link_libraries = {}
+
+        # CMake: include_directories()
+        # ["directory-name"]
+        self.__include_directories = []
 
         # CMake: set()
         # { "name": "value" }
@@ -51,6 +63,13 @@ class CMakeLists:
         pass
     def project(self):
         return self.__project
+
+    def add_cmake_minimum_required(self, name, value):
+        assert name not in self.__cmake_minimum_required
+        self.__cmake_minimum_required[name] = value
+        pass
+    def get_cmake_minimum_required(self, name):
+        return self.__cmake_minimum_required.get(name)
 
     def add_include(self, include):
         assert include not in self.__includes
@@ -73,12 +92,28 @@ class CMakeLists:
     def get_library(self, basename):
         return self.__libraries.get(basename)
 
+    def add_executable(self, exename, members):
+        assert exename not in self.__executables
+        self.__executables[exename] = members
+        pass
+    def get_executable(self, exename):
+        return self.__executables.get(exename)
+
     def target_link_libraries(self, target, basenames):
         assert target not in self.__target_link_libraries
         self.__target_link_libraries[target] = basenames
         pass
     def get_target_link_libraries(self, target):
         return self.__target_link_libraries.get(target)
+
+    def add_include_directory(self, directoryname):
+        assert type(directoryname) is types.StringType
+        if directoryname in self.__include_directories:
+            return
+        self.__include_directories.append(directoryname)
+        pass
+    def include_directories(self):
+        return self.__include_directories
 
     def add_set(self, name, value):
         assert not name in self.__sets
@@ -91,7 +126,15 @@ class CMakeLists:
         lines = []
 
         # project()
-        lines.append('project('+self.__project+')')
+        if self.__project is not None: # supposed to only be set in
+                                       # toplevel file.
+            lines.append('project('+self.__project+')')
+            pass
+
+        # cmake_minimum_required()
+        for (name, value) in self.__cmake_minimum_required.iteritems():
+            lines.append('cmake_minimum_required('+name+' '+value+')')
+            pass
 
         # include()
         for include in self.__includes:
@@ -113,6 +156,16 @@ class CMakeLists:
             lines.append(')')
             pass
 
+        # add_executable()
+        for (exename, members) in self.__executables.iteritems():
+            lines.append('add_executable(')
+            lines.append('    '+exename)
+            for m in members:
+                lines.append('    '+m)
+                pass
+            lines.append(')')
+            pass
+
         # target_link_libraries()
         for (target, libraries) in self.__target_link_libraries.iteritems():
             lines.append('target_link_libraries(')
@@ -121,6 +174,10 @@ class CMakeLists:
                 lines.append('    '+library)
                 pass
             lines.append(')')
+            pass
+
+        for directoryname in self.__include_directories:
+            lines.append('include_directories('+directoryname+')')
             pass
 
         # set()

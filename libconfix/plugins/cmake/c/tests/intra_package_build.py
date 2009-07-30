@@ -15,6 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import intra_package
+
 from libconfix.plugins.cmake.setup import CMakeSetup
 from libconfix.plugins.cmake import commands
 
@@ -34,74 +36,20 @@ import unittest
 class IntraPackageBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(IntraPackageTest('libraries_with_native_local_dependencies'))
+        self.addTest(IntraPackageTest('test'))
         pass
     pass
 
 class IntraPackageTest(PersistentTestCase):
-    def libraries_with_native_local_dependencies(self):
+    def test(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
-            entry=Directory())
+            entry=intra_package.make_source_tree())
         build = fs.rootdirectory().add(
             name='build',
             entry=Directory())
         
-        source.add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=['PACKAGE_NAME("LibraryTest.basic_test")',
-                              'PACKAGE_VERSION("1.2.3")']))
-        source.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['DIRECTORY(["lo"])',
-                              'DIRECTORY(["hi"])',
-                              'DIRECTORY(["hiest"])']))
-        lo = source.add(
-            name='lo',
-            entry=Directory())
-        lo.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="lo",',
-                              '        members=[C(filename="lo.c"),',
-                              '                 H(filename="lo.h")])']))
-        lo.add(
-            name='lo.h',
-            entry=File())
-        lo.add(
-            name='lo.c',
-            entry=File())
-        
-        hi = source.add(
-            name='hi',
-            entry=Directory())
-        hi.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="hi",',
-                              '        members=[C(filename="hi.c"),',
-                              '                 H(filename="hi.h")])']))
-        hi.add(
-            name='hi.h',
-            entry=File())
-        hi.add(
-            name='hi.c',
-            entry=File(lines=['#include <lo.h>']))
-
-        hiest = source.add(
-            name='hiest',
-            entry=Directory())
-        hiest.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="hiest",',
-                              '        members=[C(filename="hiest.c"),',
-                              '                 H(filename="hiest.h")])']))
-        hiest.add(
-            name='hiest.h',
-            entry=File())
-        hiest.add(
-            name='hiest.c',
-            entry=File(lines=['#include <hi.h>']))
-
         package = LocalPackage(rootdirectory=source,
                                setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
         package.boil(external_nodes=[])
@@ -114,11 +62,11 @@ class IntraPackageTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        # I don't know if this will hold under Windows. if it becomes
-        # an issue we will skip this check
+        # I don't know if this will hold under Windows :-) if it
+        # becomes an issue we will skip this check
         self.failUnless(build.find(['lo', 'liblo.a']))
         self.failUnless(build.find(['hi', 'libhi.a']))
-        self.failUnless(build.find(['hiest', 'libhiest.a']))
+        self.failUnless(build.find(['exe', 'exe']))
 
         pass
 

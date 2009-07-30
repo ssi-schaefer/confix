@@ -88,6 +88,9 @@ class CMakeBackendOutputBuilder(Builder):
         top_cmakelists.set_project(self.package().name())
         top_cmakelists.add_set('VERSION', self.package().version())
 
+        # CMake requires us to write something like that.
+        top_cmakelists.add_cmake_minimum_required('VERSION', '2.6')
+
         # rpath wizardry
         self.__apply_rpath_settings(top_cmakelists)
 
@@ -123,6 +126,19 @@ class CMakeBackendOutputBuilder(Builder):
         # point to directories outside the build tree to the install
         # RPATH
         top_cmakelists.add_set('CMAKE_INSTALL_RPATH_USE_LINK_PATH', 'TRUE')
+
+        # version information.
+        version_parts = self.package().version().split('.')
+        if (len(version_parts) >= 1):
+            top_cmakelists.add_set('CPACK_PACKAGE_VERSION_MAJOR', version_parts[0])
+            pass
+        if (len(version_parts) >= 2):
+            top_cmakelists.add_set('CPACK_PACKAGE_VERSION_MINOR', version_parts[1])
+            pass
+        if (len(version_parts) >= 3):
+            top_cmakelists.add_set('CPACK_PACKAGE_VERSION_PATCH', version_parts[2])
+            pass
+        
         pass
 
     def __apply_cpack_settings(self, top_cmakelists):

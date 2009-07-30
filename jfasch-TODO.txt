@@ -16,6 +16,10 @@
 
 * CMAKE
 
+  * local install
+
+  * readonly prefixes!! this is going to be hard!
+
   * Library output, consuming information from LibraryBuilder. Create
     tests for basic output, and for the versions.
 

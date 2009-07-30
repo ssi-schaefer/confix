@@ -55,15 +55,17 @@ class ToplevelBoilerplateTest(unittest.TestCase):
     def test_basics(self):
         self.failUnlessEqual(self.__cmakelists.project(), 'package-name')
         self.failUnlessEqual(self.__cmakelists.get_set('VERSION'), '1.2.3')
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MAJOR'), 1)
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MINOR'), 2)
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_PATCH'), 3)
+        self.failUnlessEqual(self.__cmakelists.get_cmake_minimum_required('VERSION'), '2.6')
         pass
 
     def test_cpack(self):
         self.failUnless('CPack' in self.__cmakelists.includes())
         self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_PACKAGE_FILE_NAME'), '"${PROJECT_NAME}-${VERSION}"')
         self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_IGNORE_FILES'), "${CPACK_SOURCE_IGNORE_FILES};~\$")
+
+        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MAJOR'), '1')
+        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MINOR'), '2')
+        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_PATCH'), '3')
         pass
 
     def test_rpath(self):

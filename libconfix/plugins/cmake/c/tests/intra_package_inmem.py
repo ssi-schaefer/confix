@@ -15,6 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import intra_package
+
 from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 from libconfix.plugins.cmake.setup import CMakeSetup
 
@@ -32,138 +34,92 @@ import unittest
 class IntraPackageInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(IntraPackageTest('single_library'))
-        self.addTest(IntraPackageTest('libraries_with_native_local_dependencies'))
-        self.addTest(IntraPackageTest('library_with_native_foreign_dependencies'))
-        self.addTest(IntraPackageTest('library_with_external_dependencies'))
+        self.addTest(IntraPackageTest('test_output'))
+        self.addTest(IntraPackageTest('test_linklines'))
+        self.addTest(IntraPackageTest('test_include_paths'))
         pass
     pass
 
 class IntraPackageTest(unittest.TestCase):
-    def single_library(self):
-        fs = FileSystem(path=[])
-        fs.rootdirectory().add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=['PACKAGE_NAME("LibraryTest.basic_test")',
-                              'PACKAGE_VERSION("1.2.3")']))
-        fs.rootdirectory().add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="the-library",',
-                              '        members=[C(filename="file.c"),',
-                              '                 H(filename="file.h")])']))
-        fs.rootdirectory().add(
-            name='file.h',
-            entry=File())
-        fs.rootdirectory().add(
-            name='file.c',
-            entry=File())
+    def setUp(self):
+        fs = FileSystem(path=[], rootdirectory=intra_package.make_source_tree())
+        
+        self.__package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                                      setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+        self.__package.boil(external_nodes=[])
+        self.__package.output()
 
-        package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
-        package.boil(external_nodes=[])
-        package.output()
+        self.__lo_output_builder = find_cmake_output_builder(self.__package.rootbuilder().find_entry_builder(['lo']))
+        self.__hi_output_builder = find_cmake_output_builder(self.__package.rootbuilder().find_entry_builder(['hi']))
+        self.__exe_output_builder = find_cmake_output_builder(self.__package.rootbuilder().find_entry_builder(['exe']))
+        pass
 
-        cmake_output_builder = find_cmake_output_builder(package.rootbuilder())
-        self.failIf(cmake_output_builder is None)
+    def test_output(self):
+        self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().get_library('lo')), 4)
+        self.failUnless('lo1.h' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
+        self.failUnless('lo1.c' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
+        self.failUnless('lo2.h' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
+        self.failUnless('lo2.c' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
 
-        # see if we have the library defined with all its members.
-        library = cmake_output_builder.local_cmakelists().get_library('the-library')
-        self.failIf(library is None)
+        self.failUnlessEqual(len(self.__hi_output_builder.local_cmakelists().get_library('hi')), 4)
+        self.failUnless('hi1.h' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
+        self.failUnless('hi1.c' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
+        self.failUnless('hi2.h' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
+        self.failUnless('hi2.c' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
 
-        self.failUnless('file.h' in library)
-        self.failUnless('file.c' in library)
-
-        # see if CMakeLists.txt has been written.
-        self.failUnless(fs.rootdirectory().get('CMakeLists.txt'))
+        self.failUnlessEqual(len(self.__exe_output_builder.local_cmakelists().get_executable('exe')), 5)
+        self.failUnless('main.c' in self.__exe_output_builder.local_cmakelists().get_executable('exe'))
+        self.failUnless('require_lo.h' in self.__exe_output_builder.local_cmakelists().get_executable('exe'))
+        self.failUnless('require_lo.c' in self.__exe_output_builder.local_cmakelists().get_executable('exe'))
+        self.failUnless('require_hi.h' in self.__exe_output_builder.local_cmakelists().get_executable('exe'))
+        self.failUnless('require_hi.c' in self.__exe_output_builder.local_cmakelists().get_executable('exe'))
 
         pass
 
-    def libraries_with_native_local_dependencies(self):
-        fs = FileSystem(path=[])
-        fs.rootdirectory().add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=['PACKAGE_NAME("LibraryTest.basic_test")',
-                              'PACKAGE_VERSION("1.2.3")']))
-        fs.rootdirectory().add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['DIRECTORY(["lo"])',
-                              'DIRECTORY(["hi"])',
-                              'DIRECTORY(["hiest"])']))
-        lo = fs.rootdirectory().add(
-            name='lo',
-            entry=Directory())
-        lo.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="lo",',
-                              '        members=[C(filename="lo.c"),',
-                              '                 H(filename="lo.h")])']))
-        lo.add(
-            name='lo.h',
-            entry=File())
-        lo.add(
-            name='lo.c',
-            entry=File())
-        
-        hi = fs.rootdirectory().add(
-            name='hi',
-            entry=Directory())
-        hi.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="hi",',
-                              '        members=[C(filename="hi.c"),',
-                              '                 H(filename="hi.h")])']))
-        hi.add(
-            name='hi.h',
-            entry=File())
-        hi.add(
-            name='hi.c',
-            entry=File(lines=['#include <lo.h>']))
+    def test_linklines(self):
+        # libraries (which are linked entities, generally) have to
+        # have the correct link time dependencies added.
 
-        hiest = fs.rootdirectory().add(
-            name='hiest',
-            entry=Directory())
-        hiest.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=['LIBRARY(basename="hiest",',
-                              '        members=[C(filename="hiest.c"),',
-                              '                 H(filename="hiest.h")])']))
-        hiest.add(
-            name='hiest.h',
-            entry=File())
-        hiest.add(
-            name='hiest.c',
-            entry=File(lines=['#include <hi.h>']))
-        
-        package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
-        package.boil(external_nodes=[])
-        package.output()
+        # lo needs nothing.
+        self.failUnless(self.__lo_output_builder.local_cmakelists().get_target_link_libraries('lo') is None)
 
-        lo_output_builder = find_cmake_output_builder(package.rootbuilder().find_entry_builder(['lo']))
-        hi_output_builder = find_cmake_output_builder(package.rootbuilder().find_entry_builder(['hi']))
-        hiest_output_builder = find_cmake_output_builder(package.rootbuilder().find_entry_builder(['hiest']))
-
-        # hiest -> hi -> lo
-        lo_link_libraries = lo_output_builder.local_cmakelists().get_target_link_libraries('lo')
-        self.failUnless(lo_link_libraries is None)
-
-        hi_link_libraries = hi_output_builder.local_cmakelists().get_target_link_libraries('hi')
+        # hi needs lo.
+        hi_link_libraries = self.__hi_output_builder.local_cmakelists().get_target_link_libraries('hi')
         self.failUnlessEqual(len(hi_link_libraries), 1)
         self.failUnlessEqual(hi_link_libraries[0], 'lo')
 
-        hiest_link_libraries = hiest_output_builder.local_cmakelists().get_target_link_libraries('hiest')
-        self.failUnlessEqual(len(hiest_link_libraries), 2)
-        self.failUnlessEqual(hiest_link_libraries[0], 'hi')
-        self.failUnlessEqual(hiest_link_libraries[1], 'lo')
+        # exe need hi and lo, in that particular order.
+        exe_link_libraries = self.__exe_output_builder.local_cmakelists().get_target_link_libraries('exe')
+        self.failUnlessEqual(len(exe_link_libraries), 2)
+        self.failUnlessEqual(exe_link_libraries[0], 'hi')
+        self.failUnlessEqual(exe_link_libraries[1], 'lo')
+
+        pass
+
+    def test_include_paths(self):
+        # same for include paths. note that we add the associated
+        # build directory in case it contains generated files - hence
+        # the '*2' in the checks.
+        self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().include_directories()), 0)
+
+        hi_include_directories = self.__hi_output_builder.local_cmakelists().include_directories()
+        self.failUnlessEqual(len(hi_include_directories), 1*2)
+        self.failUnless(hi_include_directories[0] == '${'+self.__package.name()+'_SOURCE_DIR}/lo' and
+                        hi_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/lo' or
+                        hi_include_directories[0] == '${'+self.__package.name()+'_BINARY_DIR}/lo' and
+                        hi_include_directories[1] == '${'+self.__package.name()+'_SOURCE_DIR}/lo')
         
-        pass
+        exe_include_directories = self.__exe_output_builder.local_cmakelists().include_directories()
+        self.failUnlessEqual(len(exe_include_directories), 2*2)
+        self.failUnless(exe_include_directories[0] == '${'+self.__package.name()+'_SOURCE_DIR}/hi' and
+                        exe_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/hi' or
+                        exe_include_directories[0] == '${'+self.__package.name()+'_BINARY_DIR}/hi' and
+                        exe_include_directories[1] == '${'+self.__package.name()+'_SOURCE_DIR}/hi')
+        self.failUnless(exe_include_directories[2] == '${'+self.__package.name()+'_SOURCE_DIR}/lo' and
+                        exe_include_directories[3] == '${'+self.__package.name()+'_BINARY_DIR}/lo' or
+                        exe_include_directories[2] == '${'+self.__package.name()+'_BINARY_DIR}/lo' and
+                        exe_include_directories[3] == '${'+self.__package.name()+'_SOURCE_DIR}/lo')
 
-    def library_with_native_foreign_dependencies(self):
-        self.fail()
-        pass
-
-    def library_with_external_dependencies(self):
-        self.fail()
         pass
 
     pass
