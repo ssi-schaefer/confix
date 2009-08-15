@@ -32,7 +32,7 @@ AUXDIR = 'confix-admin'
 # structure before the files are installed in $(includedir). (this
 # directory is located in $(top_builddir).)
 
-LOCAL_INCLUDE_DIR = 'confix_include'
+LOCAL_INCLUDE_DIR = 'confix-include'
 
 # name of the per-directory file which contains the list of
 # automatically generated sources (the pseudo hand-written generated
