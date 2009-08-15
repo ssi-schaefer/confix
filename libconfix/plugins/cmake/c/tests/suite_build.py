@@ -15,14 +15,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from library_build import LibraryBuildSuite
+from intra_package_build import IntraPackageBuildSuite
 
 import unittest
 
 class CMakeCBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(LibraryBuildSuite())
+        self.addTest(IntraPackageBuildSuite())
         pass
     pass
 

@@ -19,28 +19,6 @@ from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 
-## .-- Confix2.dir
-## |-- Confix2.pkg
-## |-- hi
-## |   |-- Confix2.dir
-## |   |-- hi1.c
-## |   |-- hi1.h
-## |   |-- hi2.c
-## |   `-- hi2.h
-## |-- exe
-## |   |-- Confix2.dir
-## |   |-- main.c
-## |   |-- require_lo.h
-## |   |-- require_lo.c
-## |   |-- require_hi.h
-## |   `-- require_hi.c
-## `-- lo
-##     |-- Confix2.dir
-##     |-- lo1.c
-##     |-- lo1.h
-##     |-- lo2.c
-##     `-- lo2.h
-
 def make_source_tree():
     rootdirectory = Directory()
     rootdirectory.add(

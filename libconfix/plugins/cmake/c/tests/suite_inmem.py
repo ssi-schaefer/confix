@@ -15,16 +15,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from library_inmem import LibraryInMemorySuite
-from compiled_inmem import CompiledInMemorySuite
+from intra_package_inmem import IntraPackageInMemorySuite
 
 import unittest
 
 class CMakeCInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(LibraryInMemorySuite())
-        self.addTest(CompiledInMemorySuite())
+        self.addTest(IntraPackageInMemorySuite())
         pass
 
     pass

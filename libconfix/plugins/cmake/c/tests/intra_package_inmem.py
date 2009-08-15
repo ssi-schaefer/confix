@@ -55,18 +55,21 @@ class IntraPackageTest(unittest.TestCase):
         pass
 
     def test_output(self):
+        # library 'lo'
         self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().get_library('lo')), 4)
         self.failUnless('lo1.h' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
         self.failUnless('lo1.c' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
         self.failUnless('lo2.h' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
         self.failUnless('lo2.c' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
 
+        # library 'hi'
         self.failUnlessEqual(len(self.__hi_output_builder.local_cmakelists().get_library('hi')), 4)
         self.failUnless('hi1.h' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
         self.failUnless('hi1.c' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
         self.failUnless('hi2.h' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
         self.failUnless('hi2.c' in self.__hi_output_builder.local_cmakelists().get_library('hi'))
 
+        # executable 'exe'
         self.failUnlessEqual(len(self.__exe_output_builder.local_cmakelists().get_executable('exe')), 5)
         self.failUnless('main.c' in self.__exe_output_builder.local_cmakelists().get_executable('exe'))
         self.failUnless('require_lo.h' in self.__exe_output_builder.local_cmakelists().get_executable('exe'))
@@ -77,9 +80,6 @@ class IntraPackageTest(unittest.TestCase):
         pass
 
     def test_linklines(self):
-        # libraries (which are linked entities, generally) have to
-        # have the correct link time dependencies added.
-
         # lo needs nothing.
         self.failUnless(self.__lo_output_builder.local_cmakelists().get_target_link_libraries('lo') is None)
 

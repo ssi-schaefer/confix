@@ -89,35 +89,35 @@ class BasicHeaderInstallTest(unittest.TestCase):
 
         # private installation stuff.
 
-        # all-local -> confix-install-local -> $(top_builddir)/confix_include/file.h -> $(top_builddir)/confix_include
+        # all-local -> confix-install-local -> $(top_builddir)/confix-include/file.h -> $(top_builddir)/confix-include
 
         confix_install_local = makefile.find_rule(
             targets=['confix-install-local'],
             elements=rootdir_output_builder.makefile_am().elements())
         install_file_h = makefile.find_rule(
-            targets=['$(top_builddir)/confix_include/xxx/file.h'],
+            targets=['$(top_builddir)/confix-include/xxx/file.h'],
             elements=rootdir_output_builder.makefile_am().elements())
         mkdir = makefile.find_rule(
-            targets=['$(top_builddir)/confix_include/xxx'],
+            targets=['$(top_builddir)/confix-include/xxx'],
             elements=rootdir_output_builder.makefile_am().elements())
         self.failIf(confix_install_local is None)
         self.failIf(install_file_h is None)
         self.failIf(mkdir is None)
         self.failUnless('confix-install-local' in rootdir_output_builder.makefile_am().all_local().prerequisites())
-        self.failUnless('$(top_builddir)/confix_include/xxx/file.h' in confix_install_local.prerequisites())
+        self.failUnless('$(top_builddir)/confix-include/xxx/file.h' in confix_install_local.prerequisites())
 
-        # clean-local -> confix-clean-local -> $(top_builddir)/confix_include/file.h-clean
+        # clean-local -> confix-clean-local -> $(top_builddir)/confix-include/file.h-clean
 
         confix_clean_local = makefile.find_rule(
             targets=['confix-clean-local'],
             elements=rootdir_output_builder.makefile_am().elements())
         clean_file_h = makefile.find_rule(
-            targets=['$(top_builddir)/confix_include/xxx/file.h-clean'],
+            targets=['$(top_builddir)/confix-include/xxx/file.h-clean'],
             elements=rootdir_output_builder.makefile_am().elements())
         self.failIf(confix_clean_local is None)
         self.failIf(clean_file_h is None)
         self.failUnless('confix-clean-local' in rootdir_output_builder.makefile_am().clean_local().prerequisites())
-        self.failUnless('$(top_builddir)/confix_include/xxx/file.h-clean' in confix_clean_local.prerequisites())
+        self.failUnless('$(top_builddir)/confix-include/xxx/file.h-clean' in confix_clean_local.prerequisites())
         
         pass
 

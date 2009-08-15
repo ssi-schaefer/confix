@@ -18,6 +18,8 @@
 
   * local install
 
+  * relocated headers.
+
   * readonly prefixes!! this is going to be hard!
 
   * Library output, consuming information from LibraryBuilder. Create
@@ -27,8 +29,10 @@
 
   * repofile install
 
-  * Confix2.dir, Confix2.pkg -> out_automake.py (translate that shit
-    to CMake).
+  * litte nasties
+
+    * package name with '-' -> what's going to be the variable names
+      ${package_SOURCE_DIR}, for example?
 
   * interfaces:
 
