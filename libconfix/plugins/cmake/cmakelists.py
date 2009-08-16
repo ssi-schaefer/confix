@@ -52,6 +52,14 @@ class CMakeLists:
         # ["directory-name"]
         self.__include_directories = []
 
+        # CMake: add_custom_command(OUTPUT ...)
+        # [(['output'], ['command'], ['depends'], 'working_directory')]
+        self.__custom_commands__output = []
+
+        # CMake: add_custom_target()
+        # [('name', bool all, ['depends'])]
+        self.__custom_targets = []
+
         # CMake: set()
         # { "name": "value" }
         self.__sets = {}
@@ -115,6 +123,15 @@ class CMakeLists:
     def include_directories(self):
         return self.__include_directories
 
+    def add_custom_command__output(self, outputs, commands, depends, working_directory):
+        assert len(outputs)
+        self.__custom_commands__output.append((outputs, commands, depends, working_directory))
+        pass
+
+    def add_custom_target(self, name, all, depends):
+        self.__custom_targets.append((name, all, depends))
+        pass
+
     def add_set(self, name, value):
         assert not name in self.__sets
         self.__sets[name] = value
@@ -125,30 +142,30 @@ class CMakeLists:
     def lines(self):
         lines = []
 
-        # project()
+        # PROJECT()
         if self.__project is not None: # supposed to only be set in
                                        # toplevel file.
-            lines.append('project('+self.__project+')')
+            lines.append('PROJECT('+self.__project+')')
             pass
 
-        # cmake_minimum_required()
+        # CMAKE_MINIMUM_REQUIRED()
         for (name, value) in self.__cmake_minimum_required.iteritems():
-            lines.append('cmake_minimum_required('+name+' '+value+')')
+            lines.append('CMAKE_MINIMUM_REQUIRED('+name+' '+value+')')
             pass
 
-        # include()
+        # INCLUDE()
         for include in self.__includes:
-            lines.append('include('+include+')')
+            lines.append('INCLUDE('+include+')')
             pass
 
-        # add_subdirectory()
+        # ADD_SUBDIRECTORY()
         for d in self.__subdirectories:
-            lines.append('add_subdirectory('+d+')')
+            lines.append('ADD_SUBDIRECTORY('+d+')')
             pass
 
-        # add_library()
+        # ADD_LIBRARY()
         for (basename, members) in self.__libraries.iteritems():
-            lines.append('add_library(')
+            lines.append('ADD_LIBRARY(')
             lines.append('    '+basename)
             for m in members:
                 lines.append('    '+m)
@@ -156,9 +173,9 @@ class CMakeLists:
             lines.append(')')
             pass
 
-        # add_executable()
+        # ADD_EXECUTABLE()
         for (exename, members) in self.__executables.iteritems():
-            lines.append('add_executable(')
+            lines.append('ADD_EXECUTABLE(')
             lines.append('    '+exename)
             for m in members:
                 lines.append('    '+m)
@@ -166,9 +183,9 @@ class CMakeLists:
             lines.append(')')
             pass
 
-        # target_link_libraries()
+        # TARGET_LINK_LIBRARIES()
         for (target, libraries) in self.__target_link_libraries.iteritems():
-            lines.append('target_link_libraries(')
+            lines.append('TARGET_LINK_LIBRARIES(')
             lines.append('    '+target)
             for library in libraries:
                 lines.append('    '+library)
@@ -176,13 +193,40 @@ class CMakeLists:
             lines.append(')')
             pass
 
+        # INCLUDE_DIRECTORIES()
         for directoryname in self.__include_directories:
-            lines.append('include_directories('+directoryname+')')
+            lines.append('INCLUDE_DIRECTORIES('+directoryname+')')
             pass
 
-        # set()
+        # ADD_CUSTOM_COMMAND(OUTPUT ...)
+        for (outputs, commands, depends, working_directory) in self.__custom_commands__output:
+            lines.append('ADD_CUSTOM_COMMAND(')
+            lines.append('    OUTPUT '+' '.join(outputs))
+            for c in commands:
+                lines.append('    COMMAND '+c)
+                pass
+            if len(depends):
+                lines.append('    DEPENDS '+' '.join(depends))
+                pass
+            lines.append(')')
+            pass
+
+        # ADD_CUSTOM_TARGET()
+        for (name, all, depends) in self.__custom_targets:
+            lines.append('ADD_CUSTOM_TARGET(')
+            lines.append('    '+name)
+            if all:
+                lines.append('    ALL')
+                pass
+            if len(depends):
+                lines.append('    DEPENDS '+' '.join(depends))
+                pass
+            lines.append(')')
+            pass
+
+        # SET()
         for (name, value) in self.__sets.iteritems():
-            lines.append('set('+name+' '+value+')')
+            lines.append('SET('+name+' '+value+')')
             pass
         
         return lines

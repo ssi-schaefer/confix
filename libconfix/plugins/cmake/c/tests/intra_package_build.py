@@ -62,8 +62,8 @@ class IntraPackageTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        # I don't know if this will hold under Windows :-) if it
-        # becomes an issue we will skip this check
+        # I doubt that this will hold under Windows :-) if it becomes
+        # an issue we will skip this check
         self.failUnless(build.find(['lo', 'liblo.a']))
         self.failUnless(build.find(['hi', 'libhi.a']))
         self.failUnless(build.find(['exe', 'exe']))

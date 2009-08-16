@@ -34,6 +34,10 @@ AUXDIR = 'confix-admin'
 
 LOCAL_INCLUDE_DIR = 'confix-include'
 
+# the directory where we are supposed to put stamp files into that are
+# used during the build.
+STAMP_DIR = 'confix-stamps'
+
 # name of the per-directory file which contains the list of
 # automatically generated sources (the pseudo hand-written generated
 # files)

@@ -16,6 +16,7 @@
 # USA
 
 from intra_package_build import IntraPackageBuildSuite
+from local_install_build import LocalInstallBuildSuite
 
 import unittest
 
@@ -23,6 +24,7 @@ class CMakeCBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(IntraPackageBuildSuite())
+        self.addTest(LocalInstallBuildSuite())
         pass
     pass
 
