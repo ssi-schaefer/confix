@@ -139,6 +139,8 @@ class PublicInstallTest(PersistentTestCase):
         self.failUnless(install.find(['lib', 'library.a']))
         self.failUnless(install.find(['bin', 'exe']))
         self.failIf(install.find(['bin', 'test']))
+
+        self.failUnless(install.find(['share', 'confix2', 'repo', package.repofilename()]))
         
         pass
 

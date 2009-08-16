@@ -96,6 +96,11 @@ class CMakeBackendOutputBuilder(Builder):
 
         # CPack wizardry
         self.__apply_cpack_settings(top_cmakelists)
+
+        # piggy-back repo install
+        top_cmakelists.add_install__files(
+            files=[self.package().repofilename()],
+            destination='share/confix2/repo')
         
         # register subdirectories with our toplevel CMakeLists.txt
         for dirnode in self.package().topo_directories():
