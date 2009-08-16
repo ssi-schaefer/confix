@@ -43,7 +43,7 @@ class LocalInstallTest(PersistentTestCase):
         source = Directory()
         source.add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=['PACKAGE_NAME("intra-package")',
+            entry=File(lines=['PACKAGE_NAME("Local-Install")',
                               'PACKAGE_VERSION("1.2.3")']))
         source.add(
             name=const.CONFIX2_DIR,
@@ -97,6 +97,11 @@ class LocalInstallTest(PersistentTestCase):
                               'void library2(void) {}']))
 
         exe.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['EXECUTABLE(exename="exe",',
+                              '           center=C(filename="main.c"))',
+                              ]))
+        exe.add(
             name='main.c',
             entry=File(lines=['#include <headers-only-install/header-1.h>',
                               '#include <headers-only-install/header-2.h>',
@@ -124,6 +129,12 @@ class LocalInstallTest(PersistentTestCase):
 
         commands.cmake(packageroot=source.abspath(), builddir=build.abspath())
         commands.make(builddir=build.abspath(), args=[])
+
+        scan.rescan_dir(build)
+
+        # I doubt that this will hold under Windows :-) if it becomes
+        # an issue we will skip this check
+        self.failUnless(build.find(['exe', 'exe']))
 
         pass
 
