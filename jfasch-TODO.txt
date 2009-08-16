@@ -24,6 +24,8 @@
 
   * archive vs. shared library?
 
+  * execute tests
+
   * interfaces:
 
     * TESTS_ENVIRONMENT is currently coupled to automake. probably
@@ -34,66 +36,9 @@
 
 * TODO
 
-  * ripping out DirectoryBuilder.makefile_am()
-
-    * bloody order dependencies! I cannot put everything under the
-      AutomakeMaster because then Confix2.dir won't see the
-      interfaces. with the master, we will have to enlarge() first,
-      and Confix2.dir's enlarge() cannot reliably come after the
-      AutomakeMaster's.
-
-      => rework the bloody interface stuff!!!!
-
   * Objects to relieve from automake stuff
 
-    * EXTERNAL_LIBRARY() *is* automake specific. move it to the
-      automake plugin, along with the Automake specific buildinfo
-
-      * BuildInfo_CIncludePath_External
-      * BuildInfo_CFLAGS
-      * BuildInfo_CXXFLAGS
-      * BuildInfo_CommandlineMacros
-      * BuildInfo_CLibrary_External
-
-      Rename them to something like ...Automake... and move it to
-      plugins.automake.c
-
     * TESTS_ENVIRONMENT? Move that to automake.
-
-    * libconfix/core/machinery/builder.py
-      * BuildInfo_Configure_in
-      * BuildInfo_ACInclude_m4      
-    * libconfix/core/hierarchy/dirbuilder.py
-      * FileInstaller (remove completely?)
-      * Makefile_am: this is what all automake aware builder objects
-        use. will be hard.
-    * libconfix/core/machinery/local_package.py
-      * repo_automake.dir_for_automake()
-    * libconfix/plugins/c/library.py
-      * libtool_version_info, libtool_release_info. Move these to
-        plugind.automake.c; probably have to create a separate
-        'implicit_setup' module or something.
-    * libconfix/plugins/c/library.py
-      * set_libtool_version_info and related crap must be moved to the
-        automake plugin
-    * libconfix/plugins/c/compiled.py
-      * cmdlinemacros(), cflags(): state explicitly that they are
-        backend neutral. provide a second set in the backend that
-        carries backend specific info, passed in by EXTERNAL_LIBRARY()
-        (in the automake case).
-      * external_include_path(): backend specific.
-    * libconfix/plugins/c/cxx.py
-      * cxxflags(), just as cflags() above.
-    
-  * Move libconfix/core/utils/paragraph.py to automake
-
-  * restructure the C plugin
-    * differentiate between base, explicit, automatic.
-    * possibly collapse related files into one, bigger file.
-    * move automake tests to the automake plugin.
-    * is there still a need for the setups directory?
-    * rename DefaultCSetup to ImplicitCSetup (just like we did with
-      the Directory setup)
 
   * move core.hierarchy.* to core.machinery. possibly collapse related
     files into one, bigger file.
@@ -111,16 +56,6 @@
       * and, above all, AutomakeSetup
 
   * Document the InterfaceProxy object that we have in the list below.
-
-  * Repo files need to be installed piggy-backed on the backend build
-    tool. Will need a dedicated repo builder that carries the
-    information that is used by the backend build tool plugin.
-
-    Better yet: the repo builder is *responsible* for writing the repo
-    - this way we keep that out of the core as well.
-
-  * clean up automake plugin directories; move most parts into
-    subdirectories.
 
 * InterfaceProxy objects
 
@@ -348,9 +283,3 @@
     * Methods:
       * ADD_SCRIPT
 
-* Checks before finish:
-
-  * BuildInfo_Configure_in must not anymore be used from neither core
-    nor plugins.c. Search for files that contain the word "automake".
-
-  * jjj as always
