@@ -1,38 +1,28 @@
 * STACK
 
-  * cmake native local libraries.
-
   * plan
 
-    * rename BuildInfo_CLibrary_NativeLocal.name() to basename().
+    * public install
 
-    * collapse machinery.*builder into one file.
+      * install exe, but not test program
 
-    * rewrite DirectoryBuilder.iter_builders() to iterate over the
-      builders.
+      * install library
 
-    * remove makefile_am() and file_installer() from DirectoryBuilder
-      (including jjj and remove_me_jjj_file_installer())
+      * install headers
+
+      * install repo
 
 * CMAKE
 
-  * local install
-
-  * relocated headers.
+  * relocated headers (at least, test it).
 
   * readonly prefixes!! this is going to be hard!
-
-  * Library output, consuming information from LibraryBuilder. Create
-    tests for basic output, and for the versions.
 
   * script plugin
 
   * repofile install
 
-  * litte nasties
-
-    * package name with '-' -> what's going to be the variable names
-      ${package_SOURCE_DIR}, for example?
+  * archive vs. shared library?
 
   * interfaces:
 
