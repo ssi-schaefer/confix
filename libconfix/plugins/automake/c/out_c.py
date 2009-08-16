@@ -418,11 +418,11 @@ class LinkedOutputBuilder(Builder):
         for bi in native_libs_to_use:
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 native_paths.append('-L'+'/'.join(['$(top_builddir)']+bi.dir()))
-                native_libraries.append('-l'+bi.name())
+                native_libraries.append('-l'+bi.basename())
                 continue
             if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
                 using_installed_library = True
-                native_libraries.append('-l'+bi.name())
+                native_libraries.append('-l'+bi.basename())
                 continue
             assert 0, 'missed some relevant build info type'
             pass

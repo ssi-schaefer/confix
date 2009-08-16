@@ -17,6 +17,7 @@
 
 from intra_package_build import IntraPackageBuildSuite
 from local_install_build import LocalInstallBuildSuite
+from public_install_build import PublicInstallBuildSuite
 
 import unittest
 
@@ -25,6 +26,7 @@ class CMakeCBuildSuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(IntraPackageBuildSuite())
         self.addTest(LocalInstallBuildSuite())
+        self.addTest(PublicInstallBuildSuite())
         pass
     pass
 

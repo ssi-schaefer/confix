@@ -122,7 +122,7 @@ class InterPackageRelate(unittest.TestCase):
                                    BuildInfo_CLibrary_NativeInstalled))
         self.failUnless(libhi_builder.topo_libraries()[0] is \
                         libhi_builder.direct_libraries()[0])                        
-        self.failUnless(libhi_builder.direct_libraries()[0].name() == 'lo')
+        self.failUnless(libhi_builder.direct_libraries()[0].basename() == 'lo')
         pass
     pass
 

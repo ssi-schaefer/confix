@@ -40,7 +40,7 @@ class PersistentTestCase(unittest.TestCase):
     def tearDown(self):
         dir = os.sep.join(self.__my_rootpath)
         if os.path.isdir(dir):
-            shutil.rmtree(dir)
+#            shutil.rmtree(dir)
             pass
         pass
 

@@ -120,12 +120,12 @@ class LibraryDependenciesFinder(Builder):
         for lib_buildinfo in local_libs:
             automake_output_builder.makefile_am().add_compound_dependencies(
                 compound_name=helper.automake_name(self.__exe_builder.exename()),
-                dependency='$(top_builddir)/'+'/'.join(lib_buildinfo.dir())+'/lib'+lib_buildinfo.name()+'.a')
+                dependency='$(top_builddir)/'+'/'.join(lib_buildinfo.dir())+'/lib'+lib_buildinfo.basename()+'.a')
             pass
         for lib_buildinfo in installed_libs:
             automake_output_builder.makefile_am().add_compound_dependencies(
                 compound_name=helper.automake_name(self.__exe_builder.exename()),
-                dependency='@'+self.installed_substname(lib_buildinfo.name())+'@')
+                dependency='@'+self.installed_substname(lib_buildinfo.basename())+'@')
             pass
 
         # add code to configure.ac which searches for our libraries,
@@ -133,7 +133,7 @@ class LibraryDependenciesFinder(Builder):
         for lib_buildinfo in installed_libs:
             automake_output_builder.configure_ac().add_paragraph(
                 paragraph=Paragraph(lines=['CONFIX_LIBDEPS_SEARCH_INSTALLED_LIBRARY(',
-                                           '    ['+self.installed_substname(lib_buildinfo.name())+'],',
+                                           '    ['+self.installed_substname(lib_buildinfo.basename())+'],',
                                            # cannot use ${libdir}
                                            # because it is left
                                            # unexpanded as
@@ -142,7 +142,7 @@ class LibraryDependenciesFinder(Builder):
                                            # NONE. still don't know
                                            # what's going on.
                                            '    [${prefix}/lib ${'+readonly_prefixes.libdirs_var+'}],',
-                                           '    ['+lib_buildinfo.name()+'])']),
+                                           '    ['+lib_buildinfo.basename()+'])']),
                 order=Configure_ac.LIBRARIES)
             pass
         pass

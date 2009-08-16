@@ -74,20 +74,20 @@ class BuildInfo_CIncludePath_NativeInstalled(BuildInformation):
 singleton_buildinfo_cincludepath_nativeinstalled = BuildInfo_CIncludePath_NativeInstalled()
 
 class BuildInfo_CLibrary_NativeLocal(BuildInformation):
-    def __init__(self, dir, name):
+    def __init__(self, dir, basename):
         BuildInformation.__init__(self)
         assert type(dir) is types.ListType
         self.__dir = dir
-        self.__name = name
-        self.__unique_key = self.__class__.__name__ + ':' + '.'.join(self.__dir) + ':' + self.__name
+        self.__basename = basename
+        self.__unique_key = self.__class__.__name__ + ':' + '.'.join(self.__dir) + ':' + self.__basename
         pass
     def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__unique_key
     def dir(self): return self.__dir
-    def name(self): return self.__name
+    def basename(self): return self.__basename
     def install(self):
-        return BuildInfo_CLibrary_NativeInstalled(self.name())
+        return BuildInfo_CLibrary_NativeInstalled(self.basename())
     pass
 
 class BuildInfo_CLibrary_NativeInstalled(BuildInformation):
@@ -95,7 +95,7 @@ class BuildInfo_CLibrary_NativeInstalled(BuildInformation):
         return update_marshalling_data(
             marshalling_data=BuildInformation.get_marshalling_data(self),
             generating_class=BuildInfo_CLibrary_NativeInstalled,
-            attributes={'name': self.__name},
+            attributes={'basename': self.__basename},
             version={'BuildInfo_CLibrary_NativeInstalled': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['BuildInfo_CLibrary_NativeInstalled']
@@ -104,18 +104,18 @@ class BuildInfo_CLibrary_NativeInstalled(BuildInformation):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.__name = data[Marshallable.ATTRIBUTES]['name']
+        self.__basename = data[Marshallable.ATTRIBUTES]['basename']
         BuildInformation.set_marshalling_data(self, data)
         pass
 
-    def __init__(self, name):
+    def __init__(self, basename):
         BuildInformation.__init__(self)
-        self.__name = name
+        self.__basename = basename
         pass
     def __str__(self): return self.unique_key()
     def unique_key(self):
-        return self.__class__.__name__ + ':' + self.__name
-    def name(self): return self.__name
+        return self.__class__.__name__ + ':' + self.__basename
+    def basename(self): return self.__basename
     def install(self): assert 0
     pass
 

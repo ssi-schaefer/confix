@@ -21,14 +21,14 @@ from libconfix.core.utils.error import Error
 
 import os
 
-def cmake(packageroot, builddir, path=None):
+def cmake(packageroot, builddir, args, path=None):
     cmake_prog = external_cmd.search_program('cmake', path)
     if cmake_prog is None:
         raise Error('cmake not found along path')
     external_cmd.exec_program(
         program=cmake_prog,
         dir=os.path.join(builddir),
-        args=[os.sep.join(packageroot)],
+        args=args+[os.sep.join(packageroot)],
         path=path,
         print_cmdline=True)
     pass

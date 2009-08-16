@@ -68,7 +68,7 @@ class LibraryBuilder(LinkedBuilder):
         self.__buildinfo_added = True
         self.add_buildinfo(BuildInfo_CLibrary_NativeLocal(
             dir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
-            name=self.__basename))
+            basename=self.__basename))
         pass
 
     def set_version(self, version):

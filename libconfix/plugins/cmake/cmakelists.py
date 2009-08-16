@@ -20,49 +20,57 @@ import types
 class CMakeLists:
     def __init__(self):
 
-        # CMake: project()
+        # CMake: PROJECT()
         # string
         self.__project = None
 
-        # CMake: cmake_minimum_required()
+        # CMake: CMAKE_MINIMUM_REQUIRED()
         # {"name": "value"}
         self.__cmake_minimum_required = {}
 
-        # CMake: include()
+        # CMake: INCLUDE()
         # set("cmake-package-name")
         self.__includes = set()
 
-        # CMake: add_subdirectory()
+        # CMake: ADD_SUBDIRECTORY()
         # ["directory-name"]
         self.__subdirectories = []
 
-        # CMake: add_library()
+        # CMake: ADD_LIBRARY()
         # {"basename": ["member-filename"]}
         self.__libraries = {}
 
-        # CMake: add_executable()
+        # CMake: ADD_EXECUTABLE()
         # {"exename": ["member-filename"]}
         self.__executables = {}
 
-        # CMake: target_link_libraries()
+        # CMake: TARGET_LINK_LIBRARIES()
         # {"target": ["link-library"]}
         self.__target_link_libraries = {}
 
-        # CMake: include_directories()
+        # CMake: INCLUDE_DIRECTORIES()
         # ["directory-name"]
         self.__include_directories = []
 
-        # CMake: add_custom_command(OUTPUT ...)
+        # CMake: ADD_CUSTOM_COMMAND(OUTPUT ...)
         # [(['output'], ['command'], ['depends'], 'working_directory')]
         self.__custom_commands__output = []
 
-        # CMake: add_custom_target()
+        # CMake: ADD_CUSTOM_TARGET()
         # [('name', bool all, ['depends'])]
         self.__custom_targets = []
 
-        # CMake: set()
+        # CMake: SET()
         # { "name": "value" }
         self.__sets = {}
+
+        # CMake: INSTALL(FILES ...)
+        # [(['file'], 'destination')]
+        self.__install__files = []
+
+        # CMake: INSTALL(TARGETS ...)
+        # [(['target'], 'destination')]
+        self.__install__targets = []
 
         pass
 
@@ -138,6 +146,14 @@ class CMakeLists:
         pass
     def get_set(self, name):
         return self.__sets.get(name)
+
+    def add_install__files(self, files, destination):
+        self.__install__files.append((files, destination))
+        pass
+
+    def add_install__targets(self, targets, destination):
+        self.__install__targets.append((targets, destination))
+        pass
 
     def lines(self):
         lines = []
@@ -227,6 +243,22 @@ class CMakeLists:
         # SET()
         for (name, value) in self.__sets.iteritems():
             lines.append('SET('+name+' '+value+')')
+            pass
+
+        # INSTALL(FILES ...)
+        for (files, destination) in self.__install__files:
+            lines.append('INSTALL(')
+            lines.append('    FILES '+' '.join(files))
+            lines.append('    DESTINATION '+destination)
+            lines.append(')')
+            pass
+        
+        # INSTALL(TARGETS ...)
+        for (targets, destination) in self.__install__targets:
+            lines.append('INSTALL(')
+            lines.append('    TARGETS '+' '.join(targets))
+            lines.append('    DESTINATION '+destination)
+            lines.append(')')
             pass
         
         return lines

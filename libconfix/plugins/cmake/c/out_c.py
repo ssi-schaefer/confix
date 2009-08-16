@@ -42,26 +42,38 @@ class HeaderOutputBuilder(Builder):
     def output(self):
         super(HeaderOutputBuilder, self).output()
 
-        # collect the headers that have to be locally installed.
+        cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
+
+        # headers that have to be locally installed.
         # [('file', [rel-path])]
         local_install_info = []
-        
-        for h in self.parentbuilder().iter_builders():
-            if not isinstance(h, HeaderBuilder):
+
+        # headers that have to be publicly installed.
+        # [('file', [rel-path])]
+        public_install_info = []
+
+        for header in self.parentbuilder().iter_builders():
+            if not isinstance(header, HeaderBuilder):
                 continue
 
-            local_visibility = h.local_visibility()
+            public_install_info.append((header.file().name(), header.public_visibility()))
 
+            local_visibility = header.local_visibility()
             assert local_visibility[0] in (HeaderBuilder.LOCAL_INSTALL, HeaderBuilder.DIRECT_INCLUDE)
             if local_visibility[0] == HeaderBuilder.LOCAL_INSTALL:
-                local_install_info.append((h.file().name(), local_visibility[1]))
+                local_install_info.append((header.file().name(), local_visibility[1]))
                 pass
             pass
 
+        # publicly install headers
+        for (file, installdir) in public_install_info:
+            cmake_output_builder.local_cmakelists().add_install__files(files=[file], destination='/'.join(['include']+installdir))
+            pass
+        
+        # locally install headers if necessary.
         if len(local_install_info):
             slashed_relpath = '/'.join(self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
             dotted_relpath = '.'.join(self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
-            cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
 
             # ADD_CUSTOM_COMMAND() to link the headers to
             # confix-include and create a stamp file.
@@ -165,11 +177,21 @@ class LinkedOutputBuilder(Builder):
                 cmake_output_builder.local_cmakelists().add_executable(
                     target_name,
                     [member.file().name() for member in linked.members()])
+                if linked.what() == ExecutableBuilder.BIN:
+                    cmake_output_builder.local_cmakelists().add_install__targets(
+                        targets=[target_name],
+                        destination='bin')
+                    pass
+                pass
             elif isinstance(linked, LibraryBuilder):
                 target_name = linked.basename()
                 cmake_output_builder.local_cmakelists().add_library(
                     target_name,
                     [member.file().name() for member in linked.members()])
+                cmake_output_builder.local_cmakelists().add_install__targets(
+                    targets=[target_name],
+                    destination='lib')
+                pass
             else:
                 assert False, 'unknown LinkedBuilder type: '+str(linked)
                 pass
@@ -178,7 +200,7 @@ class LinkedOutputBuilder(Builder):
             native_local_libraries = []
             for bi in linked.topo_libraries():
                 if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
-                    native_local_libraries.append(bi.name())
+                    native_local_libraries.append(bi.basename())
                     continue
                 if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
                     assert False, "implement me!"
