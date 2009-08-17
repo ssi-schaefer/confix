@@ -57,7 +57,7 @@ class IntraPackageTest(PersistentTestCase):
 
         fs.sync()
 
-        commands.cmake(packageroot=source.abspath(), builddir=build.abspath())
+        commands.cmake(packageroot=source.abspath(), builddir=build.abspath(), args=[])
         commands.make(builddir=build.abspath(), args=[])
 
         scan.rescan_dir(build)
