@@ -59,7 +59,6 @@ class HierarchyInMemoryTest(unittest.TestCase):
 
         cmake_output_builder = find_cmake_output_builder(package.rootbuilder())
 
-        print cmake_output_builder.local_cmakelists().subdirectories()
         self.failUnlessEqual(len(cmake_output_builder.local_cmakelists().subdirectories()), 2)
         self.failUnless('directory0' in cmake_output_builder.local_cmakelists().subdirectories())
         self.failUnless('directory1' in cmake_output_builder.local_cmakelists().subdirectories())
