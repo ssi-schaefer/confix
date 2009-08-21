@@ -46,33 +46,37 @@ class InterPackageInMemorySuite(unittest.TestSuite):
 class InterPackageRelate(unittest.TestCase):
     def test(self):
         # boil and install lo
-        losource = Directory()
-        losource.add(name=const.CONFIX2_PKG,
-                     entry=File(lines=['PACKAGE_NAME("lo")',
-                                       'PACKAGE_VERSION("6.6.6")']))
-        losource.add(name=const.CONFIX2_DIR,
-                     entry=File(lines=['LIBRARY(members=[H(filename="lo.h"), C(filename="lo.c")])']))
-
-        losource.add(name='lo.h', entry=File())
-        losource.add(name='lo.c', entry=File())
-        local_lopkg = LocalPackage(rootdirectory=losource,
-                                   setups=[ExplicitDirectorySetup(), ExplicitCSetup()])
-        local_lopkg.boil(external_nodes=[])
-        installed_lopkg = local_lopkg.install()
-
+        if True:
+            losource = Directory()
+            losource.add(name=const.CONFIX2_PKG,
+                         entry=File(lines=['PACKAGE_NAME("lo")',
+                                           'PACKAGE_VERSION("6.6.6")']))
+            losource.add(name=const.CONFIX2_DIR,
+                         entry=File(lines=['LIBRARY(members=[H(filename="lo.h"), C(filename="lo.c")])']))
+            
+            losource.add(name='lo.h', entry=File())
+            losource.add(name='lo.c', entry=File())
+            local_lopkg = LocalPackage(rootdirectory=losource,
+                                       setups=[ExplicitDirectorySetup(), ExplicitCSetup()])
+            local_lopkg.boil(external_nodes=[])
+            installed_lopkg = local_lopkg.install()
+            pass
+        
         # boil hi, referencing things from lo.
-        hisource = Directory()
-        hisource.add(name=const.CONFIX2_PKG,
-                     entry=File(lines=['PACKAGE_NAME("hi")',
-                                       'PACKAGE_VERSION("0.0.1")']))
-        hisource.add(name=const.CONFIX2_DIR,
-                     entry=File(lines=['LIBRARY(members=[C(filename="hi.c")])']))
-
-        hisource.add(name='hi.c',
-                     entry=File(lines=['#include <lo.h>']))
-        local_hipkg = LocalPackage(rootdirectory=hisource,
-                                   setups=[ExplicitDirectorySetup(), ExplicitCSetup()])
-        local_hipkg.boil(external_nodes=installed_lopkg.nodes())
+        if True:
+            hisource = Directory()
+            hisource.add(name=const.CONFIX2_PKG,
+                         entry=File(lines=['PACKAGE_NAME("hi")',
+                                           'PACKAGE_VERSION("0.0.1")']))
+            hisource.add(name=const.CONFIX2_DIR,
+                         entry=File(lines=['LIBRARY(members=[C(filename="hi.c")])']))
+            
+            hisource.add(name='hi.c',
+                         entry=File(lines=['#include <lo.h>']))
+            local_hipkg = LocalPackage(rootdirectory=hisource,
+                                       setups=[ExplicitDirectorySetup(), ExplicitCSetup()])
+            local_hipkg.boil(external_nodes=installed_lopkg.nodes())
+            pass
 
         lo_h_builder = local_lopkg.rootbuilder().find_entry_builder(['lo.h'])
         lo_c_builder = local_lopkg.rootbuilder().find_entry_builder(['lo.c'])
