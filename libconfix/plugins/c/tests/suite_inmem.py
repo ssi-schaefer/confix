@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -33,6 +33,7 @@ from setup_library import LibrarySetupSuite
 from clusterer.suite_inmem import ClustererInMemorySuite
 from creator import CreatorSuite
 from library_versions import LibraryVersionsSuite
+from inter_package_inmem import InterPackageInMemorySuite
 
 from libconfix.plugins.c.setups.tests.suite_inmem import SetupsInMemorySuite
 from libconfix.plugins.c.relocated_headers.tests.suite_inmem import RelocatedHeadersInMemorySuite
@@ -62,6 +63,7 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(ClustererInMemorySuite())
         self.addTest(CreatorSuite())
         self.addTest(LibraryVersionsSuite())
+        self.addTest(InterPackageInMemorySuite())
         pass
     pass
 

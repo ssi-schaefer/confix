@@ -17,7 +17,7 @@
 # USA
 
 import types
-import md5
+import hashlib
 import os
 
 from libconfix.core.digraph.cycle import CycleError
@@ -107,7 +107,7 @@ def format_cycle_error(error):
     return lines
 
 def md5_hexdigest_from_lines(lines):
-    md5sum = md5.new()
+    md5sum = hashlib.md5()
     for l in lines:
         md5sum.update(l)
         pass
@@ -148,8 +148,8 @@ def write_lines_to_file_if_changed(filename, lines):
     unnecessarily can be expensive if the file is a dependency of
     another file in the build process.) """
 
-    m_file = md5.new()
-    m_lines = md5.new()
+    m_file = hashlib.md5()
+    m_lines = hashlib.md5()
 
     if os.path.exists(filename):
         try:
@@ -197,7 +197,7 @@ def copy_file(sourcename, targetname, mode):
     pass
 
 def md5_of_file(filename):
-    finger = md5.new()
+    finger = hashlib.md5()
     try:
         file = open(filename, 'r')
     except IOError, e:

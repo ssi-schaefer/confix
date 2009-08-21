@@ -1,16 +1,10 @@
 * STACK
 
-  * plan
+  * move inter-package test out of automake, into plugins.c.
 
-    * public install
+  * write cmake test
 
-      * install exe, but not test program
-
-      * install library
-
-      * install headers
-
-      * install repo
+  * inter package
 
 * CMAKE
 
@@ -19,8 +13,6 @@
   * readonly prefixes!! this is going to be hard!
 
   * script plugin
-
-  * repofile install
 
   * archive vs. shared library?
 
