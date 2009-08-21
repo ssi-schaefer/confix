@@ -1,7 +1,5 @@
 * STACK
 
-  * move inter-package test out of automake, into plugins.c.
-
   * write cmake test
 
   * inter package

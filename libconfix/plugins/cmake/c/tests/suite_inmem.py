@@ -16,6 +16,7 @@
 # USA
 
 from intra_package_inmem import IntraPackageInMemorySuite
+from inter_package_inmem import InterPackageInMemorySuite
 
 import unittest
 
@@ -23,6 +24,7 @@ class CMakeCInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(IntraPackageInMemorySuite())
+        self.addTest(InterPackageInMemorySuite())
         pass
 
     pass
