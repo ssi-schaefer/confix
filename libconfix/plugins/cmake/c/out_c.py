@@ -23,6 +23,7 @@ from libconfix.plugins.c.linked import LinkedBuilder
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeLocal
+from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.machinery.builder import Builder
