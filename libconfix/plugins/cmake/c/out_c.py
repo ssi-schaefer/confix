@@ -219,8 +219,10 @@ class LinkedOutputBuilder(Builder):
                     continue
                 assert 0, 'missed some relevant build info type'
                 pass
-            if len(native_local_libraries):
-                cmake_output_builder.local_cmakelists().target_link_libraries(target_name, native_local_libraries)
+            if len(native_local_libraries)+len(native_installed_libraries):
+                cmake_output_builder.local_cmakelists().target_link_libraries(
+                    target_name,
+                    native_local_libraries + native_installed_libraries)
                 pass
 
             if len(native_installed_libraries):
