@@ -136,12 +136,12 @@ class IntraPackageTest(unittest.TestCase):
         # hi uses two installed packages. nothing interesting with the
         # includes. we need only one path, pointing to the installed
         # include directory.
-        include_directories = output_builder.local_cmakelists().include_directories()
+        include_directories = output_builder.local_cmakelists().get_include_directories()
         self.failUnlessEqual(len(include_directories), 1)
         self.failUnlessEqual(include_directories[0], '${CMAKE_INSTALL_PREFIX}/include')
 
         # boring with the library path as well.
-        link_directories = output_builder.local_cmakelists().link_directories()
+        link_directories = output_builder.local_cmakelists().get_link_directories()
         self.failUnlessEqual(len(link_directories), 1)
         self.failUnlessEqual(link_directories[0], '${CMAKE_INSTALL_PREFIX}/lib')
 

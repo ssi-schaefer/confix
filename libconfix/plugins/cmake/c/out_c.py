@@ -122,7 +122,8 @@ class CompiledOutputBuilder(Builder):
 
         native_local_include_dirs = []
         native_local_include_dirs_set = set()
-        have_locally_installed_headers = False
+        using_locally_installed_headers = False
+        using_public_native_installed_headers = False
 
         for compiled_builder in self.parentbuilder().iter_builders():
             if not isinstance(compiled_builder, CompiledCBuilder):
@@ -135,7 +136,10 @@ class CompiledOutputBuilder(Builder):
                 native_local_include_dirs_set.add(slashed_incdir)
                 pass
             if compiled_builder.have_locally_installed_includes():
-                have_locally_installed_headers = True
+                using_locally_installed_headers = True
+                pass
+            if compiled_builder.using_native_installed():
+                using_public_native_installed_headers = True
                 pass
             pass
 
@@ -143,7 +147,7 @@ class CompiledOutputBuilder(Builder):
 
         # if we have locally installed headers, add the
         # 'confix-include' directory to the include path.
-        if have_locally_installed_headers:
+        if using_locally_installed_headers:
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${PROJECT_BINARY_DIR}/'+const.LOCAL_INCLUDE_DIR)
             pass
@@ -158,6 +162,12 @@ class CompiledOutputBuilder(Builder):
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${'+self.package().name()+'_SOURCE_DIR}/'+dir)
             pass
+
+        if using_public_native_installed_headers:
+            cmake_output_builder.local_cmakelists().add_include_directory(
+                '${CMAKE_INSTALL_PREFIX}/include')
+            pass
+
         pass
     pass
 
@@ -199,12 +209,13 @@ class LinkedOutputBuilder(Builder):
 
             # add dependencies if any.
             native_local_libraries = []
+            native_installed_libraries = []
             for bi in linked.topo_libraries():
                 if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                     native_local_libraries.append(bi.basename())
                     continue
                 if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
-                    assert False, "implement me!"
+                    native_installed_libraries.append(bi.basename())
                     continue
                 assert 0, 'missed some relevant build info type'
                 pass
@@ -212,6 +223,10 @@ class LinkedOutputBuilder(Builder):
                 cmake_output_builder.local_cmakelists().target_link_libraries(target_name, native_local_libraries)
                 pass
 
+            if len(native_installed_libraries):
+                cmake_output_builder.local_cmakelists().link_directories(
+                    ['${CMAKE_INSTALL_PREFIX}/lib'])
+                pass
             pass
         pass
 
