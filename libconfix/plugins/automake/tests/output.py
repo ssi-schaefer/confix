@@ -95,7 +95,7 @@ class AutomakeOutputTest(unittest.TestCase):
         aux = dot = subdir1 = subdir2 = subdir3 = None
 
         for i in range(len(rootdir_automake_builder.makefile_am().subdirs())):
-            if rootdir_automake_builder.makefile_am().subdirs()[i] == 'confix-admin':
+            if rootdir_automake_builder.makefile_am().subdirs()[i] == 'confix-admin/automake':
                 self.failUnless(aux is None)
                 aux = i
             elif rootdir_automake_builder.makefile_am().subdirs()[i] == 'subdir1':
@@ -146,12 +146,12 @@ class AutomakeOutputTest(unittest.TestCase):
     def test_auxdir(self):
         rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
 
-        auxdir = self.__package.rootbuilder().directory().find(['confix-admin'])
+        auxdir = self.__package.rootbuilder().directory().find(['confix-admin', 'automake'])
         self.failIf(auxdir is None)
         mf_am = auxdir.find(['Makefile.am'])
         self.failIf(mf_am is None)
-        self.failUnlessEqual(rootdir_automake_builder.configure_ac().ac_config_aux_dir(), 'confix-admin')
-        self.failUnless('confix-admin/Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
+        self.failUnlessEqual(rootdir_automake_builder.configure_ac().ac_config_aux_dir(), 'confix-admin/automake')
+        self.failUnless('confix-admin/automake/Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
         pass
 
     def test_toplevel_makefile_am(self):

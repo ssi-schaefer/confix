@@ -24,9 +24,9 @@ CONFIX_VERSION = '2.2.0'
 CONFIX2_DIR = 'Confix2.dir'
 CONFIX2_PKG = 'Confix2.pkg'
 
-# the name of our auxiliary files directory
+# the name of our auxiliary-files-directory
 
-AUXDIR = 'confix-admin'
+ADMIN_DIR = 'confix-admin'
 
 # the name of the include directory that mimics the include directory
 # structure before the files are installed in $(includedir). (this

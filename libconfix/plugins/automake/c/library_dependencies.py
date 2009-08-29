@@ -36,7 +36,7 @@ class LibraryDependenciesFinderSetup(Setup):
         dirbuilder.add_builder(ExecutableWatcher(use_libtool=self.__use_libtool))
         pass
     pass
-        
+
 class ExecutableWatcher(Builder):
 
     """ Among my parent's builders, watch out for ones of type

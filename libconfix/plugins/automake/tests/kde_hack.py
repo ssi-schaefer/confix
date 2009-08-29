@@ -82,8 +82,8 @@ class KDEHackTest(PersistentTestCase):
             self.fail()
             pass
 
-        self.failUnless(source.find([const.AUXDIR, 'conf.change.pl']))
-        self.failUnless(source.find([const.AUXDIR, 'config.pl']))
+        self.failUnless(source.find([const.ADMIN_DIR, 'automake', 'conf.change.pl']))
+        self.failUnless(source.find([const.ADMIN_DIR, 'automake', 'config.pl']))
 
         fs.sync()
 

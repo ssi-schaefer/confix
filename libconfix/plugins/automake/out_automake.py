@@ -109,12 +109,15 @@ class AutomakeBackendOutputBuilder(Builder):
         # special role for us because we use it to put, well,
         # auxiliary files in.
         if self.parentbuilder() is self.package().rootbuilder():
-            dir = self.parentbuilder().directory().find([const.AUXDIR])
-            if dir is None:
-                dir = Directory()
-                self.parentbuilder().directory().add(name=const.AUXDIR, entry=dir)
+            admin_dir = self.parentbuilder().directory().find([const.ADMIN_DIR])
+            if admin_dir is None:
+                admin_dir = self.parentbuilder().directory().add(name=const.ADMIN_DIR, entry=Directory())
                 pass
-            self.parentbuilder().add_builder(AutoconfAuxDirBuilder(directory=dir))
+            automake_dir = admin_dir.find(['automake'])
+            if automake_dir is None:
+                automake_dir = admin_dir.add(name='automake', entry=Directory())
+                pass
+            self.parentbuilder().add_builder(AutoconfAuxDirBuilder(directory=automake_dir))
             pass
 
         pass
