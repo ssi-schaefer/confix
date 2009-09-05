@@ -53,13 +53,13 @@ class ToplevelBoilerplateTest(unittest.TestCase):
         pass
     
     def test_basics(self):
-        self.failUnlessEqual(self.__cmakelists.project(), 'package-name')
+        self.failUnlessEqual(self.__cmakelists.get_project(), 'package-name')
         self.failUnlessEqual(self.__cmakelists.get_set('VERSION'), '1.2.3')
         self.failUnlessEqual(self.__cmakelists.get_cmake_minimum_required('VERSION'), '2.6')
         pass
 
     def test_cpack(self):
-        self.failUnless('CPack' in self.__cmakelists.includes())
+        self.failUnless('CPack' in self.__cmakelists.get_includes())
         self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_PACKAGE_FILE_NAME'), '"${PROJECT_NAME}-${VERSION}"')
         self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_IGNORE_FILES'), "${CPACK_SOURCE_IGNORE_FILES};~\$")
 

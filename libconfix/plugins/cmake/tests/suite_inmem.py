@@ -15,7 +15,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from cmakelists_inmem import CMakeListsInMemorySuite
 from toplevel_boilerplate import ToplevelBoilerplateInMemorySuite
+from modules_inmem import ModulesInMemorySuite
 from hierarchy_inmem import HierarchyInMemorySuite
 from libconfix.plugins.cmake.c.tests.suite_inmem import CMakeCInMemorySuite
 
@@ -24,7 +26,9 @@ import unittest
 class CMakeInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(CMakeListsInMemorySuite())
         self.addTest(ToplevelBoilerplateInMemorySuite())
+        self.addTest(ModulesInMemorySuite())
         self.addTest(HierarchyInMemorySuite())
         self.addTest(CMakeCInMemorySuite())
         pass

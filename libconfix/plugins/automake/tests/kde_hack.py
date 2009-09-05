@@ -73,14 +73,9 @@ class KDEHackTest(PersistentTestCase):
         package.boil(external_nodes=[])
         package.output()
 
-        for b in package.rootbuilder().iter_builders():
-            if isinstance(b, AutoconfAuxDirBuilder):
-                auxdirbuilder = b
-                break
-            pass
-        else:
-            self.fail()
-            pass
+        autoconf_dir_builder = package.rootbuilder().find_entry_builder([const.ADMIN_DIR, 'automake'])
+        self.failIf(autoconf_dir_builder is None)
+        self.failUnless(isinstance(autoconf_dir_builder, AutoconfAuxDirBuilder))
 
         self.failUnless(source.find([const.ADMIN_DIR, 'automake', 'conf.change.pl']))
         self.failUnless(source.find([const.ADMIN_DIR, 'automake', 'config.pl']))

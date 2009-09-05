@@ -15,6 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import inter_package
+
 from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 from libconfix.plugins.cmake.setup import CMakeSetup
 
@@ -22,9 +24,6 @@ from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.filesys.directory import Directory
-from libconfix.core.filesys.file import File
-from libconfix.core.utils import const
 
 import unittest
 
@@ -42,91 +41,31 @@ class IntraPackageTest(unittest.TestCase):
         # this is our fixture
         self.__hi_package_local = None
 
-        
-        if True:
-            lo_source = Directory()
-            lo_source.add(
-                name=const.CONFIX2_PKG,
-                entry=File(lines=['PACKAGE_NAME("lo")',
-                                  'PACKAGE_VERSION("1.2.3")']))
-            lo_source.add(
-                name=const.CONFIX2_DIR,
-                entry=File(lines=['LIBRARY(basename="lo", members=[H(filename="lo.h"), C(filename="lo.c")])']))
-            lo_source.add(
-                name='lo.h',
-                entry=File(lines=['#ifndef LO_H',
-                                  '#define LO_H',
-                                  'void lo();',
-                                  '#endif']))
-            lo_source.add(
-                name='lo.c',
-                entry=File(lines=['#include "lo.h"',
-                                  'void lo() {}']))
-            lo_package_local = LocalPackage(rootdirectory=lo_source,
-                                            setups=[ExplicitDirectorySetup(),
-                                                    ExplicitCSetup(),
-                                                    CMakeSetup()])
-            lo_package_local.boil(external_nodes=[])
+        source_tree = inter_package.make_source_tree()
 
-            lo_package_installed = lo_package_local.install()
-            pass
+        lo_source = source_tree.find(['lo'])
+        lo_package_local = LocalPackage(rootdirectory=lo_source,
+                                        setups=[ExplicitDirectorySetup(),
+                                                ExplicitCSetup(),
+                                                CMakeSetup()])
+        lo_package_local.boil(external_nodes=[])
+        lo_package_installed = lo_package_local.install()
 
-        if True:
-            mid_source = Directory()
-            mid_source.add(
-                name=const.CONFIX2_PKG,
-                entry=File(lines=['PACKAGE_NAME("mid")',
-                                  'PACKAGE_VERSION("6.6.6")']))
-            mid_source.add(
-                name=const.CONFIX2_DIR,
-                entry=File(lines=['LIBRARY(basename="mid", members=[H(filename="mid.h"), C(filename="mid.c")])']))
-            mid_source.add(
-                name='mid.h',
-                entry=File(lines=['#ifndef MID_H',
-                                  '#define MID_H',
-                                  'void mid();',
-                                  '#endif']))
-            mid_source.add(
-                name='mid.c',
-                entry=File(lines=['#include "mid.h"',
-                                  # spot bugs *really* early
-                                  '// CONFIX:REQUIRE_H("lo.h", REQUIRED)',
-                                  '#include <lo.h>',
-                                  'void mid() { lo(); }']))
-            mid_package_local = LocalPackage(rootdirectory=mid_source,
-                                             setups=[ExplicitDirectorySetup(),
-                                                     ExplicitCSetup(),
-                                                     CMakeSetup()])
-            mid_package_local.boil(external_nodes=lo_package_installed.nodes())
+        mid_source = source_tree.find(['mid'])
+        mid_package_local = LocalPackage(rootdirectory=mid_source,
+                                         setups=[ExplicitDirectorySetup(),
+                                                 ExplicitCSetup(),
+                                                 CMakeSetup()])
+        mid_package_local.boil(external_nodes=lo_package_installed.nodes())
+        mid_package_installed = mid_package_local.install()
 
-            mid_package_installed = mid_package_local.install()
-            pass
-
-        if True:
-            hi_source = Directory()
-            hi_source.add(
-                name=const.CONFIX2_PKG,
-                entry=File(lines=['PACKAGE_NAME("hi")',
-                                  'PACKAGE_VERSION("2.3.4")']))
-            hi_source.add(
-                name=const.CONFIX2_DIR,
-                entry=File(lines=['EXECUTABLE(exename="exe", center=C(filename="main.c"))']))
-            hi_source.add(
-                name='main.c',
-                entry=File(lines=['#include <mid.h>',
-                                  '#include <lo.h>',
-                                  # spot bugs *really* early
-                                  '// CONFIX:REQUIRE_H("mid.h", REQUIRED)',
-                                  '// CONFIX:REQUIRE_H("lo.h", REQUIRED)',
-                                  'int main(void) { mid(); }']))
-
-            self.__hi_package_local = LocalPackage(rootdirectory=hi_source,
-                                                   setups=[ExplicitDirectorySetup(),
-                                                           ExplicitCSetup(),
-                                                           CMakeSetup()])
-            self.__hi_package_local.boil(external_nodes=mid_package_installed.nodes() + lo_package_installed.nodes())
-            self.__hi_package_local.output()
-            pass
+        hi_source = source_tree.find(['hi'])
+        self.__hi_package_local = LocalPackage(rootdirectory=hi_source,
+                                               setups=[ExplicitDirectorySetup(),
+                                                       ExplicitCSetup(),
+                                                       CMakeSetup()])
+        self.__hi_package_local.boil(external_nodes=mid_package_installed.nodes() + lo_package_installed.nodes())
+        self.__hi_package_local.output()
             
         pass
 

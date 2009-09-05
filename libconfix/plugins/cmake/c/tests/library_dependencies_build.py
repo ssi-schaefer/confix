@@ -18,8 +18,8 @@
 import inter_package
 
 from libconfix.plugins.cmake import commands
-
 from libconfix.plugins.cmake.setup import CMakeSetup
+from libconfix.plugins.cmake.c.library_dependencies import LibraryDependenciesSetup
 from libconfix.plugins.automake.repo_automake import AutomakeCascadedPackageRepository
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
@@ -32,17 +32,17 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
 
 import unittest
-import subprocess
 import os
+import time
 
-class InterPackageBuildSuite(unittest.TestSuite):
+class LibraryDependenciesBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(InterPackageTest('test'))
+        self.addTest(LibraryDependenciesTest('test'))
         pass
     pass
 
-class InterPackageTest(PersistentTestCase):
+class LibraryDependenciesTest(PersistentTestCase):
     def test(self):
         fs = FileSystem(path=self.rootpath())
 
@@ -108,7 +108,8 @@ class InterPackageTest(PersistentTestCase):
             commands.make(builddir=mid_build.abspath(), args=['install'])
             pass
 
-        # build and install hi
+        # build and install hi. declare that I want library
+        # dependencies.
         if True:
             repo = AutomakeCascadedPackageRepository(
                 prefix=install.abspath(),
@@ -117,7 +118,8 @@ class InterPackageTest(PersistentTestCase):
             hi_package = LocalPackage(rootdirectory=hi_source,
                                       setups=[ExplicitDirectorySetup(),
                                               ExplicitCSetup(),
-                                              CMakeSetup()])
+                                              CMakeSetup(),
+                                              LibraryDependenciesSetup()])
             hi_package.boil(external_nodes=repo.nodes())
             hi_package.output()
 
@@ -129,13 +131,28 @@ class InterPackageTest(PersistentTestCase):
             commands.make(builddir=hi_build.abspath(), args=['install'])
             pass
 
-        # call the program and see if everything's fine.
-        pipe = subprocess.Popen([os.sep.join(install.abspath()+['bin', 'exe'])], stdout=subprocess.PIPE)
-        self.failUnlessEqual(pipe.stdout.next(), 'main was here\n')
-            
+        # wait a bit and then touch liblo.a. (is there a better way
+        # than sleeping?)
+        time.sleep(1)
+        lo_lib = os.sep.join(install.abspath()+['lib', 'liblo.a'])
+        os.utime(lo_lib, None)
+        lo_stat = os.stat(lo_lib)
+
+        # libmid.a is not rebuilt.
+        if True:
+            commands.make(builddir=mid_build.abspath(), args=['install'])
+            self.failIf(os.stat(os.sep.join(install.abspath()+['lib', 'libmid.a'])).st_mtime >= lo_stat.st_mtime)
+            pass
+
+        # exe is rebuilt as it has liblo.a linked in.
+        if True:
+            commands.make(builddir=hi_build.abspath(), args=['install'])
+            self.failUnless(os.stat(os.sep.join(install.abspath()+['bin', 'exe'])).st_mtime >= lo_stat.st_mtime)
+            pass
+
         pass
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterPackageBuildSuite())
+    unittest.TextTestRunner().run(LibraryDependenciesBuildSuite())
     pass

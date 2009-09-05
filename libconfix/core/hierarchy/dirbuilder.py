@@ -130,7 +130,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     def add_builder(self, b):
         self.__regular_builders.add_builder(b)
         self.__init_builder(b)
-        pass
+        return b
 
     def remove_builder(self, b):
         self.__regular_builders.remove_builder(b)
@@ -140,7 +140,7 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     def add_backend_dirbuilder(self, b):
         self.__backend_dirbuilders.add_builder(b)
         self.__init_builder(b)
-        pass
+        return b
 
     def find_entry_builder(self, path):
         """

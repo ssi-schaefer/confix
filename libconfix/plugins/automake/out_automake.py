@@ -109,17 +109,21 @@ class AutomakeBackendOutputBuilder(Builder):
         # special role for us because we use it to put, well,
         # auxiliary files in.
         if self.parentbuilder() is self.package().rootbuilder():
-            admin_dir = self.parentbuilder().directory().find([const.ADMIN_DIR])
+            # create the directory hierarchy if necessary.
+            admin_dir = self.parentbuilder().directory().get(const.ADMIN_DIR)
             if admin_dir is None:
                 admin_dir = self.parentbuilder().directory().add(name=const.ADMIN_DIR, entry=Directory())
                 pass
-            automake_dir = admin_dir.find(['automake'])
+            automake_dir = admin_dir.get('automake')
             if automake_dir is None:
                 automake_dir = admin_dir.add(name='automake', entry=Directory())
                 pass
-            self.parentbuilder().add_builder(AutoconfAuxDirBuilder(directory=automake_dir))
-            pass
 
+            # wrap builder hierarchy around directory hierarchy. NOTE
+            # that the modules directory builder is a backend builder.
+            admin_dir_builder = self.parentbuilder().add_builder(DirectoryBuilder(directory=admin_dir))
+            automake_dir_builder = admin_dir_builder.add_builder(AutoconfAuxDirBuilder(directory=automake_dir))
+            pass
         pass
 
     def relate(self, node, digraph, topolist):

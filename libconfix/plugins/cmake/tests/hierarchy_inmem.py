@@ -59,9 +59,13 @@ class HierarchyInMemoryTest(unittest.TestCase):
 
         cmake_output_builder = find_cmake_output_builder(package.rootbuilder())
 
-        self.failUnlessEqual(len(cmake_output_builder.local_cmakelists().subdirectories()), 2)
-        self.failUnless('directory0' in cmake_output_builder.local_cmakelists().subdirectories())
-        self.failUnless('directory1' in cmake_output_builder.local_cmakelists().subdirectories())
+        self.failUnlessEqual(len(cmake_output_builder.local_cmakelists().get_subdirectories()),
+                             2
+                             # plus the admin stuff, confix-admin/cmake/Modules
+                             +3
+                             )
+        self.failUnless('directory0' in cmake_output_builder.local_cmakelists().get_subdirectories())
+        self.failUnless('directory1' in cmake_output_builder.local_cmakelists().get_subdirectories())
 
         pass
 

@@ -29,8 +29,20 @@ class CMakeLists:
         self.__cmake_minimum_required = {}
 
         # CMake: INCLUDE()
-        # set("cmake-package-name")
+        # set("included file without")
         self.__includes = set()
+
+        # (no CMake pendant. we just want to place calls to find
+        # functions at a particular position.)
+        self.__find_calls = []
+
+        # CMake: INCLUDE_DIRECTORIES()
+        # ["directory-name"]
+        self.__include_directories = []
+
+        # CMake: LINK_DIRECTORIES()
+        # ["directory"]
+        self.__link_directories = []
 
         # CMake: ADD_SUBDIRECTORY()
         # ["directory-name"]
@@ -44,17 +56,11 @@ class CMakeLists:
         # {"exename": ["member-filename"]}
         self.__executables = {}
 
-        # CMake: LINK_DIRECTORIES()
-        # ["directory"]
-        self.__link_directories = []
-
         # CMake: TARGET_LINK_LIBRARIES()
         # {"target": ["link-library"]}
         self.__target_link_libraries = {}
-
-        # CMake: INCLUDE_DIRECTORIES()
-        # ["directory-name"]
-        self.__include_directories = []
+        # {"target": {"basename": "tightened"}}
+        self.__target_tightened_libraries = {}
 
         # CMake: ADD_CUSTOM_COMMAND(OUTPUT ...)
         # [(['output'], ['command'], ['depends'], 'working_directory')]
@@ -92,11 +98,29 @@ class CMakeLists:
         return self.__cmake_minimum_required.get(name)
 
     def add_include(self, include):
-        assert include not in self.__includes
         self.__includes.add(include)
         pass
     def get_includes(self):
         return self.__includes
+
+    def add_find_call(self, find_call):
+        self.__find_calls.append(find_call)
+        pass
+
+    def add_include_directory(self, directoryname):
+        assert type(directoryname) is types.StringType
+        if directoryname in self.__include_directories:
+            return
+        self.__include_directories.append(directoryname)
+        pass
+    def get_include_directories(self):
+        return self.__include_directories
+
+    def link_directories(self, directories):
+        self.__link_directories = directories
+        pass
+    def get_link_directories(self):
+        return self.__link_directories
 
     def add_subdirectory(self, directoryname):
         assert type(directoryname) is types.StringType
@@ -119,27 +143,38 @@ class CMakeLists:
     def get_executable(self, exename):
         return self.__executables.get(exename)
 
-    def link_directories(self, directories):
-        self.__link_directories = directories
-        pass
-    def get_link_directories(self):
-        return self.__link_directories
-
     def target_link_libraries(self, target, basenames):
         assert target not in self.__target_link_libraries
-        self.__target_link_libraries[target] = basenames
+        tightened_specs = self.__target_tightened_libraries.get(target)
+        if tightened_specs:
+            self.__target_link_libraries[target] = []
+            for basename in basenames:
+                tightened = tightened_specs.get(basename)
+                if tightened:
+                    self.__target_link_libraries[target].append(tightened)
+                else:
+                    self.__target_link_libraries[target].append(basename)
+                    pass
+                pass
+            pass
+        else:
+            self.__target_link_libraries[target] = basenames
+        pass
+    def tighten_target_link_library(self, target, basename, tightened):
+        tightened_specs = self.__target_tightened_libraries.setdefault(target, {})
+        assert not basename in tightened_specs
+        tightened_specs[basename] = tightened
+        link_libraries = self.__target_link_libraries.get(target)
+        if link_libraries is None:
+            return
+        for i in range(len(link_libraries)):
+            if link_libraries[i] == basename:
+                link_libraries[i] = tightened
+                break
+            pass
         pass
     def get_target_link_libraries(self, target):
         return self.__target_link_libraries.get(target)
-
-    def add_include_directory(self, directoryname):
-        assert type(directoryname) is types.StringType
-        if directoryname in self.__include_directories:
-            return
-        self.__include_directories.append(directoryname)
-        pass
-    def get_include_directories(self):
-        return self.__include_directories
 
     def add_custom_command__output(self, outputs, commands, depends, working_directory):
         assert len(outputs)
@@ -184,6 +219,21 @@ class CMakeLists:
             lines.append('INCLUDE('+include+')')
             pass
 
+        # (find calls)
+        for find_call in self.__find_calls:
+            lines.append(find_call)
+            pass
+
+        # INCLUDE_DIRECTORIES()
+        for directoryname in self.__include_directories:
+            lines.append('INCLUDE_DIRECTORIES('+directoryname+')')
+            pass
+
+        # LINK_DIRECTORIES()
+        if len(self.__link_directories) > 0:
+            lines.append('LINK_DIRECTORIES('+' '.join(self.__link_directories)+')')
+            pass
+
         # ADD_SUBDIRECTORY()
         for d in self.__subdirectories:
             lines.append('ADD_SUBDIRECTORY('+d+')')
@@ -217,11 +267,6 @@ class CMakeLists:
                 lines.append('    '+library)
                 pass
             lines.append(')')
-            pass
-
-        # INCLUDE_DIRECTORIES()
-        for directoryname in self.__include_directories:
-            lines.append('INCLUDE_DIRECTORIES('+directoryname+')')
             pass
 
         # ADD_CUSTOM_COMMAND(OUTPUT ...)

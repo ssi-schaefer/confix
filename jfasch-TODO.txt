@@ -1,8 +1,12 @@
 * STACK
 
-  * write cmake test
+  * confix-admin subdirectory cmake/Modules, together with a suitable
+    class that handles addition of files.
 
-  * inter package
+  * write find modules for libraries. currently finds only the ones in
+    ${CMAKE_INSTALL_PREFIX}/lib. the future brings readonly-prefixes.
+
+  * library dependencies
 
 * CMAKE
 
@@ -14,6 +18,10 @@
 
   * archive vs. shared library?
 
+    * library dependencies. we do not generate any dependencies when
+      building shared libraries. how do we decide that? I suppose not
+      at all since this is a user decision.
+
   * execute tests
 
   * interfaces:
@@ -24,6 +32,13 @@
 
       this will require some extra work, and some tests.
 
+  * Windows: how about CMAKE_INSTALL_PREFIX?
+
+  * CPack
+    * repo file in package
+    * find-modules in package
+      
+      
 * TODO
 
   * Objects to relieve from automake stuff
@@ -50,7 +65,7 @@
 * InterfaceProxy objects
 
   Make one dedicated object of each method/function. This gives us the
-  possibility to provie documentation/typing for each.
+  possibility to provide documentation/typing for each.
 
   * Confix2.dir Interface
 

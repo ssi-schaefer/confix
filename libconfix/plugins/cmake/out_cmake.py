@@ -16,10 +16,13 @@
 # USA
 
 from cmakelists import CMakeLists
+from modules_dir_builder import ModulesDirectoryBuilder
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.filesys.file import File
+from libconfix.core.filesys.directory import Directory
+from libconfix.core.utils import const
 
 def find_cmake_output_builder(dirbuilder):
     """
@@ -39,6 +42,8 @@ class CMakeBackendOutputBuilder(Builder):
         Builder.__init__(self)
         self.__local_cmakelists = None
         self.__top_cmakelists = None
+        self.__modules_builder = None
+        self.__bursted = False
         pass
 
     def local_cmakelists(self):
@@ -47,13 +52,19 @@ class CMakeBackendOutputBuilder(Builder):
     def top_cmakelists(self):
         return self.__top_cmakelists
 
+    def add_module_file(self, name, lines):
+        self.__modules_builder.add_module_file(name, lines)
+        pass
+
     def locally_unique_id(self):
         return str(self.__class__)
 
     def initialize(self, package):
         super(CMakeBackendOutputBuilder, self).initialize(package)
+
+        # CMakeLists.txt files all over
         self.__local_cmakelists = CMakeLists()
-        if self.parentbuilder() == package.rootbuilder():
+        if self.parentbuilder() is package.rootbuilder():
             self.__top_cmakelists = self.__local_cmakelists
             pass
         else:
@@ -62,13 +73,43 @@ class CMakeBackendOutputBuilder(Builder):
             pass
         pass
 
-    def output(self):
-        super(CMakeBackendOutputBuilder, self).output()
+        # if in the top directory, add the CMake admin section to
+        # confix-admin. if not in the top directory, steal it from
+        # there.
+        if self.parentbuilder() is self.package().rootbuilder():
+            # create the directory hierarchy if necessary.
+            admin_dir = self.parentbuilder().directory().get(const.ADMIN_DIR)
+            if admin_dir is None:
+                admin_dir = self.parentbuilder().directory().add(name=const.ADMIN_DIR, entry=Directory())
+                pass
+            cmake_dir = admin_dir.get('cmake')
+            if cmake_dir is None:
+                cmake_dir = admin_dir.add(name='cmake', entry=Directory())
+                pass
+            modules_dir = cmake_dir.get('Modules')
+            if modules_dir is None:
+                modules_dir = cmake_dir.add(name='Modules', entry=Directory())
+                pass
 
+            # wrap builder hierarchy around directory hierarchy. NOTE
+            # that the modules directory builder is a backend builder.
+            admin_dir_builder = self.parentbuilder().add_builder(DirectoryBuilder(directory=admin_dir))
+            cmake_dir_builder = admin_dir_builder.add_builder(DirectoryBuilder(directory=cmake_dir))
+            self.__modules_builder = cmake_dir_builder.add_backend_dirbuilder(ModulesDirectoryBuilder(directory=modules_dir))
+        else:
+            self.__modules_builder = find_cmake_output_builder(self.package().rootbuilder()).__modules_builder
+            pass
+        pass
+
+    def output(self):
+        # if in the top directory, our CMakeLists.txt file needs to
+        # contain a lot of boilerplate things, in addition to its
+        # regular module content.
         if self.parentbuilder() is self.package().rootbuilder():
             self.__output_top_cmakelists()
             pass
-        
+
+        # write the CMakeLists.txt file.
         cmakelists_file = self.parentbuilder().directory().find(['CMakeLists.txt'])
         if cmakelists_file is None:
             cmakelists_file = File()
@@ -77,6 +118,10 @@ class CMakeBackendOutputBuilder(Builder):
             cmakelists_file.truncate()
             pass
         cmakelists_file.add_lines(self.__local_cmakelists.lines())
+
+        # NOTE: this has to come last because we add stuff to the
+        # ModulesDirectoryBuilder, and he has to come after us.
+        super(CMakeBackendOutputBuilder, self).output()
         pass
 
     def __output_top_cmakelists(self):

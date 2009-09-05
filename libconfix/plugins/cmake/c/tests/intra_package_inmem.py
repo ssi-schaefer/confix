@@ -100,16 +100,16 @@ class IntraPackageTest(unittest.TestCase):
         # same for include paths. note that we add the associated
         # build directory in case it contains generated files - hence
         # the '*2' in the checks.
-        self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().include_directories()), 0)
+        self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().get_include_directories()), 0)
 
-        hi_include_directories = self.__hi_output_builder.local_cmakelists().include_directories()
+        hi_include_directories = self.__hi_output_builder.local_cmakelists().get_include_directories()
         self.failUnlessEqual(len(hi_include_directories), 1*2)
         self.failUnless(hi_include_directories[0] == '${'+self.__package.name()+'_SOURCE_DIR}/lo' and
                         hi_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/lo' or
                         hi_include_directories[0] == '${'+self.__package.name()+'_BINARY_DIR}/lo' and
                         hi_include_directories[1] == '${'+self.__package.name()+'_SOURCE_DIR}/lo')
         
-        exe_include_directories = self.__exe_output_builder.local_cmakelists().include_directories()
+        exe_include_directories = self.__exe_output_builder.local_cmakelists().get_include_directories()
         self.failUnlessEqual(len(exe_include_directories), 2*2)
         self.failUnless(exe_include_directories[0] == '${'+self.__package.name()+'_SOURCE_DIR}/hi' and
                         exe_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/hi' or
