@@ -17,6 +17,7 @@
 # USA
 
 from libconfix.plugins.cmake.setup import CMakeSetup
+from libconfix.plugins.cmake.c.library_dependencies import LibraryDependenciesSetup
 from libconfix.plugins.cmake import commands
 
 from libconfix.plugins.automake.repo_automake import AutomakeCascadedPackageRepository
@@ -34,164 +35,123 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
 import os
+import time
 
 class ReadonlyPrefixesBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(ReadonlyPrefixesBuildTest('test'))
+        self.addTest(ReadonlyPrefixesBuildTest('test_library_dependencies_with_readonly_prefixes'))
         pass
     pass
 
 class ReadonlyPrefixesBuildTest(PersistentTestCase):
-    def test(self):
+    def setUp(self):
+        super(ReadonlyPrefixesBuildTest, self).setUp()
 
         # one-readonly, installed in prefix one-readonly
         # two-readonly, installed in prefix two-readonly
         # three-regular, installed on regular prefix
         # linked, using all three
         
-        fs = FileSystem(path=self.rootpath())
+        self.__fs = FileSystem(path=self.rootpath())
 
-        sourcedir = fs.rootdirectory().add(name='source', entry=Directory())
-        builddir = fs.rootdirectory().add(name='build', entry=Directory())
-        installdir = fs.rootdirectory().add(name='install', entry=Directory())
-        regular_installdir = fs.rootdirectory().add(name='regular', entry=Directory())
+        sourcedir = self.__fs.rootdirectory().add(name='source', entry=Directory())
+        builddir = self.__fs.rootdirectory().add(name='build', entry=Directory())
+        installdir = self.__fs.rootdirectory().add(name='install', entry=Directory())
+        self.__regular_installdir = self.__fs.rootdirectory().add(name='regular', entry=Directory())
 
-        one_readonly_sourcedir = sourcedir.add(name='one-readonly', entry=Directory())
-        one_readonly_builddir = builddir.add(name='one-readonly', entry=Directory())
-        one_readonly_installdir = installdir.add(name='one-readonly', entry=Directory())
+        self.__one_readonly_sourcedir = sourcedir.add(name='one-readonly', entry=Directory())
+        self.__one_readonly_builddir = builddir.add(name='one-readonly', entry=Directory())
+        self.__one_readonly_installdir = installdir.add(name='one-readonly', entry=Directory())
 
-        two_readonly_sourcedir = sourcedir.add(name='two-readonly', entry=Directory())
-        two_readonly_builddir = builddir.add(name='two-readonly', entry=Directory())
-        two_readonly_installdir = installdir.add(name='two-readonly', entry=Directory())
+        self.__two_readonly_sourcedir = sourcedir.add(name='two-readonly', entry=Directory())
+        self.__two_readonly_builddir = builddir.add(name='two-readonly', entry=Directory())
+        self.__two_readonly_installdir = installdir.add(name='two-readonly', entry=Directory())
 
-        three_regular_sourcedir = sourcedir.add(name='three-regular', entry=Directory())
-        three_regular_builddir = builddir.add(name='three-regular', entry=Directory())
+        self.__three_regular_sourcedir = sourcedir.add(name='three-regular', entry=Directory())
+        self.__three_regular_builddir = builddir.add(name='three-regular', entry=Directory())
 
-        linked_sourcedir = sourcedir.add(name='linked', entry=Directory())
-        linked_builddir = builddir.add(name='linked', entry=Directory())
+        self.__linked_sourcedir = sourcedir.add(name='linked', entry=Directory())
+        self.__linked_builddir = builddir.add(name='linked', entry=Directory())
         
-        # one_readonly
+        # one_readonly source
         if True:
-            one_readonly_sourcedir.add(
+            self.__one_readonly_sourcedir.add(
                 name=const.CONFIX2_PKG,
                 entry=File(lines=['PACKAGE_NAME("one-readonly")',
                                   'PACKAGE_VERSION("1.2.3")']))
-            one_readonly_sourcedir.add(
+            self.__one_readonly_sourcedir.add(
                 name=const.CONFIX2_DIR,
-                entry=File(lines=['LIBRARY(members=[H(filename="one_readonly.h"), C(filename="one_readonly.c")])']))
-            one_readonly_sourcedir.add(
+                entry=File(lines=['LIBRARY(basename="one", members=[H(filename="one_readonly.h"), C(filename="one_readonly.c")])']))
+            self.__one_readonly_sourcedir.add(
                 name='one_readonly.h',
                 entry=File(lines=['#ifndef one_readonly_h',
                                   '#define one_readonly_h',
                                   'void one_readonly();',
                                   '#endif',
                                   ]))
-            one_readonly_sourcedir.add(
+            self.__one_readonly_sourcedir.add(
                 name='one_readonly.c',
                 entry=File(lines=['#include "one_readonly.h"',
                                   'void one_readonly() {}']))
 
-            one_readonly_package = LocalPackage(rootdirectory=one_readonly_sourcedir,
-                                                setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
-            one_readonly_package.boil(external_nodes=[])
-            one_readonly_package.output()
-            fs.sync()
-
-            commands.cmake(packageroot=one_readonly_sourcedir.abspath(),
-                           builddir=one_readonly_builddir.abspath(),
-                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(one_readonly_installdir.abspath())])
-            commands.make(builddir=one_readonly_builddir.abspath(), args=['install'])
-
-            # paranoia
-            self.failUnless(os.path.isdir(os.sep.join(one_readonly_installdir.abspath()+['lib'])))
-            self.failUnless(os.path.isfile(os.sep.join(one_readonly_installdir.abspath()+['include', 'one_readonly.h'])))
             pass
     
-        # two_readonly
+        # two_readonly source
         if True:
-            two_readonly_sourcedir.add(
+            self.__two_readonly_sourcedir.add(
                 name=const.CONFIX2_PKG,
                 entry=File(lines=['PACKAGE_NAME("two-readonly")',
                                   'PACKAGE_VERSION("1.2.3")']))
-            two_readonly_sourcedir.add(
+            self.__two_readonly_sourcedir.add(
                 name=const.CONFIX2_DIR,
-                entry=File(lines=['LIBRARY(members=[H(filename="two_readonly.h"), C(filename="two_readonly.c")])']))
-            two_readonly_sourcedir.add(
+                entry=File(lines=['LIBRARY(basename="two", members=[H(filename="two_readonly.h"), C(filename="two_readonly.c")])']))
+            self.__two_readonly_sourcedir.add(
                 name='two_readonly.h',
                 entry=File(lines=['#ifndef two_readonly_h',
                                   '#define two_readonly_h',
                                   'void two_readonly();',
                                   '#endif',
                                   ]))
-            two_readonly_sourcedir.add(
+            self.__two_readonly_sourcedir.add(
                 name='two_readonly.c',
                 entry=File(lines=['#include "two_readonly.h"',
                                   'void two_readonly() {}']))
-
-            two_readonly_package = LocalPackage(rootdirectory=two_readonly_sourcedir,
-                                                setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
-            two_readonly_package.boil(external_nodes=[])
-            two_readonly_package.output()
-            fs.sync()
-
-            commands.cmake(packageroot=two_readonly_sourcedir.abspath(),
-                           builddir=two_readonly_builddir.abspath(),
-                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(two_readonly_installdir.abspath())])
-            commands.make(builddir=two_readonly_builddir.abspath(), args=['install'])
-
-            # paranoia
-            self.failUnless(os.path.isdir(os.sep.join(two_readonly_installdir.abspath()+['lib'])))
-            self.failUnless(os.path.isfile(os.sep.join(two_readonly_installdir.abspath()+['include', 'two_readonly.h'])))
             pass
 
-        # three_regular
+        # three_regular source
         if True:
-            three_regular_sourcedir.add(
+            self.__three_regular_sourcedir.add(
                 name=const.CONFIX2_PKG,
                 entry=File(lines=['PACKAGE_NAME("three-regular")',
                                   'PACKAGE_VERSION("1.2.3")']))
-            three_regular_sourcedir.add(
+            self.__three_regular_sourcedir.add(
                 name=const.CONFIX2_DIR,
-                entry=File(lines=['LIBRARY(members=[H(filename="three_regular.h"), C(filename="three_regular.c")])']))
-            three_regular_sourcedir.add(
+                entry=File(lines=['LIBRARY(basename="three", members=[H(filename="three_regular.h"), C(filename="three_regular.c")])']))
+            self.__three_regular_sourcedir.add(
                 name='three_regular.h',
                 entry=File(lines=['#ifndef three_regular_h',
                                   '#define three_regular_h',
                                   'void three_regular();',
                                   '#endif',
                                   ]))
-            three_regular_sourcedir.add(
+            self.__three_regular_sourcedir.add(
                 name='three_regular.c',
                 entry=File(lines=['#include "three_regular.h"',
                                   'void three_regular() {}']))
-
-            three_regular_package = LocalPackage(rootdirectory=three_regular_sourcedir,
-                                                setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
-            three_regular_package.boil(external_nodes=[])
-            three_regular_package.output()
-            fs.sync()
-
-            commands.cmake(packageroot=three_regular_sourcedir.abspath(),
-                           builddir=three_regular_builddir.abspath(),
-                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(regular_installdir.abspath())])
-            commands.make(builddir=three_regular_builddir.abspath(), args=['install'])
-
-            # paranoia
-            self.failUnless(os.path.isdir(os.sep.join(regular_installdir.abspath()+['lib'])))
-            self.failUnless(os.path.isfile(os.sep.join(regular_installdir.abspath()+['include', 'three_regular.h'])))
             pass
 
-        # linked
+        # linked source
         if True:
-            linked_sourcedir.add(
+            self.__linked_sourcedir.add(
                 name=const.CONFIX2_PKG,
                 entry=File(lines=['PACKAGE_NAME("linked")',
                                   'PACKAGE_VERSION("1.2.3")']))
-            linked_sourcedir.add(
+            self.__linked_sourcedir.add(
                 name=const.CONFIX2_DIR,
                 entry=File(lines=['EXECUTABLE(exename="exe", center=C(filename="main.c"))']))
-            linked_sourcedir.add(
+            self.__linked_sourcedir.add(
                 name='main.c',
                 entry=File(lines=['#include <one_readonly.h>',
                                   '#include <two_readonly.h>',
@@ -205,26 +165,151 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
                                   '    three_regular();',
                                   '}']))
 
-            linked_package = LocalPackage(rootdirectory=linked_sourcedir,
-                                          setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+            pass
 
-            # read repo files along the cascade
-            repo = AutomakeCascadedPackageRepository(
-                prefix=regular_installdir.abspath(),
-                readonly_prefixes=[two_readonly_installdir.abspath(), one_readonly_installdir.abspath()])
-            
-            linked_package.boil(external_nodes=repo.nodes())
-            linked_package.output()
-            fs.sync()
+        # build the three installed packages
+        if True:
+            one_readonly_package = LocalPackage(rootdirectory=self.__one_readonly_sourcedir,
+                                                setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+            one_readonly_package.boil(external_nodes=[])
+            one_readonly_package.output()
+            self.__fs.sync()
 
-            commands.cmake(packageroot=linked_sourcedir.abspath(),
-                           builddir=linked_builddir.abspath(),
-                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(regular_installdir.abspath()),
-                                 '-DREADONLY_PREFIXES='+'/'.join(one_readonly_installdir.abspath())+';'+'/'.join(two_readonly_installdir.abspath())])
-            commands.make(builddir=linked_builddir.abspath(), args=[])
-            
+            commands.cmake(packageroot=self.__one_readonly_sourcedir.abspath(),
+                           builddir=self.__one_readonly_builddir.abspath(),
+                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(self.__one_readonly_installdir.abspath())])
+            commands.make(builddir=self.__one_readonly_builddir.abspath(), args=['install'])
+
             # paranoia
-            self.failUnless(os.path.isfile(os.sep.join(linked_builddir.abspath()+['exe'])))
+            self.failUnless(os.path.isdir(os.sep.join(self.__one_readonly_installdir.abspath()+['lib'])))
+            self.failUnless(os.path.isfile(os.sep.join(self.__one_readonly_installdir.abspath()+['include', 'one_readonly.h'])))
+            pass
+
+        if True:
+            two_readonly_package = LocalPackage(rootdirectory=self.__two_readonly_sourcedir,
+                                                setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+            two_readonly_package.boil(external_nodes=[])
+            two_readonly_package.output()
+            self.__fs.sync()
+
+            commands.cmake(packageroot=self.__two_readonly_sourcedir.abspath(),
+                           builddir=self.__two_readonly_builddir.abspath(),
+                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(self.__two_readonly_installdir.abspath())])
+            commands.make(builddir=self.__two_readonly_builddir.abspath(), args=['install'])
+
+            # paranoia
+            self.failUnless(os.path.isdir(os.sep.join(self.__two_readonly_installdir.abspath()+['lib'])))
+            self.failUnless(os.path.isfile(os.sep.join(self.__two_readonly_installdir.abspath()+['include', 'two_readonly.h'])))
+            pass
+
+        if True:
+            three_regular_package = LocalPackage(rootdirectory=self.__three_regular_sourcedir,
+                                                 setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+            three_regular_package.boil(external_nodes=[])
+            three_regular_package.output()
+            self.__fs.sync()
+
+            commands.cmake(packageroot=self.__three_regular_sourcedir.abspath(),
+                           builddir=self.__three_regular_builddir.abspath(),
+                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(self.__regular_installdir.abspath())])
+            commands.make(builddir=self.__three_regular_builddir.abspath(), args=['install'])
+
+            # paranoia
+            self.failUnless(os.path.isdir(os.sep.join(self.__regular_installdir.abspath()+['lib'])))
+            self.failUnless(os.path.isfile(os.sep.join(self.__regular_installdir.abspath()+['include', 'three_regular.h'])))
+            pass
+        
+        pass
+
+    def test(self):
+        linked_package = LocalPackage(rootdirectory=self.__linked_sourcedir,
+                                      setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+
+        # read repo files along the cascade
+        repo = AutomakeCascadedPackageRepository(
+            prefix=self.__regular_installdir.abspath(),
+            readonly_prefixes=[self.__two_readonly_installdir.abspath(), self.__one_readonly_installdir.abspath()])
+            
+        linked_package.boil(external_nodes=repo.nodes())
+        linked_package.output()
+        self.__fs.sync()
+
+        commands.cmake(packageroot=self.__linked_sourcedir.abspath(),
+                       builddir=self.__linked_builddir.abspath(),
+                       args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(self.__regular_installdir.abspath()),
+                             '-DREADONLY_PREFIXES='+
+                             '/'.join(self.__one_readonly_installdir.abspath())+';'+
+                             '/'.join(self.__two_readonly_installdir.abspath())])
+        commands.make(builddir=self.__linked_builddir.abspath(), args=[])
+
+        self.failUnless(os.path.isfile(os.sep.join(self.__linked_builddir.abspath()+['exe'])))
+        pass
+
+    def test_library_dependencies_with_readonly_prefixes(self):
+        # boil package with library dependencies enabled.
+        linked_package = LocalPackage(rootdirectory=self.__linked_sourcedir,
+                                      setups=[LibraryDependenciesSetup(),
+                                              ExplicitDirectorySetup(),
+                                              ExplicitCSetup(),
+                                              CMakeSetup()])
+
+        # read repo files along the cascade
+        repo = AutomakeCascadedPackageRepository(
+            prefix=self.__regular_installdir.abspath(),
+            readonly_prefixes=[self.__two_readonly_installdir.abspath(), self.__one_readonly_installdir.abspath()])
+            
+        linked_package.boil(external_nodes=repo.nodes())
+        linked_package.output()
+        self.__fs.sync()
+
+        commands.cmake(packageroot=self.__linked_sourcedir.abspath(),
+                       builddir=self.__linked_builddir.abspath(),
+                       args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(self.__regular_installdir.abspath()),
+                             '-DREADONLY_PREFIXES='+
+                             '/'.join(self.__one_readonly_installdir.abspath())+';'+
+                             '/'.join(self.__two_readonly_installdir.abspath())])
+        commands.make(builddir=self.__linked_builddir.abspath(), args=[])
+
+        # wait a bit and then touch libone.a.
+        if True:
+            time.sleep(1)
+            libone = os.sep.join(self.__one_readonly_installdir.abspath()+['lib', 'libone.a'])
+            os.utime(libone, None)
+            libone_stat = os.stat(libone)
+
+            # exe is rebuilt as it depends on libone.a
+            if True:
+                commands.make(builddir=self.__linked_builddir.abspath(), args=[])
+                self.failUnless(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libone_stat.st_mtime)
+                pass
+            pass
+
+        # wait a bit and then touch libtwo.a.
+        if True:
+            time.sleep(1)
+            libtwo = os.sep.join(self.__two_readonly_installdir.abspath()+['lib', 'libtwo.a'])
+            os.utime(libtwo, None)
+            libtwo_stat = os.stat(libtwo)
+
+            # exe is rebuilt as it depends on libtwo.a
+            if True:
+                commands.make(builddir=self.__linked_builddir.abspath(), args=[])
+                self.failUnless(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libtwo_stat.st_mtime)
+                pass
+            pass
+
+        # wait a bit and then touch libone.a.
+        if True:
+            time.sleep(1)
+            libthree = os.sep.join(self.__regular_installdir.abspath()+['lib', 'libthree.a'])
+            os.utime(libthree, None)
+            libthree_stat = os.stat(libthree)
+
+            # exe is rebuilt as it depends on libthree.a
+            if True:
+                commands.make(builddir=self.__linked_builddir.abspath(), args=[])
+                self.failUnless(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libthree_stat.st_mtime)
+                pass
             pass
 
         pass

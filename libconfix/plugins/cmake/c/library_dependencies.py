@@ -66,11 +66,15 @@ class LibraryDependenciesBuilder(Builder):
 
 _text_ConfixFindNativeInstalledLibrary = """
 FUNCTION(ConfixFindNativeInstalledLibrary basename)
-    FIND_LIBRARY(${basename}_LIBRARY ${basename} ${CMAKE_INSTALL_PREFIX}/lib)
+    SET(prefixlib_list ${CMAKE_INSTALL_PREFIX}/lib)
+    FOREACH(prefix ${READONLY_PREFIXES})
+        LIST(APPEND prefixlib_list ${prefix}/lib)
+    ENDFOREACH(prefix)
+    FIND_LIBRARY(${basename}_LIBRARY ${basename} ${prefixlib_list})
     IF (${basename}_LIBRARY)
-        MESSAGE(STATUS "found confix native installed library ${${basename}_LIBRARY}")
+        MESSAGE(STATUS "found confix native installed library '${${basename}_LIBRARY}'")
     ELSE (${basename}_LIBRARY)
-        MESSAGE(FATAL_ERROR "cannot find confix native installed library ${basename}")
+        MESSAGE(FATAL_ERROR "cannot find confix native installed library '${basename}'")
     ENDIF (${basename}_LIBRARY)
 ENDFUNCTION(ConfixFindNativeInstalledLibrary)
 """
