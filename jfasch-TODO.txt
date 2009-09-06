@@ -1,13 +1,8 @@
 * STACK
 
-  * library_dependencies test
-  * readonly-prefixes
-
 * CMAKE
 
   * relocated headers (at least, test it).
-
-  * readonly prefixes!! this is going to be hard!
 
   * script plugin
 
