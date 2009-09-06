@@ -25,11 +25,12 @@ from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
-
-from libconfix.testutils.persistent import PersistentTestCase
-
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
+from libconfix.core.filesys.file import File
+from libconfix.core.utils import const
+
+from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
 import os
@@ -38,12 +39,96 @@ import time
 class LibraryDependenciesBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(LibraryDependenciesTest('test'))
+        self.addTest(LibraryDependenciesTest('test_intra_package'))
+        self.addTest(LibraryDependenciesTest('test_inter_package'))
         pass
     pass
 
 class LibraryDependenciesTest(PersistentTestCase):
-    def test(self):
+
+    # inside a package, modifying a library means that an executable
+    # that uses it is rebuilt.
+    def test_intra_package(self):
+        fs = FileSystem(path=self.rootpath())
+
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('LibraryDependencies-Intra-Package')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["DIRECTORY(['lib'])",
+                              "DIRECTORY(['exe'])"]))
+
+        lib = source.add(
+            name='lib',
+            entry=Directory())
+        lib.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["LIBRARY(basename='lib', members=[H(filename='lib.h'), C(filename='lib.c')])"]))
+        lib.add(
+            name='lib.h',
+            entry=File(lines=['#ifndef lib_h',
+                              '#define lib_h',
+                              'void lib();',
+                              '#endif']))
+        lib.add(
+            name='lib.c',
+            entry=File(lines=['#include "lib.h"',
+                              'void lib() {}']))
+
+        exe = source.add(
+            name='exe',
+            entry=Directory())
+        exe.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['EXECUTABLE(exename="exe", center=C(filename="main.c"))']))
+        exe.add(
+            name='main.c',
+            entry=File(lines=['#include <lib.h>',
+                              '// CONFIX:REQUIRE_H("lib.h", URGENCY_ERROR)',
+                              'int main(void) {',
+                              '    lib(); ',
+                              '    return 0;',
+                              '}']))
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[ExplicitDirectorySetup(),
+                                       ExplicitCSetup(),
+                                       CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+        
+        commands.cmake(packageroot=source.abspath(),
+                       builddir=build.abspath(),
+                       args=[])
+        commands.make(builddir=build.abspath(), args=[])
+
+        # wait a bit and then touch liblo.a. (is there a better way
+        # than sleeping?)
+        time.sleep(1)
+        lib_library = os.sep.join(build.abspath()+['lib', 'liblib.a'])
+        os.utime(lib_library, None)
+        lib_library_stat = os.stat(lib_library)
+
+        # exe is rebuilt as it depends on liblib.a
+        if True:
+            commands.make(builddir=build.abspath(), args=[])
+            self.failUnless(os.stat(os.sep.join(build.abspath()+['exe', 'exe'])).st_mtime >= lib_library_stat.st_mtime)
+            pass
+
+        pass
+
+    def test_inter_package(self):
         fs = FileSystem(path=self.rootpath())
 
         source = fs.rootdirectory().add(
