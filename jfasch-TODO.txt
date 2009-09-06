@@ -1,10 +1,7 @@
 * STACK
 
-  * write test
-
+  * library_dependencies test
   * readonly-prefixes
-
-    * library_dependencies test
 
 * CMAKE
 

@@ -219,7 +219,8 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
 
             commands.cmake(packageroot=linked_sourcedir.abspath(),
                            builddir=linked_builddir.abspath(),
-                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(regular_installdir.abspath())])
+                           args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(regular_installdir.abspath()),
+                                 '-DREADONLY_PREFIXES='+'/'.join(one_readonly_installdir.abspath())+';'+'/'.join(two_readonly_installdir.abspath())])
             commands.make(builddir=linked_builddir.abspath(), args=[])
             
             # paranoia

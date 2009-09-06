@@ -219,20 +219,26 @@ class CMakeLists:
             lines.append('INCLUDE('+include+')')
             pass
 
-        # (find calls)
+        # (find-calls)
         for find_call in self.__find_calls:
             lines.append(find_call)
             pass
 
         # INCLUDE_DIRECTORIES()
-        for directoryname in self.__include_directories:
-            lines.append('INCLUDE_DIRECTORIES('+directoryname+')')
+        for incdir in self.__include_directories:
+            lines.append('INCLUDE_DIRECTORIES('+incdir+')')
             pass
+        lines.extend(['FOREACH(dir ${READONLY_PREFIXES})',
+                      '    INCLUDE_DIRECTORIES(${dir}/include)',
+                      'ENDFOREACH(dir)'])
 
         # LINK_DIRECTORIES()
-        if len(self.__link_directories) > 0:
-            lines.append('LINK_DIRECTORIES('+' '.join(self.__link_directories)+')')
+        for linkdir in self.__link_directories:
+            lines.append('LINK_DIRECTORIES('+linkdir+')')
             pass
+        lines.extend(['FOREACH(dir ${READONLY_PREFIXES})',
+                      '    LINK_DIRECTORIES(${dir}/lib)',
+                      'ENDFOREACH(dir)'])
 
         # ADD_SUBDIRECTORY()
         for d in self.__subdirectories:
