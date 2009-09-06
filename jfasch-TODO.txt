@@ -1,12 +1,10 @@
 * STACK
 
-  * confix-admin subdirectory cmake/Modules, together with a suitable
-    class that handles addition of files.
+  * write test
 
-  * write find modules for libraries. currently finds only the ones in
-    ${CMAKE_INSTALL_PREFIX}/lib. the future brings readonly-prefixes.
+  * readonly-prefixes
 
-  * library dependencies
+    * library_dependencies test
 
 * CMAKE
 

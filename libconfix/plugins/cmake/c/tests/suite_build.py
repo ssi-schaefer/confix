@@ -20,6 +20,7 @@ from local_install_build import LocalInstallBuildSuite
 from public_install_build import PublicInstallBuildSuite
 from inter_package_build import InterPackageBuildSuite
 from library_dependencies_build import LibraryDependenciesBuildSuite
+from readonly_prefixes_build import ReadonlyPrefixesBuildSuite
 
 import unittest
 
@@ -31,6 +32,7 @@ class CMakeCBuildSuite(unittest.TestSuite):
         self.addTest(PublicInstallBuildSuite())
         self.addTest(InterPackageBuildSuite())
         self.addTest(LibraryDependenciesBuildSuite())
+        self.addTest(ReadonlyPrefixesBuildSuite())
         pass
     pass
 
