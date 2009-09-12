@@ -1,5 +1,12 @@
 * STACK
 
+  * test with external library (built with cmake though). using
+    package with its own confix code.
+
+  * external library
+
+    * test propagation of confix code: using a using package.
+
 * CMAKE
 
   * relocated headers (at least, test it).
