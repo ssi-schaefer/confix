@@ -22,6 +22,7 @@ from hierarchy_inmem import HierarchyInMemorySuite
 from intra_package_inmem import IntraPackageInMemorySuite
 from inter_package_inmem import InterPackageInMemorySuite
 from iface_inmem import InterfaceInMemorySuite
+from dependency_order_check_inmem import DependencyOrderInMemorySuite
 
 import unittest
 
@@ -36,6 +37,9 @@ class CMakeInMemorySuite(unittest.TestSuite):
         self.addTest(IntraPackageInMemorySuite())
         self.addTest(InterPackageInMemorySuite())
         self.addTest(InterfaceInMemorySuite())
+
+        self.addTest(DependencyOrderInMemorySuite())
+        
         pass
 
     pass

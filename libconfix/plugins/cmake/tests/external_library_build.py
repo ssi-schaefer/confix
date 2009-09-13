@@ -233,7 +233,7 @@ class ExternalLibraryTest(PersistentTestCase):
         pipe = subprocess.Popen([os.sep.join(user_builddir.abspath()+['bin', 'inline-string'])], stdout=subprocess.PIPE)
         self.failUnlessEqual(pipe.stdout.next(), 'my-propagated-cmdline-macro\n')
 
-        # 'linked-string' prints the strign that is defined in the
+        # 'linked-string' prints the string that is defined in the
         # 'external-library' package.
         pipe = subprocess.Popen([os.sep.join(user_builddir.abspath()+['bin', 'linked-string'])], stdout=subprocess.PIPE)
         self.failUnlessEqual(pipe.stdout.next(), 'my-external-library-linked-string\n')

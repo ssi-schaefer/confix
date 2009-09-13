@@ -1,5 +1,7 @@
 * STACK
 
+  * user of user
+
   * test with external library (built with cmake though). using
     package with its own confix code.
 
