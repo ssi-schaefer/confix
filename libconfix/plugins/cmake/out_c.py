@@ -15,6 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from external_library import BuildInfo_IncludePath_External_CMake
+from external_library import BuildInfo_LibraryPath_External_CMake
+from external_library import BuildInfo_Library_External_CMake
+from external_library import BuildInfo_CommandlineMacros_CMake
+
 from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 
 from libconfix.plugins.c.h import HeaderBuilder
@@ -28,6 +33,8 @@ from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.utils import const
+
+import itertools
 
 class COutputSetup(Setup):
     def setup(self, dirbuilder):
@@ -117,6 +124,39 @@ class CompiledOutputBuilder(Builder):
     def locally_unique_id(self):
         return str(self.__class__)
 
+    def relate(self, node, digraph, topolist):
+        super(CompiledOutputBuilder, self).relate(node, digraph, topolist)
+
+        # reset all we gathered during the last round.
+        self.__have_external_incpath = set()
+        self.__external_incpath = []
+        self.__external_cmdlinemacros = {}
+
+        for n in topolist:
+            for bi in n.buildinfos():
+                if isinstance(bi, BuildInfo_IncludePath_External_CMake):
+                    incpath = bi.incpath()
+                    key = '.'.join(incpath)
+                    if not key in self.__have_external_incpath:
+                        self.__external_incpath.insert(0, incpath)
+                        self.__have_external_incpath.add(key)
+                        pass
+                    continue
+                if isinstance(bi, BuildInfo_CommandlineMacros_CMake):
+                    for (k, v) in bi.macros().iteritems():
+                        existing_value = self.__external_cmdlinemacros.get(k)
+                        if existing_value is not None and existing_value != v:
+                            raise Error(os.sep.join(self.file().relpath())+': '
+                                        'conflicting values for macro "'+key+'": '
+                                        '"'+existing_value+'"/"'+value+'"')
+                        self.__external_cmdlinemacros[k] = v
+                        pass
+                    continue
+                pass
+            pass
+
+        pass
+
     def output(self):
         super(CompiledOutputBuilder, self).output()
 
@@ -152,22 +192,40 @@ class CompiledOutputBuilder(Builder):
                 '${PROJECT_BINARY_DIR}/'+const.LOCAL_INCLUDE_DIR)
             pass
 
+        # in addition to the source directory, add the associated
+        # build directory in case it contains generated headers
+        # (automake has this built-in as it uses VPATH, and we don't
+        # want to break with it).
         for dir in native_local_include_dirs:
-            # in addition to the source directory, add the associated
-            # build directory in case it contains generated headers
-            # (automake has this built-in as it uses VPATH, and we
-            # don't want to break with it).
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${'+self.package().name()+'_BINARY_DIR}/'+dir)
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${'+self.package().name()+'_SOURCE_DIR}/'+dir)
             pass
 
+        # use our good old prefix/include if need be.
         if using_public_native_installed_headers:
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${CMAKE_INSTALL_PREFIX}/include')
             pass
 
+        # include paths contributed by external library definitions.
+        for p in self.__external_incpath:
+            for item in p:
+                cmake_output_builder.local_cmakelists().add_include_directory(item)
+                pass
+            pass
+
+        # commandline macros floating in by external library
+        # definitions.
+        for macro, value in self.__external_cmdlinemacros.iteritems():
+            if value is None:
+                definition = '-D%s' % macro
+            else:
+                definition = '-D%s=%s' % (macro, value)
+                pass
+            cmake_output_builder.local_cmakelists().add_definitions([definition])
+            pass
         pass
     pass
 
@@ -175,61 +233,120 @@ class LinkedOutputBuilder(Builder):
     def locally_unique_id(self):
         return str(self.__class__)
     
+    def relate(self, node, digraph, topolist):
+        Builder.relate(self, node, digraph, topolist)
+
+        self.__have_external_libpath = set()
+        self.__external_libpath = []
+
+        self.__have_external_libraries = set()
+        self.__external_libraries = []
+
+        for n in topolist:
+            for bi in n.buildinfos():
+                if isinstance(bi, BuildInfo_LibraryPath_External_CMake):
+                    for p in reversed(bi.libpath()):
+                        if p in self.__have_external_libpath:
+                            continue
+                        self.__have_external_libpath.add(p)
+                        self.__external_libpath.insert(0, p)
+                        pass
+                    continue
+                if isinstance(bi, BuildInfo_Library_External_CMake):
+                    for l in reversed(bi.libs()):
+                        if l in self.__have_external_libraries:
+                            continue
+                        self.__have_external_libraries.add(l)
+                        self.__external_libraries.insert(0, l)
+                        pass
+                    continue
+                pass
+            pass
+
+        pass
+
     def output(self):
         super(LinkedOutputBuilder, self).output()
         cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
+
         for linked in self.parentbuilder().iter_builders():
             if not isinstance(linked, LinkedBuilder):
                 continue
 
             # add the linked entity.
-            if isinstance(linked, ExecutableBuilder):
-                target_name = linked.exename()
-                cmake_output_builder.local_cmakelists().add_executable(
-                    target_name,
-                    [member.file().name() for member in linked.members()])
-                if linked.what() == ExecutableBuilder.BIN:
+            if True:
+                if isinstance(linked, ExecutableBuilder):
+                    target_name = linked.exename()
+                    cmake_output_builder.local_cmakelists().add_executable(
+                        target_name,
+                        [member.file().name() for member in linked.members()])
+                    if linked.what() == ExecutableBuilder.BIN:
+                        cmake_output_builder.local_cmakelists().add_install__targets(
+                            targets=[target_name],
+                            destination='bin')
+                        pass
+                    pass
+                elif isinstance(linked, LibraryBuilder):
+                    target_name = linked.basename()
+                    cmake_output_builder.local_cmakelists().add_library(
+                        target_name,
+                        [member.file().name() for member in linked.members()])
                     cmake_output_builder.local_cmakelists().add_install__targets(
                         targets=[target_name],
-                        destination='bin')
+                        destination='lib')
+                    pass
+                else:
+                    assert False, 'unknown LinkedBuilder type: '+str(linked)
                     pass
                 pass
-            elif isinstance(linked, LibraryBuilder):
-                target_name = linked.basename()
-                cmake_output_builder.local_cmakelists().add_library(
-                    target_name,
-                    [member.file().name() for member in linked.members()])
-                cmake_output_builder.local_cmakelists().add_install__targets(
-                    targets=[target_name],
-                    destination='lib')
-                pass
-            else:
-                assert False, 'unknown LinkedBuilder type: '+str(linked)
-                pass
 
-            # add dependencies if any.
-            native_local_libraries = []
-            native_installed_libraries = []
-            for bi in linked.topo_libraries():
-                if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
-                    native_local_libraries.append(bi.basename())
-                    continue
-                if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
-                    native_installed_libraries.append(bi.basename())
-                    continue
-                assert 0, 'missed some relevant build info type'
-                pass
-            if len(native_local_libraries)+len(native_installed_libraries):
-                cmake_output_builder.local_cmakelists().target_link_libraries(
-                    target_name,
-                    native_local_libraries + native_installed_libraries)
-                pass
+            # add libraries and linker paths if any.
+            if True:
+                native_local_libraries = []
+                native_installed_libraries = []
 
-            if len(native_installed_libraries):
-                cmake_output_builder.local_cmakelists().link_directories(
-                    ['${CMAKE_INSTALL_PREFIX}/lib'])
+                for bi in linked.topo_libraries():
+                    if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
+                        native_local_libraries.append(bi.basename())
+                        continue
+                    if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
+                        native_installed_libraries.append(bi.basename())
+                        continue
+                    assert 0, 'missed some relevant build info type'
+                    pass
+
+                # if there are libraries that have been installed
+                # natively using confix, then their path is added
+                # first.
+                if len(native_installed_libraries):
+                    cmake_output_builder.local_cmakelists().link_directories(
+                        ['${CMAKE_INSTALL_PREFIX}/lib'])
+                    pass
+
+                # next come the paths pointing to external libraries.
+                if len(self.__external_libpath):
+                    cmake_output_builder.local_cmakelists().link_directories(
+                        self.__external_libpath)
+                    pass
+
+                link_libraries = []
+                have = set()
+                for lib in itertools.chain(native_local_libraries,
+                                           native_installed_libraries,
+                                           self.__external_libraries):
+                    if lib in have:
+                        continue
+                    have.add(lib)
+                    link_libraries.append(lib)
+                    pass
+
+                if len(link_libraries):
+                    cmake_output_builder.local_cmakelists().target_link_libraries(
+                        target_name, link_libraries)
+                    pass
                 pass
             pass
-        pass
 
+        pass
     pass
+

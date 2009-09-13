@@ -17,7 +17,8 @@
 
 
 from out_cmake import CMakeBackendOutputBuilder
-from c.setup import CMakeCSetup
+from out_c import COutputSetup
+from iface import CMakeInterfaceSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.machinery.setup import Setup
@@ -27,6 +28,7 @@ class CMakeSetup(CompositeSetup):
         CompositeSetup.__init__(
             self,
             setups=[CMakeCSetup(),
+                    CMakeInterfaceSetup(),
                     InfraStructureSetup()])
         pass
     pass
@@ -34,5 +36,11 @@ class CMakeSetup(CompositeSetup):
 class InfraStructureSetup(Setup):
     def setup(self, dirbuilder):
         dirbuilder.add_backend_dirbuilder(CMakeBackendOutputBuilder())
+        pass
+    pass
+
+class CMakeCSetup(CompositeSetup):
+    def __init__(self):
+        CompositeSetup.__init__(self, setups=[COutputSetup()])
         pass
     pass

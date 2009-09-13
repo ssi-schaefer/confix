@@ -19,7 +19,7 @@ import inter_package
 
 from libconfix.plugins.cmake import commands
 from libconfix.plugins.cmake.setup import CMakeSetup
-from libconfix.plugins.cmake.c.library_dependencies import LibraryDependenciesSetup
+from libconfix.plugins.cmake.library_dependencies import LibraryDependenciesSetup
 from libconfix.plugins.automake.repo_automake import AutomakeCascadedPackageRepository
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 

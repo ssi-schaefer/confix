@@ -7,6 +7,12 @@
 
     * test propagation of confix code: using a using package.
 
+    * tests: CMakeLists add_include_directory(), link_directories(),
+      add_definitions() have to check for uniqueness.
+
+    * tests: order and uniqueness of libraries and library paths -
+      native local, native installed, external.
+
 * CMAKE
 
   * relocated headers (at least, test it).

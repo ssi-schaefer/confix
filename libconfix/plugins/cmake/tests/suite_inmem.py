@@ -19,7 +19,9 @@ from cmakelists_inmem import CMakeListsInMemorySuite
 from toplevel_boilerplate import ToplevelBoilerplateInMemorySuite
 from modules_inmem import ModulesInMemorySuite
 from hierarchy_inmem import HierarchyInMemorySuite
-from libconfix.plugins.cmake.c.tests.suite_inmem import CMakeCInMemorySuite
+from intra_package_inmem import IntraPackageInMemorySuite
+from inter_package_inmem import InterPackageInMemorySuite
+from iface_inmem import InterfaceInMemorySuite
 
 import unittest
 
@@ -30,7 +32,10 @@ class CMakeInMemorySuite(unittest.TestSuite):
         self.addTest(ToplevelBoilerplateInMemorySuite())
         self.addTest(ModulesInMemorySuite())
         self.addTest(HierarchyInMemorySuite())
-        self.addTest(CMakeCInMemorySuite())
+
+        self.addTest(IntraPackageInMemorySuite())
+        self.addTest(InterPackageInMemorySuite())
+        self.addTest(InterfaceInMemorySuite())
         pass
 
     pass

@@ -15,14 +15,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.cmake.c.tests.suite_build import CMakeCBuildSuite
+from intra_package_build import IntraPackageBuildSuite
+from local_install_build import LocalInstallBuildSuite
+from public_install_build import PublicInstallBuildSuite
+from inter_package_build import InterPackageBuildSuite
+from library_dependencies_build import LibraryDependenciesBuildSuite
+from readonly_prefixes_build import ReadonlyPrefixesBuildSuite
+from external_library_build import ExternalLibraryBuildSuite
 
 import unittest
 
 class CMakeBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CMakeCBuildSuite())
+        self.addTest(IntraPackageBuildSuite())
+        self.addTest(LocalInstallBuildSuite())
+        self.addTest(PublicInstallBuildSuite())
+        self.addTest(InterPackageBuildSuite())
+        self.addTest(LibraryDependenciesBuildSuite())
+        self.addTest(ReadonlyPrefixesBuildSuite())
+        self.addTest(ExternalLibraryBuildSuite())
         pass
     pass
 

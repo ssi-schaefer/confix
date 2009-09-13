@@ -44,6 +44,10 @@ class CMakeLists:
         # ["directory"]
         self.__link_directories = []
 
+        # CMake: ADD_DEFINITIONS()
+        # ["definition"], for example: [ "-Dmacro=value" ]
+        self.__definitions = []
+
         # CMake: ADD_SUBDIRECTORY()
         # ["directory-name"]
         self.__subdirectories = []
@@ -106,6 +110,8 @@ class CMakeLists:
     def add_find_call(self, find_call):
         self.__find_calls.append(find_call)
         pass
+    def get_find_calls(self):
+        return self.__find_calls
 
     def add_include_directory(self, directoryname):
         assert type(directoryname) is types.StringType
@@ -121,6 +127,10 @@ class CMakeLists:
         pass
     def get_link_directories(self):
         return self.__link_directories
+
+    def add_definitions(self, definitions):
+        self.__definitions.extend(definitions)
+        pass
 
     def add_subdirectory(self, directoryname):
         assert type(directoryname) is types.StringType
@@ -239,6 +249,9 @@ class CMakeLists:
         lines.extend(['FOREACH(dir ${READONLY_PREFIXES})',
                       '    LINK_DIRECTORIES(${dir}/lib)',
                       'ENDFOREACH(dir)'])
+
+        # ADD_DEFINITIONS()
+        lines.append('ADD_DEFINITIONS('+' '.join(self.__definitions)+')')
 
         # ADD_SUBDIRECTORY()
         for d in self.__subdirectories:
