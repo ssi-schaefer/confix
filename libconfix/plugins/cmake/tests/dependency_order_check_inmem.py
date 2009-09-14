@@ -104,7 +104,7 @@ class DependencyOrderTest(unittest.TestCase):
                 name=const.CONFIX2_DIR,
                 entry=File(lines=["REQUIRE_SYMBOL('ext2', URGENCY_ERROR)",
                                   "PROVIDE_SYMBOL('native1')",
-                                  "LIBRARY(members=[H(filename='native1.h'), C(filename='native1.c')])"]))
+                                  "LIBRARY(basename='native1', members=[H(filename='native1.h'), C(filename='native1.c')])"]))
             native1.add(
                 name='native1.h',
                 entry=File())
@@ -131,7 +131,7 @@ class DependencyOrderTest(unittest.TestCase):
                 name=const.CONFIX2_DIR,
                 entry=File(lines=["REQUIRE_SYMBOL('native1', URGENCY_ERROR)",
                                   "PROVIDE_SYMBOL('native2')",
-                                  "LIBRARY(members=[H(filename='native2.h'), C(filename='native2.c')])"]))
+                                  "LIBRARY(basename='native2', members=[H(filename='native2.h'), C(filename='native2.c')])"]))
             native2.add(
                 name='native2.h',
                 entry=File())
@@ -167,7 +167,10 @@ class DependencyOrderTest(unittest.TestCase):
                 name=const.CONFIX2_DIR,
                 entry=File(lines=["REQUIRE_SYMBOL('native2', URGENCY_ERROR)",
                                   "PROVIDE_SYMBOL('local1')",
-                                  "LIBRARY(members=[C(filename='local1.c')])"]))
+                                  "LIBRARY(basename='local1', members=[H(filename='local1.h'), C(filename='local1.c')])"]))
+            local1.add(
+                name='local1.h',
+                entry=File())
             local1.add(
                 name='local1.c',
                 entry=File())
@@ -179,7 +182,10 @@ class DependencyOrderTest(unittest.TestCase):
                 name=const.CONFIX2_DIR,
                 entry=File(lines=["REQUIRE_SYMBOL('local1', URGENCY_ERROR)",
                                   "PROVIDE_SYMBOL('local2')",
-                                  "LIBRARY(members=[C(filename='local2.c')])"]))
+                                  "LIBRARY(basename='local2', members=[H(filename='local2.h'), C(filename='local2.c')])"]))
+            local2.add(
+                name='local2.h',
+                entry=File())
             local2.add(
                 name='local2.c',
                 entry=File())
@@ -190,7 +196,7 @@ class DependencyOrderTest(unittest.TestCase):
             bin.add(
                 name=const.CONFIX2_DIR,
                 entry=File(lines=["REQUIRE_SYMBOL('local2', URGENCY_ERROR)",
-                                  "EXECUTABLE(center=C(filename='main.c'))"]))
+                                  "EXECUTABLE(exename='exe', center=C(filename='main.c'))"]))
             bin.add(
                 name='main.c',
                 entry=File())
@@ -203,15 +209,22 @@ class DependencyOrderTest(unittest.TestCase):
 
         cmake_output_builder = find_cmake_output_builder(final_package.rootbuilder().find_entry_builder(['bin']))
         self.failUnlessEqual(cmake_output_builder.local_cmakelists().get_include_directories(),
-                             ['${final_SOURCE_DIR}',
-                              '${final_BINARY_DIR}',
-                              '${CMAKE_INSTALL_PREFIX}',
-                              'ext2-incpath1',
-                              'ext2-incpath2',
-                              'ext1-incpath1',
-                              'ext1-incpath2'])
+                             ['${final_BINARY_DIR}/local2',
+                              '${final_SOURCE_DIR}/local2',
+                              '${final_BINARY_DIR}/local1',
+                              '${final_SOURCE_DIR}/local1',
+                              '${CMAKE_INSTALL_PREFIX}/include',
+                              'ext2-incpath1', 'ext2-incpath2',
+                              'ext1-incpath1', 'ext1-incpath2'])
 
-        self.fail() # -L, -l
+        self.failUnlessEqual(cmake_output_builder.local_cmakelists().get_link_directories(),
+                             ['${CMAKE_INSTALL_PREFIX}/lib',
+                              'ext2-libpath1', 'ext2-libpath2',
+                              'ext1-libpath1', 'ext1-libpath2'])
+
+        self.failUnlessEqual(cmake_output_builder.local_cmakelists().get_target_link_libraries('exe'),
+                             ['local2', 'local1', 'native2', 'native1',
+                              'ext2-lib1', 'ext2-lib2', 'ext1-lib1', 'ext1-lib2'])
         pass
     pass
 

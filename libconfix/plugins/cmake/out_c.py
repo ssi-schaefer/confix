@@ -319,13 +319,13 @@ class LinkedOutputBuilder(Builder):
                 # natively using confix, then their path is added
                 # first.
                 if len(native_installed_libraries):
-                    cmake_output_builder.local_cmakelists().link_directories(
+                    cmake_output_builder.local_cmakelists().add_link_directories(
                         ['${CMAKE_INSTALL_PREFIX}/lib'])
                     pass
 
                 # next come the paths pointing to external libraries.
                 if len(self.__external_libpath):
-                    cmake_output_builder.local_cmakelists().link_directories(
+                    cmake_output_builder.local_cmakelists().add_link_directories(
                         self.__external_libpath)
                     pass
 

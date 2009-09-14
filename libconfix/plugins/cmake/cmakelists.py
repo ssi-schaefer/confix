@@ -123,7 +123,19 @@ class CMakeLists:
         return self.__include_directories
 
     def link_directories(self, directories):
+        """
+        Sets the directories where the linker will look in for
+        libraries. Albeit according to the CMake documentation, this
+        is rather useless for us as we like to add link directories
+        incrementally.
+        """
         self.__link_directories = directories
+        pass
+    def add_link_directories(self, directories):
+        """
+        Add a list of directories to the current linker path.
+        """
+        self.__link_directories.extend(directories)
         pass
     def get_link_directories(self):
         return self.__link_directories

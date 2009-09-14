@@ -22,12 +22,22 @@ import unittest
 class CMakeListsInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(CMakeListsInMemoryTest('link_directories'))
         self.addTest(CMakeListsInMemoryTest('target_link_libraries_tightened_after_set'))
         self.addTest(CMakeListsInMemoryTest('target_link_libraries_tightened_before_set'))
         pass
     pass
 
 class CMakeListsInMemoryTest(unittest.TestCase):
+    def link_directories(self):
+        cmakelists = CMakeLists()
+        cmakelists.link_directories(['1', '2'])
+        cmakelists.link_directories(['3', '4'])
+        self.failUnlessEqual(cmakelists.get_link_directories(), ['3', '4'])
+        cmakelists.add_link_directories(['5', '6'])
+        self.failUnlessEqual(cmakelists.get_link_directories(), ['3', '4', '5', '6'])
+        pass
+    
     def target_link_libraries_tightened_after_set(self):
         cmakelists = CMakeLists()
         cmakelists.target_link_libraries('target', ['a', 'b'])
