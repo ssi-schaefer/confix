@@ -1,5 +1,41 @@
 * STACK
 
+  * confix-output
+
+    * options
+      --overlayroot
+      --readonly-prefixes
+      --trace
+      --debug
+      --verbose
+      --message-prefix
+      --print-timings
+
+    * find a way to pass options in to the setups; candidates are
+      --short-libnames
+      --use-libtool (?)
+      --use-bulk-install
+      --use-kde-hack
+      
+
+  * port unittest package to cmake
+
+    * increment version number
+
+  * plan
+
+    * port all of 'externals' package to cmake
+
+    * port unix-tools to cmake (-> -lrt and such)
+
+    * port tcsystem to cmake
+
+    * remove setups.explicit_setup
+
+    * write equivalent implicit setups
+
+  * (interrupting the stack)
+
   * user of user
 
   * test with external library (built with cmake though). using
@@ -15,7 +51,7 @@
     * tests: order and uniqueness of libraries and library paths -
       native local, native installed, external.
 
-* CMAKE
+* CMAKE PROJECT
 
   * relocated headers (at least, test it).
 
@@ -42,7 +78,10 @@
   * CPack
     * repo file in package
     * find-modules in package
-      
+
+  * remove kde-hack from automake.
+
+  * remove fast-install crap from automake altogether.
       
 * TODO
 

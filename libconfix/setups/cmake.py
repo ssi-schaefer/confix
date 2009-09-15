@@ -1,5 +1,4 @@
-# Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
+from libconfix.core.machinery.setup import CompositeSetup
+from libconfix.plugins.cmake.setup import CMakeSetup
 
-def dir_for_automake(): return os.path.join('$(datadir)', 'confix2', 'repo')
-
+class CMake(CompositeSetup):
+    def __init__(self):
+        CompositeSetup.__init__(self, [CMakeSetup()])
+        pass
+    pass

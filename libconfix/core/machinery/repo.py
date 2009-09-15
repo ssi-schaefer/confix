@@ -15,11 +15,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.core.filesys.scan import scan_filesystem
+from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper_pickle
+from libconfix.core.utils import debug
 
 import pickle
 import os
+import re
+import types
 
 # use this like debug.trace([marshalling.REPOVERSION_TRACENAME], 'Upgrading class XXX from version 3 to version 100')
 REPOVERSION_TRACENAME = 'repoversion'
@@ -242,4 +247,58 @@ class PackageFileRepository(PackageRepository):
         return [self.package_]
     def nodes(self):
         return self.package_.nodes()
+    pass
+
+_re_repo = re.compile('^.*\\.repo$')
+
+class AutomakePackageRepository(CompositePackageRepository):
+    """
+    Composite for <prefix>/share/confix2/repo/*.repo style repo
+    collection.
+    """
+    def __init__(self, prefix):
+        assert type(prefix) in [types.ListType, types.TupleType], prefix
+
+        CompositePackageRepository.__init__(self)
+
+        repodir = prefix+['share', 'confix2', 'repo']
+        if not os.path.isdir(os.sep.join(repodir)):
+            debug.warn('No repository directory '+os.sep.join(repodir))
+            return
+        
+        fs = scan_filesystem(path=repodir)
+
+        errlist = []
+
+        for name, entry in fs.rootdirectory().entries():
+            if not isinstance(entry, VFSFile):
+                continue
+            if _re_repo.match(name):
+                try:
+                    self.add_repo(PackageFileRepository(file=entry))
+                except Error, e:
+                    errlist.append(Error('Error reading file "'+os.sep.join(entry.abspath()), [e]))
+                except Exception, e:
+                    errlist.append(Error('Error reading file "'+os.sep.join(entry.abspath()), [e]))
+                    pass
+                pass
+            pass
+
+        if len(errlist):
+            raise Error('Error in repo directory "'+os.sep.join(fs.rootdirectory().abspath())+'"', errlist)
+
+        pass
+
+    pass
+
+class AutomakeCascadedPackageRepository(CompositePackageRepository):
+    """
+    Composite for AutomakePackageRepository objects.
+    """
+    def __init__(self, prefix, readonly_prefixes):
+        CompositePackageRepository.__init__(self)
+        for dir in [prefix] + readonly_prefixes:
+            CompositePackageRepository.add_repo(self, AutomakePackageRepository(prefix=dir))
+            pass
+        pass
     pass

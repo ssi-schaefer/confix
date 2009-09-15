@@ -20,8 +20,8 @@ import libconfix.plugins.c.relocated_headers.tests.inter_package as inter_packag
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.repo import AutomakePackageRepository
 from libconfix.plugins.automake import bootstrap, configure, make, helper
-from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.testutils.persistent import PersistentTestCase
 

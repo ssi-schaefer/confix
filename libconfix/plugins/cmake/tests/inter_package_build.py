@@ -20,11 +20,11 @@ import inter_package
 from libconfix.plugins.cmake import commands
 
 from libconfix.plugins.cmake.setup import CMakeSetup
-from libconfix.plugins.automake.repo_automake import AutomakeCascadedPackageRepository
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.repo import AutomakeCascadedPackageRepository
 
 from libconfix.testutils.persistent import PersistentTestCase
 

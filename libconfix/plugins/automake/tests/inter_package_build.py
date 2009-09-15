@@ -18,11 +18,11 @@
 
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.plugins.automake import bootstrap, configure, make
-from libconfix.plugins.automake.repo_automake import AutomakeCascadedPackageRepository
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.repo import AutomakeCascadedPackageRepository
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 

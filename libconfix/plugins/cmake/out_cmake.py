@@ -20,6 +20,7 @@ from modules_dir_builder import ModulesDirectoryBuilder
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.hierarchy import confix_admin
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.utils import const
@@ -78,13 +79,10 @@ class CMakeBackendOutputBuilder(Builder):
         # there.
         if self.parentbuilder() is self.package().rootbuilder():
             # create the directory hierarchy if necessary.
-            admin_dir = self.parentbuilder().directory().get(const.ADMIN_DIR)
-            if admin_dir is None:
-                admin_dir = self.parentbuilder().directory().add(name=const.ADMIN_DIR, entry=Directory())
-                pass
-            cmake_dir = admin_dir.get('cmake')
+            admin_dir_builder = confix_admin.add_confix_admin(self.package())
+            cmake_dir = admin_dir_builder.directory().get('cmake')
             if cmake_dir is None:
-                cmake_dir = admin_dir.add(name='cmake', entry=Directory())
+                cmake_dir = admin_dir_builder.directory().add(name='cmake', entry=Directory())
                 pass
             modules_dir = cmake_dir.get('Modules')
             if modules_dir is None:
@@ -93,7 +91,6 @@ class CMakeBackendOutputBuilder(Builder):
 
             # wrap builder hierarchy around directory hierarchy. NOTE
             # that the modules directory builder is a backend builder.
-            admin_dir_builder = self.parentbuilder().add_builder(DirectoryBuilder(directory=admin_dir))
             cmake_dir_builder = admin_dir_builder.add_builder(DirectoryBuilder(directory=cmake_dir))
             self.__modules_builder = cmake_dir_builder.add_backend_dirbuilder(ModulesDirectoryBuilder(directory=modules_dir))
         else:

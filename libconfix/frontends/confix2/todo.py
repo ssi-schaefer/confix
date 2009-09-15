@@ -23,7 +23,7 @@ from libconfix.core.digraph.cycle import CycleError
 from libconfix.core.filesys.scan import scan_filesystem
 from libconfix.core.filesys.overlay_filesys import OverlayFileSystem
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.core.repo.repo_composite import CompositePackageRepository
+from libconfix.core.machinery.repo import CompositePackageRepository
 from libconfix.core.utils import debug
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error

@@ -31,6 +31,7 @@ from libconfix.core.filesys.file import FileState
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
+from libconfix.core.hierarchy import confix_admin
 from libconfix.core.utils import const
 from libconfix.core.utils import helper
 from libconfix.core.utils.paragraph import Paragraph
@@ -110,18 +111,12 @@ class AutomakeBackendOutputBuilder(Builder):
         # auxiliary files in.
         if self.parentbuilder() is self.package().rootbuilder():
             # create the directory hierarchy if necessary.
-            admin_dir = self.parentbuilder().directory().get(const.ADMIN_DIR)
-            if admin_dir is None:
-                admin_dir = self.parentbuilder().directory().add(name=const.ADMIN_DIR, entry=Directory())
-                pass
-            automake_dir = admin_dir.get('automake')
+            admin_dir_builder = confix_admin.add_confix_admin(self.package())
+            automake_dir = admin_dir_builder.directory().get('automake')
             if automake_dir is None:
-                automake_dir = admin_dir.add(name='automake', entry=Directory())
+                automake_dir = admin_dir_builder.directory().add(name='automake', entry=Directory())
                 pass
 
-            # wrap builder hierarchy around directory hierarchy. NOTE
-            # that the modules directory builder is a backend builder.
-            admin_dir_builder = self.parentbuilder().add_builder(DirectoryBuilder(directory=admin_dir))
             automake_dir_builder = admin_dir_builder.add_builder(AutoconfAuxDirBuilder(directory=automake_dir))
             pass
         pass

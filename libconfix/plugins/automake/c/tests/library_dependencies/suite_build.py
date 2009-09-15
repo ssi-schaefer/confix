@@ -18,9 +18,9 @@
 from dirstructure import DirectoryStructure
 
 from libconfix.plugins.automake import bootstrap, configure, make, makefile
-from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
 
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.repo import AutomakePackageRepository
 from libconfix.core.filesys import scan
 
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
