@@ -142,6 +142,62 @@ class BuildInfo_CommandlineMacros_CMake(BuildInformation):
     def install(self): return self
     pass
 
+class BuildInfo_Toplevel_CMakeLists_Include(BuildInformation):
+    def get_marshalling_data(self):
+        return update_marshalling_data(
+            marshalling_data=BuildInformation.get_marshalling_data(self),
+            generating_class=BuildInfo_Toplevel_CMakeLists_Include,
+            attributes={'include': self.__include},
+            version={'BuildInfo_Toplevel_CMakeLists_Include': 1})
+    def set_marshalling_data(self, data):
+        version = data[Marshallable.VERSIONS]['BuildInfo_Toplevel_CMakeLists_Include']
+        if version != 1:
+            raise MarshalledVersionUnknownError(
+                klass=self.__class__,
+                marshalled_version=version,
+                current_version=1)
+        self.__include = data[Marshallable.ATTRIBUTES]['include']
+        BuildInformation.set_marshalling_data(self, data)
+        pass
+
+    def __init__(self, include):
+        BuildInformation.__init__(self)
+        self.__include = include
+        pass
+    def unique_key(self):
+        return '%s:%s' %  (self.__class__.__name__, self.__include)
+    def include(self): return self.__include
+    def install(self): return self
+    pass
+
+class BuildInfo_Toplevel_CMakeLists_FindCall(BuildInformation):
+    def get_marshalling_data(self):
+        return update_marshalling_data(
+            marshalling_data=BuildInformation.get_marshalling_data(self),
+            generating_class=BuildInfo_Toplevel_CMakeLists_FindCall,
+            attributes={'find_call': self.__find_call},
+            version={'BuildInfo_Toplevel_CMakeLists_FindCall': 1})
+    def set_marshalling_data(self, data):
+        version = data[Marshallable.VERSIONS]['BuildInfo_Toplevel_CMakeLists_FindCall']
+        if version != 1:
+            raise MarshalledVersionUnknownError(
+                klass=self.__class__,
+                marshalled_version=version,
+                current_version=1)
+        self.__find_call = data[Marshallable.ATTRIBUTES]['find_call']
+        BuildInformation.set_marshalling_data(self, data)
+        pass
+
+    def __init__(self, find_call):
+        BuildInformation.__init__(self)
+        self.__find_call = find_call
+        pass
+    def unique_key(self):
+        return '%s:%s' %  (self.__class__.__name__, self.__find_call)
+    def find_call(self): return self.__find_call
+    def install(self): return self
+    pass
+
 class ExternalLibraryBuilder(Builder):
     def __init__(self,
                  incpath=[],

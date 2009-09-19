@@ -41,9 +41,4 @@ class ModulesDirectoryBuilder(DirectoryBuilder):
             pass
         pass
 
-    def output(self):
-        super(DirectoryBuilder, self).output()
-        # todo: add files to package
-        pass
-    
     pass

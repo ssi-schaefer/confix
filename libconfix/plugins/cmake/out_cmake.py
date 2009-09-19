@@ -17,6 +17,8 @@
 
 from cmakelists import CMakeLists
 from modules_dir_builder import ModulesDirectoryBuilder
+from external_library import BuildInfo_Toplevel_CMakeLists_Include
+from external_library import BuildInfo_Toplevel_CMakeLists_FindCall
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
@@ -98,6 +100,21 @@ class CMakeBackendOutputBuilder(Builder):
             pass
         pass
 
+    def relate(self, node, digraph, topolist):
+        super(CMakeBackendOutputBuilder, self).relate(node, digraph, topolist)
+
+        for n in topolist:
+            for bi in n.buildinfos():
+                if isinstance(bi, BuildInfo_Toplevel_CMakeLists_Include):
+                    self.__top_cmakelists.add_include(bi.include())
+                    continue
+                if isinstance(bi, BuildInfo_Toplevel_CMakeLists_FindCall):
+                    self.__top_cmakelists.add_find_call(bi.find_call())
+                    continue
+                pass
+            pass
+        pass
+                    
     def output(self):
         # if in the top directory, our CMakeLists.txt file needs to
         # contain a lot of boilerplate things, in addition to its
@@ -132,6 +149,12 @@ class CMakeBackendOutputBuilder(Builder):
 
         # CMake requires us to write something like that.
         top_cmakelists.add_cmake_minimum_required('VERSION', '2.6')
+
+        # in case we add our own modules, point the include path
+        # there.
+        top_cmakelists.add_set(
+            'CMAKE_MODULE_PATH',
+            '${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/%s/cmake/Modules"' % const.ADMIN_DIR)
 
         # rpath wizardry
         self.__apply_rpath_settings(top_cmakelists)

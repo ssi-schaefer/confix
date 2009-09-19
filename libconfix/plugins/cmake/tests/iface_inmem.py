@@ -20,6 +20,8 @@ from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 from libconfix.plugins.cmake.external_library import ExternalLibraryBuilder
 from libconfix.plugins.cmake.external_library import BuildInfo_IncludePath_External_CMake
 from libconfix.plugins.cmake.external_library import BuildInfo_LibraryPath_External_CMake
+from libconfix.plugins.cmake.external_library import BuildInfo_Toplevel_CMakeLists_Include
+from libconfix.plugins.cmake.external_library import BuildInfo_Toplevel_CMakeLists_FindCall
 from libconfix.plugins.cmake.external_library import BuildInfo_Library_External_CMake
 from libconfix.plugins.cmake.external_library import BuildInfo_CommandlineMacros_CMake
 
@@ -29,14 +31,19 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import const
 
+import itertools
 import unittest
 
 class InterfaceInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(InterfaceInMemoryTest('test_CMAKE_ADD_CONFIX_MODULE'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_local_only'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_and_local'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_only'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_and_local'))
         self.addTest(InterfaceInMemoryTest('test_CMAKE_EXTERNAL_LIBRARY'))
         pass
     pass
@@ -67,38 +74,92 @@ class InterfaceInMemoryTest(unittest.TestCase):
         
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE(self):
+    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_local_only(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE")',
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_INCLUDE_local_only")',
                               'PACKAGE_VERSION("1.2.3")']))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=['CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE("include1")',
-                              'CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE("include2")']))
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_INCLUDE("include1", CMAKE_BUILDINFO_LOCAL)',
+                              'CMAKE_CMAKELISTS_ADD_INCLUDE("include2", CMAKE_BUILDINFO_LOCAL)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[ExplicitDirectorySetup(), CMakeSetup()])
         package.boil(external_nodes=[])
         package.output()
 
-        self.failUnless('${test_CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE_SOURCE_DIR}/confix-admin/cmake/Modules/include1'
-                        in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
-        self.failUnless('${test_CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE_SOURCE_DIR}/confix-admin/cmake/Modules/include2'
-                        in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
+        self.failUnless('include1' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
+        self.failUnless('include2' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
+
+        for buildinfo in package.rootbuilder().buildinfos():
+            self.failIf(isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_Include))
+            pass
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL(self):
+    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_INCLUDE")',
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only")',
                               'PACKAGE_VERSION("1.2.3")']))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=['CMAKE_CMAKELISTS_ADD_FIND_CALL("call1")',
-                              'CMAKE_CMAKELISTS_ADD_FIND_CALL("call2")']))
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_INCLUDE("include", CMAKE_BUILDINFO_PROPAGATE)']))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ExplicitDirectorySetup(), CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        self.failIf('include' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
+
+        for buildinfo in package.rootbuilder().buildinfos():
+            if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_Include):
+                break
+            pass
+        else:
+            self.fail()
+            pass
+        pass
+
+    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_and_local(self):
+        fs = FileSystem(path=[''])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_and_local")',
+                              'PACKAGE_VERSION("1.2.3")']))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_INCLUDE("include", (CMAKE_BUILDINFO_LOCAL, CMAKE_BUILDINFO_PROPAGATE))']))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ExplicitDirectorySetup(), CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        self.failUnless('include' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
+
+        for buildinfo in package.rootbuilder().buildinfos():
+            if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_Include):
+                break
+            pass
+        else:
+            self.fail()
+            pass
+        pass
+
+    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only(self):
+        fs = FileSystem(path=[''])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only")',
+                              'PACKAGE_VERSION("1.2.3")']))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_FIND_CALL("call1", CMAKE_BUILDINFO_LOCAL)',
+                              'CMAKE_CMAKELISTS_ADD_FIND_CALL("call2", CMAKE_BUILDINFO_LOCAL)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[ExplicitDirectorySetup(), CMakeSetup()])
@@ -107,6 +168,62 @@ class InterfaceInMemoryTest(unittest.TestCase):
 
         self.failUnless('call1' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
         self.failUnless('call2' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
+
+        for buildinfo in package.rootbuilder().buildinfos():
+            self.failIf(isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_FindCall))
+            pass
+        pass
+
+    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_only(self):
+        fs = FileSystem(path=[''])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_only")',
+                              'PACKAGE_VERSION("1.2.3")']))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_FIND_CALL("call", CMAKE_BUILDINFO_PROPAGATE)']))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ExplicitDirectorySetup(), CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        self.failIf('call' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
+
+        for buildinfo in package.rootbuilder().buildinfos():
+            if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_FindCall):
+                break
+            pass
+        else:
+            self.fail()
+            pass
+        pass
+
+    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_and_local(self):
+        fs = FileSystem(path=[''])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_and_local")',
+                              'PACKAGE_VERSION("1.2.3")']))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_FIND_CALL("call", (CMAKE_BUILDINFO_PROPAGATE, CMAKE_BUILDINFO_LOCAL))']))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ExplicitDirectorySetup(), CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        self.failUnless('call' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
+
+        for buildinfo in package.rootbuilder().buildinfos():
+            if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_FindCall):
+                break
+            pass
+        else:
+            self.fail()
+            pass
         pass
 
     def test_CMAKE_EXTERNAL_LIBRARY(self):

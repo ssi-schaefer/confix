@@ -36,21 +36,20 @@ import unittest
 class ExternalLibraryBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ExternalLibraryTest('test'))
+        self.addTest(ExternalLibraryTest('test_nopropagate'))
+        self.addTest(ExternalLibraryTest('test_pthread_propagate'))
         pass
     pass
 
 class ExternalLibraryTest(PersistentTestCase):
-    def setUp(self):
-        super(ExternalLibraryTest, self).setUp()
-        
-        self.__fs = FileSystem(path=self.rootpath())
+    def test_nopropagate(self):
+        fs = FileSystem(path=self.rootpath())
 
-        source = self.__fs.rootdirectory().add(
+        source = fs.rootdirectory().add(
             name='source',
             entry=Directory())
 
-        build = self.__fs.rootdirectory().add(
+        build = fs.rootdirectory().add(
             name='build',
             entry=Directory())
         build.add(
@@ -60,7 +59,7 @@ class ExternalLibraryTest(PersistentTestCase):
             name='user-of-external-library',
             entry=Directory())
 
-        self.__fs.rootdirectory().add(
+        fs.rootdirectory().add(
             name='install',
             entry=Directory())
 
@@ -131,8 +130,8 @@ class ExternalLibraryTest(PersistentTestCase):
                                   "CMAKE_ADD_CONFIX_MODULE(",
                                   "    name='FindMyExternalLibrary.cmake',",
                                   "    lines=['''"+module_content+"'''])",
-                                  "CMAKE_CMAKELISTS_ADD_INCLUDE_CONFIX_MODULE('FindMyExternalLibrary.cmake')",
-                                  "CMAKE_CMAKELISTS_ADD_FIND_CALL('FindMyExternalLibrary()')",
+                                  "CMAKE_CMAKELISTS_ADD_INCLUDE(include='FindMyExternalLibrary', flags=CMAKE_BUILDINFO_PROPAGATE)",
+                                  "CMAKE_CMAKELISTS_ADD_FIND_CALL('FindMyExternalLibrary()', flags=CMAKE_BUILDINFO_PROPAGATE)",
                                   "CMAKE_EXTERNAL_LIBRARY(",
                                   "    incpath=['${my_external_library_includepath}'],",
                                   "    libpath=['${my_external_library_libpath}'],",
@@ -188,8 +187,7 @@ class ExternalLibraryTest(PersistentTestCase):
             pass
         pass
 
-    def test(self):
-        external_library_source = self.__fs.rootdirectory().find(['source', 'external-library'])
+        external_library_source = fs.rootdirectory().find(['source', 'external-library'])
         external_library_package = LocalPackage(rootdirectory=external_library_source,
                                                 setups=[ExplicitDirectorySetup(),
                                                         ExplicitCSetup(),
@@ -197,17 +195,17 @@ class ExternalLibraryTest(PersistentTestCase):
         external_library_package.boil(external_nodes=[])
         external_library_package.output()
 
-        self.__fs.sync()
+        fs.sync()
 
-        external_library_builddir = self.__fs.rootdirectory().find(['build', 'external-library'])
-        installdir = self.__fs.rootdirectory().find(['install'])
+        external_library_builddir = fs.rootdirectory().find(['build', 'external-library'])
+        installdir = fs.rootdirectory().find(['install'])
 
         commands.cmake(packageroot=external_library_source.abspath(),
                        builddir=external_library_builddir.abspath(),
                        args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(installdir.abspath())])
         commands.make(builddir=external_library_builddir.abspath(), args=['install'])
 
-        user_source = self.__fs.rootdirectory().find(['source', 'user-of-external-library'])
+        user_source = fs.rootdirectory().find(['source', 'user-of-external-library'])
         user_package = LocalPackage(rootdirectory=user_source,
                                     setups=[ExplicitDirectorySetup(),
                                             ExplicitCSetup(),
@@ -215,14 +213,14 @@ class ExternalLibraryTest(PersistentTestCase):
         user_package.boil(external_nodes=[])
         user_package.output()
 
-        self.__fs.sync()
+        fs.sync()
 
-        user_builddir = self.__fs.rootdirectory().find(['build', 'user-of-external-library'])
+        user_builddir = fs.rootdirectory().find(['build', 'user-of-external-library'])
 
         commands.cmake(packageroot=user_source.abspath(),
                        builddir=user_builddir.abspath(),
                        args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(installdir.abspath())])
-        commands.make(builddir=user_builddir.abspath(), args=['VERBOSE=yes', 'install'])
+        commands.make(builddir=user_builddir.abspath(), args=['install'])
 
         # 'inline-string' prints the string that the
         # 'user-of-external-library' package's confix code defined on
@@ -239,7 +237,83 @@ class ExternalLibraryTest(PersistentTestCase):
         self.failUnlessEqual(pipe.stdout.next(), 'my-external-library-linked-string\n')
 
         pass
-                              
+
+    # mimic our jf-externals package: one package has a confix module
+    # that contains the pthread test, and the other uses it to pull in
+    # the intelligence of how to use pthread.
+    def test_pthread_propagate(self):
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+
+        external_source = source.add(
+            name='external',
+            entry=Directory())
+        external_source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('external')",
+                              "PACKAGE_VERSION('1.2.3')",
+                              "from libconfix.setups.boilerplate import Boilerplate",
+                              "from libconfix.setups.c import C",
+                              "from libconfix.setups.cmake import CMake",
+                              "SETUPS([Boilerplate(), CMake()])"
+                              ]))
+        external_source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["PROVIDE_SYMBOL('pthread')",
+                              "CMAKE_CMAKELISTS_ADD_FIND_CALL('FIND_PACKAGE(Threads)', CMAKE_BUILDINFO_PROPAGATE)",
+                              "CMAKE_EXTERNAL_LIBRARY(libs=['${CMAKE_THREAD_LIBS_INIT}'])"]))
+
+        external_package = LocalPackage(rootdirectory=external_source, setups=None)
+        external_package.boil(external_nodes=[])
+        external_installed_package = external_package.install()
+
+
+        user_source = source.add(
+            name='user',
+            entry=Directory())
+        user_source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('user')",
+                              "PACKAGE_VERSION('1.2.3')",
+                              "from libconfix.setups.boilerplate import Boilerplate",
+                              "from libconfix.setups.c import C",
+                              "from libconfix.setups.cmake import CMake",
+                              "SETUPS([Boilerplate(), C(), CMake()])"
+                              ]))
+        user_source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["REQUIRE_SYMBOL('pthread', REQUIRED)",
+                              "EXECUTABLE(exename='pthread-user', center=C(filename='main.c'))"]))
+        user_source.add(
+            name='main.c',
+            entry=File(lines=["#include <pthread.h>",
+                              "int main(void) {",
+                              "    pthread_key_t key;",
+                              "    pthread_key_create(&key, NULL);",
+                              "}"]))
+
+
+        user_package = LocalPackage(rootdirectory=user_source, setups=None)
+        user_package.boil(external_nodes=external_installed_package.nodes())
+        user_package.output()
+
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        fs.sync()
+
+        commands.cmake(packageroot=user_source.abspath(),
+                       builddir=build.abspath(),
+                       args=[])
+        commands.make(builddir=build.abspath(), args=[])
+
+        pass
+
+    pass
+        
 if __name__ == '__main__':
     unittest.TextTestRunner().run(ExternalLibraryBuildSuite())
     pass

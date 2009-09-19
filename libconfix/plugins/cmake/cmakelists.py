@@ -28,8 +28,12 @@ class CMakeLists:
         # {"name": "value"}
         self.__cmake_minimum_required = {}
 
+        # CMake: SET()
+        # { "name": "value" }
+        self.__sets = {}
+
         # CMake: INCLUDE()
-        # set("included file without")
+        # set("include file")
         self.__includes = set()
 
         # (no CMake pendant. we just want to place calls to find
@@ -74,10 +78,6 @@ class CMakeLists:
         # [('name', bool all, ['depends'])]
         self.__custom_targets = []
 
-        # CMake: SET()
-        # { "name": "value" }
-        self.__sets = {}
-
         # CMake: INSTALL(FILES ...)
         # [(['file'], 'destination')]
         self.__install__files = []
@@ -100,6 +100,13 @@ class CMakeLists:
         pass
     def get_cmake_minimum_required(self, name):
         return self.__cmake_minimum_required.get(name)
+
+    def add_set(self, name, value):
+        assert not name in self.__sets
+        self.__sets[name] = value
+        pass
+    def get_set(self, name):
+        return self.__sets.get(name)
 
     def add_include(self, include):
         self.__includes.add(include)
@@ -207,13 +214,6 @@ class CMakeLists:
         self.__custom_targets.append((name, all, depends))
         pass
 
-    def add_set(self, name, value):
-        assert not name in self.__sets
-        self.__sets[name] = value
-        pass
-    def get_set(self, name):
-        return self.__sets.get(name)
-
     def add_install__files(self, files, destination):
         self.__install__files.append((files, destination))
         pass
@@ -234,6 +234,11 @@ class CMakeLists:
         # CMAKE_MINIMUM_REQUIRED()
         for (name, value) in self.__cmake_minimum_required.iteritems():
             lines.append('CMAKE_MINIMUM_REQUIRED('+name+' '+value+')')
+            pass
+
+        # SET()
+        for (name, value) in self.__sets.iteritems():
+            lines.append('SET('+name+' '+value+')')
             pass
 
         # INCLUDE()
@@ -324,11 +329,6 @@ class CMakeLists:
                 lines.append('    DEPENDS '+' '.join(depends))
                 pass
             lines.append(')')
-            pass
-
-        # SET()
-        for (name, value) in self.__sets.iteritems():
-            lines.append('SET('+name+' '+value+')')
             pass
 
         # INSTALL(FILES ...)
