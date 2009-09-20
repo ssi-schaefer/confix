@@ -21,6 +21,7 @@ from libconfix.core.machinery.repo import \
      update_marshalling_data, \
      MarshalledVersionUnknownError, \
      Marshallable
+from libconfix.core.utils import helper
 
 class BuildInfo_IncludePath_External_CMake(BuildInformation):
     def get_marshalling_data(self):
@@ -251,6 +252,38 @@ class BuildInfo_CXXFLAGS_CMake(BuildInformation):
     def unique_key(self):
         return '%s:%s' % (self.__class__.__name__, str(self.__cxxflags))
     def cxxflags(self): return self.__cxxflags
+    def install(self): return self
+    pass
+
+class BuildInfo_CMakeModule(BuildInformation):
+    def get_marshalling_data(self):
+        return update_marshalling_data(
+            marshalling_data=BuildInformation.get_marshalling_data(self),
+            generating_class=BuildInfo_CMakeModule,
+            attributes={'name': self.__name,
+                        'lines': self.__lines},
+            version={'BuildInfo_CMakeModule': 1})
+    def set_marshalling_data(self, data):
+        version = data[Marshallable.VERSIONS]['BuildInfo_CMakeModule']
+        if version != 1:
+            raise MarshalledVersionUnknownError(
+                klass=self.__class__,
+                marshalled_version=version,
+                current_version=1)
+        self.__name = data[Marshallable.ATTRIBUTES]['name']
+        self.__lines = data[Marshallable.ATTRIBUTES]['lines']
+        BuildInformation.set_marshalling_data(self, data)
+        pass
+
+    def __init__(self, name, lines):
+        BuildInformation.__init__(self)
+        self.__name = name
+        self.__lines = lines
+        pass
+    def unique_key(self):
+        return '%s:%s:%s' % (self.__class__.__name__, self.__name, helper.md5_hexdigest_from_lines(self.__lines))
+    def name(self): return self.__name
+    def lines(self): return self.__lines
     def install(self): return self
     pass
 

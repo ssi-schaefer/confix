@@ -40,7 +40,7 @@ import unittest
 class InterfaceInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_ADD_CONFIX_MODULE'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_ADD_MODULE_FILE'))
 
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_local_only'))
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only'))
@@ -59,20 +59,22 @@ class InterfaceInMemorySuite(unittest.TestSuite):
     pass
 
 class InterfaceInMemoryTest(unittest.TestCase):
-    def test_CMAKE_ADD_CONFIX_MODULE(self):
+    def test_CMAKE_ADD_MODULE_FILE(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
-            entry=File(lines=['PACKAGE_NAME("test_CMAKE_ADD_CONFIX_MODULE")',
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_ADD_MODULE_FILE")',
                               'PACKAGE_VERSION("1.2.3")']))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=['CMAKE_ADD_CONFIX_MODULE(',
+            entry=File(lines=['CMAKE_ADD_MODULE_FILE(',
                               '    name="file1",',
-                              '    lines=["xxx"])',
-                              'CMAKE_ADD_CONFIX_MODULE(',
+                              '    lines=["xxx"],'
+                              '    flags=CMAKE_BUILDINFO_LOCAL)',
+                              'CMAKE_ADD_MODULE_FILE(',
                               '    name="file2",',
-                              '    lines=["xxx"])']))
+                              '    lines=["xxx"],',
+                              '    flags=CMAKE_BUILDINFO_LOCAL)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[ExplicitDirectorySetup(), CMakeSetup()])

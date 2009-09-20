@@ -127,9 +127,10 @@ class ExternalLibraryTest(PersistentTestCase):
             confix_source.add(
                 name=const.CONFIX2_DIR,
                 entry=File(lines=["PROVIDE_SYMBOL('my-external-library')",
-                                  "CMAKE_ADD_CONFIX_MODULE(",
+                                  "CMAKE_ADD_MODULE_FILE(",
                                   "    name='FindMyExternalLibrary.cmake',",
-                                  "    lines=['''"+module_content+"'''])",
+                                  "    lines=['''"+module_content+"'''],",
+                                  "    flags=CMAKE_BUILDINFO_LOCAL)",
                                   "CMAKE_CMAKELISTS_ADD_INCLUDE(include='FindMyExternalLibrary', flags=CMAKE_BUILDINFO_PROPAGATE)",
                                   "CMAKE_CMAKELISTS_ADD_FIND_CALL('FindMyExternalLibrary()', flags=CMAKE_BUILDINFO_PROPAGATE)",
                                   "CMAKE_EXTERNAL_LIBRARY(",

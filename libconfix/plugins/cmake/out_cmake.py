@@ -19,6 +19,7 @@ from cmakelists import CMakeLists
 from modules_dir_builder import ModulesDirectoryBuilder
 from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
 from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
+from buildinfo import BuildInfo_CMakeModule
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
@@ -110,6 +111,9 @@ class CMakeBackendOutputBuilder(Builder):
                     continue
                 if isinstance(bi, BuildInfo_Toplevel_CMakeLists_FindCall):
                     self.__top_cmakelists.add_find_call(bi.find_call())
+                    continue
+                if isinstance(bi, BuildInfo_CMakeModule):
+                    self.__modules_builder.add_module_file(bi.name(), bi.lines())
                     continue
                 pass
             pass

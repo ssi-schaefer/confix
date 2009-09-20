@@ -20,6 +20,7 @@ from external_library import ExternalLibraryBuilder
 from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
 from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
 from buildinfo import BuildInfo_CommandlineMacros_CMake
+from buildinfo import BuildInfo_CMakeModule
 from pkg_config import PkgConfigLibraryBuilder
 
 from libconfix.core.machinery.setup import Setup
@@ -47,7 +48,7 @@ class CMakeInterfaceProxy(InterfaceProxy):
         self.add_global('CMAKE_BUILDINFO_LOCAL', getattr(self, 'CMAKE_BUILDINFO_LOCAL'))
 
         self.add_global('CMAKE_CMAKELISTS_ADD_INCLUDE', getattr(self, 'CMAKE_CMAKELISTS_ADD_INCLUDE'))
-        self.add_global('CMAKE_ADD_CONFIX_MODULE', getattr(self, 'CMAKE_ADD_CONFIX_MODULE'))
+        self.add_global('CMAKE_ADD_MODULE_FILE', getattr(self, 'CMAKE_ADD_MODULE_FILE'))
         self.add_global('CMAKE_CMAKELISTS_ADD_FIND_CALL', getattr(self, 'CMAKE_CMAKELISTS_ADD_FIND_CALL'))
         self.add_global('CMAKE_CMDLINE_MACROS', getattr(self, 'CMAKE_CMDLINE_MACROS'))
         self.add_global('CMAKE_EXTERNAL_LIBRARY', getattr(self, 'CMAKE_EXTERNAL_LIBRARY'))
@@ -70,8 +71,18 @@ class CMakeInterfaceProxy(InterfaceProxy):
             pass
         pass
 
-    def CMAKE_ADD_CONFIX_MODULE(self, name, lines):
-        find_cmake_output_builder(self.__dirbuilder).add_module_file(name, lines)
+    def CMAKE_ADD_MODULE_FILE(self, name, lines, flags):
+        if type(flags) is int:
+            flags = (flags,)
+            pass
+        if type(flags) not in (tuple, list):
+            raise Error('CMAKE_ADD_MODULE_FILE(): "flags" parameter must be int, list or tuple')
+        if self.CMAKE_BUILDINFO_LOCAL in flags:
+            find_cmake_output_builder(self.__dirbuilder).add_module_file(name, lines)
+            pass
+        if self.CMAKE_BUILDINFO_PROPAGATE in flags:
+            self.__dirbuilder.add_buildinfo(BuildInfo_CMakeModule(name=name, lines=lines))
+            pass
         pass
 
     def CMAKE_CMAKELISTS_ADD_FIND_CALL(self, find_call, flags):

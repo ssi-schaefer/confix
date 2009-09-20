@@ -1,6 +1,8 @@
 * STACK
 
-  * port tcsystem to cmake
+  * modfile distribution
+
+    * flags parsing centrally
 
   * plan
 

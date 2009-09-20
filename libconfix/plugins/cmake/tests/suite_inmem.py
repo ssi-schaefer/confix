@@ -24,6 +24,7 @@ from inter_package_inmem import InterPackageInMemorySuite
 from iface_inmem import InterfaceInMemorySuite
 from dependency_order_check_inmem import DependencyOrderInMemorySuite
 from external_library_inmem import ExternalLibraryInMemorySuite
+from buildinfo_inmem import BuildInformationInMemorySuite
 
 import unittest
 
@@ -39,6 +40,7 @@ class CMakeInMemorySuite(unittest.TestSuite):
         self.addTest(InterfaceInMemorySuite())
         self.addTest(DependencyOrderInMemorySuite())
         self.addTest(ExternalLibraryInMemorySuite())
+        self.addTest(BuildInformationInMemorySuite())
         pass
 
     pass
