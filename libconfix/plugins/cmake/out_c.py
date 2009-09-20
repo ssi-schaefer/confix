@@ -15,10 +15,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from external_library import BuildInfo_IncludePath_External_CMake
-from external_library import BuildInfo_LibraryPath_External_CMake
-from external_library import BuildInfo_Library_External_CMake
-from external_library import BuildInfo_CommandlineMacros_CMake
+from buildinfo import BuildInfo_IncludePath_External_CMake
+from buildinfo import BuildInfo_LibraryPath_External_CMake
+from buildinfo import BuildInfo_Library_External_CMake
+from buildinfo import BuildInfo_CommandlineMacros_CMake
+from buildinfo import BuildInfo_CFLAGS_CMake
+from buildinfo import BuildInfo_CXXFLAGS_CMake
 
 from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 
@@ -131,6 +133,8 @@ class CompiledOutputBuilder(Builder):
         self.__have_external_incpath = set()
         self.__external_incpath = []
         self.__external_cmdlinemacros = {}
+        self.__external_cflags = []
+        self.__external_cxxflags = []
 
         for n in topolist:
             for bi in n.buildinfos():
@@ -152,6 +156,12 @@ class CompiledOutputBuilder(Builder):
                         self.__external_cmdlinemacros[k] = v
                         pass
                     continue
+                if isinstance(bi, BuildInfo_CFLAGS_CMake):
+                    self.__external_cflags.extend(bi.cflags())
+                    continue
+                if isinstance(bi, BuildInfo_CXXFLAGS_CMake):
+                    self.__external_cxxflags.extend(bi.cxxflags())
+                    continue
                 pass
             pass
 
@@ -159,6 +169,8 @@ class CompiledOutputBuilder(Builder):
 
     def output(self):
         super(CompiledOutputBuilder, self).output()
+
+        have_compiled = False
 
         native_local_include_dirs = []
         native_local_include_dirs_set = set()
@@ -168,6 +180,7 @@ class CompiledOutputBuilder(Builder):
         for compiled_builder in self.parentbuilder().iter_builders():
             if not isinstance(compiled_builder, CompiledCBuilder):
                 continue
+            have_compiled = True
             for include_directory in compiled_builder.native_local_include_dirs():
                 slashed_incdir = '/'.join(include_directory)
                 if slashed_incdir in native_local_include_dirs_set:
@@ -182,6 +195,9 @@ class CompiledOutputBuilder(Builder):
                 using_public_native_installed_headers = True
                 pass
             pass
+
+        if not have_compiled:
+            return
 
         cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
 
@@ -226,6 +242,10 @@ class CompiledOutputBuilder(Builder):
                 pass
             cmake_output_builder.local_cmakelists().add_definitions([definition])
             pass
+
+        # cflags and cxxflags, likewise
+        cmake_output_builder.local_cmakelists().add_definitions(self.__external_cflags)
+        cmake_output_builder.local_cmakelists().add_definitions(self.__external_cxxflags)
         pass
     pass
 

@@ -101,7 +101,7 @@ class InterPackageBuildTest(PersistentTestCase):
         lo_package = LocalPackage(
             rootdirectory=lo_source,
             setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
-        lo_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
+        lo_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).iter_nodes())
         lo_package.output()
         fs.sync()
 
@@ -123,7 +123,7 @@ class InterPackageBuildTest(PersistentTestCase):
         hi_package = LocalPackage(
             rootdirectory=hi_source,
             setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
-        hi_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
+        hi_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).iter_nodes())
         hi_package.output()
         fs.sync()
 
@@ -143,7 +143,7 @@ class InterPackageBuildTest(PersistentTestCase):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterPackageBuildSuite())
+    unittest.TextTestRunner().run(ImplicitInterPackageBuildSuite())
     pass
 
 

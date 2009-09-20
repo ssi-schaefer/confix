@@ -17,8 +17,8 @@
 
 from cmakelists import CMakeLists
 from modules_dir_builder import ModulesDirectoryBuilder
-from external_library import BuildInfo_Toplevel_CMakeLists_Include
-from external_library import BuildInfo_Toplevel_CMakeLists_FindCall
+from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
+from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder

@@ -168,7 +168,7 @@ class InterPackageBuildBase(PersistentTestCase):
 
             # confixize, bootstrap, and install package 'hi'
 
-            self.hi_package_.boil(external_nodes=repo.nodes())
+            self.hi_package_.boil(external_nodes=repo.iter_nodes())
             self.hi_package_.output()
             self.hi_fs_.sync()
 
@@ -296,7 +296,7 @@ class InstalledIncludeDirTest(PersistentTestCase):
         
         package = LocalPackage(rootdirectory=hi_source,
                                setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
-        package.boil(external_nodes=repo.nodes())
+        package.boil(external_nodes=repo.iter_nodes())
         package.output()
         fs.sync()
 

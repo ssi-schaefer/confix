@@ -244,37 +244,52 @@ class RelateBasic(unittest.TestCase):
     def testPropagatedLibraryInfo(self):
 
         # hi1 depends on lo
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi1dir_lib_builder_.direct_libraries())
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi1dir_lib_builder_.topo_libraries())
+        self.failUnless(self.lodir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.hi1dir_lib_builder_.direct_libraries()))
+        self.failUnless(self.lodir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.hi1dir_lib_builder_.topo_libraries()))
         self.failUnlessEqual(len(self.hi1dir_lib_builder_.topo_libraries()), 1)
         self.failUnlessEqual(len(self.hi1dir_lib_builder_.direct_libraries()), 1)
 
         # hi2 depends on lo
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi2dir_lib_builder_.direct_libraries())
-        self.failUnless(self.lodir_lib_libinfo_ in self.hi2dir_lib_builder_.topo_libraries())
+        self.failUnless(self.lodir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.hi2dir_lib_builder_.direct_libraries()))
+        self.failUnless(self.lodir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.hi2dir_lib_builder_.topo_libraries()))
         self.failUnlessEqual(len(self.hi2dir_lib_builder_.topo_libraries()), 1)
         self.failUnlessEqual(len(self.hi2dir_lib_builder_.direct_libraries()), 1)
 
         # highest depends on lo (indirect) and hi1, hi2 (direct)
         self.failIf(self.lodir_lib_libinfo_ in self.highestdir_lib_builder_.direct_libraries())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.direct_libraries())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.direct_libraries())
+        self.failUnless(self.hi1dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.highestdir_lib_builder_.direct_libraries()))
+        self.failUnless(self.hi2dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.highestdir_lib_builder_.direct_libraries()))
 
-        self.failUnless(self.lodir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries())
+        self.failUnless(self.lodir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.highestdir_lib_builder_.topo_libraries()))
+        self.failUnless(self.hi1dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.highestdir_lib_builder_.topo_libraries()))
+        self.failUnless(self.hi2dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.highestdir_lib_builder_.topo_libraries()))
 
         self.failUnlessEqual(len(self.highestdir_lib_builder_.topo_libraries()), 3)
         self.failUnlessEqual(len(self.highestdir_lib_builder_.direct_libraries()), 2)
 
         # exe depends on lo (indirect) and hi1, hi2 (direct)
-        self.failIf(self.lodir_lib_libinfo_ in self.exedir_exe_builder_.direct_libraries())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.direct_libraries())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.direct_libraries())
+        self.failIf(self.lodir_lib_libinfo_.basename() in
+                    (bi.basename() for bi in self.exedir_exe_builder_.direct_libraries()))
+        self.failUnless(self.hi1dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.exedir_exe_builder_.direct_libraries()))
+        self.failUnless(self.hi2dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.exedir_exe_builder_.direct_libraries()))
 
-        self.failUnless(self.lodir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries())
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries())
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries())
+        self.failUnless(self.lodir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.exedir_exe_builder_.topo_libraries()))
+        self.failUnless(self.hi1dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.exedir_exe_builder_.topo_libraries()))
+        self.failUnless(self.hi2dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.exedir_exe_builder_.topo_libraries()))
 
         self.failUnlessEqual(len(self.exedir_exe_builder_.topo_libraries()), 3)
         self.failUnlessEqual(len(self.exedir_exe_builder_.direct_libraries()), 2)
@@ -301,11 +316,13 @@ class RelateBasic(unittest.TestCase):
         self.failUnlessEqual(len(self.highestdir_lib_builder_.topo_libraries()), 3)
 
         # lo is the lowest in the dependency list, so it must come at the end
-        self.failUnless(self.lodir_lib_libinfo_ is self.highestdir_lib_builder_.topo_libraries()[2])
+        self.failUnlessEqual(self.lodir_lib_libinfo_.basename(), self.highestdir_lib_builder_.topo_libraries()[2].basename())
 
         # hi1 and hi2 are equal orders, so they must come either first or second
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries()[0:2])
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.highestdir_lib_builder_.topo_libraries()[0:2])
+        self.failUnless(self.hi1dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.highestdir_lib_builder_.topo_libraries()[0:2]))
+        self.failUnless(self.hi2dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.highestdir_lib_builder_.topo_libraries()[0:2]))
 
         # exe
         # ---
@@ -314,11 +331,13 @@ class RelateBasic(unittest.TestCase):
         self.failUnlessEqual(len(self.highestdir_lib_builder_.topo_libraries()), 3)
 
         # lo is the lowest in the dependency list, so it must come at the end
-        self.failUnless(self.lodir_lib_libinfo_ is self.exedir_exe_builder_.topo_libraries()[2])
+        self.failUnlessEqual(self.lodir_lib_libinfo_.basename(), self.exedir_exe_builder_.topo_libraries()[2].basename())
 
         # hi1 and hi2 are equal orders, so they must come either first or second
-        self.failUnless(self.hi1dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries()[0:2])
-        self.failUnless(self.hi2dir_lib_libinfo_ in self.exedir_exe_builder_.topo_libraries()[0:2])
+        self.failUnless(self.hi1dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.exedir_exe_builder_.topo_libraries()[0:2]))
+        self.failUnless(self.hi2dir_lib_libinfo_.basename() in
+                        (bi.basename() for bi in self.exedir_exe_builder_.topo_libraries()[0:2]))
 
         pass
     

@@ -28,7 +28,6 @@ class CSetup(CompositeSetup):
             self,
             setups=[COutputSetup(use_libtool=use_libtool),
                     ExternalLibrarySetup(),
-                    LibraryDependenciesFinderSetup(use_libtool=use_libtool),
                     InterixSetup()])
         pass
     pass

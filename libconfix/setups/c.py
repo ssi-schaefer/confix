@@ -17,9 +17,16 @@
 
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
+from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
 class C(CompositeSetup):
     def __init__(self):
         CompositeSetup.__init__(self, [ExplicitCSetup()])
+        pass
+    pass
+
+class AutoC(CompositeSetup):
+    def __init__(self, short_libnames):
+        CompositeSetup.__init__(self, [DefaultCSetup(short_libnames)])
         pass
     pass

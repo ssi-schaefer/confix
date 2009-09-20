@@ -16,10 +16,19 @@
 # USA
 
 from libconfix.core.machinery.setup import CompositeSetup
+from libconfix.core.machinery.creator import CreatorSetup
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
+from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 
 class Boilerplate(CompositeSetup):
     def __init__(self):
         CompositeSetup.__init__(self, [ExplicitDirectorySetup()])
         pass
     pass
+
+class AutoBoilerplate(CompositeSetup):
+    def __init__(self):
+        CompositeSetup.__init__(self, [ImplicitDirectorySetup(), CreatorSetup()])
+        pass
+    pass
+

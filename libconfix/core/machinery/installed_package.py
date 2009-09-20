@@ -23,13 +23,13 @@ import types
 
 class InstalledPackage(Package):
     def get_marshalling_data(self):
-        assert self.name_ is not None
+        assert self.__name is not None
         return update_marshalling_data(
             marshalling_data=Package.get_marshalling_data(self),
             generating_class=InstalledPackage,
-            attributes={'name': self.name_,
-                        'version': self.version_,
-                        'nodes': self.nodes_},
+            attributes={'name': self.__name,
+                        'version': self.__version,
+                        'nodes': self.__nodes},
             version={'core.InstalledPackage': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['core.InstalledPackage']
@@ -38,19 +38,19 @@ class InstalledPackage(Package):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.name_ = data[Marshallable.ATTRIBUTES]['name']
-        self.version_ = data[Marshallable.ATTRIBUTES]['version']
-        self.nodes_ = data[Marshallable.ATTRIBUTES]['nodes']
+        self.__name = data[Marshallable.ATTRIBUTES]['name']
+        self.__version = data[Marshallable.ATTRIBUTES]['version']
+        self.__nodes = data[Marshallable.ATTRIBUTES]['nodes']
         Package.set_marshalling_data(self, data)
         pass
     
     def __init__(self, name, version, nodes):
         Package.__init__(self)
-        self.name_ = name
-        self.version_ = version
-        self.nodes_ = nodes
+        self.__name = name
+        self.__version = version
+        self.__nodes = nodes
 
-        for n in self.nodes_:
+        for n in self.__nodes:
             n.set_package(self)
             pass
 
@@ -60,10 +60,10 @@ class InstalledPackage(Package):
         # </paranoia>
         pass
     def name(self):
-        return self.name_
+        return self.__name
     def version(self):
-        return self.version_
+        return self.__version
     def nodes(self):
-        return self.nodes_
+        return self.__nodes
 
     pass

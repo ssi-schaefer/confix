@@ -17,9 +17,13 @@
 
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.plugins.cmake.setup import CMakeSetup
+from libconfix.plugins.cmake.library_dependencies import LibraryDependenciesSetup
 
 class CMake(CompositeSetup):
-    def __init__(self):
+    def __init__(self, library_dependencies):
         CompositeSetup.__init__(self, [CMakeSetup()])
+        if library_dependencies:
+            self.add_setup(LibraryDependenciesSetup())
+            pass
         pass
     pass

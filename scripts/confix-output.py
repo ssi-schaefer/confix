@@ -47,8 +47,15 @@ else:
     pass
 
 fs = scan.scan_filesystem(packageroot.split(os.sep))
-repo = AutomakePackageRepository(prefix=options.prefix.split(os.sep))
 package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
-package.boil(external_nodes=repo.nodes())
+
+external_nodes = []
+for p in AutomakePackageRepository(prefix=options.prefix.split(os.sep)).iter_packages():
+    if p.name() != package.name():
+        external_nodes.extend(p.nodes())
+        pass
+    pass
+
+package.boil(external_nodes=external_nodes)
 package.output()
 fs.sync()

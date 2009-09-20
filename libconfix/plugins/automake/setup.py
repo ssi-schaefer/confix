@@ -32,7 +32,8 @@ class AutomakeSetup(CompositeSetup):
                     CSetup(use_libtool=use_libtool),
                     AutomakeScriptSetup(),
                     AutomakePlainfileSetup(),
-                    InfraStructureSetup()])
+                    InfraStructureSetup(),
+                    ])
         pass
     pass
 

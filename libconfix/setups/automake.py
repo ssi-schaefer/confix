@@ -17,9 +17,17 @@
 
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.plugins.automake.setup import AutomakeSetup
+from libconfix.plugins.automake.pkg_config.setup import PkgConfigSetup
+from libconfix.plugins.automake.c.library_dependencies import LibraryDependenciesFinderSetup
 
 class Automake(CompositeSetup):
-    def __init__(self, use_libtool):
-        CompositeSetup.__init__(self, [AutomakeSetup(use_libtool=use_libtool)])
+    def __init__(self, use_libtool, library_dependencies):
+        CompositeSetup.__init__(self,
+                                [AutomakeSetup(use_libtool=use_libtool),
+                                 PkgConfigSetup()
+                                 ])
+        if library_dependencies:
+            self.add_setup(LibraryDependenciesFinderSetup(use_libtool=use_libtool))
+            pass
         pass
     pass

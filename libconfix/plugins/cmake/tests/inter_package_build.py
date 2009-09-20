@@ -97,7 +97,7 @@ class InterPackageTest(PersistentTestCase):
                                        setups=[ExplicitDirectorySetup(),
                                                ExplicitCSetup(),
                                                CMakeSetup()])
-            mid_package.boil(external_nodes=repo.nodes())
+            mid_package.boil(external_nodes=repo.iter_nodes())
             mid_package.output()
 
             fs.sync()
@@ -118,7 +118,7 @@ class InterPackageTest(PersistentTestCase):
                                       setups=[ExplicitDirectorySetup(),
                                               ExplicitCSetup(),
                                               CMakeSetup()])
-            hi_package.boil(external_nodes=repo.nodes())
+            hi_package.boil(external_nodes=repo.iter_nodes())
             hi_package.output()
 
             fs.sync()

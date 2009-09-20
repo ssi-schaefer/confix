@@ -19,6 +19,8 @@
 from linked import LinkedBuilder
 from buildinfo import BuildInfo_CLibrary_NativeLocal
 
+from libconfix.core.machinery.buildinfo import BuildInformationSet
+
 import types
 
 class LibraryBuilder(LinkedBuilder):
@@ -61,15 +63,14 @@ class LibraryBuilder(LinkedBuilder):
     def basename(self):
         return self.__basename
 
-    def enlarge(self):
-        super(LibraryBuilder, self).enlarge()
-        if self.__buildinfo_added:
-            return
-        self.__buildinfo_added = True
-        self.add_buildinfo(BuildInfo_CLibrary_NativeLocal(
-            dir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
-            basename=self.__basename))
-        pass
+    def buildinfos(self):
+        ret = BuildInformationSet()
+        ret.merge(super(LibraryBuilder, self).buildinfos())
+        ret.add(
+            BuildInfo_CLibrary_NativeLocal(
+                dir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+                basename=self.__basename))
+        return ret
 
     def set_version(self, version):
         self.__version = version
@@ -77,6 +78,10 @@ class LibraryBuilder(LinkedBuilder):
 
     def set_basename(self, name):
         self.__basename = name
+
+        # people may have seen the original basename, so we have to
+        # trigger another round.
+        super(LibraryBuilder, self).force_enlarge()
         pass
 
     def version(self):

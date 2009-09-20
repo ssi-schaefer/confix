@@ -166,7 +166,7 @@ class ReadonlyPrefixesBuildBase(PersistentTestCase):
 
         hi_package = LocalPackage(rootdirectory=hi_fs.rootdirectory(),
                                   setups=[ConfixSetup(short_libnames=False, use_libtool=self.use_libtool())])
-        hi_package.boil(external_nodes=repo.nodes())
+        hi_package.boil(external_nodes=repo.iter_nodes())
         hi_package.output()
         hi_fs.sync()
 

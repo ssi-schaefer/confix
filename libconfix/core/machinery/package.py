@@ -37,6 +37,6 @@ class Package(Marshallable):
 
     def name(self): assert 0, 'abstract'
     def version(self): assert 0, 'abstract'
-    def nodes(self): assert 0, 'abstract'
+    def iter_nodes(self): assert 0, 'abstract'
     
     pass

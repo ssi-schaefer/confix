@@ -115,7 +115,12 @@ class CMakeLists:
         return self.__includes
 
     def add_find_call(self, find_call):
-        self.__find_calls.append(find_call)
+        assert type(find_call) in (str, list, tuple)
+        if type(find_call) is str:
+            self.__find_calls.append(find_call)
+        else:
+            self.__find_calls.extend(find_call)
+            pass
         pass
     def get_find_calls(self):
         return self.__find_calls
@@ -150,7 +155,9 @@ class CMakeLists:
     def add_definitions(self, definitions):
         self.__definitions.extend(definitions)
         pass
-
+    def get_definitions(self):
+        return self.__definitions
+    
     def add_subdirectory(self, directoryname):
         assert type(directoryname) is types.StringType
         self.__subdirectories.append(directoryname)
@@ -268,7 +275,9 @@ class CMakeLists:
                       'ENDFOREACH(dir)'])
 
         # ADD_DEFINITIONS()
-        lines.append('ADD_DEFINITIONS('+' '.join(self.__definitions)+')')
+        if len(self.__definitions):
+            lines.append('ADD_DEFINITIONS('+' '.join(self.__definitions)+')')
+            pass
 
         # ADD_SUBDIRECTORY()
         for d in self.__subdirectories:

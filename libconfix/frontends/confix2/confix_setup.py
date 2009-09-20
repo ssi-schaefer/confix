@@ -26,6 +26,7 @@ from libconfix.plugins.idl.setup import IDLSetup
 from libconfix.plugins.make.setup import MakeSetup
 
 from libconfix.plugins.automake.setup import AutomakeSetup
+from libconfix.plugins.automake.c.library_dependencies import LibraryDependenciesFinderSetup
 
 class ConfixSetup(CompositeSetup):
     def __init__(self,
@@ -40,7 +41,8 @@ class ConfixSetup(CompositeSetup):
              IDLSetup(),
              PlainFileInterfaceSetup(),
              MakeSetup(),
-             AutomakeSetup(use_libtool=use_libtool)])
+             AutomakeSetup(use_libtool=use_libtool),
+             LibraryDependenciesFinderSetup(use_libtool=use_libtool)])
         pass
 
     pass

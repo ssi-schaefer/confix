@@ -229,7 +229,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             prefix=self.__regular_installdir.abspath(),
             readonly_prefixes=[self.__two_readonly_installdir.abspath(), self.__one_readonly_installdir.abspath()])
             
-        linked_package.boil(external_nodes=repo.nodes())
+        linked_package.boil(external_nodes=repo.iter_nodes())
         linked_package.output()
         self.__fs.sync()
 
@@ -257,7 +257,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             prefix=self.__regular_installdir.abspath(),
             readonly_prefixes=[self.__two_readonly_installdir.abspath(), self.__one_readonly_installdir.abspath()])
             
-        linked_package.boil(external_nodes=repo.nodes())
+        linked_package.boil(external_nodes=repo.iter_nodes())
         linked_package.output()
         self.__fs.sync()
 

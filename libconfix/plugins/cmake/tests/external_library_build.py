@@ -257,7 +257,7 @@ class ExternalLibraryTest(PersistentTestCase):
                               "from libconfix.setups.boilerplate import Boilerplate",
                               "from libconfix.setups.c import C",
                               "from libconfix.setups.cmake import CMake",
-                              "SETUPS([Boilerplate(), CMake()])"
+                              "SETUPS([Boilerplate(), CMake(library_dependencies=True)])"
                               ]))
         external_source.add(
             name=const.CONFIX2_DIR,
@@ -280,7 +280,7 @@ class ExternalLibraryTest(PersistentTestCase):
                               "from libconfix.setups.boilerplate import Boilerplate",
                               "from libconfix.setups.c import C",
                               "from libconfix.setups.cmake import CMake",
-                              "SETUPS([Boilerplate(), C(), CMake()])"
+                              "SETUPS([Boilerplate(), C(), CMake(library_dependencies=True)])"
                               ]))
         user_source.add(
             name=const.CONFIX2_DIR,

@@ -21,6 +21,7 @@ from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper_pickle
 from libconfix.core.utils import debug
 
+import itertools
 import pickle
 import os
 import re
@@ -198,55 +199,55 @@ class PackageRepository:
     
     def __init__(self): pass
 
-    def packages(self): assert 0 # abstract
+    def iter_packages(self): assert 0 # abstract
 
-    def nodes(self): assert 0 # abstract
+    def iter_nodes(self): assert 0 # abstract
 
     pass
 
 class CompositePackageRepository(PackageRepository):
-    def __init__(self):
+    def __init__(self, repositories):
         PackageRepository.__init__(self)
-        self.repositories_ = []
+        self.__repositories = repositories
         pass
 
     def add_repo(self, repo):
-        self.repositories_.append(repo)
+        self.__repositories.append(repo)
         pass
 
-    def packages(self):
-        ret_packages = []
+    def iter_packages(self):
         have_packages = set()
 
-        for r in self.repositories_:
-            for p in r.packages():
+        for r in self.__repositories:
+            for p in r.iter_packages():
                 if p.name() in have_packages:
                     continue
                 have_packages.add(p.name())
-                ret_packages.append(p)
+                yield p
                 pass
             pass
+        pass
 
-        return ret_packages
-
-    def nodes(self):
-        ret_nodes = []
-        for p in self.packages():
-            ret_nodes.extend(p.nodes())
+    def iter_nodes(self):
+        for p in self.iter_packages():
+            for n in p.nodes():
+                yield n
+                pass
             pass
-        return ret_nodes
-
+        pass
+    
     pass
 
 class PackageFileRepository(PackageRepository):
     def __init__(self, file):
         PackageRepository.__init__(self)
-        self.package_ = PackageFile(file).load()
+        self.__package = PackageFile(file).load()
         pass
-    def packages(self):
-        return [self.package_]
-    def nodes(self):
-        return self.package_.nodes()
+    def iter_packages(self):
+        yield self.__package
+        pass
+    def iter_nodes(self):
+        return iter(self.__package.nodes())
     pass
 
 _re_repo = re.compile('^.*\\.repo$')
@@ -259,7 +260,7 @@ class AutomakePackageRepository(CompositePackageRepository):
     def __init__(self, prefix):
         assert type(prefix) in [types.ListType, types.TupleType], prefix
 
-        CompositePackageRepository.__init__(self)
+        CompositePackageRepository.__init__(self, [])
 
         repodir = prefix+['share', 'confix2', 'repo']
         if not os.path.isdir(os.sep.join(repodir)):
@@ -296,9 +297,9 @@ class AutomakeCascadedPackageRepository(CompositePackageRepository):
     Composite for AutomakePackageRepository objects.
     """
     def __init__(self, prefix, readonly_prefixes):
-        CompositePackageRepository.__init__(self)
-        for dir in [prefix] + readonly_prefixes:
-            CompositePackageRepository.add_repo(self, AutomakePackageRepository(prefix=dir))
-            pass
+        CompositePackageRepository.__init__(
+            self,
+            [AutomakePackageRepository(prefix=dir) for dir in itertools.chain([prefix] + readonly_prefixes)])
         pass
     pass
+

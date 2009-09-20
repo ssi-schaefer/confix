@@ -18,11 +18,11 @@
 
 from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.plugins.automake.kde_hack import KDEHackSetup
-from libconfix.plugins.automake.repo_automake import AutomakePackageRepository
 from libconfix.core.digraph.cycle import CycleError
 from libconfix.core.filesys.scan import scan_filesystem
 from libconfix.core.filesys.overlay_filesys import OverlayFileSystem
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.repo import AutomakePackageRepository
 from libconfix.core.machinery.repo import CompositePackageRepository
 from libconfix.core.utils import debug
 from libconfix.core.utils import helper
@@ -130,7 +130,7 @@ def READ_REPO():
     prefixes = unique_prefixes
 
     # finally, do our job
-    repository = CompositePackageRepository()
+    repository = CompositePackageRepository([])
     num_repos = len(prefixes) + len(CONFIG.readonly_prefixes())
 
     debug.message('reading '+str(num_repos)+' repositories...')
@@ -161,7 +161,7 @@ def BOIL():
     # as input for the dependency graph calculation, extract all nodes
     # from our package repository.
     external_nodes = []
-    for p in repository.packages():
+    for p in repository.iter_packages():
         if p.name() != package.name():
             external_nodes.extend(p.nodes())
             pass

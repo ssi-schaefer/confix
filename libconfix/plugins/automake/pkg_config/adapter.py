@@ -45,12 +45,14 @@ class PkgConfigLibraryAdapter(Builder):
         self.__external_library_builder_created = True
         package_shell_name = _package_shell_name(self.__packagename)
         self.parentbuilder().add_builder(
-            ExternalLibraryBuilder(cflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)'],
-                                   cxxflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)'],
-                                   libpath=[],
-                                   libs=['$('+package_shell_name+'_PKG_CONFIG_LIBS)']))
+            ExternalLibraryBuilder(
+                name='PkgConfig-Helper',
+                cflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)'],
+                cxxflags=['$('+package_shell_name+'_PKG_CONFIG_CFLAGS)'],
+                libpath=[],
+                libs=['$('+package_shell_name+'_PKG_CONFIG_LIBS)']))
         pass
-        
+
     def buildinfos(self):
         ret = BuildInformationSet()
         ret.merge(super(PkgConfigLibraryAdapter, self).buildinfos())
