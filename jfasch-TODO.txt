@@ -1,5 +1,9 @@
 * STACK
 
+  * refactoring the entrie creator/clusterer crap
+
+  * interrupt (Tom's IGNORE_FILE() problem)
+
   * modfile distribution
 
     * flags parsing centrally
