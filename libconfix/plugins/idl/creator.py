@@ -16,14 +16,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.filesys.vfs_file import VFSFile
-from libconfix.core.machinery.creator import Creator
-
 import builder
 
-class IDLCreator(Creator):
+from libconfix.core.filesys.vfs_file import VFSFile
+from libconfix.core.machinery.builder import Builder
+
+class IDLCreator(Builder):
     def __init__(self):
-        Creator.__init__(self)
+        Builder.__init__(self)
         self.handled_entries_ = set()
         pass
 
@@ -37,7 +37,7 @@ class IDLCreator(Creator):
         return 'IDLCreator'
 
     def enlarge(self):
-        super(Creator, self).enlarge()
+        super(IDLCreator, self).enlarge()
         for name, entry in self.parentbuilder().directory().entries():
             if not isinstance(entry, VFSFile):
                 continue
@@ -46,8 +46,9 @@ class IDLCreator(Creator):
             if not name.endswith('.idl'):
                 continue
 
+            self.parentbuilder().add_builder(builder.Builder(file=entry))
+
             self.handled_entries_.add(name)
-            Creator.add_candidate_builder(self, name, builder.Builder(file=entry))
             pass
         pass
     pass

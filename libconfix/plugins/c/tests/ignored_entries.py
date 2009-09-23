@@ -27,15 +27,15 @@ from libconfix.core.utils import const
 
 import unittest
 
-class CreatorSuite(unittest.TestSuite):
+class IgnoredEntriesInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CreatorTest('test_rootdirectory'))
-        self.addTest(CreatorTest('test_subdirectory'))
+        self.addTest(IgnoredEntriesTest('test_rootdirectory'))
+        self.addTest(IgnoredEntriesTest('test_subdirectory'))
         pass
     pass
 
-class CreatorTest(unittest.TestCase):
+class IgnoredEntriesTest(unittest.TestCase):
     def test_rootdirectory(self):
         fs = FileSystem(path=['a'])
         fs.rootdirectory().add(
@@ -96,6 +96,8 @@ class CreatorTest(unittest.TestCase):
                          entry=File())
         subdirectory.add(name='not-ignored.h',
                          entry=File())
+        subdirectory.add(name='not-ignored.c',
+                         entry=File())
 
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
@@ -105,10 +107,14 @@ class CreatorTest(unittest.TestCase):
         self.failIf(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.h']))
         self.failIf(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.c']))
         self.failUnless(package.rootbuilder().find_entry_builder(path=['subdirectory', 'not-ignored.h']))
+        self.failUnless(package.rootbuilder().find_entry_builder(path=['subdirectory', 'not-ignored.c']))
 
         for librarybuilder in package.rootbuilder().find_entry_builder(['subdirectory']).iter_builders():
             if isinstance(librarybuilder, LibraryBuilder):
                 break
+            pass
+        else:
+            self.fail()
             pass
 
         self.failIf('ignored.c' in (member.entry().name() for member in librarybuilder.members()))
@@ -117,5 +123,5 @@ class CreatorTest(unittest.TestCase):
     pass
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CreatorSuite())
+    unittest.TextTestRunner().run(IgnoredEntriesInMemorySuite())
     pass

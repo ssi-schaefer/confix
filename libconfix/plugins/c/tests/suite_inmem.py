@@ -31,7 +31,7 @@ from setup_exe import ExecutableSetupSuite
 from setup_lexyacc import LexYaccSetupSuite
 from setup_library import LibrarySetupSuite
 from clusterer.suite_inmem import ClustererInMemorySuite
-from creator import CreatorSuite
+from ignored_entries import IgnoredEntriesInMemorySuite
 from library_versions import LibraryVersionsSuite
 from inter_package_inmem import InterPackageInMemorySuite
 
@@ -61,7 +61,7 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(LexYaccSetupSuite())
         self.addTest(LibrarySetupSuite())
         self.addTest(ClustererInMemorySuite())
-        self.addTest(CreatorSuite())
+        self.addTest(IgnoredEntriesInMemorySuite())
         self.addTest(LibraryVersionsSuite())
         self.addTest(InterPackageInMemorySuite())
         pass

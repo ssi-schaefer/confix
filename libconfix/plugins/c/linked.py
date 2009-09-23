@@ -44,10 +44,6 @@ class LinkedBuilder(Builder):
         self.__members.add(b)
         pass
 
-    def remove_member(self, b):
-        self.__members.remove(b)
-        pass
-
     def direct_libraries(self):
         """
         List of BuildInfo_CLibrary_NativeLocal and

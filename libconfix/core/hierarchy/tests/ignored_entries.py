@@ -19,7 +19,7 @@
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.setup import Setup
-from libconfix.core.machinery.creator import Creator
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
@@ -42,9 +42,9 @@ class IgnoreTestSetup(Setup):
         pass
     pass
 
-class IgnoreTestCreator(Creator):
+class IgnoreTestCreator(Builder):
     def __init__(self):
-        Creator.__init__(self)
+        Builder.__init__(self)
         self.__seen_filenames = set()
         pass
     def locally_unique_id(self):
@@ -57,7 +57,7 @@ class IgnoreTestCreator(Creator):
                 continue
             self.__seen_filenames.add(name)
             if name.endswith('.ignoretest'):
-                Creator.add_candidate_builder(self, name, IgnoreTestBuilder(entry))
+                self.parentbuilder().add_builder(IgnoreTestBuilder(entry))
                 pass
             pass
         pass

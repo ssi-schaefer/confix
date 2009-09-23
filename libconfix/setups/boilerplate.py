@@ -16,7 +16,7 @@
 # USA
 
 from libconfix.core.machinery.setup import CompositeSetup
-from libconfix.core.machinery.creator import CreatorSetup
+from libconfix.core.machinery.automatic_ignore import IgnoreSetup
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
 
@@ -28,7 +28,7 @@ class Boilerplate(CompositeSetup):
 
 class AutoBoilerplate(CompositeSetup):
     def __init__(self):
-        CompositeSetup.__init__(self, [ImplicitDirectorySetup(), CreatorSetup()])
+        CompositeSetup.__init__(self, [ImplicitDirectorySetup(), IgnoreSetup()])
         pass
     pass
 

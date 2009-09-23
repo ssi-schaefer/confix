@@ -23,14 +23,14 @@ from lex import LexBuilder
 from yacc import YaccBuilder
 
 from libconfix.core.filesys.vfs_file import VFSFile
-from libconfix.core.machinery.creator import Creator
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
 
 import os
 
-class CCreator(Creator):
+class CCreator(Builder):
     def __init__(self):
-        Creator.__init__(self)
+        Builder.__init__(self)
         self.__handled_entries = set()
         pass
 
@@ -54,7 +54,7 @@ class CCreator(Creator):
             if builder is None:
                 continue
             self.__handled_entries.add(name)
-            Creator.add_candidate_builder(self, name, builder)
+            self.parentbuilder().add_builder(builder)
             pass
         pass
     pass

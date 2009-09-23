@@ -21,15 +21,32 @@ from compiled import CompiledCBuilder
 from executable import ExecutableBuilder
 from h import HeaderBuilder
 from library import LibraryBuilder
-from namefinder import ShortNameFinder, LongNameFinder
 import helper
 
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
 
+import itertools
 import os
 import types
+
+class CClustererSetup(Setup):
+    def __init__(self, short_libnames):
+        Setup.__init__(self)
+        if short_libnames == True:
+            self.__namefinder = ShortNameFinder()
+        else:
+            self.__namefinder = LongNameFinder()
+            pass
+        pass
+
+    def setup(self, dirbuilder):
+        clusterer = CClusterer(namefinder=self.__namefinder)
+        dirbuilder.add_builder(clusterer)
+        dirbuilder.add_interface(CClustererInterfaceProxy(clusterer=clusterer))
+        pass
+    pass
 
 class CClusterer(Builder):
     def __init__(self, namefinder):
@@ -37,10 +54,6 @@ class CClusterer(Builder):
         self.__namefinder = namefinder
         self.__libname = None
         self.__libtool_version_info = None
-
-        self.__library = None
-        # ExecutableBuilder objects, indexed by their center builders
-        self.__executables = {}
         pass
 
     def shortname(self):
@@ -54,123 +67,130 @@ class CClusterer(Builder):
 
     def set_libname(self, name):
         self.__libname = name
-        if self.__library is not None:
-            self.__library.set_basename(name)
+        for builder in self.parentbuilder().iter_builders():
+            if isinstance(builder, LibraryBuilder):
+                builder.set_basename(name)
+                break
             pass
         pass
 
     def set_libtool_version_info(self, version_tuple):
         self.__libtool_version_info = version_tuple
-        if self.__library is not None:
-            self.__library.set_version(version_tuple)
+        for builder in self.parentbuilder().iter_builders():
+            if isinstance(builder, LibraryBuilder):
+                builder.set_version(version_tuple)
+                break
             pass
         pass
 
     def enlarge(self):
         super(CClusterer, self).enlarge()
-        # copy what we will be iterating over because we will change
-        # its size
-        builders = []
-        for b in self.parentbuilder().iter_builders():
-            builders.append(b)
+
+        main_builders = []
+        nomain_builders = []
+        header_builders = []
+
+        executables = []
+        library = None
+
+        for builder in self.parentbuilder().iter_builders():
+            if isinstance(builder, ExecutableBuilder):
+                executables.append(builder)
+                continue
+            if isinstance(builder, LibraryBuilder):
+                assert library is None
+                library = builder
+                continue
+            if not isinstance(builder, CBaseBuilder):
+                continue
+            if isinstance(builder, HeaderBuilder):
+                header_builders.append(builder)
+                continue
+            if not isinstance(builder, CompiledCBuilder):
+                continue
+            if builder.is_main():
+                main_builders.append(builder)
+                continue
+            nomain_builders.append(builder)
             pass
-        for b in builders:
-            if not isinstance(b, CBaseBuilder):
-                continue
 
-            # add headers to library if any
-            if isinstance(b, HeaderBuilder):
-                if self.__library is not None:
-                    if b not in self.__library.members():
-                        self.__library.add_member(b)
-                        pass
-                    pass
-                continue
+        if not self.__do_recluster(main_builders=main_builders,
+                                   nomain_builders=nomain_builders,
+                                   header_builders=header_builders,
+                                   library=library,
+                                   executables=executables):
+            return
 
-            # main C file. wrap an ExecutableBuilder around
-            # it. liquidate a library in favor of the executable. if
-            # the main C file is member of another executable that I
-            # maintain, pull it out from there.
-            if b.is_main():
-                if self.__executables.has_key(b):
-                    # already got that one.
-                    continue
+        self.force_enlarge()
 
-                # remove my center b from any other executables which
-                # it happens to be a member of. (rationale: b may not
-                # have been marked executable from the
-                # beginning. rather, it is possible that anyone in the
-                # game marks any C file executable, though that file
-                # has been made the member of another executable
-                # before.)
-                for e in self.__executables.itervalues():
-                    if b in e.members():
-                        e.remove_member(b)
-                        pass
-                    pass
-                
-                center_stem, center_ext = os.path.splitext(b.file().name())
-                if center_stem.startswith('_check'):
-                    what = ExecutableBuilder.CHECK
-                elif center_stem.startswith('_'):
-                    what = ExecutableBuilder.NOINST
-                else:
-                    what = ExecutableBuilder.BIN
-                    pass
-                exename = b.exename()
-                if exename is None:
-                    exename = self.__namefinder.find_exename(
-                        packagename=self.package().name(),
-                        path=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
-                        centername=center_stem)
-                    pass
-                exe = ExecutableBuilder(
-                    center=b,
-                    exename=exename,
-                    what=what)
-                self.parentbuilder().add_builder(exe)
-                self.__executables[b] = exe
-
-                # liquidate library, if any.
-                if self.__library is not None:
-                    self.parentbuilder().remove_builder(self.__library)
-                    for m in self.__library.members():
-                        exe.add_member(m)
-                        pass
-                    self.__library = None
-                    pass
-
-                continue
-
-            # a compiled C builder
-            assert not (self.__library and len(self.__executables))
-            if not self.__library and len(self.__executables) == 0:
-                if self.__libname is None:
-                    libname = self.__namefinder.find_libname(
-                        packagename=self.package().name(),
-                        path=self.parentbuilder().directory().relpath(self.package().rootdirectory()))
-                else:
-                    libname = self.__libname
-                    pass
-                
-                self.__library = LibraryBuilder(
-                    basename=libname,
-                    version=self.__libtool_version_info,
-                    default_version=self.package().version())
-                self.parentbuilder().add_builder(self.__library)
+        if library:
+            self.parentbuilder().remove_builder(library)
+        else:
+            for exe in executables:
+                self.parentbuilder().remove_builder(exe)
                 pass
-            if self.__library is not None:
-                if b not in self.__library.members():
-                    self.__library.add_member(b)
+            pass
+
+        if len(main_builders):
+            for main in main_builders:
+                exetype = self.__make_exe_type(main)
+                exename = self.__make_exe_name(main)
+                exe = self.parentbuilder().add_builder(ExecutableBuilder(center=main, exename=exename, what=exetype))
+                for b in itertools.chain(nomain_builders, header_builders):
+                    exe.add_member(b)
                     pass
                 pass
-            for e in self.__executables.itervalues():
-                if b not in e.members():
-                    e.add_member(b)
-                    pass
-                pass
+            return
+
+        if self.__libname is None:
+            libname = self.__namefinder.find_libname(
+                packagename=self.package().name(),
+                path=self.parentbuilder().directory().relpath(self.package().rootdirectory()))
+        else:
+            libname = self.__libname
+            pass
+        library = self.parentbuilder().add_builder(
+            LibraryBuilder(
+                basename=libname,
+                version=self.__libtool_version_info,
+                default_version=self.package().version()))
+        for b in itertools.chain(nomain_builders, header_builders):
+            library.add_member(b)
             pass
         pass
+
+    def __do_recluster(self, main_builders, nomain_builders, header_builders, library, executables):
+        if len(main_builders) > 0 and library:
+            return True
+        if len(main_builders) == 0 and len(nomain_builders) > 0 and not library:
+            return True
+        if library and len(nomain_builders) + len(header_builders) != len(library.members()):
+            return True
+        if len(main_builders) != len(executables):
+            return True
+        for exe in executables:
+            if len(exe.members()) != len(nomain_builders) + len(header_builders) + 1:
+                return True
+            pass
+        return False
+
+    def __make_exe_type(self, main_builder):
+        center_stem, center_ext = os.path.splitext(main_builder.file().name())
+        if center_stem.startswith('_check'):
+            return ExecutableBuilder.CHECK
+        if center_stem.startswith('_'):
+            return ExecutableBuilder.NOINST
+        return ExecutableBuilder.BIN
+
+    def __make_exe_name(self, main_builder):
+        center_stem, center_ext = os.path.splitext(main_builder.file().name())
+        exename = main_builder.exename()
+        if exename is None:
+            return self.__namefinder.find_exename(
+                packagename=self.package().name(),
+                path=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+                centername=center_stem)
+        return exename
 
     pass
 
@@ -201,19 +221,54 @@ class CClustererInterfaceProxy(InterfaceProxy):
         pass
     pass
 
-class CClustererSetup(Setup):
-    def __init__(self, short_libnames):
-        Setup.__init__(self)
-        if short_libnames == True:
-            self.__namefinder = ShortNameFinder()
-        else:
-            self.__namefinder = LongNameFinder()
-            pass
+class NameFinder:
+    def __init__(self):
+        pass
+    def find_exename(self, packagename, path, centername):
+        assert 0, 'abstract'
+        return 'some_string'
+    def find_libname(self, packagename, path):
+        assert 0, 'abstract'
+        return 'some_string'
+    pass
+
+class LongNameFinder(NameFinder):
+    def __init__(self):
+        NameFinder.__init__(self)
         pass
 
-    def setup(self, dirbuilder):
-        clusterer = CClusterer(namefinder=self.__namefinder)
-        dirbuilder.add_builder(clusterer)
-        dirbuilder.add_interface(CClustererInterfaceProxy(clusterer=clusterer))
+    def find_exename(self, packagename, path, centername):
+        return '_'.join([packagename] + path + [centername])
+    def find_libname(self, packagename, path):
+        return '_'.join([packagename] + path)
+    pass
+
+class ShortNameFinder(NameFinder):
+    def __init__(self):
+        NameFinder.__init__(self)
+        self.__assigned_libnames = set()
         pass
+
+    def find_exename(self, packagename, path, centername):
+        return '_'.join([packagename] + path + [centername])
+
+    def find_libname(self, packagename, path):
+        if len(path) == 0:
+            if packagename in self.__assigned_libnames:
+                raise Error('Name '+packagename+' has already been assigned')
+            return packagename
+        
+        candidate = []
+        iter = range(len(path))
+        iter.reverse()
+        
+        for i in iter:
+            candidate.insert(0, path[i])
+            name = '_'.join([packagename]+candidate)
+            if name not in self.__assigned_libnames:
+                self.__assigned_libnames.add(name)
+                return name
+            pass
+
+        raise Error('Could not find unique name for '+'.'.join([packagename]+path))
     pass

@@ -16,21 +16,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import re
-
-from libconfix.core.filesys.vfs_file import VFSFile
-from libconfix.core.machinery.creator import Creator
-from libconfix.core.utils.error import Error
-
 from builder import PlainFileBuilder
 
-class PlainFileCreator(Creator):
+from libconfix.core.filesys.vfs_file import VFSFile
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.utils.error import Error
+
+import re
+
+class PlainFileCreator(Builder):
     def __init__(self, regex, prefixdir, datadir):
         assert (datadir is None or prefixdir is None and \
                 datadir is not None or prefixdir is not None), \
                 'prefixdir: '+str(prefixdir) + ', datadir: '+str(datadir)
         
-        Creator.__init__(self)
+        Builder.__init__(self)
 
         self.__regex = regex
         self.__datadir = datadir
@@ -48,16 +48,14 @@ class PlainFileCreator(Creator):
         return str(self.__class__) + ':' + self.__regex
 
     def enlarge(self):
-        super(Creator, self).enlarge()
+        super(PlainFileCreator, self).enlarge()
         for name, entry in self.parentbuilder().directory().entries():
             if not isinstance(entry, VFSFile):
                 continue
             if name in self.__handled_entries:
                 continue
             if self.__compiled_regex.search(name):
-                Creator.add_candidate_builder(
-                    self,
-                    name,
+                self.parentbuilder().add_builder(
                     PlainFileBuilder(file=entry, datadir=self.__datadir, prefixdir=self.__prefixdir))
                 self.__handled_entries.add(name)
                 break

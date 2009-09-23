@@ -16,10 +16,10 @@
 # USA
 
 from setup import CompositeSetup
-from creator import CreatorSetup
+from automatic_ignore import IgnoreSetup
 
 class CoreSetup(CompositeSetup):
     def __init__(self):
-        CompositeSetup.__init__(self, setups=[CreatorSetup()])
+        CompositeSetup.__init__(self, setups=[IgnoreSetup()])
         pass
     pass

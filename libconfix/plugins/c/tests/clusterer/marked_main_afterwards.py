@@ -19,7 +19,7 @@ from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.clusterer import CClusterer
 from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.library import LibraryBuilder
-from libconfix.plugins.c.namefinder import LongNameFinder
+from libconfix.plugins.c.clusterer import LongNameFinder
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.utils import const

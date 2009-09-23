@@ -21,7 +21,7 @@ from c import CBuilder
 from cxx import CXXBuilder
 from library import LibraryBuilder
 from executable import ExecutableBuilder
-from namefinder import LongNameFinder
+from clusterer import LongNameFinder
 from relocated_headers.master import Master
 
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
