@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,10 +15,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.frontends.confix2.confix_setup import ConfixSetup
+
+from libconfix.plugins.c.library import LibraryBuilder
+
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
+from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
-from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.core.utils import const
 
 import unittest
@@ -26,25 +30,31 @@ import unittest
 class CreatorSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CreatorTest('test'))
+        self.addTest(CreatorTest('test_rootdirectory'))
+        self.addTest(CreatorTest('test_subdirectory'))
         pass
     pass
 
 class CreatorTest(unittest.TestCase):
-    def test(self):
+    def test_rootdirectory(self):
         fs = FileSystem(path=['a'])
-        fs.rootdirectory().add(name=const.CONFIX2_PKG,
-                               entry=File(lines=["PACKAGE_NAME('ignore-entries-c')",
-                                                 "PACKAGE_VERSION('6.6.6')"]))
-        fs.rootdirectory().add(name=const.CONFIX2_DIR,
-                               entry=File(lines=['IGNORE_ENTRIES(["ignored.h"])',
-                                                 'IGNORE_FILE("ignored.c")']))
-        fs.rootdirectory().add(name='ignored.h',
-                               entry=File())
-        fs.rootdirectory().add(name='ignored.c',
-                               entry=File())
-        fs.rootdirectory().add(name='not-ignored.h',
-                               entry=File())
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('ignore-entries-c-rootdirectory')",
+                              "PACKAGE_VERSION('6.6.6')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['IGNORE_ENTRIES(["ignored.h"])',
+                              'IGNORE_FILE("ignored.c")']))
+        fs.rootdirectory().add(
+            name='ignored.h',
+            entry=File())
+        fs.rootdirectory().add(
+            name='ignored.c',
+            entry=File())
+        fs.rootdirectory().add(
+            name='not-ignored.h',
+            entry=File())
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
@@ -54,6 +64,55 @@ class CreatorTest(unittest.TestCase):
         self.failIf(package.rootbuilder().find_entry_builder(path=['ignored.h']))
         self.failIf(package.rootbuilder().find_entry_builder(path=['ignored.c']))
         self.failUnless(package.rootbuilder().find_entry_builder(path=['not-ignored.h']))
+
+        for librarybuilder in package.rootbuilder().iter_builders():
+            if isinstance(librarybuilder, LibraryBuilder):
+                break
+            pass
+
+        self.failIf('ignored.c' in (member.entry().name() for member in librarybuilder.members()))
+        self.failIf('ignored.h' in (member.entry().name() for member in librarybuilder.members()))
+        pass
+
+    def test_subdirectory(self):
+        fs = FileSystem(path=['a'])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('ignore-entries-c-subdirectory')",
+                              "PACKAGE_VERSION('6.6.6')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File())
+        subdirectory = fs.rootdirectory().add(
+            name='subdirectory',
+            entry=Directory())
+
+        subdirectory.add(name=const.CONFIX2_DIR,
+                         entry=File(lines=['IGNORE_ENTRIES(["ignored.h"])',
+                                           'IGNORE_FILE("ignored.c")']))
+        subdirectory.add(name='ignored.h',
+                         entry=File())
+        subdirectory.add(name='ignored.c',
+                         entry=File())
+        subdirectory.add(name='not-ignored.h',
+                         entry=File())
+
+        package = LocalPackage(
+            rootdirectory=fs.rootdirectory(),
+            setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+        package.boil(external_nodes=[])
+
+        self.failIf(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.h']))
+        self.failIf(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.c']))
+        self.failUnless(package.rootbuilder().find_entry_builder(path=['subdirectory', 'not-ignored.h']))
+
+        for librarybuilder in package.rootbuilder().find_entry_builder(['subdirectory']).iter_builders():
+            if isinstance(librarybuilder, LibraryBuilder):
+                break
+            pass
+
+        self.failIf('ignored.c' in (member.entry().name() for member in librarybuilder.members()))
+        self.failIf('ignored.h' in (member.entry().name() for member in librarybuilder.members()))
         pass
     pass
 
