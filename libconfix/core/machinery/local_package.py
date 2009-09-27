@@ -140,14 +140,14 @@ class LocalPackage(Package):
             if loop_count > 1000:
                 raise self.InfiniteLoopError()
             
-            builders = self.__do_enlarge()
-            if builders is None:
+            something_changed = self.__do_enlarge()
+            if something_changed:
                 continue
 
             do_next_round = False
 
             nodes = set()
-            for b in builders:
+            for b in self.iter_builders():
                 if not isinstance(b, LocalNode):
                     continue
                 nodes.add(b)
@@ -207,29 +207,29 @@ class LocalPackage(Package):
             version=self.version(),
             nodes=installed_nodes)
 
-    def builders(self):
-        """
-        Returns a list of builder objects that are maintained by this
-        package. The list is a copy of the internal data - use it only
-        when you intend to change the set of builders while iterating.
-        """
-        return self.__collect_builders()
-
     def iter_builders(self):
         """
         Returns an iterator over all builder objects that are
         maintained by this package. Use it when you do not intend to
         modify the set of builders when iterating.
         """
-        return self.__collect_builders()
+        yield self.__rootbuilder
+        for builder in self.__rootbuilder.iter_builders_recursive():
+            yield builder
+            pass
+        pass
 
     def __do_enlarge(self):
         """
-        Enlarge our current set of builders by calling the
-        Builder.enlarge() on each. Returns the new set of builders, or
-        None if we want the caller to repeat.
+        Enlarge our current set of builders by calling
+        Builder.enlarge() on each.
+
+        @return True if something has changed, False otherwise.
         """
-        builders = self.builders()
+
+        # copy them out because we will be changing the set once we
+        # call enlarge on each builder.
+        builders = [b for b in self.iter_builders()]
 
         prev_builder_props = {}
         for b in builders:
@@ -240,19 +240,17 @@ class LocalPackage(Package):
             b.enlarge()
             pass
 
-        builders = self.builders()
-
-        for b in builders:
+        for b in self.iter_builders():
             prev_enlarge_count = prev_builder_props.get(b)
             if prev_enlarge_count is None:
-                # this is a new builder; repeat
-                return None
+                # this is a new builder
+                return True
             if prev_enlarge_count < b.force_enlarge_count():
-                # b forced repetition; repeat
-                return None
+                # b forced repetition
+                return True
             pass
 
-        return builders
+        return False
 
     def __sort_subdirs(self):
         # sort subdirectories topologically for our backends.
@@ -266,21 +264,6 @@ class LocalPackage(Package):
         graph = algorithm.subgraph(digraph=self.__current_digraph,
                                    nodes=subdir_nodes)
         return toposort.toposort(digraph=graph, nodes=subdir_nodes)
-
-    def __collect_builders(self):
-        builders = []
-        self.__collect_builders_recursive(self.__rootbuilder, builders)
-        return builders
-
-    def __collect_builders_recursive(self, builder, found):
-        assert isinstance(found, list)
-        found.append(builder)
-        if isinstance(builder, DirectoryBuilder):
-            for b in builder.iter_builders():
-                self.__collect_builders_recursive(b, found)
-                pass
-            pass
-        pass
 
     pass
 
@@ -326,3 +309,4 @@ class PackageInterfaceProxy(InterfaceProxy):
         pass
         
     pass
+

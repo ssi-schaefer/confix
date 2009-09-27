@@ -127,6 +127,17 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
             pass
         pass
 
+    def iter_builders_recursive(self):
+        for child in self.iter_builders():
+            yield child
+            if isinstance(child, DirectoryBuilder):
+                for grandchild in child.iter_builders_recursive():
+                    yield grandchild
+                    pass
+                pass
+            pass
+        pass
+
     def add_builder(self, b):
         self.__regular_builders.add_builder(b)
         self.__init_builder(b)
@@ -308,7 +319,6 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
                 pass
             pass
         pass
-        
 
     pass
 
