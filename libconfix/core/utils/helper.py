@@ -158,15 +158,20 @@ def write_lines_to_file_if_changed(filename, lines):
             raise Error('Could not open file \'' + filename + '\' for reading', [e])
         for l in file:
             m_file.update(l)
+            pass
         for l in lines:
             m_lines.update(l+'\n')
+            pass
 
         if m_file.digest() != m_lines.digest():
             write_lines_to_file(filename, lines)
+            pass
         pass
 
     else:
         write_lines_to_file(filename, lines)
+        pass
+    pass
 
 def copy_file_if_changed(sourcename, targetname, mode):
     sourcedigest = md5_of_file(sourcename)
