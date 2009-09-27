@@ -62,9 +62,13 @@ def format_word_list(words):
                 # word is longer than max line length. make a single
                 # line of it.
                 line = w
+                pass
+            pass
+        pass
 
     if len(line):
         bare_lines.append(line)
+        pass
 
     # prepend spaces to all but the first line. append '\' to all but
     # the last line. add line to return value.
@@ -77,6 +81,7 @@ def format_word_list(words):
         if i < len(bare_lines)-1:
             line = line + ' \\'
         ret_lines.append(line)
+        pass
 
     return ret_lines
 
