@@ -42,24 +42,17 @@ def extract_requires(lines):
 
 def search_main(lines):
     for l in lines:
-        main = _re_main.search(l)
-        comment = _re_comment.search(l)
-        cpp = _re_cpp.search(l)
-        befstr = _re_befstr_main.search(l)
-        aftstr = _re_aftstr_main.search(l)
-        open_paren_after = _re_main_openparen_after.search(l)
-
         # no main found at all
-        if not main:
-            continue
+        if not _re_main.search(l): continue
 
         # a preprocessor directive (likely "#error")
-        if cpp:
-            continue
+        if _re_cpp.search(l): continue
 
-        if befstr: continue
-        if aftstr: continue
-        if not open_paren_after: continue
+        if _re_befstr_main.search(l): continue
+        if _re_aftstr_main.search(l): continue
+        if not _re_main_openparen_after.search(l): continue
+
+        comment = _re_comment.search(l)
 
         # main found and no comment in the line
         if not comment:
