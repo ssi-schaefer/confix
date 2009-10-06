@@ -21,7 +21,7 @@ from require import Require_String
 from provide import Provide
 from provide import Provide_String
 
-from ..utils.error import Error
+from libconfix.core.utils.error import Error
 
 class DependencySet(Unmarshallable):
     def __init__(self, klass, string_klass):

@@ -40,13 +40,13 @@ options, rest = parser.parse_args(sys.argv[1:])
 
 if len(rest) > 1:
     raise Error('Only one package at a time can be massaged')
-if len(rest) == 0:
-    packageroot = os.getcwd()
-else:
-    packageroot = rest[0]
+if len(rest) == 1:
+    os.chdir(rest[0])
     pass
+    
+packageroot = os.getcwd().split(os.sep)
 
-fs = scan.scan_filesystem(packageroot.split(os.sep))
+fs = scan.scan_filesystem(packageroot)
 package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
 
 external_nodes = []

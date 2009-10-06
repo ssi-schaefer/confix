@@ -20,6 +20,7 @@ from dependency_utils import DependencyInformation
 from provide import Provide
 from provide import Provide_String
 from provide import Provide_Symbol
+from provide import Provide_Callable
 from require import Require
 from require import Require_Symbol
 from require import Require_Callable
@@ -206,6 +207,8 @@ class BuilderInterfaceProxy(InterfaceProxy):
         self.add_global('REQUIRE', getattr(self, 'REQUIRE'))
         self.add_global('PROVIDE_SYMBOL', getattr(self, 'PROVIDE_SYMBOL'))
         self.add_global('REQUIRE_SYMBOL', getattr(self, 'REQUIRE_SYMBOL'))
+        self.add_global('PROVIDE_CALLABLE', getattr(self, 'PROVIDE_CALLABLE'))
+        self.add_global('REQUIRE_CALLABLE', getattr(self, 'REQUIRE_CALLABLE'))
 
         # BUILDINFORMATION
         self.add_global('BUILDINFORMATION', getattr(self, 'BUILDINFORMATION'))
@@ -244,6 +247,23 @@ class BuilderInterfaceProxy(InterfaceProxy):
             raise Error('REQUIRE_SYMBOL(): urgency must be one of URGENCY_IGNORE, URGENCY_WARN, URGENCY_ERROR')
         self.__builder.add_require(Require_Symbol(
             symbol,
+            found_in=[str(self.__builder)],
+            urgency=urgency))
+        pass
+
+    def PROVIDE_CALLABLE(self, exename):
+        if not exename or len(exename) == 0:
+            raise Error('PROVIDE_CALLABLE(): need a non-zero exename parameter')
+        self.__builder.add_provide(Provide_Callable(exename=exename))
+        pass
+
+    def REQUIRE_CALLABLE(self, exename, urgency=Require.URGENCY_IGNORE):
+        if not exename or len(exename)==0:
+            raise Error('REQUIRE_CALLABLE(): need a non-zero exename parameter')
+        if not urgency in [Require.URGENCY_IGNORE, Require.URGENCY_WARN, Require.URGENCY_ERROR]:
+            raise Error('REQUIRE_CALLABLE(): urgency must be one of URGENCY_IGNORE, URGENCY_WARN, URGENCY_ERROR')
+        self.__builder.add_require(Require_Callable(
+            exename,
             found_in=[str(self.__builder)],
             urgency=urgency))
         pass

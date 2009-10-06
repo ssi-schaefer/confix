@@ -16,7 +16,6 @@
 # USA
 
 from out_c import COutputSetup
-from library_dependencies import LibraryDependenciesFinderSetup
 from external_library import ExternalLibrarySetup
 from interix import InterixSetup
 
