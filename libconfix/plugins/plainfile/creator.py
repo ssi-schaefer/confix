@@ -58,7 +58,7 @@ class PlainFileCreator(Builder):
                 self.parentbuilder().add_builder(
                     PlainFileBuilder(file=entry, datadir=self.__datadir, prefixdir=self.__prefixdir))
                 self.__handled_entries.add(name)
-                break
+                pass
             pass
         pass
     pass
