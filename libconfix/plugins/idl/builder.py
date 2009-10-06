@@ -30,6 +30,8 @@ from libconfix.core.utils.error import Error
 
 import libconfix.plugins.c.helper
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+
 import re
 import os
 
@@ -101,11 +103,12 @@ class Builder(FileBuilder):
     def output(self):
         super(Builder, self).output()
 
-        self.parentbuilder().makefile_am().add_extra_dist(self.file().name())
-        self.parentbuilder().file_installer().add_private_header(
+        automake_output = find_automake_output_builder(self.parentbuilder())
+        automake_output.makefile_am().add_extra_dist(self.file().name())
+        automake_output.file_installer().add_private_header(
             filename=self.file().name(),
             dir=self.__install_path)
-        self.parentbuilder().file_installer().add_public_header(
+        automake_output.file_installer().add_public_header(
             filename=self.file().name(),
             dir=self.__install_path)
         pass
