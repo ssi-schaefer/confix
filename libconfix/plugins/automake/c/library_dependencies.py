@@ -39,14 +39,19 @@ class LibraryDependenciesFinderSetup(Setup):
 
 class ExecutableWatcher(Builder):
 
-    """ Among my parent's builders, watch out for ones of type
+    """
+    Among my parent's builders, watch out for ones of type
     ExecutableBuilder. If I see one that doesn't use libtool, create a
-    LibraryDependenciesFinder for him."""
+    LibraryDependenciesFinder for him. If an ExecutableBuilder
+    disappears for which I have created a LibraryDependenciesFinder,
+    then I remove that object.
+    """
     
     def __init__(self, use_libtool):
         Builder.__init__(self)
         self.__use_libtool = use_libtool
-        self.__seen_executable_builders = set()
+        # { exebuilder: depfinder }
+        self.__library_dependency_finder_by_exe = {}
         pass
 
     def locally_unique_id(self):
@@ -57,24 +62,35 @@ class ExecutableWatcher(Builder):
 
     def enlarge(self):
         super(ExecutableWatcher, self).enlarge()
-        # copy what we will be iterating over because we will change
-        # its size
-        builders = []
-        for b in self.parentbuilder().iter_builders():
-            builders.append(b)
+
+        current_exes = set()
+        for exe in self.parentbuilder().iter_builders():
+            if isinstance(exe, ExecutableBuilder):
+                current_exes.add(exe)
+                pass
             pass
-        for b in builders:
-            if not isinstance(b, ExecutableBuilder):
-                continue
-            if b in self.__seen_executable_builders:
-                # already handling that one.
-                continue
-            self.__seen_executable_builders.add(b)
-            if not self.__use_libtool:
-                self.parentbuilder().add_builder(LibraryDependenciesFinder(exe_builder=b))
+
+        # kick depfinders whose exe has disappeared
+        rem_exes = []
+        for exe, depfinder in self.__library_dependency_finder_by_exe.iteritems():
+            if exe not in current_exes:
+                self.parentbuilder().remove_builder(depfinder)
+                rem_exes.append(exe)
+                pass
+            pass
+        for exe in rem_exes:
+            del self.__library_dependency_finder_by_exe[exe]
+            pass
+
+        # add depfinders for new exes
+        for exe in current_exes:
+            if exe not in self.__library_dependency_finder_by_exe:
+                depfinder = self.parentbuilder().add_builder(LibraryDependenciesFinder(exe))
+                self.__library_dependency_finder_by_exe[exe] = depfinder
                 pass
             pass
         pass
+
     pass
 
 class LibraryDependenciesFinder(Builder):
@@ -92,6 +108,8 @@ class LibraryDependenciesFinder(Builder):
 
     def locally_unique_id(self):
         return str(self.__class__) + ':' + self.__exe_builder.center().file().name()
+
+    def exe_builder(self): return self.__exe_builder
 
     def output(self):
         super(LibraryDependenciesFinder, self).output()

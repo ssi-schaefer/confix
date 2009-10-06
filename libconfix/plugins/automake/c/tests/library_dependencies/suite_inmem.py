@@ -17,27 +17,38 @@
 
 from dirstructure import DirectoryStructure
 
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.builder import Builder
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.filesys.file import File
+from libconfix.core.utils import const
+
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 from libconfix.plugins.automake.c.library_dependencies import LibraryDependenciesFinderSetup
+from libconfix.plugins.automake.c.library_dependencies import LibraryDependenciesFinder
 from libconfix.plugins.automake import makefile
 
-from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.plugins.c.executable import ExecutableBuilder
 
 from libconfix.testutils.persistent import PersistentTestCase
 
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
+from libconfix.setups.boilerplate import Boilerplate
+from libconfix.setups.c import C
+from libconfix.setups.automake import Automake
 
 import unittest
 
 class LibraryDependenciesInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(LibraryDependenciesInMemoryTest('test'))
+        self.addTest(LibraryDependenciesInMemoryTest('test_plain_output'))
+        self.addTest(LibraryDependenciesInMemoryTest('test_executable_come_and_go'))
         pass
     pass
 
 class LibraryDependenciesInMemoryTest(PersistentTestCase):
-    def test(self):
+    def test_plain_output(self):
         dirstructure = DirectoryStructure(path=self.rootpath())
 
         # kind of bootstrap packages in order (just without writing
@@ -83,6 +94,88 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
         self.failUnless('@installeddeplib_FirstPackage@' in real_deps)
         self.failUnless('@installeddeplib_SecondPackage@' in real_deps)
         
+        pass
+
+    def test_executable_come_and_go(self):
+        class TestGuide(Builder):
+            """
+            Removes executable as it sees it, and checks that the
+            accompanying LibraryDependenciesFinder is also removed.
+            """
+            EXE_NOT_SEEN = 0
+            EXE_SEEN = 1
+            DEPFINDER_SEEN = 2
+            DEPFINDER_DISAPPEARED = 3
+
+            def __init__(self, exename):
+                Builder.__init__(self)
+                self.__exename = exename
+                self.__state = self.EXE_NOT_SEEN
+                self.__exe = None
+                self.__depfinder = None
+                pass
+            def locally_unique_id(self):
+                return str(self.__class__)
+            def state(self): return self.__state
+            def enlarge(self):
+                if self.__state == self.EXE_NOT_SEEN:
+                    for b in self.parentbuilder().iter_builders():
+                        if isinstance(b, ExecutableBuilder) and b.exename() == self.__exename:
+                            self.__state = self.EXE_SEEN
+                            self.__exe = b
+                            self.force_enlarge()
+                            return
+                        pass
+                    pass
+                elif self.__state == self.EXE_SEEN:
+                    for b in self.parentbuilder().iter_builders():
+                        if isinstance(b, LibraryDependenciesFinder):
+                            self.__state = self.DEPFINDER_SEEN
+                            self.__depfinder = b
+                            break
+                        pass
+                    if self.__state == self.DEPFINDER_SEEN:
+                        self.parentbuilder().remove_builder(self.__exe)
+                        self.__exe = None
+                        pass
+                    pass
+                elif self.__state == self.DEPFINDER_SEEN:
+                    # we removed the executable in the last
+                    # round. wait for the depfinder to disappear.
+                    for b in self.parentbuilder().iter_builders():
+                        if b is self.__depfinder:
+                            return # still there; continue
+                        pass
+                    else:
+                        self.__state = self.DEPFINDER_DISAPPEARED
+                        self.__depfinder = None
+                        pass
+                    pass
+                else:
+                    self.fail()
+                    pass
+                pass
+            pass
+
+        fs = FileSystem(path=[])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('test_executable_come_and_go')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["EXECUTABLE(exename='exe', center=C(filename='main.c'))"]))
+        fs.rootdirectory().add(
+            name='main.c',
+            entry=File())
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[Boilerplate(),
+                                       C(),
+                                       Automake(use_libtool=False, library_dependencies=True)])
+        guide = TestGuide(exename='exe')
+        package.rootbuilder().add_builder(guide)
+        package.boil(external_nodes=[])
+        self.failUnlessEqual(guide.state(), guide.DEPFINDER_DISAPPEARED)
         pass
     pass
 

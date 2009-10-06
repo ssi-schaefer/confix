@@ -43,6 +43,9 @@ class ExecutableBuilder(LinkedBuilder):
         self.__what = what
         pass
 
+    def __str__(self):
+        return self.shortname()
+
     def locally_unique_id(self):
         return str(self.__class__) + ':' + self.__exename + '(' + self.center().file().name() + ')'
 
