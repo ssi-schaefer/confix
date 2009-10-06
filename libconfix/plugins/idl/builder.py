@@ -56,7 +56,7 @@ class Builder(FileBuilder):
         # preprocessor for includes, so we can use the C plugin for
         # that.
 
-        self.__includes = libconfix.plugins.c.helper.extract_requires(lines)
+        self.__includes = [i for i in libconfix.plugins.c.helper.iter_includes(lines)]
 
         # search lines for a namespace. if one is found, our install
         # path is the namespace (or the concatenation of nested

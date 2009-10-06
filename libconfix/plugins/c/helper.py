@@ -26,19 +26,19 @@ _re_aftstr_main = re.compile('main["`\']')
 _re_main_openparen_after = re.compile('main\s*\\(')
 _re_cpp = re.compile('^s*#')
 
-def extract_requires(lines):
-
-    """ From lines (a list of strings), extract the possible
+def iter_includes(lines):
+    """
+    From lines (a list of strings), extract the possible
     require-candidates - i.e. the files which are #include<>d. Return
-    them as list of strings. """
-
-    reqs = []
+    them as list of strings.
+    """
     for l in lines:
         m = _re_include.match(l)
-        if not m: continue
-        reqs.append(m.group(1))
-
-    return reqs
+        if m:
+            yield m.group(1)
+            pass
+        pass
+    pass
 
 def search_main(lines):
     for l in lines:

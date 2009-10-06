@@ -51,7 +51,7 @@ class CBaseBuilder(FileBuilder):
     def dependency_info(self):
         ret = DependencyInformation()
         ret.add(super(CBaseBuilder, self).dependency_info())
-        for h_file in helper.extract_requires(self.file().lines()):
+        for h_file in helper.iter_includes(self.file().lines()):
             ret.add_require(
                 Require_CInclude(filename=h_file,
                                  found_in='/'.join(self.file().relpath(self.package().rootdirectory()))))
