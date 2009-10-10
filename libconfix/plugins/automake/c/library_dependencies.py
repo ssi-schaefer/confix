@@ -33,7 +33,9 @@ class LibraryDependenciesFinderSetup(Setup):
         self.__use_libtool = use_libtool
         pass
     def setup(self, dirbuilder):
-        dirbuilder.add_builder(ExecutableWatcher(use_libtool=self.__use_libtool))
+        if not self.__use_libtool:
+            dirbuilder.add_builder(ExecutableWatcher())
+            pass
         pass
     pass
 
@@ -47,9 +49,8 @@ class ExecutableWatcher(Builder):
     then I remove that object.
     """
     
-    def __init__(self, use_libtool):
+    def __init__(self):
         Builder.__init__(self)
-        self.__use_libtool = use_libtool
         # { exebuilder: depfinder }
         self.__library_dependency_finder_by_exe = {}
         pass

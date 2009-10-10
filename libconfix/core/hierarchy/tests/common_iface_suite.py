@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,9 +19,13 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.buildinfo import BuildInformation
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.utils import const
 from libconfix.testutils.persistent import PersistentTestCase
 from libconfix.setups.explicit_setup import ExplicitSetup
+from libconfix.setups.boilerplate import Boilerplate
+from libconfix.setups.c import C
 
 import unittest
 
@@ -38,6 +42,7 @@ class CommonDirectoryInterfaceSuite(unittest.TestSuite):
         self.addTest(ADD_BUILDER_Test('test'))
         self.addTest(SET_FILE_PROPERTIES_Test('test'))
         self.addTest(SET_FILE_PROPERTY_Test('test'))
+        self.addTest(BUILDINFORMATION_propagates_Test('test'))
         pass
     pass
 
@@ -181,7 +186,7 @@ class RESCAN_CURRENT_DIRECTORY_Test(PersistentTestCase):
         pass
     pass
         
-class ADD_BUILDER_Test(PersistentTestCase):
+class ADD_BUILDER_Test(unittest.TestCase):
     def test(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
@@ -209,7 +214,7 @@ class ADD_BUILDER_Test(PersistentTestCase):
         pass
     pass
         
-class SET_FILE_PROPERTIES_Test(PersistentTestCase):
+class SET_FILE_PROPERTIES_Test(unittest.TestCase):
     def test(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
@@ -234,7 +239,7 @@ class SET_FILE_PROPERTIES_Test(PersistentTestCase):
         pass
     pass
         
-class SET_FILE_PROPERTY_Test(PersistentTestCase):
+class SET_FILE_PROPERTY_Test(unittest.TestCase):
     def test(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
@@ -255,6 +260,87 @@ class SET_FILE_PROPERTY_Test(PersistentTestCase):
         f = fs.rootdirectory().get('file')
         self.failIf(f is None)
         self.failUnless(f.get_property('a') == 1)
+        pass
+    pass
+
+# once I was hunting a bug ...
+class BUILDINFORMATION_propagates_Test(PersistentTestCase):
+    class TestBuildInformation(BuildInformation):
+        def __init__(self):
+            BuildInformation.__init__(self)
+            self.hello = 1
+            pass
+        def unique_key(self): return str(self.__class__)
+        pass
+
+    class TestBuildInformationReceiver(Builder):
+        def __init__(self):
+            Builder.__init__(self)
+            self.seen_buildinfo = False
+            pass
+        def locally_unique_id(self): return self.__class__.__name__
+        def relate(self, node, digraph, topolist):
+            super(BUILDINFORMATION_propagates_Test.TestBuildInformationReceiver, self).relate(node, digraph, topolist)
+            for n in topolist:
+                for bi in n.buildinfos():
+                    print 'TestBuildInformationReceiver: '+str(bi)
+                    try:
+                        getattr(bi, 'hello')
+                        print 'hello seen'
+                        self.seen_buildinfo = True
+                    except: pass
+                    pass
+                pass
+            pass
+    
+    def test(self):
+        fs = FileSystem(path=[])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["DIRECTORY(['lo'])",
+                              "DIRECTORY(['hi'])",
+                              ]))
+
+        lo = fs.rootdirectory().add(
+            name='lo',
+            entry=Directory())
+        lo.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["from libconfix.core.hierarchy.tests.common_iface_suite import BUILDINFORMATION_propagates_Test",
+                              "BUILDINFORMATION(BUILDINFORMATION_propagates_Test.TestBuildInformation())",
+                              "PROVIDE_SYMBOL('test')"]))
+
+        hi = fs.rootdirectory().add(
+            name='hi',
+            entry=Directory())
+        hi.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["from libconfix.core.hierarchy.tests.common_iface_suite import BUILDINFORMATION_propagates_Test",
+                              "REQUIRE_SYMBOL('test', URGENCY_ERROR)",
+                              "ADD_BUILDER(BUILDINFORMATION_propagates_Test.TestBuildInformationReceiver())"
+                              ]))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[Boilerplate(), C()])
+        package.boil(external_nodes=[])
+
+        for receiver in package.rootbuilder().find_entry_builder(['hi']).iter_builders():
+            try:
+                getattr(receiver, 'seen_buildinfo')
+                break
+            except: pass
+            pass
+        else:
+            self.fail()
+            pass
+
+        self.failUnless(receiver.seen_buildinfo)
+
+        self.fail() # reminder
         pass
     pass
         

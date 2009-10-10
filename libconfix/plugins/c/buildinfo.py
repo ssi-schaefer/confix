@@ -38,10 +38,16 @@ class BuildInfo_CIncludePath_NativeLocal(BuildInformation):
         add the local install directory to its path."""
         BuildInformation.__init__(self)
         self.__include_dir = include_dir
+
+        self.__unique_key = self.__class__.__name__
+        if include_dir is not None:
+            self.__unique_key += ':' + '/'.join(include_dir)
+            pass
         pass
-    def __str__(self): return self.unique_key()
+    def __str__(self):
+        return self.__unique_key
     def unique_key(self):
-        return self.__class__.__name__
+        return self.__unique_key
     def include_dir(self):
         return self.__include_dir
     def install(self):

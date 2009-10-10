@@ -24,6 +24,9 @@ from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
 
+import fnmatch
+import re
+
 class ExplicitInstaller(Builder):
     """
     Sit around and wait for user requests like,
@@ -51,7 +54,7 @@ class ExplicitInstaller(Builder):
                 continue
             if b in self.__seen_header_builders:
                 continue
-            b.set_external_install_path(self.__installdir)
+            b.set_visibility(self.__installdir)
             self.__seen_header_builders.add(b)
             # we just have modified dependency information, so another
             # round must be made.
@@ -76,8 +79,53 @@ class INSTALLDIR_H(InterfaceProxy):
         pass
     pass
 
-class ExplicitInstallerSetup(Setup):
+class SetHeaderPublic(Builder):
+    def __init__(self, public, shellmatch=None, regex=None):
+        Builder.__init__(self)
+        self.__shellmatch = shellmatch
+        if regex is not None:
+            self.__regex = re.compile(regex)
+        else:
+            self.__regex = None
+            pass
+        self.__public = public
+        self.__seen_headers = set()
+
+        self.__id = str(self.__class__) + '(' + str(shellmatch) + ',' + str(regex) + ',' + str(self.__public) + ')'
+        pass
+    def locally_unique_id(self):
+        return self.__id
+    def enlarge(self):
+        for header in self.parentbuilder().iter_builders():
+            if not isinstance(header, HeaderBuilder):
+                continue
+            if header in self.__seen_headers:
+                continue
+            self.__seen_headers.add(header)
+            if self.__shellmatch is not None and fnmatch.fnmatchcase(header.file().name(), self.__shellmatch):
+                header.set_public(self.__public)
+                pass
+            if self.__regex is not None and self.__regex.search(header.file().name()):
+                header.set_public(self.__public)
+                pass
+            pass
+        pass
+    pass
+
+class SET_HEADER_PUBLIC(InterfaceProxy):
+    def __init__(self, dirbuilder):
+        InterfaceProxy.__init__(self)
+        self.__dirbuilder = dirbuilder
+        self.add_global('SET_HEADER_PUBLIC', getattr(self, 'SET_HEADER_PUBLIC'))
+        pass
+    def SET_HEADER_PUBLIC(self, public, regex=None, shellmatch=None):
+        self.__dirbuilder.add_builder(SetHeaderPublic(shellmatch=shellmatch, regex=regex, public=public))
+        pass
+    pass
+
+class ImplicitInterfaceSetup(Setup):
     def setup(self, dirbuilder):
         dirbuilder.add_interface(INSTALLDIR_H(dirbuilder=dirbuilder))
+        dirbuilder.add_interface(SET_HEADER_PUBLIC(dirbuilder=dirbuilder))
         pass
     pass

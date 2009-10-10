@@ -42,8 +42,10 @@ def iter_includes(lines):
 
 def search_main(lines):
     for l in lines:
+        main = _re_main.search(l)
+
         # no main found at all
-        if not _re_main.search(l): continue
+        if not main: continue
 
         # a preprocessor directive (likely "#error")
         if _re_cpp.search(l): continue

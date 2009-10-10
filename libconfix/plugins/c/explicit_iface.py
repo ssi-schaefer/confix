@@ -51,15 +51,21 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         self.add_global('EXECUTABLE', getattr(self, 'EXECUTABLE'))
         pass
 
-    def H(self, filename, install=[], relocate_to=None):
-        if type(install) is not list:
-            raise Error("H(): 'install' parameter must be list of strings")
+    def H(self, filename, install=[], public=None, relocate_to=None):
+        if install is not None and type(install) is not list:
+            raise Error("H(): 'install' parameter must be None or a list of strings")
         if type(filename) is not str:
             raise Error("H(): 'filename' parameter must be string")
+
+        if public is not None and type(public) is not bool:
+            raise Error("H(): 'public' parameter must be bool")
         
         h = HeaderBuilder(file=self.__find_file(filename))
         if install is not None:
-            h.set_external_install_path(install)
+            h.set_visibility(install)
+            pass
+        if public is not None:
+            h.set_public(public)
             pass
 
         self.__dirbuilder.add_builder(h)

@@ -18,7 +18,7 @@
 from library_dependencies.suite_inmem import LibraryDependenciesInMemorySuite
 from external_library import ExternalLibraryInMemorySuite
 from library import LibraryInMemorySuite
-from header_install import HeaderInstallInMemorySuite
+from header_install_inmem import HeaderInstallInMemorySuite
 
 import unittest
 

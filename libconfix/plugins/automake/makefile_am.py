@@ -335,6 +335,11 @@ class Makefile_am(object):
         self.add_dir_primary('noinst', 'PROGRAMS', progname)
         pass
 
+    def noinst_headers(self): return self.dir_primary('noinst', 'HEADERS')
+    def add_noinst_header(self, header):
+        self.add_dir_primary('noinst', 'HEADERS', header)
+        pass
+
     def add_noinst_script(self, scriptname):
         self.add_dir_primary('noinst', 'SCRIPTS', scriptname)
         pass

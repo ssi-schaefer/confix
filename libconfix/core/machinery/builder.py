@@ -59,7 +59,7 @@ class Builder(object):
         if self.__parentbuilder is None:
             ret += '(no parent, id='+str(id(self))+')'
         else:
-            ret += '('+str(self.__parentbuilder)+')'
+            ret += '('+'/'.join(self.__parentbuilder.directory().relpath(self.__package.rootdirectory()))+')'
             pass
         return ret
 
@@ -270,6 +270,7 @@ class BuilderInterfaceProxy(InterfaceProxy):
 
     def BUILDINFORMATION(self, buildinfo):
         self.__builder.add_buildinfo(buildinfo)
+        self.__builder.force_enlarge()
         pass
 
     pass

@@ -22,8 +22,7 @@ from requires import RequireTestSuite
 from relate import RelateSuite
 from library import LibrarySuite
 from regressions.suite_inmem import RegressionsInMemorySuite
-from header.suite_inmem import HeaderInMemorySuite
-from cond_localinstall.suite_inmem import ConditionalLocalInstallInMemorySuite
+from header_visibility_inmem import HeaderVisibilityInMemorySuite
 from confix2_dir import Confix2_dir_Suite
 from misc import MiscellaneousSuite
 from setup_cxx import CXXSetupSuite
@@ -34,6 +33,7 @@ from clusterer.suite_inmem import ClustererInMemorySuite
 from ignored_entries import IgnoredEntriesInMemorySuite
 from library_versions import LibraryVersionsSuite
 from inter_package_inmem import InterPackageInMemorySuite
+from buildinfo_inmem import BuildInformationInMemorySuite
 
 from libconfix.plugins.c.setups.tests.suite_inmem import SetupsInMemorySuite
 from libconfix.plugins.c.relocated_headers.tests.suite_inmem import RelocatedHeadersInMemorySuite
@@ -51,9 +51,8 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(NameManglingSuite())
         self.addTest(SetupsInMemorySuite())
         self.addTest(RelocatedHeadersInMemorySuite())
-        self.addTest(HeaderInMemorySuite())
+        self.addTest(HeaderVisibilityInMemorySuite())
         self.addTest(RegressionsInMemorySuite())
-        self.addTest(ConditionalLocalInstallInMemorySuite())
         self.addTest(Confix2_dir_Suite())
         self.addTest(MiscellaneousSuite())
         self.addTest(CXXSetupSuite())
@@ -64,6 +63,7 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(IgnoredEntriesInMemorySuite())
         self.addTest(LibraryVersionsSuite())
         self.addTest(InterPackageInMemorySuite())
+        self.addTest(BuildInformationInMemorySuite())
         pass
     pass
 

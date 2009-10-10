@@ -16,6 +16,7 @@
 # USA
 
 from library_dependencies.suite_build import LibraryDependenciesBuildSuite
+from noinst_headers_build import NoInstallHeadersBuildSuite
 
 import unittest
 
@@ -23,6 +24,7 @@ class AutomakeCBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(LibraryDependenciesBuildSuite())
+        self.addTest(NoInstallHeadersBuildSuite())
         pass
     pass
 

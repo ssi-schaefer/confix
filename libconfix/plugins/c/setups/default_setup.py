@@ -20,7 +20,7 @@ from common_iface_setup import CommonInterfaceSetup
 
 from libconfix.plugins.c.clusterer import CClustererSetup
 from libconfix.plugins.c.creator import CCreatorSetup
-from libconfix.plugins.c.explicit_install import ExplicitInstallerSetup
+from libconfix.plugins.c.implicit_iface import ImplicitInterfaceSetup
 from libconfix.plugins.c.relocated_headers.setup import RelocatedHeadersSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
@@ -36,7 +36,7 @@ class DefaultCSetup(CompositeSetup):
     def __init__(self,
                  short_libnames):
         setups = make_core_setups(short_libnames=short_libnames)
-        setups.append(ExplicitInstallerSetup())
+        setups.append(ImplicitInterfaceSetup())
         CompositeSetup.__init__(
             self,
             setups=setups)

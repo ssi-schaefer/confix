@@ -45,9 +45,9 @@ class LibraryDependenciesBuilder(Builder):
                 if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
                     cmake_output_builder.top_cmakelists().add_include(
                         '${'+self.package().name()+'_SOURCE_DIR}/'
-                        'confix-admin/cmake/Modules/ConfixFindNativeInstalledLibrary.cmake')
+                        'confix-admin/cmake/Modules/ConfixLibraryDependency.cmake')
                     cmake_output_builder.top_cmakelists().add_find_call(
-                        'ConfixFindNativeInstalledLibrary('+bi.basename()+')')
+                        'ConfixFindNativeInstalledLibrary('+bi.basename()+' '+exe.exename()+')')
                     cmake_output_builder.local_cmakelists().tighten_target_link_library(
                         target=exe.exename(),
                         basename=bi.basename(),
@@ -58,15 +58,15 @@ class LibraryDependenciesBuilder(Builder):
 
         if found_exe:
             cmake_output_builder.add_module_file(
-                name='ConfixFindNativeInstalledLibrary.cmake',
-                lines=['FUNCTION(ConfixFindNativeInstalledLibrary basename)',
+                name='ConfixLibraryDependency.cmake',
+                lines=['FUNCTION(ConfixFindNativeInstalledLibrary basename exename)',
                        '    SET(prefixlib_list ${CMAKE_INSTALL_PREFIX}/lib)',
                        '    FOREACH(prefix ${READONLY_PREFIXES})',
                        '        LIST(APPEND prefixlib_list ${prefix}/lib)',
                        '    ENDFOREACH(prefix)',
                        '    FIND_LIBRARY(${basename}_LIBRARY ${basename} ${prefixlib_list})',
                        '    IF (${basename}_LIBRARY)',
-                       '        MESSAGE(STATUS "found confix native installed library \'${${basename}_LIBRARY}\'")',
+                       '        MESSAGE(STATUS "add dependency ${exename} -> ${${basename}_LIBRARY}")',
                        '    ELSE (${basename}_LIBRARY)',
                        '        MESSAGE(FATAL_ERROR "cannot find confix native installed library \'${basename}\'")',
                        '    ENDIF (${basename}_LIBRARY)',

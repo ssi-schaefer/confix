@@ -33,12 +33,15 @@ import os
 class HeaderBuilder(CBaseBuilder):
     PROPERTY_INSTALLPATH = 'INSTALLPATH_CINCLUDE'
 
+    LOCALVISIBILITY_INSTALL = 0
+    LOCALVISIBILITY_DIRECT_INCLUDE = 1
+
     class AmbiguousVisibility(Error):
         def __init__(self, header_builder, cur, prev):
             Error.__init__(self,
                            msg='Ambiguous visibility of header "'+\
                            '/'.join(header_builder.file().relpath(from_dir=header_builder.package().rootdirectory()))+'": '+\
-                           cur+'/'+prev)
+                           '/'.join(cur)+' vs. '+'/'.join(prev))
             pass
         pass
 
@@ -54,10 +57,12 @@ class HeaderBuilder(CBaseBuilder):
     def __init__(self, file):
         CBaseBuilder.__init__(self, file=file)
 
+        self.__explicit_visibility = None
+
         self.__namespace_install_path = None
         self.__namespace_error = None
-        self.__iface_install_path = None
-        self.__external_install_path = None
+
+        self.__public = True
 
         # a flag that makes the public dependency_info() method return
         # nothing. currently only needed for relocating headers, but
@@ -69,74 +74,29 @@ class HeaderBuilder(CBaseBuilder):
     def shortname(self):
         return 'C.HeaderBuilder('+self.file().name()+')'
 
-    def initialize(self, package):
-        # let the base class do its work. note that this will use our
-        # iface_pieces() method to gather together interface
-        # contributions, and thus eventually set
-        # self.__iface_install_path.
-        super(HeaderBuilder, self).initialize(package)
+    def set_visibility(self, v):
+        assert type(v) is list
+        if self.__explicit_visibility is not None and self.__explicit_visibility != v:
+            raise self.AmbiguousVisibility(header_builder=self, cur=v, prev=self.__explicit_visibility)
+        self.__explicit_visibility = v
 
-        try:        
-            self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
-        except Error, e:
-            self.__namespace_error = Error('Could not initialize '+'/'.join(self.file().relpath(from_dir=package.rootdirectory())), [e])
-            pass
-        pass
-
-    def set_iface_install_path(self, path):
+        # others may want to be told about the fact.
         self.force_enlarge()
-        self.__iface_install_path = path
         pass
 
-    def set_external_install_path(self, path):
-        assert type(path) in (list, tuple)
+    def visibility(self):
+        return self.__preliminary_visibility()
+
+    def set_public(self, public):
+        self.__public = public
+        # others may want to know that
         self.force_enlarge()
-        self.__external_install_path = path
         pass
 
-    def public_visibility(self):
-        ret = None
-        set_by = None
+    def public(self):
+        return self.__public
 
-        if self.__external_install_path is not None:
-            if set_by is not None:
-                raise self.AmbiguousVisibility(header_builder=self, cur='explicit setting', prev=set_by)
-            ret = self.__external_install_path
-            set_by = "explicit setting"
-            pass
-
-        if self.__iface_install_path is not None:
-            if set_by is not None:
-                raise self.AmbiguousVisibility(header_builder=self, cur='file interface invocation', prev=set_by)
-            ret = self.__iface_install_path
-            set_by = 'file interface invocation'
-            pass
-
-        property_install_path = self.file().get_property(HeaderBuilder.PROPERTY_INSTALLPATH)
-        if property_install_path is not None:
-            if set_by is not None:
-                raise self.AmbiguousVisibility(header_builder=self, cur='file property', prev=set_by)
-            ret = property_install_path
-            set_by = 'file property'
-            pass
-
-        if ret is None:
-            # bail out if we had an error recognizing the namespace
-            if self.__namespace_error is not None:
-                raise self.BadNamespace(path=self.file().relpath(from_dir=self.package().rootdirectory()),
-                                        error=self.__namespace_error)
-            ret = self.__namespace_install_path
-            pass
-
-        if ret is None:
-            ret = []
-            pass
-
-        return ret
-
-    LOCAL_INSTALL = 0
-    DIRECT_INCLUDE = 1
-    def local_visibility(self):
+    def package_visibility_action(self):
         """
         Decide if we have to 'locally install' the file, in order to
         make it visible to the other nodes in the package.
@@ -163,13 +123,13 @@ class HeaderBuilder(CBaseBuilder):
         the user's include path.
         """
         complete_path = self.parentbuilder().directory().relpath(from_dir=self.package().rootdirectory())
-        visible_path = self.public_visibility()
+        visible_path = self.visibility()
         
         if len(complete_path) < len(visible_path):
-            return (self.LOCAL_INSTALL, visible_path)
+            return (self.LOCALVISIBILITY_INSTALL, visible_path)
         if complete_path[len(complete_path)-len(visible_path):] == visible_path:
-            return (self.DIRECT_INCLUDE, complete_path[0:len(complete_path)-len(visible_path)])
-        return (self.LOCAL_INSTALL, visible_path)
+            return (self.LOCALVISIBILITY_DIRECT_INCLUDE, complete_path[0:len(complete_path)-len(visible_path)])
+        return (self.LOCALVISIBILITY_INSTALL, visible_path)
 
     def iface_pieces(self):
         return super(HeaderBuilder, self).iface_pieces() + [HeaderBuilderInterfaceProxy(builder=self)]
@@ -206,15 +166,16 @@ class HeaderBuilder(CBaseBuilder):
         ret = DependencyInformation()
         ret.add(super(HeaderBuilder, self).dependency_info())
 
-        outer_name = '/'.join(self.public_visibility()+[self.file().name()])
+        outer_name = '/'.join(self.visibility()+[self.file().name()])
+
+        # provide ourself to the wide public.
         ret.add_provide(Provide_CInclude(filename=outer_name))
 
         # regardless if we will provide ourselves to the outer world,
-        # and regardless of how we will be doing that, we will
-        # eventually be included/required by files in the same
-        # directory. to neutralize their require objects (a node
-        # eliminates require objects the are resolved internally),
-        # provide ourselves.
+        # and regardless of how we will be doing that, we will likely
+        # be included/required by files in the same directory. to
+        # neutralize their require objects (a node eliminates require
+        # objects the are resolved internally), provide ourselves.
         if outer_name is None or self.file().name() != outer_name:
             ret.add_internal_provide(Provide_CInclude(filename=self.file().name()))
             pass
@@ -225,15 +186,15 @@ class HeaderBuilder(CBaseBuilder):
         ret = BuildInformationSet()
         ret.merge(super(HeaderBuilder, self).buildinfos())
 
-        local_visibility = self.local_visibility()
-        if local_visibility[0] == self.DIRECT_INCLUDE:
+        package_visibility_action = self.package_visibility_action()
+        if package_visibility_action[0] == self.LOCALVISIBILITY_DIRECT_INCLUDE:
             # receiver can see the file directly, by adding a
             # directory of the source package to the path.
-            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=local_visibility[1]))
-        elif local_visibility[0] == self.LOCAL_INSTALL:
+            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=package_visibility_action[1]))
+        elif package_visibility_action[0] == self.LOCALVISIBILITY_INSTALL:
             # receiver has to add the directory on the include path
             # where the locally installed files are
-            # ($(top_srcdir)/confix_include for the automake backend)
+            # ($(top_srcdir)/confix-include for the automake backend)
             ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=None))
         else:
             assert False
@@ -241,6 +202,53 @@ class HeaderBuilder(CBaseBuilder):
         
         return ret
 
+    def output(self):
+        super(HeaderBuilder, self).output()
+        self.__definitive_visibility()
+        pass
+
+    def __preliminary_visibility(self):
+        vis = self.__nonamespace_visibility()
+        if vis:
+            return vis
+        try:
+            return self.__calc_namespace()
+        except self.BadNamespace:
+            return []
+        pass
+
+    def __definitive_visibility(self):
+        vis = self.__nonamespace_visibility()
+        if vis is not None:
+            return vis
+        return self.__calc_namespace()
+
+    def __nonamespace_visibility(self):
+        property_install_path = self.file().get_property(HeaderBuilder.PROPERTY_INSTALLPATH)
+
+        if self.__explicit_visibility is not None and property_install_path is not None:
+            raise self.AmbiguousVisibility(header_builder=self, cur=self.__explicit_visibility, prev=property_install_path)
+
+        if self.__explicit_visibility is not None:
+            return self.__explicit_visibility
+        if property_install_path is not None:
+            return property_install_path
+        return None
+
+    def __calc_namespace(self):
+        if self.__namespace_error:
+            raise self.__namespace_error
+
+        if self.__namespace_install_path is None:
+            try:
+                self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
+            except Error, e:
+                self.__namespace_error = self.BadNamespace(
+                    path=self.file().relpath(from_dir=self.package().rootdirectory()),
+                    error=e)
+                raise self.__namespace_error
+            pass
+        return self.__namespace_install_path
     pass
 
 class HeaderBuilderInterfaceProxy(InterfaceProxy):
@@ -250,7 +258,7 @@ class HeaderBuilderInterfaceProxy(InterfaceProxy):
         self.add_global('INSTALLPATH', getattr(self, 'INSTALLPATH'))
         pass
     def INSTALLPATH(self, path):
-        self.__builder.set_iface_install_path(helper.make_path(path))
+        self.__builder.set_visibility(helper.make_path(path))
         pass
     pass
 

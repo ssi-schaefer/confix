@@ -70,20 +70,29 @@ class HeaderOutputBuilder(Builder):
         automake_output_builder = find_automake_output_builder(self.parentbuilder())
         
         super(HeaderOutputBuilder, self).output()
-        for b in self.parentbuilder().iter_builders():
-            if not isinstance(b, HeaderBuilder):
+        for header in self.parentbuilder().iter_builders():
+            if not isinstance(header, HeaderBuilder):
                 continue
 
-            public_visibility = b.public_visibility()
-            local_visibility = b.local_visibility()
+            visibility = header.visibility()
+            package_visibility_action = header.package_visibility_action()
 
-            automake_output_builder.file_installer().add_public_header(filename=b.file().name(), dir=public_visibility)
-
-            assert local_visibility[0] in (HeaderBuilder.LOCAL_INSTALL, HeaderBuilder.DIRECT_INCLUDE)
-            if local_visibility[0] == HeaderBuilder.LOCAL_INSTALL:
+            if header.public():
+                automake_output_builder.file_installer().add_public_header(filename=header.file().name(), dir=visibility)
+            else:
+                automake_output_builder.file_installer().add_noinst_header(filename=header.file().name())
+                pass
+            
+            assert package_visibility_action[0] in \
+                   (HeaderBuilder.LOCALVISIBILITY_INSTALL, HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
+            if package_visibility_action[0] == HeaderBuilder.LOCALVISIBILITY_INSTALL:
                 automake_output_builder.file_installer().add_private_header(
-                    filename=b.file().name(),
-                    dir=local_visibility[1])
+                    filename=header.file().name(),
+                    dir=package_visibility_action[1])
+            elif package_visibility_action[0] == HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE:
+                pass
+            else:
+                assert False, package_visibility_action[0]
                 pass
             pass
         pass
@@ -177,7 +186,7 @@ class CompiledOutputBuilder(Builder):
                 automake_output_builder.makefile_am().add_includepath('-I'+'/'.join(['$(top_srcdir)']+d))
                 pass
             # if files have been locally installed, we have to add
-            # $(top_builddir)/confix_include to the include path.
+            # $(top_builddir)/confix-include to the include path.
             if b.have_locally_installed_includes():
                 automake_output_builder.makefile_am().add_includepath('-I'+'/'.join(['$(top_builddir)', const.LOCAL_INCLUDE_DIR]))
                 pass

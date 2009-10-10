@@ -29,17 +29,24 @@ from libconfix.core.filesys import scan
 from libconfix.core.utils import const
 from libconfix.testutils.persistent import PersistentTestCase
 
+from libconfix.setups.c import C
+from libconfix.setups.c import AutoC
+from libconfix.setups.cmake import CMake
+from libconfix.setups.boilerplate import Boilerplate
+
 import unittest
 
 class LocalInstallBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(LocalInstallTest('test'))
+        self.addTest(LocalInstallTest('test_basic'))
+        self.addTest(NoPublicInstall('test_explicit_no_public_visibility'))
+        self.addTest(NoPublicInstall('test_auto_no_public_visibility'))
         pass
     pass
 
 class LocalInstallTest(PersistentTestCase):
-    def test(self):
+    def test_basic(self):
         source = Directory()
         source.add(
             name=const.CONFIX2_PKG,
@@ -136,6 +143,96 @@ class LocalInstallTest(PersistentTestCase):
         # an issue we will skip this check
         self.failUnless(build.find(['exe', 'exe']))
 
+        pass
+
+    pass
+
+class NoPublicInstall(PersistentTestCase):
+    def test_explicit_no_public_visibility(self):
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+        install = fs.rootdirectory().add(
+            name='install',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('blah')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["H(filename='header.h', public=False)"]))
+        source.add(
+            name='header.h',
+            entry=File())
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[Boilerplate(),
+                                       C(),
+                                       CMake(library_dependencies=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(
+            packageroot=source.abspath(),
+            builddir=build.abspath(),
+            args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(install.abspath())])
+        commands.make(builddir=build.abspath(), args=['install'])
+
+        scan.rescan_dir(install)
+
+        self.failIf(install.find(['include', 'header.h']))
+        
+        pass
+    
+    def test_auto_no_public_visibility(self):
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+        install = fs.rootdirectory().add(
+            name='install',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('blah')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["SET_HEADER_PUBLIC(shellmatch='header.h', public=False)"]))
+        source.add(
+            name='header.h',
+            entry=File())
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[Boilerplate(),
+                                       AutoC(short_libnames=False),
+                                       CMake(library_dependencies=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(
+            packageroot=source.abspath(),
+            builddir=build.abspath(),
+            args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(install.abspath())])
+        commands.make(builddir=build.abspath(), args=['install'])
+
+        scan.rescan_dir(install)
+
+        self.failIf(install.find(['include', 'header.h']))
         pass
 
     pass

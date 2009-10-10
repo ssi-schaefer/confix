@@ -66,12 +66,19 @@ class HeaderOutputBuilder(Builder):
             if not isinstance(header, HeaderBuilder):
                 continue
 
-            public_install_info.append((header.file().name(), header.public_visibility()))
+            if header.public():
+                public_install_info.append((header.file().name(), header.visibility()))
+                pass
 
-            local_visibility = header.local_visibility()
-            assert local_visibility[0] in (HeaderBuilder.LOCAL_INSTALL, HeaderBuilder.DIRECT_INCLUDE)
-            if local_visibility[0] == HeaderBuilder.LOCAL_INSTALL:
-                local_install_info.append((header.file().name(), local_visibility[1]))
+            package_visibility_action = header.package_visibility_action()
+            assert package_visibility_action[0] in \
+                   (HeaderBuilder.LOCALVISIBILITY_INSTALL, HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
+            if package_visibility_action[0] == HeaderBuilder.LOCALVISIBILITY_INSTALL:
+                local_install_info.append((header.file().name(), package_visibility_action[1]))
+            elif package_visibility_action[0] is HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE:
+                pass
+            else:
+                assert False, package_visibility_action[0]
                 pass
             pass
 

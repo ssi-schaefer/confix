@@ -38,6 +38,9 @@ class FileInstaller:
         self.__public_headers = _InstallDirectoryContainer(error_title='Public header')
         self.__private_headers = _InstallDirectoryContainer(error_title='Private header')
 
+        # header files that are not installed.
+        self.__noinst_headers = set()
+
         # same for $(datadir)
 
         self.__datafiles = _InstallDirectoryContainer(error_title='Data file')
@@ -55,6 +58,10 @@ class FileInstaller:
 
     def add_public_header(self, filename, dir):
         self.__public_headers.add_file(filename=filename, dir=dir)
+        pass
+
+    def add_noinst_header(self, filename):
+        self.__noinst_headers.add(filename)
         pass
 
     def add_private_header(self, filename, dir):
@@ -84,14 +91,14 @@ class FileInstaller:
         makefile_am.add_all_local(FileInstaller.TARGET_INSTALL_LOCAL)
         makefile_am.add_clean_local(FileInstaller.TARGET_CLEAN_LOCAL)
 
-        self.automake_install_public_headers_(makefile_am=makefile_am)
-        self.automake_install_datafiles_(makefile_am=makefile_am)
-        self.automake_install_prefixfiles_(makefile_am=makefile_am)
-        self.automake_install_private_headers_(makefile_am=makefile_am)
-
+        self.__automake_install_public_headers(makefile_am=makefile_am)
+        self.__automake_add_noinst_headers(makefile_am=makefile_am)
+        self.__automake_install_datafiles(makefile_am=makefile_am)
+        self.__automake_install_prefixfiles(makefile_am=makefile_am)
+        self.__automake_install_private_headers(makefile_am=makefile_am)
         pass
 
-    def automake_install_public_headers_(self, makefile_am):
+    def __automake_install_public_headers(self, makefile_am):
         for reldir, filelist in self.__public_headers.iterate_dirs():
             if len(reldir):
                 # define subdirectory
@@ -109,8 +116,14 @@ class FileInstaller:
                 files=filelist)
             pass
         pass
+
+    def __automake_add_noinst_headers(self, makefile_am):
+        for header in self.__noinst_headers:
+            makefile_am.add_noinst_header(header)
+            pass
+        pass
     
-    def automake_install_datafiles_(self, makefile_am):
+    def __automake_install_datafiles(self, makefile_am):
         for dirname, filelist in self.__datafiles.iterate_dirs():
             # define directory
             symbolicname = self.__compute_install_dirname(title='data', dir=dirname)
@@ -123,7 +136,7 @@ class FileInstaller:
             pass
         pass
 
-    def automake_install_prefixfiles_(self, makefile_am):
+    def __automake_install_prefixfiles(self, makefile_am):
         for dirname, filelist in self.__prefixfiles.iterate_dirs():
             # define directory
             symbolicname = self.__compute_install_dirname(title='prefix', dir=dirname)
@@ -136,7 +149,7 @@ class FileInstaller:
             pass
         pass
 
-    def automake_install_private_headers_(self, makefile_am):
+    def __automake_install_private_headers(self, makefile_am):
 
         # now for the private header files. this is a bit more
         # complicated as we have to do it by hand, using the all-local
