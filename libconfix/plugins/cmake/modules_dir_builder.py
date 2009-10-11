@@ -27,13 +27,14 @@ class ModulesDirectoryBuilder(DirectoryBuilder):
         pass
 
     def add_module_file(self, name, lines):
+        my_lines = helper.normalize_lines(lines)
         existing_file = self.directory().get(name)
         if existing_file is None:
-            self.directory().add(name=name, entry=File(lines=lines))
-        elif helper.md5_hexdigest_from_lines(lines) != helper.md5_hexdigest_from_lines(existing_file.lines()):
+            self.directory().add(name=name, entry=File(lines=my_lines))
+        elif helper.md5_hexdigest_from_lines(my_lines) != helper.md5_hexdigest_from_lines(existing_file.lines()):
             debug.warn('Module file '+name+' already exists with different content')
             existing_file.truncate()
-            existing_file.add_lines(lines)
+            existing_file.add_lines(my_lines)
             pass
         pass
 

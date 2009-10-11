@@ -203,7 +203,7 @@ class CMakeLists:
         link_libraries = self.__target_link_libraries.get(target)
         if link_libraries is None:
             return
-        for i in range(len(link_libraries)):
+        for i in xrange(len(link_libraries)):
             if link_libraries[i] == basename:
                 link_libraries[i] = tightened
                 break

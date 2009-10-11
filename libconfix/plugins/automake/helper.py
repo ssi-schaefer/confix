@@ -75,7 +75,7 @@ def format_word_list(words):
 
     ret_lines = []
 
-    for i in range(len(bare_lines)):
+    for i in xrange(len(bare_lines)):
         line = bare_lines[i]
         if i != 0: line = '    ' + line
         if i < len(bare_lines)-1:

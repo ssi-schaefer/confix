@@ -686,7 +686,7 @@ class IntelligentConditionalLocalInstall(unittest.TestCase):
         self.failIf(user_c_builder is None)
 
         hi_pos = lo_pos = None
-        for i in range(len(user_c_builder.native_local_include_dirs())):
+        for i in xrange(len(user_c_builder.native_local_include_dirs())):
             if user_c_builder.native_local_include_dirs()[i] == ['hi']:
                 self.failUnless(hi_pos is None)
                 hi_pos = i

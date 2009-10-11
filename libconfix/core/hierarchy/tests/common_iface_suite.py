@@ -283,10 +283,8 @@ class BUILDINFORMATION_propagates_Test(PersistentTestCase):
             super(BUILDINFORMATION_propagates_Test.TestBuildInformationReceiver, self).relate(node, digraph, topolist)
             for n in topolist:
                 for bi in n.buildinfos():
-                    print 'TestBuildInformationReceiver: '+str(bi)
                     try:
                         getattr(bi, 'hello')
-                        print 'hello seen'
                         self.seen_buildinfo = True
                     except: pass
                     pass
@@ -339,8 +337,6 @@ class BUILDINFORMATION_propagates_Test(PersistentTestCase):
             pass
 
         self.failUnless(receiver.seen_buildinfo)
-
-        self.fail() # reminder
         pass
     pass
         

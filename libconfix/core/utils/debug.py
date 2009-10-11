@@ -1,6 +1,5 @@
-# $Id: debug.py,v 1.2 2006/07/18 10:43:16 jfasch Exp $
-
-# Copyright (C) 2002 Salomon Automation
+# Copyright (C) 2002-2007 Salomon Automation
+# Copyright (C) 2007-2009 Joerg Faschingbauer
 # 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -27,7 +26,7 @@ _message_prefix = ''
 
 def _get_indent():
     ret = ''
-    for i in range(_indentation):
+    for i in xrange(_indentation):
         ret = ret + ' '
     return ret
 

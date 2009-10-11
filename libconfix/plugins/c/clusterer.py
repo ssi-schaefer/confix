@@ -213,7 +213,7 @@ class CClustererInterfaceProxy(InterfaceProxy):
             raise Error("LIBRARY_VERSION(): 'version' argument must be a tuple")
         if len(version) != 3:
             raise Error("LIBRARY_VERSION(): 'version' argument must be a tuple of 3 integers")
-        for i in range(len(version)):
+        for i in xrange(len(version)):
             if type(version[i]) is not types.IntType:
                 raise Error("LIBRARY_VERSION(): part "+str(i)+" of version is not an integer")
             pass
@@ -259,10 +259,7 @@ class ShortNameFinder(NameFinder):
             return packagename
         
         candidate = []
-        iter = range(len(path))
-        iter.reverse()
-        
-        for i in iter:
+        for i in reversed(xrange(len(path))):
             candidate.insert(0, path[i])
             name = '_'.join([packagename]+candidate)
             if name not in self.__assigned_libnames:

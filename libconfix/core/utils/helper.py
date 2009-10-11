@@ -77,7 +77,7 @@ def format_cycle_error(error):
         pass
     return lines
 
-    for i in range(len(path)-1):
+    for i in xrange(len(path)-1):
 
         # from the successors of #i along the circle path, get the one
         # which is the next on the path. print the edge.
@@ -104,6 +104,25 @@ def format_cycle_error(error):
             pass
         pass
 
+    return lines
+
+def normalize_lines(lines):
+    """
+    When a line contains embedded newlines, it is split into several
+    lines.
+    """
+    ret = None
+    for i in xrange(len(lines)):
+        if lines[i].find('\n') >= 0:
+            if ret is None: ret = lines[:i]
+            ret.extend(lines[i].split('\n'))
+        else:
+            if ret:
+                ret.append(lines[i])
+                pass
+            pass
+        pass
+    if ret: return ret
     return lines
 
 def md5_hexdigest_from_lines(lines):

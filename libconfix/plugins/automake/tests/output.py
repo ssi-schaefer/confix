@@ -94,7 +94,7 @@ class AutomakeOutputTest(unittest.TestCase):
 
         aux = dot = subdir1 = subdir2 = subdir3 = None
 
-        for i in range(len(rootdir_automake_builder.makefile_am().subdirs())):
+        for i in xrange(len(rootdir_automake_builder.makefile_am().subdirs())):
             if rootdir_automake_builder.makefile_am().subdirs()[i] == 'confix-admin/automake':
                 self.failUnless(aux is None)
                 aux = i

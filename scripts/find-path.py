@@ -52,7 +52,7 @@ if to_node is None:
     pass
 
 path = libconfix.digraph.find_path.find_path(digraph, from_node, to_node)
-for i in range(len(path) - 1):
+for i in xrange(len(path) - 1):
     tail = path[i]
     head = path[i+1]
     print str(tail) + ' -> ' + str(head)

@@ -1,4 +1,5 @@
 # Copyright (C) 2005 Salomon Automation
+# Copyright (C) 2005-2009 Salomon Automation
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -40,7 +41,7 @@ def toposort_node(digraph, node):
     except cycle.CycleError, error:
         # annotate cycle
         edgelist = []
-        for tail, head in [(error.nodelist()[i], error.nodelist()[i+1]) for i in range(len(error.nodelist())-1)]:
+        for tail, head in [(error.nodelist()[i], error.nodelist()[i+1]) for i in xrange(len(error.nodelist())-1)]:
             edge = digraph.find_edge(tail, head)
             assert edge is not None
             edgelist.append(edge)
@@ -71,9 +72,7 @@ class TopoVisitor:
             self.stack_.append(node)
             return True
         if color == TopoVisitor.GRAY:
-            rev_stack_index = range(len(self.stack_))
-            rev_stack_index.reverse()
-            for i in rev_stack_index:
+            for i in reversed(xrange(len(self.stack_))):
                 if self.stack_[i] == node:
                     cycle_path = self.stack_[i:] + [node]
                     pass
