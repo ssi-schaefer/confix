@@ -32,7 +32,6 @@ class ModulesInMemorySuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(ModulesInMemoryTest('test_ok'))
         self.addTest(ModulesInMemoryTest('test_good_duplicate'))
-        self.addTest(ModulesInMemoryTest('test_bad_duplicate'))
         self.addTest(ModulesInMemoryTest('test_live'))
         pass
     pass
@@ -60,16 +59,6 @@ class ModulesInMemoryTest(unittest.TestCase):
         mod1 = modules_dir_builder.directory().get('mod1.cmake')
         self.failIfEqual(mod1, None)
         self.failUnlessEqual(mod1.lines(), ['mod1'])        
-        pass
-
-    def test_bad_duplicate(self):
-        modules_dir_builder = ModulesDirectoryBuilder(directory=Directory())
-        modules_dir_builder.add_module_file(name='mod1.cmake', lines=['mod1'])
-        try:
-            modules_dir_builder.add_module_file(name='mod1.cmake', lines=['mod2'])
-        except ModulesDirectoryBuilder.DuplicateError:
-            return
-        self.fail()
         pass
 
     def test_live(self):
