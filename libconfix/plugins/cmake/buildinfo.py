@@ -241,7 +241,7 @@ class BuildInfo_CXXFLAGS_CMake(BuildInformation):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.__cflags = data[Marshallable.ATTRIBUTES]['cxxflags']
+        self.__cxxflags = data[Marshallable.ATTRIBUTES]['cxxflags']
         BuildInformation.set_marshalling_data(self, data)
         pass
 
