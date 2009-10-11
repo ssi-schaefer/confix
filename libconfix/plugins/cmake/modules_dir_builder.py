@@ -19,14 +19,9 @@ from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.filesys.file import File
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
+from libconfix.core.utils import debug
 
 class ModulesDirectoryBuilder(DirectoryBuilder):
-    class DuplicateError(Error):
-        def __init__(self, filename):
-            Error.__init__(self, msg='Module file '+filename+' already exists with different content')
-            pass
-        pass
-    
     def __init__(self, directory):
         DirectoryBuilder.__init__(self, directory)
         pass
@@ -35,9 +30,10 @@ class ModulesDirectoryBuilder(DirectoryBuilder):
         existing_file = self.directory().get(name)
         if existing_file is None:
             self.directory().add(name=name, entry=File(lines=lines))
-        else:
-            if helper.md5_hexdigest_from_lines(lines) != helper.md5_hexdigest_from_lines(existing_file.lines()):
-                raise ModulesDirectoryBuilder.DuplicateError(name)
+        elif helper.md5_hexdigest_from_lines(lines) != helper.md5_hexdigest_from_lines(existing_file.lines()):
+            debug.warn('Module file '+name+' already exists with different content')
+            existing_file.truncate()
+            existing_file.add_lines(lines)
             pass
         pass
 
