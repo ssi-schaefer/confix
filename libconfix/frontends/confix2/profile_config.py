@@ -20,7 +20,6 @@ from config import Configuration
 
 class ProfileConfiguration(Configuration):
 
-    SETUPS = 'SETUPS'
     PREFIX = 'PREFIX'
     READONLY_PREFIXES = 'READONLY_PREFIXES'
     BUILDROOT = 'BUILDROOT'
@@ -43,8 +42,6 @@ class ProfileConfiguration(Configuration):
         self.dictionary_ = dict
         pass
 
-    def setups(self):
-        return self.dictionary_.get(ProfileConfiguration.SETUPS)
     def prefix(self):
         return self.dictionary_.get(ProfileConfiguration.PREFIX)
     def readonly_prefixes(self):

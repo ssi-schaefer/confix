@@ -67,23 +67,6 @@ def PACKAGE():
     debug.message("scanning package in %s ..." % CONFIG.packageroot())
     before = time.time()
 
-    if CONFIG.setups() is None:
-        debug.warn('No setup given; using automatic recognition. '
-                   'To avoid this warning, use SETUPS() in your '+const.CONFIX2_PKG+' file.')
-        setups = [ConfixSetup(use_libtool=CONFIG.use_libtool(),
-                              short_libnames=CONFIG.short_libnames())]
-    else:
-        setups = CONFIG.setups()[:]
-        pass
-
-    if CONFIG.debug() is not None:
-        setups.append(DebugSetup(CONFIG.debug()))
-        pass
-
-    if CONFIG.use_kde_hack():
-        setups.append(KDEHackSetup())
-        pass
-
     filesystem = scan_filesystem(path=CONFIG.packageroot().split(os.sep))
 
     if CONFIG.overlayroot() is not None:
@@ -92,7 +75,7 @@ def PACKAGE():
         pass
 
     package = LocalPackage(rootdirectory=filesystem.rootdirectory(),
-                           setups=setups)
+                           setups=None)
     DONE_PACKAGE = 1
 
     debug.message('done scanning ('+str(time.time()-before)+' seconds)')

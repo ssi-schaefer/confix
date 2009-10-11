@@ -75,7 +75,6 @@ class CommandlineConfiguration(Configuration):
     def debug(self): return self.__debug
 
     # Configuration interface
-    def setups(self): return None
     def packageroot(self): return self.__packageroot
     def overlayroot(self): return self.__overlayroot
     def packagename(self): return self.__packagename

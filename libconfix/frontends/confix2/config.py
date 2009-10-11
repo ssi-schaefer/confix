@@ -21,8 +21,6 @@ import os
 class Configuration:
     def __init__(self): pass
 
-    def setups(self): assert 0, str(self.__class__)
-    
     def packageroot(self): assert 0, str(self.__class__)
     def overlayroot(self): assert 0, str(self.__class__)
     

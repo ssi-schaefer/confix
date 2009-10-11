@@ -28,7 +28,6 @@ class CompositeConfiguration(Configuration):
         self.configurations_.append(config)
         pass
 
-    def setups(self): return self.search_param_('setups')
     def packageroot(self): return self.search_param_('packageroot')
     def overlayroot(self): return self.search_param_('overlayroot')
     def packagename(self): return self.search_param_('packagename')

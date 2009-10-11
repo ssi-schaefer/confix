@@ -56,7 +56,11 @@ class LocalPackage(Package):
         self.__version = None
         self.__rootdirectory = rootdirectory
 
-        self.__setup = CompositeSetup(setups=setups)
+        self.__setup = None
+
+        if setups:
+            self.__set_setup(setups)
+            pass
 
         self.__current_digraph = None
 
@@ -73,6 +77,9 @@ class LocalPackage(Package):
             raise Error(const.CONFIX2_PKG+': package name has not been set')
         if self.__version is None:
             raise Error(const.CONFIX2_PKG+': package version has not been set')
+
+        if self.__setup is None:
+            raise Error('No setup has been given; use SETUP() in Confix2.pkg')
 
         # create our root builder
         self.__rootbuilder = DirectoryBuilder(directory=rootdirectory)
@@ -104,11 +111,8 @@ class LocalPackage(Package):
 
     def setup(self):
         return self.__setup
-    def add_setup(self, s):
-        self.__setup.add_setup(s)
-        pass
-    def set_setups(self, ss):
-        self.__setup = CompositeSetup(ss)
+    def set_setup(self, s):
+        self.__set_setup(s)
         pass
 
     def rootbuilder(self):
@@ -265,6 +269,17 @@ class LocalPackage(Package):
                                    nodes=subdir_nodes)
         return toposort.toposort(digraph=graph, nodes=subdir_nodes)
 
+    def __set_setup(self, s):
+        assert self.__setup is None
+        if isinstance(s, Setup):
+            self.__setup = s
+        elif type(s) in (list, tuple):
+            self.__setup = CompositeSetup(s)
+        else:
+            assert False
+            pass
+        pass
+
     pass
 
 class PackageInterfaceProxy(InterfaceProxy):
@@ -275,8 +290,7 @@ class PackageInterfaceProxy(InterfaceProxy):
 
         self.add_global('PACKAGE_NAME', getattr(self, 'PACKAGE_NAME'))
         self.add_global('PACKAGE_VERSION', getattr(self, 'PACKAGE_VERSION'))
-        self.add_global('ADD_SETUP', getattr(self, 'ADD_SETUP'))
-        self.add_global('SETUPS', getattr(self, 'SETUPS'))
+        self.add_global('SETUP', getattr(self, 'SETUP'))
         
         pass
 
@@ -292,20 +306,10 @@ class PackageInterfaceProxy(InterfaceProxy):
         self.__package.set_version(version)
         pass
 
-    def ADD_SETUP(self, setup):
-        if not isinstance(setup, Setup):
-            raise Error('ADD_SETUP(): argument must be a Setup object')
-        self.__package.add_setup(setup)
-        pass
-
-    def SETUPS(self, setups):
-        if type(setups) not in [types.ListType, types.TupleType]:
-            raise Error('SETUPS(): parameter must by a list')
-        for s in setups:
-            if not isinstance(s, Setup):
-                raise Error('SETUPS(): all list members must be Setup objects')
-            pass
-        self.__package.set_setups(setups)
+    def SETUP(self, setup):
+        if not isinstance(setup, Setup) and type(setup) not in [types.ListType, types.TupleType]:
+            raise Error('SETUP(): parameter must by a list or a Setup object')
+        self.__package.set_setup(setup)
         pass
         
     pass
