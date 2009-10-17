@@ -73,16 +73,16 @@ class LinkedBuilder(Builder):
 
         nodes_with_library = algorithm.nearest_property(digraph=digraph, entrypoint=node, property=self.HaveLibraryProperty())
         for n in nodes_with_library:
-            for bi in n.buildinfos():
-                if isinstance(bi, (BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled)):
+            for bi in n.iter_buildinfos():
+                if type(bi) in (BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled):
                     self.__buildinfo_direct_dependent_native_libs.append(bi)
                     pass
                 pass
             pass
         
         for n in topolist:
-            for bi in n.buildinfos():
-                if isinstance(bi, (BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled)):
+            for bi in n.iter_buildinfos():
+                if type(bi) in (BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled):
                     self.__buildinfo_topo_dependent_native_libs.insert(0, bi)
                     pass
                 pass
@@ -91,8 +91,8 @@ class LinkedBuilder(Builder):
 
     class HaveLibraryProperty:
         def have(self, node):
-            for bi in node.buildinfos():
-                if isinstance(bi, (BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled)):
+            for bi in node.iter_buildinfos():
+                if type(bi) in (BuildInfo_CLibrary_NativeLocal, BuildInfo_CLibrary_NativeInstalled):
                     return True
                 pass
             return False

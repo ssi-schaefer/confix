@@ -105,7 +105,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnless('include1' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
         self.failUnless('include2' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             self.failIf(isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_Include))
             pass
         pass
@@ -127,7 +127,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
 
         self.failIf('include' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_Include):
                 break
             pass
@@ -153,7 +153,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
 
         self.failUnless('include' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_includes())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_Include):
                 break
             pass
@@ -181,7 +181,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnless('call1' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
         self.failUnless('call2' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             self.failIf(isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_FindCall))
             pass
         pass
@@ -203,7 +203,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
 
         self.failIf('call' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_FindCall):
                 break
             pass
@@ -229,7 +229,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
 
         self.failUnless('call' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             if isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_FindCall):
                 break
             pass
@@ -256,7 +256,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnless('call1' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
         self.failUnless('call2' in find_cmake_output_builder(package.rootbuilder()).top_cmakelists().get_find_calls())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             self.failIf(isinstance(buildinfo, BuildInfo_Toplevel_CMakeLists_FindCall))
             pass
         pass
@@ -279,7 +279,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnless("-Dmacro1=value1" in find_cmake_output_builder(package.rootbuilder()).local_cmakelists().get_definitions())
         self.failUnless("-Dmacro2=value2" in find_cmake_output_builder(package.rootbuilder()).local_cmakelists().get_definitions())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             self.failIf(isinstance(buildinfo, BuildInfo_CommandlineMacros_CMake))
             pass
         pass
@@ -302,7 +302,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failIf("-Dmacro1=value1" in find_cmake_output_builder(package.rootbuilder()).local_cmakelists().get_definitions())
         self.failIf("-Dmacro2=value2" in find_cmake_output_builder(package.rootbuilder()).local_cmakelists().get_definitions())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             if isinstance(buildinfo, BuildInfo_CommandlineMacros_CMake):
                 self.failUnlessEqual(buildinfo.macros().get('macro1'), 'value1')
                 self.failUnlessEqual(buildinfo.macros().get('macro2'), 'value2')
@@ -331,7 +331,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failIf("-Dmacro1=value1" in find_cmake_output_builder(package.rootbuilder()).local_cmakelists().get_definitions())
         self.failIf("-Dmacro2=value2" in find_cmake_output_builder(package.rootbuilder()).local_cmakelists().get_definitions())
 
-        for buildinfo in package.rootbuilder().buildinfos():
+        for buildinfo in package.rootbuilder().iter_buildinfos():
             if isinstance(buildinfo, BuildInfo_CommandlineMacros_CMake):
                 self.failUnlessEqual(buildinfo.macros().get('macro1'), 'value1')
                 self.failUnlessEqual(buildinfo.macros().get('macro2'), 'value2')
@@ -371,7 +371,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnlessEqual(len(external_library_builders), 1)
 
         incpath_infos = []
-        for incpath_info in external_library_builders[0].buildinfos():
+        for incpath_info in external_library_builders[0].iter_buildinfos():
             if isinstance(incpath_info, BuildInfo_IncludePath_External_CMake):
                 incpath_infos.append(incpath_info)
                 pass
@@ -380,7 +380,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnlessEqual(incpath_infos[0].incpath(), ['includedir1', 'includedir2'])
 
         libpath_infos = []
-        for libpath_info in external_library_builders[0].buildinfos():
+        for libpath_info in external_library_builders[0].iter_buildinfos():
             if isinstance(libpath_info, BuildInfo_LibraryPath_External_CMake):
                 libpath_infos.append(libpath_info)
                 pass
@@ -389,7 +389,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnlessEqual(libpath_infos[0].libpath(), ['libdir1', 'libdir2'])
 
         lib_infos = []
-        for lib_info in external_library_builders[0].buildinfos():
+        for lib_info in external_library_builders[0].iter_buildinfos():
             if isinstance(lib_info, BuildInfo_Library_External_CMake):
                 lib_infos.append(lib_info)
                 pass
@@ -398,7 +398,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnlessEqual(lib_infos[0].libs(), ['lib1', 'lib2'])
 
         macro_infos = []
-        for macro_info in external_library_builders[0].buildinfos():
+        for macro_info in external_library_builders[0].iter_buildinfos():
             if isinstance(macro_info, BuildInfo_CommandlineMacros_CMake):
                 macro_infos.append(macro_info)
                 pass

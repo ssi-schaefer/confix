@@ -144,7 +144,7 @@ class CompiledOutputBuilder(Builder):
         self.__external_cxxflags = []
 
         for n in topolist:
-            for bi in n.buildinfos():
+            for bi in n.iter_buildinfos():
                 if isinstance(bi, BuildInfo_IncludePath_External_CMake):
                     incpath = bi.incpath()
                     key = '.'.join(incpath)
@@ -270,7 +270,7 @@ class LinkedOutputBuilder(Builder):
         self.__external_libraries = []
 
         for n in topolist:
-            for bi in n.buildinfos():
+            for bi in n.iter_buildinfos():
                 if isinstance(bi, BuildInfo_LibraryPath_External_CMake):
                     for p in reversed(bi.libpath()):
                         if p in self.__have_external_libpath:

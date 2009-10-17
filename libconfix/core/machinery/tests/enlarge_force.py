@@ -19,6 +19,7 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.setup import NullSetup
 from libconfix.core.utils import const
 
 import unittest
@@ -50,7 +51,7 @@ class EnlargeForceTest(unittest.TestCase):
             name=const.CONFIX2_DIR,
             entry=File())
         
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         package.rootbuilder().add_builder(EnlargeForceDummy())
         self.failUnlessRaises(LocalPackage.InfiniteLoopError, package.boil, external_nodes=[])
         pass

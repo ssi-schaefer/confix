@@ -102,9 +102,6 @@ class Provide_String(Provide):
         return self.match_
 
     def resolve(self, req):
-        assert isinstance(req, Require), \
-               "Provide_CInclude::resolve(): not even a Require"
-        
         for c in self.can_match_classes():
             if c is req.__class__:
                 break

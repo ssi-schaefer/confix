@@ -40,7 +40,7 @@ class Builder(object):
 
         self.__dependency_info = DependencyInformation()
 
-        self.__buildinfos = BuildInformationSet()
+        self.__buildinfos = []
 
         self.__force_enlarge_count = 0
 
@@ -109,7 +109,7 @@ class Builder(object):
         return self.__dependency_info
 
     def add_buildinfo(self, b):
-        self.__buildinfos.add(b)
+        self.__buildinfos.append(b)
         pass
 
     def is_initialized(self):
@@ -137,8 +137,8 @@ class Builder(object):
         self.__package = package
         pass
     
-    def buildinfos(self):
-        return self.__buildinfos
+    def iter_buildinfos(self):
+        return iter(self.__buildinfos)
     
     def enlarge(self):
         self.__base_enlarge_called = True

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -145,7 +145,7 @@ class RelateBasic(unittest.TestCase):
 
         self.lodir_lib_libinfo_ = None
 
-        for bi in self.lodir_lib_builder_.buildinfos():
+        for bi in self.lodir_lib_builder_.iter_buildinfos():
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 self.failIf(self.lodir_lib_libinfo_ is not None)
                 self.lodir_lib_libinfo_ = bi
@@ -154,7 +154,7 @@ class RelateBasic(unittest.TestCase):
         
         self.hi1dir_lib_libinfo_ = None
 
-        for bi in self.hi1dir_lib_builder_.buildinfos():
+        for bi in self.hi1dir_lib_builder_.iter_buildinfos():
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 self.failIf(self.hi1dir_lib_libinfo_ is not None)
                 self.hi1dir_lib_libinfo_ = bi
@@ -163,7 +163,7 @@ class RelateBasic(unittest.TestCase):
         
         self.hi2dir_lib_libinfo_ = None
 
-        for bi in self.hi2dir_lib_builder_.buildinfos():
+        for bi in self.hi2dir_lib_builder_.iter_buildinfos():
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 self.failIf(self.hi2dir_lib_libinfo_ is not None)
                 self.hi2dir_lib_libinfo_ = bi
@@ -172,7 +172,7 @@ class RelateBasic(unittest.TestCase):
 
         self.highestdir_lib_libinfo_ = None
 
-        for bi in self.highestdir_lib_builder_.buildinfos():
+        for bi in self.highestdir_lib_builder_.iter_buildinfos():
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 self.failIf(self.highestdir_lib_libinfo_ is not None)
                 self.highestdir_lib_libinfo_ = bi
@@ -194,7 +194,7 @@ class RelateBasic(unittest.TestCase):
         # see if everyone who is involved in the game has the right
         # buildinfo.
 
-        for bi in self.lodir_builder_.find_entry_builder(['lo.h']).buildinfos():
+        for bi in self.lodir_builder_.find_entry_builder(['lo.h']).iter_buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass
@@ -202,7 +202,7 @@ class RelateBasic(unittest.TestCase):
             self.fail()
             pass
         
-        for bi in self.lodir_lib_builder_.buildinfos():
+        for bi in self.lodir_lib_builder_.iter_buildinfos():
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 break
             pass
@@ -210,7 +210,7 @@ class RelateBasic(unittest.TestCase):
             self.fail()
             pass
         
-        for bi in self.hi1dir_lib_builder_.buildinfos():
+        for bi in self.hi1dir_lib_builder_.iter_buildinfos():
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 break
             pass
@@ -218,7 +218,7 @@ class RelateBasic(unittest.TestCase):
             self.fail()
             pass
         
-        for bi in self.hi1dir_builder_.find_entry_builder(['hi1.h']).buildinfos():
+        for bi in self.hi1dir_builder_.find_entry_builder(['hi1.h']).iter_buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass
@@ -226,13 +226,13 @@ class RelateBasic(unittest.TestCase):
             self.fail()
             pass
         
-        for bi in self.hi2dir_lib_builder_.buildinfos():
+        for bi in self.hi2dir_lib_builder_.iter_buildinfos():
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
                 hi2_lib = bi
                 continue
             pass
 
-        for bi in self.hi2dir_builder_.find_entry_builder(['hi2.h']).buildinfos():
+        for bi in self.hi2dir_builder_.find_entry_builder(['hi2.h']).iter_buildinfos():
             if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
                 break
             pass

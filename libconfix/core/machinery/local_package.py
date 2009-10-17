@@ -19,7 +19,6 @@
 from setup import Setup
 from setup import CompositeSetup
 from package import Package
-from local_node import LocalNode
 from installed_package import InstalledPackage
 from edgefinder import EdgeFinder
 from filebuilder import FileBuilder
@@ -143,18 +142,18 @@ class LocalPackage(Package):
             loop_count += 1
             if loop_count > 1000:
                 raise self.InfiniteLoopError()
-            
+
             something_changed = self.__do_enlarge()
             if something_changed:
                 continue
 
             do_next_round = False
 
-            nodes = set()
+            directory_builders = []
             for b in self.iter_builders():
-                if not isinstance(b, LocalNode):
+                if not isinstance(b, DirectoryBuilder):
                     continue
-                nodes.add(b)
+                directory_builders.append(b)
                 b.recollect_dependency_info()
                 if b.node_dependency_info_changed():
                     do_next_round = True
@@ -167,11 +166,12 @@ class LocalPackage(Package):
             if self.__current_digraph:
                 break
 
-            all_nodes = nodes.union(set(external_nodes))
+            all_nodes = directory_builders + external_nodes
             self.__current_digraph = DirectedGraph(
                 nodes=all_nodes,
                 edgefinder=EdgeFinder(nodes=all_nodes))
-            for n in nodes:
+
+            for n in directory_builders:
                 n.node_relate_managed_builders(digraph=self.__current_digraph)
                 pass
 
@@ -202,7 +202,7 @@ class LocalPackage(Package):
     def install(self):
         installed_nodes = []
         for b in self.iter_builders():
-            if isinstance(b, LocalNode):
+            if isinstance(b, DirectoryBuilder):
                 installed_nodes.append(b.install())
                 pass
             pass
@@ -260,8 +260,7 @@ class LocalPackage(Package):
         # sort subdirectories topologically for our backends.
         subdir_nodes = set()
         for b in self.iter_builders():
-            if isinstance(b, LocalNode):
-                assert isinstance(b, DirectoryBuilder)
+            if isinstance(b, DirectoryBuilder):
                 subdir_nodes.add(b)
                 pass
             pass

@@ -48,14 +48,16 @@ class PkgConfigLibraryBuilder(Builder):
                         '${CONFIX_CMAKE_PKG_CONFIG__%s_CFLAGS_OTHER}' % self.__packagename]))
         pass
 
-    def buildinfos(self):
-        ret = BuildInformationSet()
-        ret.merge(super(PkgConfigLibraryBuilder, self).buildinfos())
+    def iter_buildinfos(self):
+        for bi in super(PkgConfigLibraryBuilder, self).iter_buildinfos():
+            yield bi
+            pass
 
-        ret.add(BuildInfo_Toplevel_CMakeLists_FindCall(
+        yield BuildInfo_Toplevel_CMakeLists_FindCall(
             find_call=['FIND_PACKAGE(PkgConfig)',
-                       'PKG_CHECK_MODULES(CONFIX_CMAKE_PKG_CONFIG__%s REQUIRED %s)' % (self.__packagename, self.__packagename)]))
-        return ret
+                       'PKG_CHECK_MODULES(CONFIX_CMAKE_PKG_CONFIG__%s REQUIRED %s)' % (self.__packagename, self.__packagename)])
+        pass
+    
     pass
     
     

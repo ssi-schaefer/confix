@@ -136,7 +136,7 @@ class CompiledOutputBuilder(Builder):
         self.__external_cmdlinemacros = {}
 
         for n in topolist:
-            for bi in n.buildinfos():
+            for bi in n.iter_buildinfos():
                 if isinstance(bi, BuildInfo_IncludePath_External_AM):
                     incpath = bi.incpath()
                     key = '.'.join(incpath)
@@ -241,7 +241,7 @@ class CXXOutputBuilder(CompiledOutputBuilder):
         super(CXXOutputBuilder, self).relate(node, digraph, topolist)
         self.__external_cxxflags = []
         for n in topolist:
-            for bi in n.buildinfos():
+            for bi in n.iter_buildinfos():
                 if isinstance(bi, BuildInfo_CXXFLAGS_AM):
                     self.__external_cxxflags.extend(bi.cxxflags())
                     continue
@@ -369,7 +369,7 @@ class LinkedOutputBuilder(Builder):
         self.__external_libraries = []
 
         for n in topolist:
-            for bi in n.buildinfos():
+            for bi in n.iter_buildinfos():
                 if isinstance(bi, BuildInfo_Library_External_AM):
                     key = '.'.join(bi.libpath())
                     if not key in self.__have_external_libpath:

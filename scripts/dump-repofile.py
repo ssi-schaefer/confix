@@ -19,7 +19,7 @@ for filename in sys.argv[1:]:
             print '      '+str(r)
             pass
         print '    Buildinfos: '
-        for b in m.buildinfos():
+        for b in m.iter_buildinfos():
             print '      '+str(b)
             pass
         pass

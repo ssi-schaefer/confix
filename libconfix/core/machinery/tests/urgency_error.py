@@ -23,6 +23,7 @@ from libconfix.core.machinery.provide import Provide_Symbol
 from libconfix.core.machinery.require import Require_Symbol
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.setup import NullSetup
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.utils import const
 
@@ -83,7 +84,7 @@ class UrgencyErrorTest(unittest.TestCase):
             name='hi',
             entry=Directory())
 
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
 
         lodir_builder = DirectoryBuilder(directory=lo)
         lodir_builder.add_builder(DeferredProvider(provide=Provide_Symbol(symbol='the_deferred_provided_symbol')))

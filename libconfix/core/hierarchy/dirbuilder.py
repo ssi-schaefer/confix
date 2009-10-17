@@ -24,7 +24,6 @@ from libconfix.core.machinery.dependency_utils import DependencySet
 from libconfix.core.machinery.dependency_utils import ProvideMap
 from libconfix.core.machinery.entrybuilder import EntryBuilder
 from libconfix.core.machinery.installed_node import InstalledNode
-from libconfix.core.machinery.local_node import LocalNode
 from libconfix.core.machinery.node import Node
 from libconfix.core.machinery.provide import Provide
 from libconfix.core.machinery.provide import Provide_String
@@ -35,7 +34,7 @@ from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileMan
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
-class DirectoryBuilder(EntryBuilder, LocalNode):
+class DirectoryBuilder(EntryBuilder, Node):
 
     def __init__(self, directory):
         assert isinstance(directory, VFSDirectory)
@@ -64,6 +63,13 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
 
         # initialize collected dependency information
         self.__init_dep_info()
+
+        # build information is iterated over quite often. a good
+        # amount of it is dynamically created, so we cache it here. if
+        # it is not the cache is created an filled in
+        # iter_buildinfos(), and cleared for the next round in
+        # enlarge().
+        self.__buildinfo_cache = None
 
         pass
 
@@ -281,22 +287,37 @@ class DirectoryBuilder(EntryBuilder, LocalNode):
     def requires(self):
         return self.__requires
 
-    def buildinfos(self):
-        ret = BuildInformationSet()
-        ret.merge(EntryBuilder.buildinfos(self))
-        for b in self.iter_builders():
-            if not isinstance(b, Node):
-                ret.merge(b.buildinfos())
+    def enlarge(self):
+        self.__buildinfo_cache = None
+
+    def iter_buildinfos(self):
+        if self.__buildinfo_cache is None:
+            self.__buildinfo_cache = {}
+            for bi in self.__do_iter_buildinfos():
+                self.__buildinfo_cache.setdefault(bi.unique_key(), bi)
                 pass
             pass
-        return ret
+        return self.__buildinfo_cache.itervalues()
+
+    def iter_buildinfos(self):
+        for bi in super(EntryBuilder, self).iter_buildinfos():
+            yield bi
+            pass
+        for b in self.iter_builders():
+            if not isinstance(b, Node):
+                for bi in b.iter_buildinfos():
+                    yield bi
+                    pass
+                pass
+            pass
+        pass
 
     def install(self):
         return InstalledNode(
             name=self.__directory.relpath(self.package().rootdirectory()),
             provides=[p for p in self.__provides],
             requires=[r for r in self.__requires],
-            buildinfos=[b.install() for b in self.buildinfos()])
+            buildinfos=[b.install() for b in self.iter_buildinfos()])
 
     def create_pseudo_handwritten_file(self, filename):
         return self.__pseudo_handwritten_mgr.create_file(filename)

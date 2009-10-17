@@ -22,6 +22,7 @@ from libconfix.core.filesys.file import File
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.require import Require
+from libconfix.core.machinery.setup import NullSetup
 from libconfix.core.utils import const
 
 from libconfix.plugins.c.c import CBuilder
@@ -52,7 +53,7 @@ class ScanTest(unittest.TestCase):
                               '#   include <inc4>   ',
                               '   #include <inc5>',
                               ]))
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         builder = CBuilder(file=file)
         package.rootbuilder().add_builder(builder)
         package.boil(external_nodes=[])

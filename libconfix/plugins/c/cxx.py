@@ -35,8 +35,8 @@ class CXXBuilder(CompiledCBuilder):
         CompiledCBuilder.relate(self, node, digraph, topolist)
         self.__init_buildinfo()
         for n in topolist:
-            for bi in n.buildinfos():
-                if isinstance(bi, BuildInfo_CXXFLAGS):
+            for bi in n.iter_buildinfos():
+                if type(bi) is BuildInfo_CXXFLAGS:
                     self.__cxxflags.extend(bi.cxxflags())
                     continue
                 pass

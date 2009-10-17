@@ -125,7 +125,7 @@ class AutomakeBackendOutputBuilder(Builder):
         super(AutomakeBackendOutputBuilder, self).relate(node=node, digraph=digraph, topolist=topolist)
 
         for n in topolist:
-            for bi in n.buildinfos():
+            for bi in n.iter_buildinfos():
                 if isinstance(bi, BuildInfo_Configure_in):
                     self.configure_ac().add_paragraph(
                         paragraph=Paragraph(lines=bi.lines(), md5=bi.md5()),

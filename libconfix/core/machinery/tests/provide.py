@@ -22,6 +22,7 @@ from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.setup import NullSetup
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
@@ -48,7 +49,7 @@ class ProvideStringUpdateTest(unittest.TestCase):
             name=const.CONFIX2_DIR,
             entry=File(lines=["PROVIDE_SYMBOL('aaa')",
                               "PROVIDE_SYMBOL('aaa')"]))
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         package.boil(external_nodes=[])
         pass
     pass
@@ -61,7 +62,7 @@ class DuplicateProvideTest(unittest.TestCase):
             entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
                               "PACKAGE_VERSION('1.2.3')",
                               "from libconfix.setups.explicit_setup import ExplicitSetup",
-                              "SETUPS([ExplicitSetup(use_libtool=True)])"
+                              "SETUP([ExplicitSetup(use_libtool=True)])"
                               ]))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
@@ -80,7 +81,7 @@ class DuplicateProvideTest(unittest.TestCase):
             name=const.CONFIX2_DIR,
             entry=File(lines=["PROVIDE_SYMBOL('x')"]))
         
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=None)
         try:
             package.boil(external_nodes=[])
             self.fail()

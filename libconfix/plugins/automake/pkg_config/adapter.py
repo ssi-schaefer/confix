@@ -53,18 +53,16 @@ class PkgConfigLibraryAdapter(Builder):
                 libs=['$('+package_shell_name+'_PKG_CONFIG_LIBS)']))
         pass
 
-    def buildinfos(self):
-        ret = BuildInformationSet()
-        ret.merge(super(PkgConfigLibraryAdapter, self).buildinfos())
+    def iter_buildinfos(self):
+        for bi in super(PkgConfigLibraryAdapter, self).iter_buildinfos():
+            yield bi
+            pass
 
-        package_shell_name = _package_shell_name(self.__packagename)
-
-        ret.add(BuildInfo_ACInclude_m4(
-            lines=[pkg_config_check]))
-        ret.add(BuildInfo_Configure_in(
-            lines=['CONFIX_PKG_CONFIG_LIBRARY(['+self.__packagename+'], ['+package_shell_name+'])'],
-            order=Configure_ac.LIBRARIES))
-        return ret
+        yield BuildInfo_ACInclude_m4(lines=[pkg_config_check])
+        yield BuildInfo_Configure_in(
+            lines=['CONFIX_PKG_CONFIG_LIBRARY(['+self.__packagename+'], ['+_package_shell_name(self.__packagename)+'])'],
+            order=Configure_ac.LIBRARIES)
+        pass
     pass
 
 def _package_shell_name(packagename):

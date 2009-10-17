@@ -34,7 +34,6 @@ class PlainFileSuiteInMemory(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(PlainFileInMemoryTest('test'))
         self.addTest(PlainFileCreatorParamTest('test'))
-        self.addTest(PlainFileCreatorIgnoredEntriesTest('test'))
         pass
     pass
 
@@ -65,12 +64,12 @@ class PlainFileCreatorParamTest(unittest.TestCase):
                               "PACKAGE_NAME('PlainFileCreatorTest')",
                               "PACKAGE_VERSION('1.2.3')",
 
-                              "ADD_SETUP(PlainFileCreatorSetup(",
-                              "    regex=r'\.data$',",
-                              "    datadir=['the', 'data', 'dir']))",
-                              "ADD_SETUP(PlainFileCreatorSetup(",
-                              "    regex=r'\.prefix$',",
-                              "    prefixdir=['the', 'prefix', 'dir']))"]))
+                              "SETUP([PlainFileCreatorSetup(",
+                              "           regex=r'\.data$',",
+                              "           datadir=['the', 'data', 'dir']),",
+                              "       PlainFileCreatorSetup(",
+                              "           regex=r'\.prefix$',",
+                              "           prefixdir=['the', 'prefix', 'dir'])])"]))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
             entry=File())
@@ -81,7 +80,7 @@ class PlainFileCreatorParamTest(unittest.TestCase):
             name='file.prefix',
             entry=File())
 
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=None)
         package.boil(external_nodes=[])
 
         databuilder = package.rootbuilder().find_entry_builder(['file.data'])
@@ -93,38 +92,6 @@ class PlainFileCreatorParamTest(unittest.TestCase):
         self.failUnless(databuilder.prefixdir() is None)
         self.failUnless(prefixbuilder.prefixdir() == ['the', 'prefix', 'dir'])
         self.failUnless(prefixbuilder.datadir() is None)
-        pass
-    pass
-    
-class PlainFileCreatorIgnoredEntriesTest(unittest.TestCase):
-    def test(self):
-        fs = FileSystem(path=['don\'t', 'care'])
-        fs.rootdirectory().add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=["from libconfix.plugins.plainfile.setup import PlainFileCreatorSetup",
-
-                              "PACKAGE_NAME('PlainFileCreatorTest')",
-                              "PACKAGE_VERSION('1.2.3')",
-
-                              "ADD_SETUP(PlainFileCreatorSetup(",
-                              "    regex=r'\.data$',",
-                              "    datadir=['the', 'data', 'dir']))"]))
-        fs.rootdirectory().add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=["IGNORE_ENTRIES(['ignored.data'])"]))
-        fs.rootdirectory().add(
-            name='ignored.data',
-            entry=File())
-        fs.rootdirectory().add(
-            name='not-ignored.data',
-            entry=File())
-
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
-        package.boil(external_nodes=[])
-
-        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored.data']))
-        self.failUnless(package.rootbuilder().find_entry_builder(path=['not-ignored.data']))
-        
         pass
     pass
     

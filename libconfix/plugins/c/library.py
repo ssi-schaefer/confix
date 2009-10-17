@@ -63,14 +63,14 @@ class LibraryBuilder(LinkedBuilder):
     def basename(self):
         return self.__basename
 
-    def buildinfos(self):
-        ret = BuildInformationSet()
-        ret.merge(super(LibraryBuilder, self).buildinfos())
-        ret.add(
-            BuildInfo_CLibrary_NativeLocal(
-                dir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
-                basename=self.__basename))
-        return ret
+    def iter_buildinfos(self):
+        for bi in super(LibraryBuilder, self).iter_buildinfos():
+            yield bi
+            pass
+        yield BuildInfo_CLibrary_NativeLocal(
+            dir=self.parentbuilder().directory().relpath(self.package().rootdirectory()),
+            basename=self.__basename)
+        pass
 
     def set_version(self, version):
         self.__version = version

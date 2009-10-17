@@ -94,20 +94,28 @@ class CClusterer(Builder):
         library = None
 
         for builder in self.parentbuilder().iter_builders():
-            if isinstance(builder, ExecutableBuilder):
+            if type(builder) is ExecutableBuilder:
                 executables.append(builder)
                 continue
-            if isinstance(builder, LibraryBuilder):
+            if type(builder) is LibraryBuilder:
                 assert library is None
                 library = builder
                 continue
+
+            # attention: we use type() for performance. to check for
+            # CBaseBuilder we have to use isinstance() though because
+            # it is a base class.
             if not isinstance(builder, CBaseBuilder):
                 continue
-            if isinstance(builder, HeaderBuilder):
+
+            if type(builder) is HeaderBuilder:
                 header_builders.append(builder)
                 continue
+
+            # same attention.
             if not isinstance(builder, CompiledCBuilder):
                 continue
+
             if builder.is_main():
                 main_builders.append(builder)
                 continue

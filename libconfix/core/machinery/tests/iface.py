@@ -26,6 +26,7 @@ from libconfix.core.machinery.provide import Provide_String
 from libconfix.core.machinery.provide import Provide_Symbol
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.require import Require_Symbol
+from libconfix.core.machinery.setup import NullSetup
 from libconfix.core.utils import const
 
 from libconfix.testutils import dirhier
@@ -55,7 +56,7 @@ class BuilderInterface(unittest.TestCase):
             name='file',
             entry=File(lines=["SET_FILE_PROPERTY(name='XXX', value=666)",
                               "SET_FILE_PROPERTIES({'YYY': 777})"]))
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         package.rootbuilder().add_builder(FileInterfaceTestBuilder(file=file))
 
         self.assertNotEqual(file.get_property(name='XXX'), None)
@@ -83,7 +84,7 @@ class BuilderInterface(unittest.TestCase):
                               "REQUIRE(Require_Symbol(symbol='sym5',",
                               "                       found_in=['xxx'], ",
                               "                       urgency=URGENCY_ERROR))"]))
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         builder = FileInterfaceTestBuilder(file=file)
         builder.initialize(package=package)
         self.assertEqual(len(builder.dependency_info().requires()), 5)
@@ -139,7 +140,7 @@ class BuilderInterface(unittest.TestCase):
                               "PROVIDE_SYMBOL(symbol='sym3', match=PREFIX_MATCH)",
                               "PROVIDE_SYMBOL(symbol='sym4', match=GLOB_MATCH)",
                               "PROVIDE(Provide_Symbol(symbol='sym5'))"]))
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         builder = FileInterfaceTestBuilder(file=file)
         package.rootbuilder().add_builder(builder)
         self.assertEqual(len(builder.dependency_info().provides()), 5)

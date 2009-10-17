@@ -75,8 +75,8 @@ class InstalledNode(Node):
         return self.provides_
     def requires(self):
         return self.requires_
-    def buildinfos(self):
-        return self.buildinfos_
+    def iter_buildinfos(self):
+        return iter(self.buildinfos_)
 
     def set_package(self, package):
         self.package_ = package

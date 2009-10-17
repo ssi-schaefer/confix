@@ -105,7 +105,7 @@ class CMakeBackendOutputBuilder(Builder):
         super(CMakeBackendOutputBuilder, self).relate(node, digraph, topolist)
 
         for n in topolist:
-            for bi in n.buildinfos():
+            for bi in n.iter_buildinfos():
                 if isinstance(bi, BuildInfo_Toplevel_CMakeLists_Include):
                     self.__top_cmakelists.add_include(bi.include())
                     continue

@@ -49,6 +49,11 @@ class CompiledCBuilder(CBaseBuilder):
     def set_exename(self, name):
         assert self.__exename is None
         self.__exename = name
+
+        # maybe somebody has taken for granted that I have or don't
+        # have main().
+        self.__is_main = None
+        self.force_enlarge()
         pass
 
     def is_main(self):
@@ -63,7 +68,8 @@ class CompiledCBuilder(CBaseBuilder):
                     break
                 if helper.search_main(self.file().lines()):
                     self.__is_main = True
-                    pass
+                    break
+                self.__is_main = False
                 break
             pass
         return self.__is_main
@@ -110,8 +116,8 @@ class CompiledCBuilder(CBaseBuilder):
         CBaseBuilder.relate(self, node, digraph, topolist)
         self.__init_buildinfo()
         for n in topolist:
-            for bi in n.buildinfos():
-                if isinstance(bi, BuildInfo_CIncludePath_NativeLocal):
+            for bi in n.iter_buildinfos():
+                if type(bi) is BuildInfo_CIncludePath_NativeLocal:
                     if bi.include_dir() is None:
                         self.__have_locally_installed_includes = True
                     else:
@@ -122,15 +128,15 @@ class CompiledCBuilder(CBaseBuilder):
                             pass
                         pass
                     continue
-                if isinstance(bi, BuildInfo_CIncludePath_NativeInstalled):
+                if type(bi) is BuildInfo_CIncludePath_NativeInstalled:
                     self.__buildinfo_includepath_native_installed = True
                     continue
-                if isinstance(bi, BuildInfo_CommandlineMacros):
+                if type(bi) is BuildInfo_CommandlineMacros:
                     for (k, v) in bi.macros().iteritems():
                         self.__insert_cmdlinemacro(k, v)
                         pass
                     continue
-                if isinstance(bi, BuildInfo_CFLAGS):
+                if type(bi) is BuildInfo_CFLAGS:
                     self.__cflags.extend(bi.cflags())
                     continue
                 pass

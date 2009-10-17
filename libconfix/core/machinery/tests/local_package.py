@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2009 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -34,7 +34,6 @@ class LocalPackageSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(PackageFileTest('test'))
-        self.addTest(PackageInterfaceTest('test'))
         pass
     pass
 
@@ -61,53 +60,11 @@ class PackageFileTest(unittest.TestCase):
         node = package.nodes()[0]
         self.failUnless(len(node.provides()) == 1)
         self.failUnless(len(node.requires()) == 1)
-        self.failUnless(len(node.buildinfos()) == 0)
+        self.failUnlessRaises(StopIteration, node.iter_buildinfos().next)
         
         pass
     pass
 
-class PackageInterfaceTest(unittest.TestCase):
-    class DummySetup1(Setup):
-        def setup(self, dirbuilder): pass
-        pass
-    def test(self):
-        fs = FileSystem(path=['dont\'t', 'care'])
-        fs.rootdirectory().add(
-            name=const.CONFIX2_PKG,
-            entry=File(lines=["from libconfix.core.machinery.setup import Setup",
-                              "class DummySetup2(Setup): ",
-                              "    def setup(self, dirbuilder): pass",
-                              "    pass",
-                              "PACKAGE_NAME('PackageInterfaceTest')",
-                              "PACKAGE_VERSION('1.2.3')",
-                              "ADD_SETUP(DummySetup2())"]))
-
-        # add Confix2.dir for no real reason. we could really do
-        # without, and should take some time to investigate. but not
-        # now (now==2006-09-19).
-        fs.rootdirectory().add(
-            name=const.CONFIX2_DIR,
-            entry=File())
-
-        package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[self.DummySetup1()])
-
-        self.failUnlessEqual(package.name(), 'PackageInterfaceTest')
-        self.failUnlessEqual(package.version(), '1.2.3')
-        dummy1_seen = dummy2_seen = None
-        for s in package.setup():
-            if type(s) == self.DummySetup1:
-                dummy1_seen = s
-            elif type(s).__name__ == 'DummySetup2': # defined in Confix2.pkg, so we compare strings
-                dummy2_seen = s
-                pass
-            pass
-        self.failIf(dummy1_seen is None)
-        self.failIf(dummy2_seen is None)
-        pass
-    pass
-
-        
 if __name__ == '__main__':
     unittest.TextTestRunner().run(LocalPackageSuite())
     pass

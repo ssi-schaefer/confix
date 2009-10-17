@@ -27,6 +27,7 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.require import Require_Symbol
 from libconfix.core.machinery.provide import Provide_Symbol
 from libconfix.core.machinery.resolve_error import NotResolved, AmbiguouslyResolved
+from libconfix.core.machinery.setup import NullSetup
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import const
 
@@ -121,7 +122,7 @@ class AmbiguousResolveTest(unittest.TestCase):
         hi = fs.rootdirectory().add(
             name='hi',
             entry=Directory())
-        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
+        package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
 
         lo1_builder = DirectoryBuilder(directory=lo1)
         lo1_builder.add_provide(Provide_Symbol(symbol='the_ambiguous_symbol'))

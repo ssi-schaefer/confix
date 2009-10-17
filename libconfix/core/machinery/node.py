@@ -45,7 +45,7 @@ class Node(Marshallable):
     def requires(self):
         assert False, 'abstract'
         pass
-    def buildinfos(self):
+    def iter_buildinfos(self):
         assert False, 'abstract'
         pass
     pass

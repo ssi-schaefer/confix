@@ -52,28 +52,30 @@ class ExternalLibraryBuilder(Builder):
             pass
         return id
 
-    def buildinfos(self):
-        ret = BuildInformationSet()
-        ret.merge(super(ExternalLibraryBuilder, self).buildinfos())
+    def iter_buildinfos(self):
+        for bi in super(ExternalLibraryBuilder, self).iter_buildinfos():
+            yield bi
+            pass
         
         if len(self.__incpath) > 0:
-            ret.add(BuildInfo_IncludePath_External_CMake(incpath=self.__incpath))
+            yield BuildInfo_IncludePath_External_CMake(incpath=self.__incpath)
             pass
         if len(self.__libpath) > 0:
-            ret.add(BuildInfo_LibraryPath_External_CMake(libpath=self.__libpath))
+            yield BuildInfo_LibraryPath_External_CMake(libpath=self.__libpath)
             pass
         if len(self.__libs) > 0:
-            ret.add(BuildInfo_Library_External_CMake(libs=self.__libs))
+            yield BuildInfo_Library_External_CMake(libs=self.__libs)
             pass
         if len(self.__cmdlinemacros) > 0:
-            ret.add(BuildInfo_CommandlineMacros_CMake(macros=self.__cmdlinemacros))
+            yield BuildInfo_CommandlineMacros_CMake(macros=self.__cmdlinemacros)
             pass
         if len(self.__cflags) > 0:
-            ret.add(BuildInfo_CFLAGS_CMake(cflags=self.__cflags))
+            yield BuildInfo_CFLAGS_CMake(cflags=self.__cflags)
             pass
         if len(self.__cxxflags) > 0:
-            ret.add(BuildInfo_CXXFLAGS_CMake(cxxflags=self.__cxxflags))
+            yield BuildInfo_CXXFLAGS_CMake(cxxflags=self.__cxxflags)
             pass
-        return ret
+
+        pass
 
     pass

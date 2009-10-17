@@ -49,3 +49,7 @@ class CompositeSetup(Setup):
             pass
         pass
     pass
+
+class NullSetup(Setup):
+    def setup(self, dirbuilder): pass
+    pass

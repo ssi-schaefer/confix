@@ -282,7 +282,7 @@ class BUILDINFORMATION_propagates_Test(PersistentTestCase):
         def relate(self, node, digraph, topolist):
             super(BUILDINFORMATION_propagates_Test.TestBuildInformationReceiver, self).relate(node, digraph, topolist)
             for n in topolist:
-                for bi in n.buildinfos():
+                for bi in n.iter_buildinfos():
                     try:
                         getattr(bi, 'hello')
                         self.seen_buildinfo = True

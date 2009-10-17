@@ -182,25 +182,26 @@ class HeaderBuilder(CBaseBuilder):
 
         return ret
 
-    def buildinfos(self):
-        ret = BuildInformationSet()
-        ret.merge(super(HeaderBuilder, self).buildinfos())
+    def iter_buildinfos(self):
+        for bi in super(HeaderBuilder, self).iter_buildinfos():
+            yield bi
+            pass
 
         package_visibility_action = self.package_visibility_action()
         if package_visibility_action[0] == self.LOCALVISIBILITY_DIRECT_INCLUDE:
             # receiver can see the file directly, by adding a
             # directory of the source package to the path.
-            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=package_visibility_action[1]))
+            yield BuildInfo_CIncludePath_NativeLocal(include_dir=package_visibility_action[1])
         elif package_visibility_action[0] == self.LOCALVISIBILITY_INSTALL:
             # receiver has to add the directory on the include path
             # where the locally installed files are
             # ($(top_srcdir)/confix-include for the automake backend)
-            ret.add(BuildInfo_CIncludePath_NativeLocal(include_dir=None))
+            yield BuildInfo_CIncludePath_NativeLocal(include_dir=None)
         else:
             assert False
             pass
         
-        return ret
+        pass
 
     def output(self):
         super(HeaderBuilder, self).output()

@@ -15,14 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from marked_main_afterwards import MarkedMainAfterwardsSuite
-
 import unittest
 
 class ClustererInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(MarkedMainAfterwardsSuite())
         pass
     pass
 
