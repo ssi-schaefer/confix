@@ -210,7 +210,8 @@ class HeaderBuilder(CBaseBuilder):
 
     def __preliminary_visibility(self):
         vis = self.__nonamespace_visibility()
-        if vis:
+
+        if vis is not None:
             return vis
         try:
             return self.__calc_namespace()
