@@ -222,7 +222,7 @@ class DirectoryBuilder(EntryBuilder, Node):
         
         # collect build information.
 
-        internal_provides = ProvideMap(permissive=False)
+        internal_provides = ProvideMap()
         requires = DependencySet(klass=Require, string_klass=Require)
 
         for b in self.__node_managed_builders():

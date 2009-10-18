@@ -166,13 +166,7 @@ class DependencyInformation(Unmarshallable):
 
 class ProvideMap(Unmarshallable):
 
-    def __init__(self, permissive):
-        # permissive means to return as soon as we have at least one
-        # match (to return as soon as possible, so to say), and to not
-        # continue to search for more.
-
-        self.__permissive = permissive
-
+    def __init__(self):
         # dictionary: require-type -> ProvideMap.Index_Provide
 
         self.__string_indexes = {}
@@ -189,8 +183,6 @@ class ProvideMap(Unmarshallable):
         index = self.__string_indexes.get(require.__class__)
         if index:
             ret_nodes.extend(index.find_match(require))
-            if self.__permissive and len(ret_nodes) > 0:
-                return ret_nodes
             pass
 
         return ret_nodes
@@ -202,8 +194,7 @@ class ProvideMap(Unmarshallable):
         for require_type in provide.can_match_classes():
             index = self.__string_indexes.get(require_type)
             if not index:
-                index = ProvideMap.Index_Provide(type=require_type,
-                                                        permissive=self.__permissive)
+                index = ProvideMap.Index_Provide(type=require_type)
                 self.__string_indexes[require_type] = index
                 pass
             index.add(provide, node)
@@ -212,13 +203,7 @@ class ProvideMap(Unmarshallable):
 
     class Index_Provide(Unmarshallable):
     
-        def __init__(self,
-                     type,
-                     permissive):
-    
-            # same meaning as with our chef, the ProvideMap
-            self.__permissive = permissive
-    
+        def __init__(self, type):
             # map string -> Node
             self.__exact = {}
     
@@ -247,22 +232,15 @@ class ProvideMap(Unmarshallable):
                 ret_nodes.append(node)
                 pass
     
-            if self.__permissive and len(ret_nodes) > 0:
-                return ret_nodes
-    
             for p, n in self.__glob:
                 if p.resolve(require):
                     ret_nodes.append(n)
-                    if self.__permissive:
-                        return ret_nodes
                     pass
                 pass
     
             for p, n in self.__prefix:
                 if p.resolve(require):
                     ret_nodes.append(n)
-                    if self.__permissive:
-                        return ret_nodes
                     pass
                 pass
     

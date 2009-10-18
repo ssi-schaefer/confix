@@ -41,7 +41,7 @@ class EdgeFinder(digraph.EdgeFinder):
 
         # index nodes by what they provide, in a fascist manner.
         
-        self.__providemap = ProvideMap(permissive=False)
+        self.__providemap = ProvideMap()
         errors = []
         for n in nodes:
             for p in n.provides():
