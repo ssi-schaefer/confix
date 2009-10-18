@@ -25,54 +25,6 @@ from libconfix.core.utils import debug
 
 import types
 
-## ## class Require(Marshallable):
-## ##     def get_marshalling_data(self):
-## ##         return {Marshallable.GENERATING_CLASS: Require,
-## ##                 Marshallable.VERSIONS: {'Require': 1},
-## ##                 Marshallable.ATTRIBUTES: {'urgency': self.__urgency}}
-## ##     def set_marshalling_data(self, data):
-## ##         version = data[Marshallable.VERSIONS]['Require']
-## ##         if version != 1:
-## ##             raise MarshalledVersionUnknownError(
-## ##                 klass=self.__class__,
-## ##                 marshalled_version=version,
-## ##                 current_version=1)
-## ##         self.__urgency = data[Marshallable.ATTRIBUTES]['urgency']
-## ##         pass
-
-## ##     # it is no accident that these are sorted by urgency level
-
-## ##     URGENCY_IGNORE = URGENCY_DEFAULT = URGENCY_DONTCARE = 0
-## ##     URGENCY_WARN = 1
-## ##     URGENCY_ERROR = 2
-
-## ##     def __init__(self, urgency=URGENCY_DEFAULT):
-## ##         self.__urgency = urgency
-## ##         pass
-## ##     def urgency(self):
-## ##         return self.__urgency
-## ##     def set_urgency(self, u):
-## ##         self.__urgency = u
-
-## ##     def update(self, r):
-
-## ##         """ When multiple equivalent Require objects are added to the
-## ##         same module, this adds unnecessary (and sometimes
-## ##         considerable) overhead to the resolving process. This method
-## ##         is an attempt to collapse r with self.
-
-## ##         @rtype: boolean
-
-## ##         @return: A boolean that indicates whether the objects could be
-## ##         collapsed.
-
-## ##         """
-
-## ##         debug.abstract('Require.update()')
-## ##         pass
-
-##     pass
-
 class Require(Marshallable):
     def get_marshalling_data(self):
         return {Marshallable.GENERATING_CLASS: Require,
