@@ -31,7 +31,9 @@ class Provide(Marshallable):
     def get_marshalling_data(self):
         return {Marshallable.GENERATING_CLASS: Provide,
                 Marshallable.VERSIONS: {'Provide': 1},
-                Marshallable.ATTRIBUTES: {}}
+                Marshallable.ATTRIBUTES: {'string': self.__string,
+                                          'match': self.__match}}
+    
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['Provide']
         if version != 1:
@@ -39,38 +41,8 @@ class Provide(Marshallable):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        pass
-
-    def __init__(self):
-        pass
-    def resolve(self, req):
-        "Can self resolve the requirement?"
-        debug.abstract("Provide::resolve()")
-        pass
-    def update(self, req):
-        assert 0, 'abtract'
-        return False
-
-    pass
-
-class Provide_String(Provide):
-    def get_marshalling_data(self):
-        return update_marshalling_data(
-            marshalling_data=Provide.get_marshalling_data(self),
-            generating_class=Provide_String,
-            attributes={'string': self.string_,
-                        'match': self.match_},
-            version={'Provide_String': 1})
-    def set_marshalling_data(self, data):
-        version = data[Marshallable.VERSIONS]['Provide_String']
-        if version != 1:
-            raise MarshalledVersionUnknownError(
-                klass=self.__class__,
-                marshalled_version=version,
-                current_version=1)
-        self.string_ = data[Marshallable.ATTRIBUTES]['string']
-        self.match_ = data[Marshallable.ATTRIBUTES]['match']
-        Provide.set_marshalling_data(self, data)
+        self.__string = data[Marshallable.ATTRIBUTES]['string']
+        self.__match = data[Marshallable.ATTRIBUTES]['match']
         pass
     
     EXACT_MATCH = 0
@@ -83,23 +55,22 @@ class Provide_String(Provide):
                          self.PREFIX_MATCH,
                          self.GLOB_MATCH,
                          self.AUTO_MATCH]
-        Provide.__init__(self)
-        self.string_ = string
+        self.__string = string
         if match == self.AUTO_MATCH:
             if ('*' in string) or ('?' in string) or ('[' in string) or (']' in string):
-                self.match_ = self.GLOB_MATCH
+                self.__match = self.GLOB_MATCH
             else:
-                self.match_ = self.EXACT_MATCH
+                self.__match = self.EXACT_MATCH
                 pass
             pass
         else:
-            self.match_ = match
+            self.__match = match
             pass
         pass
     def string(self):
-        return self.string_
+        return self.__string
     def match(self):
-        return self.match_
+        return self.__match
 
     def resolve(self, req):
         for c in self.can_match_classes():
@@ -109,22 +80,22 @@ class Provide_String(Provide):
         else:
             return False
 
-        if self.match_ == Provide_String.EXACT_MATCH:
-            return req.string_ == self.string_
-        if self.match_ == Provide_String.PREFIX_MATCH:
-            return req.string_.startswith(self.string_)
-        if self.match_ == Provide_String.GLOB_MATCH:
-            return fnmatch.fnmatchcase(req.string(), self.string_)
+        if self.__match == Provide.EXACT_MATCH:
+            return req.string() == self.__string
+        if self.__match == Provide.PREFIX_MATCH:
+            return req.string().startswith(self.__string)
+        if self.__match == Provide.GLOB_MATCH:
+            return fnmatch.fnmatchcase(req.string(), self.__string)
         assert False
         pass
 
     def update(self, other):
-        return isinstance(other, self. __class__) and self.string_ == other.string_
+        return isinstance(other, self. __class__) and self.__string == other.__string
 
     def is_equal(self, other):
         if not isinstance(other, self.__class__):
             return False
-        return self.string_ == other.string_ and self.match_ == other.match_
+        return self.__string == other.__string and self.__match == other.__match
 
     def can_match_classes(self):
         assert 0
@@ -132,10 +103,10 @@ class Provide_String(Provide):
 
     pass
 
-class Provide_Symbol(Provide_String):
+class Provide_Symbol(Provide):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Provide_String.get_marshalling_data(self),
+            marshalling_data=Provide.get_marshalling_data(self),
             generating_class=Provide_Symbol,
             attributes={},
             version={'Provide_Symbol': 1})
@@ -146,13 +117,13 @@ class Provide_Symbol(Provide_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Provide_String.set_marshalling_data(self, data)
+        Provide.set_marshalling_data(self, data)
         pass
 
     MATCH_CLASSES = [Require_Symbol]
 
-    def __init__(self, symbol, match=Provide_String.EXACT_MATCH):
-        Provide_String.__init__(
+    def __init__(self, symbol, match=Provide.EXACT_MATCH):
+        Provide.__init__(
             self,
             string=symbol,
             match=match)
@@ -166,10 +137,10 @@ class Provide_Symbol(Provide_String):
 
     pass
 
-class Provide_Callable(Provide_String):
+class Provide_Callable(Provide):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Provide_String.get_marshalling_data(self),
+            marshalling_data=Provide.get_marshalling_data(self),
             generating_class=Provide_Callable,
             attributes={},
             version={'Provide_Callable': 1})
@@ -180,7 +151,7 @@ class Provide_Callable(Provide_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Provide_String.set_marshalling_data(self, data)
+        Provide.set_marshalling_data(self, data)
         pass
 
 
@@ -188,10 +159,10 @@ class Provide_Callable(Provide_String):
 
     def __init__(self, exename):
         
-        Provide_String.__init__(
+        Provide.__init__(
             self,
             string=exename,
-            match=Provide_String.EXACT_MATCH)
+            match=Provide.EXACT_MATCH)
 
     def __repr__(self): return self.__class__.__name__ + ':' + self.string()
 

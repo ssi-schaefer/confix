@@ -18,7 +18,6 @@
 
 from libconfix.core.machinery.dependency_utils import DependencySet
 from libconfix.core.machinery.provide import Provide
-from libconfix.core.machinery.provide import Provide_String
 
 import unittest
 
@@ -31,11 +30,11 @@ class DependencySetSuite(unittest.TestSuite):
 
 class DependencySetTest(unittest.TestCase):
     def test(self):
-        a = Provide_String('a')
-        b = Provide_String('b')
-        c = Provide_String('c')
+        a = Provide('a')
+        b = Provide('b')
+        c = Provide('c')
         
-        s = DependencySet(klass=Provide, string_klass=Provide_String)
+        s = DependencySet(klass=Provide, string_klass=Provide)
         s.add(a)
         s.add(b)
         s.add(c)

@@ -22,7 +22,6 @@ from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.provide import Provide
-from libconfix.core.machinery.provide import Provide_String
 from libconfix.core.machinery.provide import Provide_Symbol
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.require import Require_Symbol
@@ -172,11 +171,11 @@ class BuilderInterface(unittest.TestCase):
         self.assertNotEqual(sym3, None)
         self.assertNotEqual(sym4, None)
         self.assertNotEqual(sym5, None)
-        self.assertEqual(sym1.match(), Provide_String.EXACT_MATCH)
-        self.assertEqual(sym2.match(), Provide_String.EXACT_MATCH)
-        self.assertEqual(sym3.match(), Provide_String.PREFIX_MATCH)
-        self.assertEqual(sym4.match(), Provide_String.GLOB_MATCH)
-        self.assertEqual(sym5.match(), Provide_String.EXACT_MATCH)
+        self.assertEqual(sym1.match(), Provide.EXACT_MATCH)
+        self.assertEqual(sym2.match(), Provide.EXACT_MATCH)
+        self.assertEqual(sym3.match(), Provide.PREFIX_MATCH)
+        self.assertEqual(sym4.match(), Provide.GLOB_MATCH)
+        self.assertEqual(sym5.match(), Provide.EXACT_MATCH)
         pass
     pass
 

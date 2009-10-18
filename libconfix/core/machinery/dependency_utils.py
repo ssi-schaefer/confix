@@ -17,7 +17,6 @@
 
 from repo import Unmarshallable
 from require import Require
-from require import Require_String
 from provide import Provide
 
 from libconfix.core.utils.error import Error
@@ -106,8 +105,8 @@ class DependencyInformation(Unmarshallable):
 
     def __init__(self):
 
-        self.requires_ = DependencySet(klass=Require, string_klass=Require_String)
-        self.provides_ = DependencySet(klass=Provide, string_klass=Provide_String)
+        self.requires_ = DependencySet(klass=Require, string_klass=Require)
+        self.provides_ = DependencySet(klass=Provide, string_klass=Provide)
 
         # a set of provide objects that can be resolved internal to a
         # module. rationale: local C and h source files include local
@@ -121,7 +120,7 @@ class DependencyInformation(Unmarshallable):
         # our local header files. (BuildableHeader is responsible for
         # filling it.)
 
-        self.internal_provides_ = DependencySet(klass=Provide, string_klass=Provide_String)
+        self.internal_provides_ = DependencySet(klass=Provide, string_klass=Provide)
         pass
 
     def size(self):
@@ -174,7 +173,7 @@ class ProvideMap(Unmarshallable):
 
         self.__permissive = permissive
 
-        # dictionary: require-type -> ProvideMap.Index_Provide_String
+        # dictionary: require-type -> ProvideMap.Index_Provide
 
         self.__string_indexes = {}
 
@@ -197,18 +196,13 @@ class ProvideMap(Unmarshallable):
         return ret_nodes
         
     def add(self, provide, node):
-
-        if not isinstance(provide, Provide_String):
-            raise Error('Indexing of provide objects that are not derived '
-                        'from Provide_String is not supported anymore')
-
         # else, create an index for its type (if not yet available),
         # and add it there.
 
         for require_type in provide.can_match_classes():
             index = self.__string_indexes.get(require_type)
             if not index:
-                index = ProvideMap.Index_Provide_String(type=require_type,
+                index = ProvideMap.Index_Provide(type=require_type,
                                                         permissive=self.__permissive)
                 self.__string_indexes[require_type] = index
                 pass
@@ -216,7 +210,7 @@ class ProvideMap(Unmarshallable):
             pass
         pass
 
-    class Index_Provide_String(Unmarshallable):
+    class Index_Provide(Unmarshallable):
     
         def __init__(self,
                      type,
@@ -275,14 +269,14 @@ class ProvideMap(Unmarshallable):
             return ret_nodes
     
         def add(self, provide, node):
-            if provide.match() == Provide_String.EXACT_MATCH:
+            if provide.match() == Provide.EXACT_MATCH:
                 existing_node = self.__exact.get(provide.string())
                 if existing_node:
                     raise Error('Conflict: '+str(provide)+' of node '+str(node)+' already provided by node '+str(existing_node))
                 self.__exact[provide.string()] = node
-            elif provide.match() == Provide_String.PREFIX_MATCH:
+            elif provide.match() == Provide.PREFIX_MATCH:
                 self.__prefix.append((provide, node))
-            elif provide.match() == Provide_String.GLOB_MATCH:
+            elif provide.match() == Provide.GLOB_MATCH:
                 self.__glob.append((provide, node))
                 pass
             pass

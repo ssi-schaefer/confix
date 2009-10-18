@@ -26,9 +26,7 @@ from libconfix.core.machinery.entrybuilder import EntryBuilder
 from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.node import Node
 from libconfix.core.machinery.provide import Provide
-from libconfix.core.machinery.provide import Provide_String
 from libconfix.core.machinery.require import Require
-from libconfix.core.machinery.require import Require_String
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileManager
 from libconfix.core.utils import const
@@ -225,7 +223,7 @@ class DirectoryBuilder(EntryBuilder, Node):
         # collect build information.
 
         internal_provides = ProvideMap(permissive=False)
-        requires = DependencySet(klass=Require, string_klass=Require_String)
+        requires = DependencySet(klass=Require, string_klass=Require)
 
         for b in self.__node_managed_builders():
             builder_dependency_info = b.dependency_info()
@@ -323,8 +321,8 @@ class DirectoryBuilder(EntryBuilder, Node):
         return self.__pseudo_handwritten_mgr.create_file(filename)
 
     def __init_dep_info(self):
-        self.__provides = DependencySet(klass=Provide, string_klass=Provide_String)
-        self.__requires = DependencySet(klass=Require, string_klass=Require_String)
+        self.__provides = DependencySet(klass=Provide, string_klass=Provide)
+        self.__requires = DependencySet(klass=Require, string_klass=Require)
         pass
 
     def __init_builder(self, b):

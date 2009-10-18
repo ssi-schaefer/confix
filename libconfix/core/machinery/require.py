@@ -25,11 +25,61 @@ from libconfix.core.utils import debug
 
 import types
 
+## ## class Require(Marshallable):
+## ##     def get_marshalling_data(self):
+## ##         return {Marshallable.GENERATING_CLASS: Require,
+## ##                 Marshallable.VERSIONS: {'Require': 1},
+## ##                 Marshallable.ATTRIBUTES: {'urgency': self.__urgency}}
+## ##     def set_marshalling_data(self, data):
+## ##         version = data[Marshallable.VERSIONS]['Require']
+## ##         if version != 1:
+## ##             raise MarshalledVersionUnknownError(
+## ##                 klass=self.__class__,
+## ##                 marshalled_version=version,
+## ##                 current_version=1)
+## ##         self.__urgency = data[Marshallable.ATTRIBUTES]['urgency']
+## ##         pass
+
+## ##     # it is no accident that these are sorted by urgency level
+
+## ##     URGENCY_IGNORE = URGENCY_DEFAULT = URGENCY_DONTCARE = 0
+## ##     URGENCY_WARN = 1
+## ##     URGENCY_ERROR = 2
+
+## ##     def __init__(self, urgency=URGENCY_DEFAULT):
+## ##         self.__urgency = urgency
+## ##         pass
+## ##     def urgency(self):
+## ##         return self.__urgency
+## ##     def set_urgency(self, u):
+## ##         self.__urgency = u
+
+## ##     def update(self, r):
+
+## ##         """ When multiple equivalent Require objects are added to the
+## ##         same module, this adds unnecessary (and sometimes
+## ##         considerable) overhead to the resolving process. This method
+## ##         is an attempt to collapse r with self.
+
+## ##         @rtype: boolean
+
+## ##         @return: A boolean that indicates whether the objects could be
+## ##         collapsed.
+
+## ##         """
+
+## ##         debug.abstract('Require.update()')
+## ##         pass
+
+##     pass
+
 class Require(Marshallable):
     def get_marshalling_data(self):
         return {Marshallable.GENERATING_CLASS: Require,
                 Marshallable.VERSIONS: {'Require': 1},
-                Marshallable.ATTRIBUTES: {'urgency': self.urgency_}}
+                Marshallable.ATTRIBUTES: {'urgency': self.__urgency,
+                                          'string': self.__string,
+                                          'found_in': list(self.__found_in)}}
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['Require']
         if version != 1:
@@ -37,7 +87,9 @@ class Require(Marshallable):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.urgency_ = data[Marshallable.ATTRIBUTES]['urgency']
+        self.__urgency = data[Marshallable.ATTRIBUTES]['urgency']
+        self.__string = data[Marshallable.ATTRIBUTES]['string']
+        self.__found_in = set(data[Marshallable.ATTRIBUTES]['found_in'])
         pass
 
     # it is no accident that these are sorted by urgency level
@@ -46,19 +98,28 @@ class Require(Marshallable):
     URGENCY_WARN = 1
     URGENCY_ERROR = 2
 
-    def __init__(self, urgency=URGENCY_DEFAULT):
-        self.urgency_ = urgency
+    def __init__(self,
+                 string,
+                 found_in,
+                 urgency=URGENCY_DEFAULT):
+
+        self.__urgency = urgency
+        self.__string = string
+        self.__found_in = set()
+
+        if type(found_in) is types.StringType:
+            self.__found_in.add(found_in)
+        elif type(found_in) in [types.ListType, types.TupleType] and len(found_in):
+            self.__found_in = set(found_in)
+            pass            
         pass
-    def id(self):
-        assert 0, 'remove that'
-        return self.id_
+
     def urgency(self):
-        return self.urgency_
+        return self.__urgency
     def set_urgency(self, u):
-        self.urgency_ = u
+        self.__urgency = u
 
     def update(self, r):
-
         """ When multiple equivalent Require objects are added to the
         same module, this adds unnecessary (and sometimes
         considerable) overhead to the resolving process. This method
@@ -70,60 +131,17 @@ class Require(Marshallable):
         collapsed.
 
         """
-
-        debug.abstract('Require.update()')
-        pass
-
-    pass
-
-class Require_String(Require):
-    def get_marshalling_data(self):
-        return update_marshalling_data(
-            marshalling_data=Require.get_marshalling_data(self),
-            generating_class=Require_String,
-            attributes={'string': self.string_,
-                        'found_in': [f for f in self.found_in_]},
-            version={'Require_String': 1})
-    def set_marshalling_data(self, data):
-        version = data[Marshallable.VERSIONS]['Require_String']
-        if version != 1:
-            raise MarshalledVersionUnknownError(
-                klass=self.__class__,
-                marshalled_version=version,
-                current_version=1)
-        self.string_ = data[Marshallable.ATTRIBUTES]['string']
-        self.found_in_ = set(data[Marshallable.ATTRIBUTES]['found_in'])
-        Require.set_marshalling_data(self, data)
-        pass
-
-    def __init__(self,
-                 string,
-                 found_in,
-                 urgency=Require.URGENCY_DEFAULT):
-
-        Require.__init__(self, urgency=urgency)
-
-        self.string_ = string
-        self.found_in_ = set()
-
-        if type(found_in) is types.StringType:
-            self.found_in_.add(found_in)
-        elif type(found_in) in [types.ListType, types.TupleType] and len(found_in):
-            self.found_in_ = set(found_in)
-            pass            
-        pass
-
-    def update(self, r):
+        
         if r.__class__ != self.__class__:
             return False
 
-        if r.string_ != self.string_:
+        if r.__string != self.__string:
             return False
 
         # we have a match. add r's found_in to my list, and update the
         # urgency appropriately
 
-        self.found_in_ |= r.found_in()
+        self.__found_in |= r.__found_in
         if r.urgency() > self.urgency():
             self.set_urgency(r.urgency())
             pass
@@ -131,18 +149,16 @@ class Require_String(Require):
         return True
 
     def is_equal(self, other):
-        return isinstance(other, self.__class__) and self.string_ == other.string_
-
-    def string(self): return self.string_
-
-    def found_in(self): return self.found_in_
+        return isinstance(other, self.__class__) and self.__string == other.__string
+    def string(self): return self.__string
+    def found_in(self): return self.__found_in
 
     pass
 
-class Require_Symbol(Require_String):
+class Require_Symbol(Require):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Require_String.get_marshalling_data(self),
+            marshalling_data=Require.get_marshalling_data(self),
             generating_class=Require_Symbol,
             attributes={},
             version={'Require_Symbol': 1})
@@ -153,14 +169,14 @@ class Require_Symbol(Require_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Require_String.set_marshalling_data(self, data)
+        Require.set_marshalling_data(self, data)
 
     def __init__(self,
                  symbol,
                  found_in,
                  urgency=Require.URGENCY_DEFAULT):
         assert type(found_in) in [types.ListType, types.TupleType]
-        Require_String.__init__(
+        Require.__init__(
             self,
             string=symbol,
             found_in=found_in,
@@ -178,10 +194,10 @@ class Require_Symbol(Require_String):
 
     pass
 
-class Require_Callable(Require_String):
+class Require_Callable(Require):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Require_String.get_marshalling_data(self),
+            marshalling_data=Require.get_marshalling_data(self),
             generating_class=Require_Callable,
             attributes={},
             version={'Require_Callable': 1})
@@ -192,11 +208,11 @@ class Require_Callable(Require_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Require_String.set_marshalling_data(self, data)
+        Require.set_marshalling_data(self, data)
         pass
 
     def __init__(self, exename, found_in, urgency):
-        Require_String.__init__(
+        Require.__init__(
             self,
             string=exename,
             found_in=found_in,

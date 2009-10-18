@@ -15,15 +15,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.require import Require_String
 from libconfix.core.machinery.require import Require
-from libconfix.core.machinery.provide import Provide_String
+from libconfix.core.machinery.provide import Provide
 from libconfix.core.machinery.repo import update_marshalling_data, Marshallable, MarshalledVersionUnknownError
 
-class RequireRelocatedHeader(Require_String):
+class RequireRelocatedHeader(Require):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Require_String.get_marshalling_data(self),
+            marshalling_data=Require.get_marshalling_data(self),
             generating_class=RequireRelocatedHeader,
             attributes={},
             version={'RequireRelocatedHeader': 1})
@@ -34,11 +33,11 @@ class RequireRelocatedHeader(Require_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Require_String.set_marshalling_data(self, data)
+        Require.set_marshalling_data(self, data)
         pass
 
     def __init__(self, filename, source_directory):
-        Require_String.__init__(
+        Require.__init__(
             self,
             string='.'.join(source_directory+[filename]),
             found_in=[],
@@ -46,10 +45,10 @@ class RequireRelocatedHeader(Require_String):
         pass
     pass
 
-class ProvideRelocatedHeader(Provide_String):
+class ProvideRelocatedHeader(Provide):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Provide_String.get_marshalling_data(self),
+            marshalling_data=Provide.get_marshalling_data(self),
             generating_class=ProvideRelocatedHeader,
             attributes={},
             version={'ProvideRelocatedHeader': 1})
@@ -60,12 +59,12 @@ class ProvideRelocatedHeader(Provide_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Provide_String.set_marshalling_data(self, data)
+        Provide.set_marshalling_data(self, data)
         pass
 
     MATCH_CLASSES = [RequireRelocatedHeader]
     def __init__(self, filename, source_directory):
-        Provide_String.__init__(
+        Provide.__init__(
             self,
             string='.'.join(source_directory+[filename]))
         pass

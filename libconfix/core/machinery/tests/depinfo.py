@@ -17,8 +17,8 @@
 # USA
 
 from libconfix.core.machinery.dependency_utils import DependencyInformation
-from libconfix.core.machinery.provide import Provide_String
-from libconfix.core.machinery.require import Require_String
+from libconfix.core.machinery.provide import Provide
+from libconfix.core.machinery.require import Require
 
 import unittest
 
@@ -36,46 +36,46 @@ class DependencyInformationEqual(unittest.TestCase):
         self.failUnless(d1.is_equal(d2))
         
         d1 = DependencyInformation()
-        d1.add_provide(Provide_String('a'))
-        d1.add_provide(Provide_String('b'))
+        d1.add_provide(Provide('a'))
+        d1.add_provide(Provide('b'))
         d2 = DependencyInformation()
-        d2.add_provide(Provide_String('a'))
-        d2.add_provide(Provide_String('b'))
+        d2.add_provide(Provide('a'))
+        d2.add_provide(Provide('b'))
         self.failUnless(d1.is_equal(d2))
         self.failUnless(d2.is_equal(d1))
 
         d1 = DependencyInformation()
-        d1.add_provide(Provide_String('a'))
+        d1.add_provide(Provide('a'))
         d2 = DependencyInformation()
         self.failIf(d1.is_equal(d2))
         self.failIf(d2.is_equal(d1))
 
         d1 = DependencyInformation()
-        d1.add_provide(Provide_String('a'))
+        d1.add_provide(Provide('a'))
         d2 = DependencyInformation()
-        d2.add_provide(Provide_String('b'))
+        d2.add_provide(Provide('b'))
         self.failIf(d1.is_equal(d2))
         self.failIf(d2.is_equal(d1))
 
         d1 = DependencyInformation()
-        d1.add_provide(Provide_String('a'))
+        d1.add_provide(Provide('a'))
         d2 = DependencyInformation()
-        d2.add_provide(Provide_String('a', Provide_String.PREFIX_MATCH))
+        d2.add_provide(Provide('a', Provide.PREFIX_MATCH))
         self.failIf(d1.is_equal(d2))
         self.failIf(d2.is_equal(d1))
         
         d1 = DependencyInformation()
-        d1.add_provide(Provide_String('a', Provide_String.PREFIX_MATCH))
+        d1.add_provide(Provide('a', Provide.PREFIX_MATCH))
         d2 = DependencyInformation()
-        d2.add_provide(Provide_String('a', Provide_String.PREFIX_MATCH))
+        d2.add_provide(Provide('a', Provide.PREFIX_MATCH))
         self.failUnless(d1.is_equal(d2))
         self.failUnless(d2.is_equal(d1))
 
         d1 = DependencyInformation()
-        d1.add_provide(Provide_String('a'))
-        d1.add_require(Require_String(string='a', found_in=[]))
+        d1.add_provide(Provide('a'))
+        d1.add_require(Require(string='a', found_in=[]))
         d2 = DependencyInformation()
-        d2.add_provide(Provide_String('a'))
+        d2.add_provide(Provide('a'))
         self.failIf(d1.is_equal(d2))
         self.failIf(d2.is_equal(d1))
         

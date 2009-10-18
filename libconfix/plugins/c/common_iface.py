@@ -29,7 +29,7 @@ from buildinfo import \
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.core.machinery.interface import InterfaceProxy
-from libconfix.core.machinery.provide import Provide_String
+from libconfix.core.machinery.provide import Provide
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
@@ -65,13 +65,13 @@ class PROVIDE_H(InterfaceProxy):
         self.__builder = builder
         self.add_global('PROVIDE_H', getattr(self, 'PROVIDE_H'))
         pass
-    def PROVIDE_H(self, filename, match=Provide_String.AUTO_MATCH):
+    def PROVIDE_H(self, filename, match=Provide.AUTO_MATCH):
         if not filename or len(filename)==0:
             raise Error('PROVIDE_H(): need a non-zero filename parameter')
-        if match not in [Provide_String.EXACT_MATCH,
-                         Provide_String.PREFIX_MATCH,
-                         Provide_String.GLOB_MATCH,
-                         Provide_String.AUTO_MATCH]:
+        if match not in [Provide.EXACT_MATCH,
+                         Provide.PREFIX_MATCH,
+                         Provide.GLOB_MATCH,
+                         Provide.AUTO_MATCH]:
             raise Error('PROVIDE_H(): match parameter must be one of EXACT_MATCH, PREFIX_MATCH, GLOB_MATCH, AUTO_MATCH')
         self.__builder.add_provide(Provide_CInclude(filename, match))
         pass

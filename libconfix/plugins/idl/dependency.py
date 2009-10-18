@@ -16,18 +16,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.machinery.provide import Provide_String
-from libconfix.core.machinery.require import Require_String
+from libconfix.core.machinery.provide import Provide
+from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.repo import \
      MarshalledVersionUnknownError, \
      Marshallable, \
      update_marshalling_data
 from libconfix.core.utils import helper
 
-class Require_IDL(Require_String):
+class Require_IDL(Require):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Require_String.get_marshalling_data(self),
+            marshalling_data=Require.get_marshalling_data(self),
             generating_class=Require_IDL,
             attributes={},
             version={'Require_IDL': 1})
@@ -38,11 +38,11 @@ class Require_IDL(Require_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Require_String.set_marshalling_data(self, data)
+        Require.set_marshalling_data(self, data)
         pass
 
     def __init__(self, filename, found_in, urgency):
-        Require_String.__init__(
+        Require.__init__(
             self,
             string=helper.normalize_filename(filename),
             found_in=found_in,
@@ -50,15 +50,15 @@ class Require_IDL(Require_String):
         pass
     def __str__(self):
         ret = 'plugins.idl:#include<%s>' % self.string()
-        if len(self.found_in_):
+        if len(self.found_in()):
             ret = ret + ' (from ' + str([f for f in self.found_in()]) + ')'
         return ret
     pass
 
-class Provide_IDL(Provide_String):
+class Provide_IDL(Provide):
     def get_marshalling_data(self):
         return update_marshalling_data(
-            marshalling_data=Provide_String.get_marshalling_data(self),
+            marshalling_data=Provide.get_marshalling_data(self),
             generating_class=Provide_IDL,
             attributes={},
             version={'Provide_IDL': 1})
@@ -69,21 +69,22 @@ class Provide_IDL(Provide_String):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        Provide_String.set_marshalling_data(self, data)
+        Provide.set_marshalling_data(self, data)
         pass
 
-    EXACT_MATCH = Provide_String.EXACT_MATCH
-    PREFIX_MATCH = Provide_String.PREFIX_MATCH
-    GLOB_MATCH = Provide_String.GLOB_MATCH
+    EXACT_MATCH = Provide.EXACT_MATCH
+    PREFIX_MATCH = Provide.PREFIX_MATCH
+    GLOB_MATCH = Provide.GLOB_MATCH
 
     MATCH_CLASSES = [Require_IDL]
 
     def __init__(self, filename, match=EXACT_MATCH):
-
-        Provide_String.__init__(self,
-                                string=helper.normalize_filename(filename),
-                                match=match)
-
+        Provide.__init__(
+            self,
+            string=helper.normalize_filename(filename),
+            match=match)
+        pass
+    
     def __str__(self):
         return 'plugins.idl.Provide_IDL(' + self.string() + ')'
 
