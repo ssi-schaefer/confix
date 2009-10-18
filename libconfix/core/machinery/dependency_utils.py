@@ -19,7 +19,6 @@ from repo import Unmarshallable
 from require import Require
 from require import Require_String
 from provide import Provide
-from provide import Provide_String
 
 from libconfix.core.utils.error import Error
 
@@ -169,7 +168,6 @@ class DependencyInformation(Unmarshallable):
 class ProvideMap(Unmarshallable):
 
     def __init__(self, permissive):
-
         # permissive means to return as soon as we have at least one
         # match (to return as soon as possible, so to say), and to not
         # continue to search for more.
@@ -179,10 +177,6 @@ class ProvideMap(Unmarshallable):
         # dictionary: require-type -> ProvideMap.Index_Provide_String
 
         self.__string_indexes = {}
-
-        # list of tuples (provide-object, Node) (use is deprecated)
-        
-        self.__rest = []
 
         pass
 
@@ -200,23 +194,9 @@ class ProvideMap(Unmarshallable):
                 return ret_nodes
             pass
 
-        # ask the anti-performant section for a match.
-
-        for p, n in self.__rest:
-            if p.resolve(require):
-                ret_nodes.append(n)
-                if self.__permissive and len(ret_nodes) > 0:
-                    return ret_nodes
-                pass
-            pass
-
         return ret_nodes
         
     def add(self, provide, node):
-
-        # if the provide object is not one which we can index
-        # (Provide_String is the only indexable so far), then add it
-        # to the anti-performant section.
 
         if not isinstance(provide, Provide_String):
             raise Error('Indexing of provide objects that are not derived '
@@ -242,7 +222,7 @@ class ProvideMap(Unmarshallable):
                      type,
                      permissive):
     
-            # same meaning as with our checf, the ProvideMap
+            # same meaning as with our chef, the ProvideMap
             self.__permissive = permissive
     
             # map string -> Node

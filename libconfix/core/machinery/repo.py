@@ -30,7 +30,7 @@ import types
 # use this like debug.trace([marshalling.REPOVERSION_TRACENAME], 'Upgrading class XXX from version 3 to version 100')
 REPOVERSION_TRACENAME = 'repoversion'
 
-class Marshallable:
+class Marshallable(object):
 
     """ Provides support for versioned marshalling and unmarshalling
     of objects. Its functionality is a bit intrusive in that it

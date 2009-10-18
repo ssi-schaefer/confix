@@ -154,9 +154,9 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
                               "from libconfix.setups.c import AutoC",
                               "from libconfix.setups.automake import Automake",
 
-                              "SETUPS([AutoBoilerplate(),",
-                              "        AutoC(short_libnames=False),",
-                              "        Automake(use_libtool=False, library_dependencies=True)])"
+                              "SETUP([AutoBoilerplate(),",
+                              "       AutoC(short_libnames=False),",
+                              "       Automake(use_libtool=False, library_dependencies=True)])"
                               ]))
         source.add(
             name=const.CONFIX2_DIR,
@@ -183,7 +183,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
             name='main.c',
             entry=File(lines=['int main(void) { return 0; }']))
 
-        package = LocalPackage(rootdirectory=source, setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+        package = LocalPackage(rootdirectory=source, setups=None)
         package.boil(external_nodes=[])
         package.output()
 

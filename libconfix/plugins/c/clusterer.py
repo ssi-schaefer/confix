@@ -102,9 +102,9 @@ class CClusterer(Builder):
                 library = builder
                 continue
 
-            # attention: we use type() for performance. to check for
-            # CBaseBuilder we have to use isinstance() though because
-            # it is a base class.
+            # attention: we use direct __class__ comparison for
+            # performance. to check for CBaseBuilder we have to use
+            # isinstance() though because it is a base class.
             if not isinstance(builder, CBaseBuilder):
                 continue
 

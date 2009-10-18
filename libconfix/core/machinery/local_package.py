@@ -136,6 +136,12 @@ class LocalPackage(Package):
         return self.__current_digraph
 
     def boil(self, external_nodes):
+        """
+        Resolve everything we got, propagate build information
+        backwards across the edges.
+
+        external_nodes is an iterable of repo nodes.
+        """
         loop_count = 0
 
         while True:
@@ -166,7 +172,7 @@ class LocalPackage(Package):
             if self.__current_digraph:
                 break
 
-            all_nodes = directory_builders + external_nodes
+            all_nodes = directory_builders + list(external_nodes)
             self.__current_digraph = DirectedGraph(
                 nodes=all_nodes,
                 edgefinder=EdgeFinder(nodes=all_nodes))

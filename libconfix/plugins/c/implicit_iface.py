@@ -50,7 +50,7 @@ class ExplicitInstaller(Builder):
         if self.__installdir is None:
             return
         for b in self.parentbuilder().iter_builders():
-            if not isinstance(b, HeaderBuilder):
+            if type(b) is not HeaderBuilder:
                 continue
             if b in self.__seen_header_builders:
                 continue
@@ -97,7 +97,7 @@ class SetHeaderPublic(Builder):
         return self.__id
     def enlarge(self):
         for header in self.parentbuilder().iter_builders():
-            if not isinstance(header, HeaderBuilder):
+            if type(header) is not HeaderBuilder:
                 continue
             if header in self.__seen_headers:
                 continue
