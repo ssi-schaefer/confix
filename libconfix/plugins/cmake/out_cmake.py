@@ -106,13 +106,13 @@ class CMakeBackendOutputBuilder(Builder):
 
         for n in topolist:
             for bi in n.iter_buildinfos():
-                if isinstance(bi, BuildInfo_Toplevel_CMakeLists_Include):
+                if type(bi) is BuildInfo_Toplevel_CMakeLists_Include:
                     self.__top_cmakelists.add_include(bi.include())
                     continue
-                if isinstance(bi, BuildInfo_Toplevel_CMakeLists_FindCall):
+                if type(bi) is BuildInfo_Toplevel_CMakeLists_FindCall:
                     self.__top_cmakelists.add_find_call(bi.find_call())
                     continue
-                if isinstance(bi, BuildInfo_CMakeModule):
+                if type(bi) is BuildInfo_CMakeModule:
                     self.__modules_builder.add_module_file(bi.name(), bi.lines())
                     continue
                 pass

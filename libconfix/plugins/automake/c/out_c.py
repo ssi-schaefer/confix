@@ -137,7 +137,7 @@ class CompiledOutputBuilder(Builder):
 
         for n in topolist:
             for bi in n.iter_buildinfos():
-                if isinstance(bi, BuildInfo_IncludePath_External_AM):
+                if type(bi) is BuildInfo_IncludePath_External_AM:
                     incpath = bi.incpath()
                     key = '.'.join(incpath)
                     if not key in self.__have_external_incpath:
@@ -145,10 +145,10 @@ class CompiledOutputBuilder(Builder):
                         self.__have_external_incpath.add(key)
                         pass
                     continue
-                if isinstance(bi, BuildInfo_CFLAGS_AM):
+                if type(bi) is BuildInfo_CFLAGS_AM:
                     self.__external_cflags.extend(bi.cflags())
                     continue
-                if isinstance(bi, BuildInfo_CommandlineMacros_AM):
+                if type(bi) is BuildInfo_CommandlineMacros_AM:
                     for (k, v) in bi.macros().iteritems():
                         existing_value = self.__external_cmdlinemacros.get(k)
                         if existing_value is not None and existing_value != v:
@@ -242,7 +242,7 @@ class CXXOutputBuilder(CompiledOutputBuilder):
         self.__external_cxxflags = []
         for n in topolist:
             for bi in n.iter_buildinfos():
-                if isinstance(bi, BuildInfo_CXXFLAGS_AM):
+                if type(bi) is BuildInfo_CXXFLAGS_AM:
                     self.__external_cxxflags.extend(bi.cxxflags())
                     continue
                 pass
@@ -370,7 +370,7 @@ class LinkedOutputBuilder(Builder):
 
         for n in topolist:
             for bi in n.iter_buildinfos():
-                if isinstance(bi, BuildInfo_Library_External_AM):
+                if type(bi) is BuildInfo_Library_External_AM:
                     key = '.'.join(bi.libpath())
                     if not key in self.__have_external_libpath:
                         self.__have_external_libpath.add(key)

@@ -80,12 +80,14 @@ class Provide(Marshallable):
         else:
             return False
 
+        req_string = req.string()
+
         if self.__match == Provide.EXACT_MATCH:
-            return req.string() == self.__string
+            return req_string == self.__string
         if self.__match == Provide.PREFIX_MATCH:
-            return req.string().startswith(self.__string)
+            return req_string.startswith(self.__string)
         if self.__match == Provide.GLOB_MATCH:
-            return fnmatch.fnmatchcase(req.string(), self.__string)
+            return fnmatch.fnmatchcase(req_string, self.__string)
         assert False
         pass
 

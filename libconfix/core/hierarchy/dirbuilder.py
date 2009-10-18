@@ -223,7 +223,7 @@ class DirectoryBuilder(EntryBuilder, Node):
         # collect build information.
 
         internal_provides = ProvideMap()
-        requires = DependencySet(klass=Require, string_klass=Require)
+        requires = DependencySet()
 
         for b in self.__node_managed_builders():
             builder_dependency_info = b.dependency_info()
@@ -321,8 +321,8 @@ class DirectoryBuilder(EntryBuilder, Node):
         return self.__pseudo_handwritten_mgr.create_file(filename)
 
     def __init_dep_info(self):
-        self.__provides = DependencySet(klass=Provide, string_klass=Provide)
-        self.__requires = DependencySet(klass=Require, string_klass=Require)
+        self.__provides = DependencySet()
+        self.__requires = DependencySet()
         pass
 
     def __init_builder(self, b):

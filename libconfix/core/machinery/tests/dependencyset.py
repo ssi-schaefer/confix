@@ -34,7 +34,7 @@ class DependencySetTest(unittest.TestCase):
         b = Provide('b')
         c = Provide('c')
         
-        s = DependencySet(klass=Provide, string_klass=Provide)
+        s = DependencySet()
         s.add(a)
         s.add(b)
         s.add(c)

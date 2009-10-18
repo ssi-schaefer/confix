@@ -22,68 +22,54 @@ from provide import Provide
 from libconfix.core.utils.error import Error
 
 class DependencySet(Unmarshallable):
-    def __init__(self, klass, string_klass):
-        self.klass_ = klass
-        self.string_klass_ = string_klass
-
+    def __init__(self):
         # objects of type string_klass. sorted into a dictionary
         # {type -> {obj.string() -> obj}}
-        self.string_ = {}
+        self.__per_class_index = {}
         pass
 
     def __len__(self): return self.size()
     def size(self):
         n = 0
-        for k, v in self.string_.iteritems():
+        for k, v in self.__per_class_index.iteritems():
             n += len(v)
             pass
         return n
 
     def has(self, obj):
-        assert isinstance(obj, self.klass_), obj
-        if isinstance(obj, self.string_klass_):
-            klass_dict = self.string_.get(obj.__class__)
-            if klass_dict is None:
-                return False
-            existing_obj = klass_dict.get(obj.string())
-            if existing_obj is None:
-                return False
-            if obj is existing_obj:
-                return True
-            return existing_obj.is_equal(obj)
-        else:
-            assert 0, 'not supported anymore (should be refactored)'
-            pass
-        pass
+        klass_dict = self.__per_class_index.get(obj.__class__)
+        if klass_dict is None:
+            return False
+        existing_obj = klass_dict.get(obj.string())
+        if existing_obj is None:
+            return False
+        if obj is existing_obj:
+            return True
+        return existing_obj.is_equal(obj)
 
     def add(self, obj):
-        assert isinstance(obj, self.klass_), obj
-        if isinstance(obj, self.string_klass_):
-            klass_dict = self.string_.setdefault(obj.__class__, {})
-            existing_obj = klass_dict.get(obj.string())
-            if existing_obj:
-                if obj is not existing_obj:
-                    existing_obj.update(obj)
-                    pass
-                pass
-            else:
-                klass_dict[obj.string()] = obj
+        unique_id = obj.string()
+        klass_dict = self.__per_class_index.setdefault(obj.__class__, {})
+        existing_obj = klass_dict.get(unique_id)
+        if existing_obj:
+            if obj is not existing_obj:
+                existing_obj.update(obj)
                 pass
             pass
         else:
-            assert 0, 'not supported anymore (should be refactored)'
+            klass_dict[unique_id] = obj
             pass
         pass
 
     def merge(self, other):
-        for obj in other.values():
+        for obj in other:
             self.add(obj)
             pass
         pass
 
-    def __iter__(self): return self.values().__iter__()
-    def values(self):
-        for klass, klass_dict in self.string_.iteritems():
+    def __iter__(self): return self.__iter_values()        
+    def __iter_values(self):
+        for klass, klass_dict in self.__per_class_index.iteritems():
             for v in klass_dict.itervalues():
                 yield v
                 pass
@@ -93,7 +79,7 @@ class DependencySet(Unmarshallable):
     def is_equal(self, other):
         if self.size() != other.size():
             return False
-        for obj in self.values():
+        for obj in self.__iter_values():
             if not other.has(obj):
                 return False
             pass
@@ -105,8 +91,8 @@ class DependencyInformation(Unmarshallable):
 
     def __init__(self):
 
-        self.requires_ = DependencySet(klass=Require, string_klass=Require)
-        self.provides_ = DependencySet(klass=Provide, string_klass=Provide)
+        self.__requires = DependencySet()
+        self.__provides = DependencySet()
 
         # a set of provide objects that can be resolved internal to a
         # module. rationale: local C and h source files include local
@@ -120,48 +106,48 @@ class DependencyInformation(Unmarshallable):
         # our local header files. (BuildableHeader is responsible for
         # filling it.)
 
-        self.internal_provides_ = DependencySet(klass=Provide, string_klass=Provide)
+        self.__internal_provides = DependencySet()
         pass
 
     def size(self):
-        return self.requires_.size() + \
-               self.provides_.size() + \
-               self.internal_provides_.size()
+        return self.__requires.size() + \
+               self.__provides.size() + \
+               self.__internal_provides.size()
 
-    def requires(self): return self.requires_
-    def provides(self): return self.provides_
-    def internal_provides(self): return self.internal_provides_
+    def requires(self): return self.__requires
+    def provides(self): return self.__provides
+    def internal_provides(self): return self.__internal_provides
 
-    def add_require(self, r): self.requires_.add(r)
-    def add_provide(self, p): self.provides_.add(p)
-    def add_internal_provide(self, p): self.internal_provides_.add(p)
+    def add_require(self, r): self.__requires.add(r)
+    def add_provide(self, p): self.__provides.add(p)
+    def add_internal_provide(self, p): self.__internal_provides.add(p)
 
     def add_requires(self, rs):
         for r in rs:
-            self.requires_.add(r)
+            self.__requires.add(r)
             pass
         pass
     def add_provides(self, provides):
         for p in provides:
-            self.provides_.add(p)
+            self.__provides.add(p)
             pass
         pass
     def add_internal_provides(self, provides):
         for p in provides:
-            self.internal_provides_.add(p)
+            self.__internal_provides.add(p)
             pass
         pass
     def add(self, other):
         assert isinstance(other, self.__class__), str(other.__class__)
-        self.requires_.merge(other.requires_)
-        self.provides_.merge(other.provides_)
-        self.internal_provides_.merge(other.internal_provides_)
+        self.__requires.merge(other.__requires)
+        self.__provides.merge(other.__provides)
+        self.__internal_provides.merge(other.__internal_provides)
         return self
 
     def is_equal(self, other):
-        return self.provides_.is_equal(other.provides_) and \
-               self.internal_provides_.is_equal(other.internal_provides_) and \
-               self.requires_.is_equal(other.requires_)
+        return self.__provides.is_equal(other.__provides) and \
+               self.__internal_provides.is_equal(other.__internal_provides) and \
+               self.__requires.is_equal(other.__requires)
     pass
 
 class ProvideMap(Unmarshallable):
@@ -174,23 +160,14 @@ class ProvideMap(Unmarshallable):
         pass
 
     def find_match(self, require):
-
-        # see if a string index claims to know how to match the
-        # require
-
         ret_nodes = []
-
         index = self.__string_indexes.get(require.__class__)
         if index:
             ret_nodes.extend(index.find_match(require))
             pass
-
         return ret_nodes
         
     def add(self, provide, node):
-        # else, create an index for its type (if not yet available),
-        # and add it there.
-
         for require_type in provide.can_match_classes():
             index = self.__string_indexes.get(require_type)
             if not index:
