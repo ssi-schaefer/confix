@@ -42,6 +42,7 @@ class HeaderVisibilityInMemorySuite(unittest.TestSuite):
         self.addTest(Interfaces('test_auto_fileiface_diriface_conflict'))
         self.addTest(Interfaces('test_auto_fileproperty_diriface_conflict'))
         self.addTest(Interfaces('test_auto_INSTALLDIR_H_empty_string'))
+        self.addTest(Interfaces('test_auto_INSTALLDIR_H_overrides_namespace'))
         # tests with the explicit builder registration iface.
         self.addTest(Interfaces('test_explicit_diriface'))
         self.addTest(Interfaces('test_explicit_fileproperty_conflict'))
@@ -217,6 +218,42 @@ class Interfaces(unittest.TestCase):
         lo.add(
             name='lo.h',
             entry=File())
+        hi = fs.rootdirectory().add(
+            name='hi',
+            entry=Directory())
+        hi.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=[]))
+        hi.add(
+            name='hi.cc',
+            entry=File(lines=["//CONFIX:REQUIRE_H('lo.h', REQUIRED)"]))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+        package.boil(external_nodes=[])
+        package.output()
+        pass
+
+    def test_auto_INSTALLDIR_H_overrides_namespace(self):
+        fs = FileSystem(path=['don\'t', 'care'])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('HeaderInstallInterfaceTest')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File())
+
+        lo = fs.rootdirectory().add(
+            name='lo',
+            entry=Directory())
+        lo.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["INSTALLDIR_H('')"]))
+        lo.add(
+            name='lo.h',
+            entry=File(lines=['namespace x {',
+                              '} // /namespace x']))
         hi = fs.rootdirectory().add(
             name='hi',
             entry=Directory())
