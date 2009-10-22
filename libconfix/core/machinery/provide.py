@@ -46,13 +46,11 @@ class Provide(Marshallable):
         pass
     
     EXACT_MATCH = 0
-    PREFIX_MATCH = 1
     GLOB_MATCH = 2
     AUTO_MATCH = 3
 
     def __init__(self, string, match=EXACT_MATCH):
         assert match in [self.EXACT_MATCH,
-                         self.PREFIX_MATCH,
                          self.GLOB_MATCH,
                          self.AUTO_MATCH]
         self.__string = string
@@ -84,8 +82,6 @@ class Provide(Marshallable):
 
         if self.__match == Provide.EXACT_MATCH:
             return req_string == self.__string
-        if self.__match == Provide.PREFIX_MATCH:
-            return req_string.startswith(self.__string)
         if self.__match == Provide.GLOB_MATCH:
             return fnmatch.fnmatchcase(req_string, self.__string)
         assert False

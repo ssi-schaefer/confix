@@ -60,14 +60,14 @@ class DependencyInformationEqual(unittest.TestCase):
         d1 = DependencyInformation()
         d1.add_provide(Provide('a'))
         d2 = DependencyInformation()
-        d2.add_provide(Provide('a', Provide.PREFIX_MATCH))
+        d2.add_provide(Provide('a', Provide.GLOB_MATCH))
         self.failIf(d1.is_equal(d2))
         self.failIf(d2.is_equal(d1))
         
         d1 = DependencyInformation()
-        d1.add_provide(Provide('a', Provide.PREFIX_MATCH))
+        d1.add_provide(Provide('a', Provide.GLOB_MATCH))
         d2 = DependencyInformation()
-        d2.add_provide(Provide('a', Provide.PREFIX_MATCH))
+        d2.add_provide(Provide('a', Provide.GLOB_MATCH))
         self.failUnless(d1.is_equal(d2))
         self.failUnless(d2.is_equal(d1))
 

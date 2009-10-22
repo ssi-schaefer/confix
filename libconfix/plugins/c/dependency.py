@@ -80,7 +80,6 @@ class Provide_CInclude(Provide):
         pass
     
     EXACT_MATCH = Provide.EXACT_MATCH
-    PREFIX_MATCH = Provide.PREFIX_MATCH
     GLOB_MATCH = Provide.GLOB_MATCH
     AUTO_MATCH = Provide.AUTO_MATCH
 

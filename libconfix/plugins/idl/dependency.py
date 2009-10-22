@@ -73,7 +73,6 @@ class Provide_IDL(Provide):
         pass
 
     EXACT_MATCH = Provide.EXACT_MATCH
-    PREFIX_MATCH = Provide.PREFIX_MATCH
     GLOB_MATCH = Provide.GLOB_MATCH
 
     MATCH_CLASSES = [Require_IDL]

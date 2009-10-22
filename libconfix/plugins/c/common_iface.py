@@ -69,10 +69,9 @@ class PROVIDE_H(InterfaceProxy):
         if not filename or len(filename)==0:
             raise Error('PROVIDE_H(): need a non-zero filename parameter')
         if match not in [Provide.EXACT_MATCH,
-                         Provide.PREFIX_MATCH,
                          Provide.GLOB_MATCH,
                          Provide.AUTO_MATCH]:
-            raise Error('PROVIDE_H(): match parameter must be one of EXACT_MATCH, PREFIX_MATCH, GLOB_MATCH, AUTO_MATCH')
+            raise Error('PROVIDE_H(): match parameter must be one of EXACT_MATCH, GLOB_MATCH, AUTO_MATCH')
         self.__builder.add_provide(Provide_CInclude(filename, match))
         pass
     pass

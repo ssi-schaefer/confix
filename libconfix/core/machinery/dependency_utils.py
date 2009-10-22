@@ -154,9 +154,7 @@ class ProvideMap(Unmarshallable):
 
     def __init__(self):
         # dictionary: require-type -> ProvideMap.Index_Provide
-
         self.__string_indexes = {}
-
         pass
 
     def find_match(self, require):
@@ -171,7 +169,7 @@ class ProvideMap(Unmarshallable):
         for require_type in provide.can_match_classes():
             index = self.__string_indexes.get(require_type)
             if not index:
-                index = ProvideMap.Index_Provide(type=require_type)
+                index = ProvideMap.Index_Provide()
                 self.__string_indexes[require_type] = index
                 pass
             index.add(provide, node)
@@ -179,48 +177,46 @@ class ProvideMap(Unmarshallable):
         pass
 
     class Index_Provide(Unmarshallable):
-    
-        def __init__(self, type):
+
+        def __init__(self):
             # map string -> Node
             self.__exact = {}
     
-            # list of tuples (prefix-provide, node) 
-            self.__prefix = []
-    
-            # list of tuples (prefix-provide, node)
+            # list of tuples (glob-provide, node)
             self.__glob = []
-    
+
+            # negative lookup cache. we remember the strings of the
+            # require objects that we haven't been able to resolve.
+            self.__negative_lookups = set()
+
             pass
     
         def n_exact(self): return len(self.__exact)
-        def n_prefix(self): return len(self.__prefix)
         def n_glob(self): return len(self.__glob)
     
         def find_match(self, require):
     
-            """ Try to match the given require object against what I have.
+            """
+            Try to match the given require object against what I have.
     
-            @return: A Node object if one is found, else None """
-    
+            @return: A Node object if one is found, else None
+            """
             ret_nodes = []
-    
-            node = self.__exact.get(require.string())
-            if node:
-                ret_nodes.append(node)
-                pass
-    
-            for p, n in self.__glob:
-                if p.resolve(require):
-                    ret_nodes.append(n)
+            key = require.string()
+            if key not in self.__negative_lookups:
+                node = self.__exact.get(key)
+                if node:
+                    ret_nodes.append(node)
+                    pass
+                for p, n in self.__glob:
+                    if p.resolve(require):
+                        ret_nodes.append(n)
+                        pass
+                    pass
+                if len(ret_nodes) == 0:
+                    self.__negative_lookups.add(key)
                     pass
                 pass
-    
-            for p, n in self.__prefix:
-                if p.resolve(require):
-                    ret_nodes.append(n)
-                    pass
-                pass
-    
             return ret_nodes
     
         def add(self, provide, node):
@@ -229,13 +225,10 @@ class ProvideMap(Unmarshallable):
                 if existing_node:
                     raise Error('Conflict: '+str(provide)+' of node '+str(node)+' already provided by node '+str(existing_node))
                 self.__exact[provide.string()] = node
-            elif provide.match() == Provide.PREFIX_MATCH:
-                self.__prefix.append((provide, node))
             elif provide.match() == Provide.GLOB_MATCH:
                 self.__glob.append((provide, node))
                 pass
             pass
-    
         pass
 
     pass

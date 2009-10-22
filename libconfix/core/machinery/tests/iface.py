@@ -136,13 +136,12 @@ class BuilderInterface(unittest.TestCase):
             entry=File(lines=['from libconfix.core.machinery.provide import Provide_Symbol',
                               "PROVIDE_SYMBOL(symbol='sym1')",
                               "PROVIDE_SYMBOL(symbol='sym2', match=EXACT_MATCH)",
-                              "PROVIDE_SYMBOL(symbol='sym3', match=PREFIX_MATCH)",
                               "PROVIDE_SYMBOL(symbol='sym4', match=GLOB_MATCH)",
                               "PROVIDE(Provide_Symbol(symbol='sym5'))"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         builder = FileInterfaceTestBuilder(file=file)
         package.rootbuilder().add_builder(builder)
-        self.assertEqual(len(builder.dependency_info().provides()), 5)
+        self.assertEqual(len(builder.dependency_info().provides()), 4)
         sym1 = None
         sym2 = None
         sym3 = None
@@ -156,9 +155,6 @@ class BuilderInterface(unittest.TestCase):
             if p.symbol() == 'sym2':
                 sym2 = p
                 continue
-            if p.symbol() == 'sym3':
-                sym3 = p
-                continue
             if p.symbol() == 'sym4':
                 sym4 = p
                 continue
@@ -168,12 +164,10 @@ class BuilderInterface(unittest.TestCase):
             pass
         self.assertNotEqual(sym1, None)
         self.assertNotEqual(sym2, None)
-        self.assertNotEqual(sym3, None)
         self.assertNotEqual(sym4, None)
         self.assertNotEqual(sym5, None)
         self.assertEqual(sym1.match(), Provide.EXACT_MATCH)
         self.assertEqual(sym2.match(), Provide.EXACT_MATCH)
-        self.assertEqual(sym3.match(), Provide.PREFIX_MATCH)
         self.assertEqual(sym4.match(), Provide.GLOB_MATCH)
         self.assertEqual(sym5.match(), Provide.EXACT_MATCH)
         pass

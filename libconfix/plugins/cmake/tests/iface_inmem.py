@@ -25,6 +25,10 @@ from libconfix.plugins.cmake.buildinfo import BuildInfo_Toplevel_CMakeLists_Find
 from libconfix.plugins.cmake.buildinfo import BuildInfo_Library_External_CMake
 from libconfix.plugins.cmake.buildinfo import BuildInfo_CommandlineMacros_CMake
 
+from libconfix.setups.boilerplate import Boilerplate
+from libconfix.setups.cmake import CMake
+from libconfix.setups.c import C
+
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
@@ -45,6 +49,8 @@ class InterfaceInMemorySuite(unittest.TestSuite):
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_local_only'))
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only'))
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_and_local'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_local'))
+        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_propagate'))
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only'))
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_only'))
         self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_and_local'))
@@ -160,6 +166,73 @@ class InterfaceInMemoryTest(unittest.TestCase):
         else:
             self.fail()
             pass
+        pass
+
+    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_local(self):
+        fs = FileSystem(path=[''])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_local")',
+                              'PACKAGE_VERSION("1.2.3")']))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['DIRECTORY(["subdir"])']))
+
+        subdir = fs.rootdirectory().add(
+            name='subdir',
+            entry=Directory())
+        subdir.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY("include-directory", CMAKE_BUILDINFO_LOCAL)']))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ExplicitDirectorySetup(), CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        cmake_output_builder = find_cmake_output_builder(package.rootbuilder().find_entry_builder(['subdir']))
+        self.failUnless('include-directory' in cmake_output_builder.local_cmakelists().get_include_directories())
+        pass
+
+    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_propagate(self):
+        fs = FileSystem(path=[''])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=['PACKAGE_NAME("test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_propagate")',
+                              'PACKAGE_VERSION("1.2.3")']))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['DIRECTORY(["sender"])',
+                              'DIRECTORY(["receiver"])']))
+
+        sender = fs.rootdirectory().add(
+            name='sender',
+            entry=Directory())
+        sender.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['PROVIDE_SYMBOL("sender")',
+                              'CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY("include-directory", CMAKE_BUILDINFO_PROPAGATE)']))
+
+        receiver = fs.rootdirectory().add(
+            name='receiver',
+            entry=Directory())
+        receiver.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['REQUIRE_SYMBOL("sender", URGENCY_ERROR)',
+                              'C(filename="file.c")']))
+        # need a compiled file builder in order for the include path
+        # to show up in the CMakeLists.txt.
+        receiver.add(
+            name='file.c',
+            entry=File())
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[Boilerplate(), C(), CMake(library_dependencies=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        cmake_output_builder = find_cmake_output_builder(package.rootbuilder().find_entry_builder(['receiver']))
+        self.failUnless('include-directory' in cmake_output_builder.local_cmakelists().get_include_directories())
         pass
 
     def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only(self):

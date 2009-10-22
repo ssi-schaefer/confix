@@ -35,12 +35,11 @@ class EdgeFinder(digraph.EdgeFinder):
         raise_unresolved().
         """
 
-        # we remember require objects that we haven't been able to
-        # resolve. list of (require, node).
+        # for the reason of reporting, we remember require objects
+        # that we haven't been able to resolve. [(require, node)]
         self.__unresolved_requires = []
 
-        # index nodes by what they provide, in a fascist manner.
-        
+        # index nodes by what they provide.
         self.__providemap = ProvideMap()
         errors = []
         for n in nodes:
@@ -52,6 +51,7 @@ class EdgeFinder(digraph.EdgeFinder):
                     pass
                 pass
             pass
+
         if len(errors):
             raise Error('Failed making provide-objects public', errors)
 

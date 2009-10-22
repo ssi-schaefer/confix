@@ -21,6 +21,7 @@ from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
 from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
 from buildinfo import BuildInfo_CommandlineMacros_CMake
 from buildinfo import BuildInfo_CMakeModule
+from buildinfo import BuildInfo_IncludePath_External_CMake
 from pkg_config import PkgConfigLibraryBuilder
 
 from libconfix.core.machinery.setup import Setup
@@ -48,6 +49,7 @@ class CMakeInterfaceProxy(InterfaceProxy):
         self.add_global('CMAKE_BUILDINFO_LOCAL', getattr(self, 'CMAKE_BUILDINFO_LOCAL'))
 
         self.add_global('CMAKE_CMAKELISTS_ADD_INCLUDE', getattr(self, 'CMAKE_CMAKELISTS_ADD_INCLUDE'))
+        self.add_global('CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY', getattr(self, 'CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY'))
         self.add_global('CMAKE_ADD_MODULE_FILE', getattr(self, 'CMAKE_ADD_MODULE_FILE'))
         self.add_global('CMAKE_CMAKELISTS_ADD_FIND_CALL', getattr(self, 'CMAKE_CMAKELISTS_ADD_FIND_CALL'))
         self.add_global('CMAKE_CMDLINE_MACROS', getattr(self, 'CMAKE_CMDLINE_MACROS'))
@@ -56,6 +58,15 @@ class CMakeInterfaceProxy(InterfaceProxy):
         pass
 
     def CMAKE_CMAKELISTS_ADD_INCLUDE(self, include, flags):
+        """
+        Add an INCLUDE(include) command to the toplevel CMakeLists.txt
+        file.
+
+        If CMAKE_BUILDINFO_LOCAL is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the local package. If
+        CMAKE_BUILDINFO_PROPAGATE is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the receiving package.
+        """
         if type(include) is not str:
             raise Error('CMAKE_CMAKELISTS_ADD_INCLUDE(): "include" parameter must be a string')
         if type(flags) is int:
@@ -71,7 +82,40 @@ class CMakeInterfaceProxy(InterfaceProxy):
             pass
         pass
 
+    def CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY(self, directory, flags):
+        """
+        Add an INCLUDE_DIRECTORIES(directory) command to the toplevel
+        CMakeLists.txt file.
+
+        If CMAKE_BUILDINFO_LOCAL is in flags, then it is added to the
+        CMakeLists.txt file of the calling module. If
+        CMAKE_BUILDINFO_PROPAGATE is in flags, then it is added to the
+        CMakeLists.txt file of the receiving module.
+        """
+        if type(directory) is not str:
+            raise Error('CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY(): "directory" parameter must be a string')
+        if type(flags) is int:
+            flags = (flags,)
+            pass
+        if type(flags) not in (tuple, list):
+            raise Error('CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY(): "flags" parameter must be list or tuple')
+        if self.CMAKE_BUILDINFO_LOCAL in flags:
+            find_cmake_output_builder(self.__dirbuilder).local_cmakelists().add_include_directory(directory)
+            pass
+        if self.CMAKE_BUILDINFO_PROPAGATE in flags:
+            self.__dirbuilder.add_buildinfo(BuildInfo_IncludePath_External_CMake(incpath=[directory]))
+            pass
+        pass
+
     def CMAKE_ADD_MODULE_FILE(self, name, lines, flags):
+        """
+        Add a module file to the package.
+
+        If CMAKE_BUILDINFO_LOCAL is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the local package. If
+        CMAKE_BUILDINFO_PROPAGATE is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the receiving package.
+        """
         if type(flags) is int:
             flags = (flags,)
             pass
@@ -86,6 +130,16 @@ class CMakeInterfaceProxy(InterfaceProxy):
         pass
 
     def CMAKE_CMAKELISTS_ADD_FIND_CALL(self, find_call, flags):
+        """
+        Add a find call to the toplevel CMakeLists.txt file. A find
+        call is simply a string, and you can add just about
+        anything. It's just that the position matters.
+
+        If CMAKE_BUILDINFO_LOCAL is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the local package. If
+        CMAKE_BUILDINFO_PROPAGATE is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the receiving package.
+        """
         if type(find_call) not in (str, tuple, list):
             raise Error('CMAKE_CMAKELISTS_ADD_FIND_CALL(): "find_call" parameter must be str, list, or tuple')
         if type(find_call) is str:
@@ -105,13 +159,22 @@ class CMakeInterfaceProxy(InterfaceProxy):
         pass
 
     def CMAKE_CMDLINE_MACROS(self, macros, flags):
+        """
+        Add commandline macros to the CMakeLists.txt file, in the form
+        of a call to ADD_DEFINITIONS().
+
+        If CMAKE_BUILDINFO_LOCAL is in flags, then it is added to the
+        CMakeLists.txt file of the calling (local) module. If
+        CMAKE_BUILDINFO_PROPAGATE is in flags, then it is added to the
+        CMakeLists.txt file of the receiving module.
+        """
         if type(macros) is not dict:
             raise Error('CMAKE_CMDLINE_MACROS(): "macros" parameter must be dictionary')
         if type(flags) is int:
             flags = (flags,)
             pass
         if type(flags) not in (tuple, list):
-            raise Error('CMAKE_CMAKELISTS_ADD_FIND_CALL(): "flags" parameter must be int, list or tuple')
+            raise Error('CMAKE_CMDLINE_MACROS(): "flags" parameter must be int, list or tuple')
         if self.CMAKE_BUILDINFO_LOCAL in flags:
             for macro, value in macros.iteritems():
                 if value is None:

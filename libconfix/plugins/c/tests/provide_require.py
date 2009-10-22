@@ -47,9 +47,6 @@ class Provide_CInclude_and_Require_CInclude(unittest.TestCase):
         p = Provide_CInclude(filename='file1.h')
         self.failIf(p.resolve(r))
 
-        p = Provide_CInclude(filename='file', match=Provide_CInclude.PREFIX_MATCH)
-        self.failUnless(p.resolve(r))
-
         p = Provide_CInclude(filename='file*', match=Provide_CInclude.GLOB_MATCH)
         self.failUnless(p.resolve(r))
 

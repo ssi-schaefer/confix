@@ -72,7 +72,8 @@ class Require(Marshallable):
         self.__urgency = u
 
     def update(self, r):
-        """ When multiple equivalent Require objects are added to the
+        """
+        When multiple equivalent Require objects are added to the
         same module, this adds unnecessary (and sometimes
         considerable) overhead to the resolving process. This method
         is an attempt to collapse r with self.
@@ -81,7 +82,6 @@ class Require(Marshallable):
 
         @return: A boolean that indicates whether the objects could be
         collapsed.
-
         """
         
         if r.__class__ != self.__class__:

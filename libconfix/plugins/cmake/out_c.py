@@ -145,7 +145,7 @@ class CompiledOutputBuilder(Builder):
 
         for n in topolist:
             for bi in n.iter_buildinfos():
-                if isinstance(bi, BuildInfo_IncludePath_External_CMake):
+                if type(bi) is BuildInfo_IncludePath_External_CMake:
                     incpath = bi.incpath()
                     key = '.'.join(incpath)
                     if not key in self.__have_external_incpath:
@@ -153,7 +153,7 @@ class CompiledOutputBuilder(Builder):
                         self.__have_external_incpath.add(key)
                         pass
                     continue
-                if isinstance(bi, BuildInfo_CommandlineMacros_CMake):
+                if type(bi) is BuildInfo_CommandlineMacros_CMake:
                     for (k, v) in bi.macros().iteritems():
                         existing_value = self.__external_cmdlinemacros.get(k)
                         if existing_value is not None and existing_value != v:
@@ -163,10 +163,10 @@ class CompiledOutputBuilder(Builder):
                         self.__external_cmdlinemacros[k] = v
                         pass
                     continue
-                if isinstance(bi, BuildInfo_CFLAGS_CMake):
+                if type(bi) is BuildInfo_CFLAGS_CMake:
                     self.__external_cflags.extend(bi.cflags())
                     continue
-                if isinstance(bi, BuildInfo_CXXFLAGS_CMake):
+                if type(bi) is BuildInfo_CXXFLAGS_CMake:
                     self.__external_cxxflags.extend(bi.cxxflags())
                     continue
                 pass
@@ -271,7 +271,7 @@ class LinkedOutputBuilder(Builder):
 
         for n in topolist:
             for bi in n.iter_buildinfos():
-                if isinstance(bi, BuildInfo_LibraryPath_External_CMake):
+                if type(bi) is BuildInfo_LibraryPath_External_CMake:
                     for p in reversed(bi.libpath()):
                         if p in self.__have_external_libpath:
                             continue
@@ -279,7 +279,7 @@ class LinkedOutputBuilder(Builder):
                         self.__external_libpath.insert(0, p)
                         pass
                     continue
-                if isinstance(bi, BuildInfo_Library_External_CMake):
+                if type(bi) is BuildInfo_Library_External_CMake:
                     for l in reversed(bi.libs()):
                         if l in self.__have_external_libraries:
                             continue

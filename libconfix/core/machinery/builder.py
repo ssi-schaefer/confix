@@ -198,7 +198,6 @@ class BuilderInterfaceProxy(InterfaceProxy):
         self.add_global('URGENCY_ERROR', Require.URGENCY_ERROR)
         self.add_global('REQUIRED', Require.URGENCY_ERROR) # backward compat with 1.5
         self.add_global('EXACT_MATCH', Provide.EXACT_MATCH)
-        self.add_global('PREFIX_MATCH', Provide.PREFIX_MATCH)
         self.add_global('GLOB_MATCH', Provide.GLOB_MATCH)
         self.add_global('AUTO_MATCH', Provide.AUTO_MATCH)
 
@@ -234,8 +233,8 @@ class BuilderInterfaceProxy(InterfaceProxy):
     def PROVIDE_SYMBOL(self, symbol, match=Provide.EXACT_MATCH):
         if not symbol or len(symbol) == 0:
             raise Error('PROVIDE_SYMBOL(): need a non-zero symbol parameter')
-        if not match in [Provide.EXACT_MATCH, Provide.PREFIX_MATCH, Provide.GLOB_MATCH]:
-            raise Error('PROVIDE_SYMBOL(): match must be one of EXACT_MATCH, PREFIX_MATCH, GLOB_MATCH')
+        if not match in [Provide.EXACT_MATCH, Provide.GLOB_MATCH]:
+            raise Error('PROVIDE_SYMBOL(): match must be one of EXACT_MATCH, GLOB_MATCH')
         self.__builder.add_provide(Provide_Symbol(symbol=symbol, match=match))
         pass
 
