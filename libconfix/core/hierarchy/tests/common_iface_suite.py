@@ -34,6 +34,7 @@ class CommonDirectoryInterfaceSuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
 
         self.addTest(CURRENT_BUILDER_Test('test'))
+        self.addTest(CWD_Test('test'))
         self.addTest(CURRENT_DIRECTORY_Test('test'))
         self.addTest(ADD_DIRECTORY_Test('test'))
         self.addTest(FIND_ENTRY_Test('test'))
@@ -64,6 +65,48 @@ class CURRENT_BUILDER_Test(unittest.TestCase):
         package.boil(external_nodes=[])
 
         self.failUnless(package.rootdirectory().get('ok'))
+        pass
+    pass
+        
+class CWD_Test(unittest.TestCase):
+    def test(self):
+        fs = FileSystem(path=[])
+        fs.rootdirectory().add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('"+self.__class__.__name__+"')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        fs.rootdirectory().add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["DIRECTORY(['subdir'])",
+                              "from libconfix.core.filesys.file import File",
+                              "if CWD() == '':",
+                              "    CURRENT_DIRECTORY().add(name='ok', entry=File())"]))
+        subdir = fs.rootdirectory().add(
+            name='subdir',
+            entry=Directory())
+        subdir.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["DIRECTORY(['subdir'])",
+                              "from libconfix.core.filesys.file import File",
+                              "if CWD() == 'subdir':",
+                              "    CURRENT_DIRECTORY().add(name='ok', entry=File())"]))
+
+        subsubdir = subdir.add(
+            name='subdir',
+            entry=Directory())
+        subsubdir.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["from libconfix.core.filesys.file import File",
+                              "if CWD() == 'subdir/subdir':",
+                              "    CURRENT_DIRECTORY().add(name='ok', entry=File())"]))
+
+        package = LocalPackage(rootdirectory=fs.rootdirectory(),
+                               setups=[ExplicitSetup(use_libtool=True)])
+        package.boil(external_nodes=[])
+
+        self.failUnless(package.rootdirectory().get('ok'))
+        self.failUnless(package.rootdirectory().find(['subdir']).get('ok'))
+        self.failUnless(package.rootdirectory().find(['subdir', 'subdir']).get('ok'))
         pass
     pass
         

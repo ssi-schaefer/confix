@@ -30,6 +30,7 @@ class DirectoryBuilderInterfaceProxy(InterfaceProxy):
         self.__dirbuilder = dirbuilder
 
         self.add_global('CURRENT_BUILDER', getattr(self, 'CURRENT_BUILDER'))
+        self.add_global('CWD', getattr(self, 'CWD'))
         self.add_global('CURRENT_DIRECTORY', getattr(self, 'CURRENT_DIRECTORY'))
         self.add_global('ADD_DIRECTORY', getattr(self, 'ADD_DIRECTORY'))
         self.add_global('FIND_ENTRY', getattr(self, 'FIND_ENTRY'))
@@ -42,6 +43,8 @@ class DirectoryBuilderInterfaceProxy(InterfaceProxy):
 
     def CURRENT_DIRECTORY(self):
         return self.__dirbuilder.directory()
+    def CWD(self):
+        return '/'.join(self.__dirbuilder.directory().relpath(self.__dirbuilder.package().rootdirectory()))
     def CURRENT_BUILDER(self):
         return self.__dirbuilder
     def ADD_DIRECTORY(self, name):
