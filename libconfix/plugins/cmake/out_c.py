@@ -203,6 +203,7 @@ class CompiledOutputBuilder(Builder):
                 pass
             pass
 
+        # no need to write out anything if we don't compile anything.
         if not have_compiled:
             return
 
