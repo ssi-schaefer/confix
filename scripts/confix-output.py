@@ -18,7 +18,7 @@
 # USA
 
 from libconfix.core.utils.error import Error
-from libconfix.core.machinery.repo import AutomakePackageRepository
+from libconfix.core.machinery.repo import AutomakeCascadedPackageRepository
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
 from libconfix.core.filesys import scan
@@ -35,6 +35,9 @@ parser.add_option('--prefix',
                   default='/usr/local',
                   metavar='DIR',
                   help='read package information from DIR/share/confix2/repo.')
+parser.add_option('--readonly-prefixes',
+                  metavar='DIR',
+                  help='list of additional prefixes.')
 
 options, rest = parser.parse_args(sys.argv[1:])
 
@@ -49,8 +52,17 @@ packageroot = os.getcwd().split(os.sep)
 fs = scan.scan_filesystem(packageroot)
 package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
 
+prefix = options.prefix
+
+readonly_prefixes = []
+if options.readonly_prefixes is not None:
+    for p in options.readonly_prefixes.split(','):
+        readonly_prefixes.append(p.split(os.sep))
+        pass
+    pass
+
 external_nodes = []
-for p in AutomakePackageRepository(prefix=options.prefix.split(os.sep)).iter_packages():
+for p in AutomakeCascadedPackageRepository(prefix=prefix.split(os.sep), readonly_prefixes=readonly_prefixes).iter_packages():
     if p.name() != package.name():
         external_nodes.extend(p.nodes())
         pass

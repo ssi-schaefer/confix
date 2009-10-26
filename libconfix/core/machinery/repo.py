@@ -297,9 +297,12 @@ class AutomakeCascadedPackageRepository(CompositePackageRepository):
     Composite for AutomakePackageRepository objects.
     """
     def __init__(self, prefix, readonly_prefixes):
-        CompositePackageRepository.__init__(
-            self,
-            [AutomakePackageRepository(prefix=dir) for dir in itertools.chain([prefix] + readonly_prefixes)])
+        repos = []
+        repos.append(AutomakePackageRepository(prefix=prefix))
+        for d in readonly_prefixes:
+            repos.append(AutomakePackageRepository(prefix=d))
+            pass
+        CompositePackageRepository.__init__(self, repos)
         pass
     pass
 
