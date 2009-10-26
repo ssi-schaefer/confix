@@ -18,6 +18,7 @@
 
 from out_cmake import CMakeBackendOutputBuilder
 from out_c import COutputSetup
+from out_plainfile import PlainfileOutputSetup
 from iface import CMakeInterfaceSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
@@ -28,6 +29,7 @@ class CMakeSetup(CompositeSetup):
         CompositeSetup.__init__(
             self,
             setups=[CMakeCSetup(),
+                    PlainfileOutputSetup(),
                     CMakeInterfaceSetup(),
                     InfraStructureSetup()])
         pass

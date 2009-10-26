@@ -15,6 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import consts
 from cmakelists import CMakeLists
 from modules_dir_builder import ModulesDirectoryBuilder
 from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
@@ -158,7 +159,7 @@ class CMakeBackendOutputBuilder(Builder):
         # there.
         top_cmakelists.add_set(
             'CMAKE_MODULE_PATH',
-            '${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/%s/cmake/Modules"' % const.ADMIN_DIR)
+            '${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/%s"' % consts.modules_dir)
 
         # rpath wizardry
         self.__apply_rpath_settings(top_cmakelists)
@@ -169,7 +170,7 @@ class CMakeBackendOutputBuilder(Builder):
         # piggy-back repo install
         top_cmakelists.add_install__files(
             files=[self.package().repofilename()],
-            destination='share/confix2/repo')
+            destination=consts.repo_install_dir)
         
         # register subdirectories with our toplevel CMakeLists.txt
         for dirnode in self.package().topo_directories():

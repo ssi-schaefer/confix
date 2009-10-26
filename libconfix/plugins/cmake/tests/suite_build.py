@@ -22,6 +22,7 @@ from inter_package_build import InterPackageBuildSuite
 from library_dependencies_build import LibraryDependenciesBuildSuite
 from readonly_prefixes_build import ReadonlyPrefixesBuildSuite
 from external_library_build import ExternalLibraryBuildSuite
+from plainfile_build import PlainfileBuildSuite
 
 import unittest
 
@@ -35,6 +36,7 @@ class CMakeBuildSuite(unittest.TestSuite):
         self.addTest(LibraryDependenciesBuildSuite())
         self.addTest(ReadonlyPrefixesBuildSuite())
         self.addTest(ExternalLibraryBuildSuite())
+        self.addTest(PlainfileBuildSuite())
         pass
     pass
 
