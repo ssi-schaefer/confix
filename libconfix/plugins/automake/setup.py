@@ -39,6 +39,6 @@ class AutomakeSetup(CompositeSetup):
 
 class InfraStructureSetup(Setup):
     def setup(self, dirbuilder):
-        dirbuilder.add_backend_dirbuilder(AutomakeBackendOutputBuilder())
+        dirbuilder.add_backend_builder(AutomakeBackendOutputBuilder())
         pass
     pass

@@ -18,7 +18,7 @@
 
 # Confix package version
 
-CONFIX_VERSION = '2.2.0'
+CONFIX_VERSION = '2.2.0+'
 
 # the default name of interface files
 CONFIX2_DIR = 'Confix2.dir'
@@ -37,9 +37,3 @@ LOCAL_INCLUDE_DIR = 'confix-include'
 # the directory where we are supposed to put stamp files into that are
 # used during the build.
 STAMP_DIR = 'confix-stamps'
-
-# name of the per-directory file which contains the list of
-# automatically generated sources (the pseudo hand-written generated
-# files)
-
-PSEUDO_HANDWRITTEN_LIST_FILENAME = '.confix-pseudo-handwritten'

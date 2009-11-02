@@ -21,6 +21,7 @@ from libconfix.core.utils.error import Error
 from libconfix.core.machinery.repo import AutomakePackageRepository
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.utils import const
+from libconfix.core.utils import debug
 from libconfix.core.filesys import scan
 from libconfix.core.filesys.filesys import FileSystem
 

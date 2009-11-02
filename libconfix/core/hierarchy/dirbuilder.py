@@ -28,7 +28,6 @@ from libconfix.core.machinery.node import Node
 from libconfix.core.machinery.provide import Provide
 from libconfix.core.machinery.require import Require
 from libconfix.core.machinery.filebuilder import FileBuilder
-from libconfix.core.machinery.pseudo_handwritten import PseudoHandWrittenFileManager
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
@@ -50,14 +49,12 @@ class DirectoryBuilder(EntryBuilder, Node):
         # automake's Makefile.am. I maintain them as separate set of
         # builders because others use them to dump their stuff in, and
         # only when all is done they can write output.
-        self.__backend_dirbuilders = BuilderSet()
+        self.__backend_builders = BuilderSet()
 
         # a list of interface proxy objects that are added initially
         # by the different setup objects. we only keep them for future
         # use by any Confix2.dir objects.
         self.__interfaces = []
-
-        self.__pseudo_handwritten_mgr = PseudoHandWrittenFileManager(directory)
 
         # initialize collected dependency information
         self.__init_dep_info()
@@ -96,7 +93,7 @@ class DirectoryBuilder(EntryBuilder, Node):
         for b in self.__regular_builders.iter_builders():
             builders.append(b)
             pass
-        for b in self.__backend_dirbuilders.iter_builders():
+        for b in self.__backend_builders.iter_builders():
             builders.append(b)
             pass
         
@@ -123,7 +120,7 @@ class DirectoryBuilder(EntryBuilder, Node):
         return self.entry()
 
     def iter_builders(self):
-        for b in self.__backend_dirbuilders.iter_builders():
+        for b in self.__backend_builders.iter_builders():
             yield b
             pass
         for b in self.__regular_builders.iter_builders():
@@ -152,8 +149,8 @@ class DirectoryBuilder(EntryBuilder, Node):
         b.set_parentbuilder(None)
         pass
 
-    def add_backend_dirbuilder(self, b):
-        self.__backend_dirbuilders.add_builder(b)
+    def add_backend_builder(self, b):
+        self.__backend_builders.add_builder(b)
         self.__init_builder(b)
         return b
 
@@ -202,7 +199,7 @@ class DirectoryBuilder(EntryBuilder, Node):
             assert b.base_output_called() == True, str(b)+" (Call the base class output() from your own output() method)"
             pass
 
-        for b in self.__backend_dirbuilders.iter_builders():
+        for b in self.__backend_builders.iter_builders():
             b.output()
             assert b.base_output_called() == True, str(b)
             pass
@@ -316,9 +313,6 @@ class DirectoryBuilder(EntryBuilder, Node):
             provides=[p for p in self.__provides],
             requires=[r for r in self.__requires],
             buildinfos=[b.install() for b in self.iter_buildinfos()])
-
-    def create_pseudo_handwritten_file(self, filename):
-        return self.__pseudo_handwritten_mgr.create_file(filename)
 
     def __init_dep_info(self):
         self.__provides = DependencySet()

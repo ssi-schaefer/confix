@@ -172,7 +172,7 @@ class PackageFile:
             # them together, and then unpickle the object from the
             # whole buffer. to make this more efficient, we'd need
             # something like File.content().
-            obj = helper_pickle.load_object_from_string('\n'.join(self.__file.lines()))
+            obj = helper_pickle.load_object_from_lines(self.__file.lines())
             if obj['version'] != PackageFile.VERSION:
                 raise Error('Version mismatch in repository file '+os.sep.join(self.__file.abspath())+''
                             ' (file: '+str(obj['version'])+','

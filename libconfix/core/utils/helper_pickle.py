@@ -55,6 +55,7 @@ def dump_object_to_file(object, filename):
         mypickle.dump(object, file)
     except Exception, e:
         raise Error('Cannot dump Python object "'+str(object)+'" to file '+filename, [NativeError(e, sys.exc_traceback)])
+    pass
 
 def load_object_from_string(string):
     try:
@@ -69,3 +70,11 @@ def dump_object_to_string(object):
         return mypickle.dumps(object)
     except Exception, e:
         raise Error('Cannot dump Python object to string', [NativeError(e, sys.exc_traceback)])
+    pass
+
+def load_object_from_lines(lines):
+    """
+    Load a pickled object from a list of lines (as returned by
+    File.lines()).
+    """
+    return load_object_from_string('\n'.join(lines))

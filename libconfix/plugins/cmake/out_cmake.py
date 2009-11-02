@@ -96,7 +96,7 @@ class CMakeBackendOutputBuilder(Builder):
             # wrap builder hierarchy around directory hierarchy. NOTE
             # that the modules directory builder is a backend builder.
             cmake_dir_builder = admin_dir_builder.add_builder(DirectoryBuilder(directory=cmake_dir))
-            self.__modules_builder = cmake_dir_builder.add_backend_dirbuilder(ModulesDirectoryBuilder(directory=modules_dir))
+            self.__modules_builder = cmake_dir_builder.add_backend_builder(ModulesDirectoryBuilder(directory=modules_dir))
         else:
             self.__modules_builder = find_cmake_output_builder(self.package().rootbuilder()).__modules_builder
             pass

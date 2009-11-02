@@ -19,16 +19,26 @@ from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.machinery.automatic_ignore import IgnoreSetup
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
+from libconfix.core.hierarchy.pseudo_handwritten import PseudoHandWrittenFileSetup
 
 class Boilerplate(CompositeSetup):
     def __init__(self):
-        CompositeSetup.__init__(self, [ExplicitDirectorySetup()])
+        CompositeSetup.__init__(self, [
+            ExplicitDirectorySetup(),
+            PseudoHandWrittenFileSetup(),
+            ])
         pass
     pass
 
 class AutoBoilerplate(CompositeSetup):
     def __init__(self):
-        CompositeSetup.__init__(self, [ImplicitDirectorySetup(), IgnoreSetup()])
+        CompositeSetup.__init__(self, [
+            ImplicitDirectorySetup(),
+            PseudoHandWrittenFileSetup(),
+
+            # get rid of this, globally.
+            IgnoreSetup(),
+            ])
         pass
     pass
 

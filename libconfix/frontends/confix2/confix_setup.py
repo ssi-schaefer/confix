@@ -19,6 +19,7 @@
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.machinery.core_setup import CoreSetup
 from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
+from libconfix.core.hierarchy.pseudo_handwritten import PseudoHandWrittenFileSetup
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 from libconfix.plugins.script.setup import ScriptSetup
@@ -35,6 +36,7 @@ class ConfixSetup(CompositeSetup):
         CompositeSetup.__init__(
             self,
             [CoreSetup(),
+             PseudoHandWrittenFileSetup(),
              ImplicitDirectorySetup(),
              DefaultCSetup(short_libnames=short_libnames),
              ScriptSetup(),

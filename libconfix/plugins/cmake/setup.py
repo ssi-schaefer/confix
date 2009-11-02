@@ -37,7 +37,7 @@ class CMakeSetup(CompositeSetup):
 
 class InfraStructureSetup(Setup):
     def setup(self, dirbuilder):
-        dirbuilder.add_backend_dirbuilder(CMakeBackendOutputBuilder())
+        dirbuilder.add_backend_builder(CMakeBackendOutputBuilder())
         pass
     pass
 
