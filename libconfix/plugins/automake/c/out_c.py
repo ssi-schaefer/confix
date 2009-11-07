@@ -181,9 +181,13 @@ class CompiledOutputBuilder(Builder):
                 automake_output_builder.makefile_am().add_am_cflags(f)
                 pass
     
-            # native includes of the same package come first
+            # native includes of the same package come first. note
+            # that we add the corresponding build directory as well
+            # because there might be generated header files around
+            # (generators don't like to differentiate).
             for d in b.native_local_include_dirs():
                 automake_output_builder.makefile_am().add_includepath('-I'+'/'.join(['$(top_srcdir)']+d))
+                automake_output_builder.makefile_am().add_includepath('-I'+'/'.join(['$(top_builddir)']+d))
                 pass
             # if files have been locally installed, we have to add
             # $(top_builddir)/confix-include to the include path.
