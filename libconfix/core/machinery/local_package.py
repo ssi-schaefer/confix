@@ -167,6 +167,7 @@ class LocalPackage(Package):
                 pass
 
             if do_next_round:
+                self.__current_digraph = None
                 continue
 
             if self.__current_digraph:
