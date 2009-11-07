@@ -26,6 +26,7 @@ import helper
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
+from libconfix.core.utils.error import Error
 
 import itertools
 import os
