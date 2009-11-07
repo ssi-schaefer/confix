@@ -32,7 +32,6 @@ import sys
 class PseudoHandwrittenSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        sys.stderr.write('PseudoHandwritten not working\n')
         self.addTest(PseudoHandwritten('test'))
         pass
     pass
