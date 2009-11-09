@@ -227,10 +227,18 @@ class CompiledOutputBuilder(Builder):
                 '${'+self.package().name()+'_SOURCE_DIR}/'+dir)
             pass
 
-        # use our good old prefix/include if need be.
+        # finding installed headers if need be. use our good old
+        # prefix/include and readonly prefixes.
         if using_public_native_installed_headers:
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${CMAKE_INSTALL_PREFIX}/include')
+            cmake_output_builder.local_cmakelists().add_include_directory(
+                directory=[
+                    'FOREACH(dir ${READONLY_PREFIXES})',
+                    '    INCLUDE_DIRECTORIES(${dir}/include)',
+                    'ENDFOREACH(dir)',
+                    ],
+                literally=True)
             pass
 
         # include paths contributed by external library definitions.
@@ -347,14 +355,19 @@ class LinkedOutputBuilder(Builder):
                 # natively using confix, then their path is added
                 # first.
                 if len(native_installed_libraries):
-                    cmake_output_builder.local_cmakelists().add_link_directories(
-                        ['${CMAKE_INSTALL_PREFIX}/lib'])
+                    cmake_output_builder.local_cmakelists().add_link_directory(
+                        '${CMAKE_INSTALL_PREFIX}/lib')
+                    cmake_output_builder.local_cmakelists().add_link_directory(
+                        directory=[
+                            'FOREACH(dir ${READONLY_PREFIXES})',
+                            '    LINK_DIRECTORIES(${dir}/lib)',
+                            'ENDFOREACH(dir)'],
+                        literally=True)
                     pass
 
                 # next come the paths pointing to external libraries.
-                if len(self.__external_libpath):
-                    cmake_output_builder.local_cmakelists().add_link_directories(
-                        self.__external_libpath)
+                for dir in self.__external_libpath:
+                    cmake_output_builder.local_cmakelists().add_link_directory(dir)
                     pass
 
                 link_libraries = []

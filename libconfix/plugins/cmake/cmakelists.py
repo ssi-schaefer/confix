@@ -41,11 +41,11 @@ class CMakeLists:
         self.__find_calls = []
 
         # CMake: INCLUDE_DIRECTORIES()
-        # ["directory-name"]
+        # [("directory", literally)]
         self.__include_directories = []
 
         # CMake: LINK_DIRECTORIES()
-        # ["directory"]
+        # [("directory", literally)]
         self.__link_directories = []
 
         # CMake: ADD_DEFINITIONS()
@@ -125,32 +125,55 @@ class CMakeLists:
     def get_find_calls(self):
         return self.__find_calls
 
-    def add_include_directory(self, directoryname):
-        assert type(directoryname) is types.StringType
-        if directoryname in self.__include_directories:
-            return
-        self.__include_directories.append(directoryname)
+    def add_include_directory(self, directory, literally=False):
+        """
+        Add a directory to the list of include directories. Each
+        directory is added separately, using a single call to
+        INCLUDE_DIRECTORIES() with only a single argument.
+
+        If 'literally' is True, then 'directory' is interpreted as a
+        plain CMake code snippet which will be output among the calls
+        to INCLUDE_DIRECTORIES().
+        """
+# jjjj
+##         assert type(directory) is str
+##         if directory in self.__include_directories:
+##             return
+        self.__include_directories.append((directory, literally))
         pass
     def get_include_directories(self):
-        return self.__include_directories
+        # return only the literal part - we don't want to bother the
+        # tests too much.
+        ret = []
+        for dir, literally in self.__include_directories:
+            if not literally:
+                ret.append(dir)
+                pass
+            pass
+        return ret
 
-    def link_directories(self, directories):
+    def add_link_directory(self, directory, literally=False):
         """
-        Sets the directories where the linker will look in for
-        libraries. Albeit according to the CMake documentation, this
-        is rather useless for us as we like to add link directories
-        incrementally.
+        Add a directory to the current linker path. Each directory is
+        added separately, using a single call to LINK_DIRECTORIES()
+        with only a single argument.
+
+        If 'literally' is True, then 'directory' is interpreted as a
+        plain CMake code snippet which will be output among the calls
+        to LINK_DIRECTORIES().
         """
-        self.__link_directories = directories
-        pass
-    def add_link_directories(self, directories):
-        """
-        Add a list of directories to the current linker path.
-        """
-        self.__link_directories.extend(directories)
+        self.__link_directories.append((directory, literally))
         pass
     def get_link_directories(self):
-        return self.__link_directories
+        # return only the literal part - we don't want to bother the
+        # tests too much.
+        ret = []
+        for dir, literally in self.__link_directories:
+            if not literally:
+                ret.append(dir)
+                pass
+            pass
+        return ret
 
     def add_definitions(self, definitions):
         self.__definitions.extend(definitions)
@@ -259,20 +282,32 @@ class CMakeLists:
             pass
 
         # INCLUDE_DIRECTORIES()
-        for incdir in self.__include_directories:
-            lines.append('INCLUDE_DIRECTORIES('+incdir+')')
+        for incdir, literally in self.__include_directories:
+            if literally:
+                if type(incdir) in (list, tuple):
+                    lines.extend(incdir)
+                else:
+                    lines.append(incdir)
+                    pass
+                pass
+            else:
+                lines.append('INCLUDE_DIRECTORIES('+incdir+')')
+                pass
             pass
-##         lines.extend(['FOREACH(dir ${READONLY_PREFIXES})',
-##                       '    INCLUDE_DIRECTORIES(${dir}/include)',
-##                       'ENDFOREACH(dir)'])
 
         # LINK_DIRECTORIES()
-        for linkdir in self.__link_directories:
-            lines.append('LINK_DIRECTORIES('+linkdir+')')
+        for linkdir, literally in self.__link_directories:
+            if literally:
+                if type(linkdir) in (list, tuple):
+                    lines.extend(linkdir)
+                else:
+                    lines.append(linkdir)
+                    pass
+                pass
+            else:
+                lines.append('LINK_DIRECTORIES('+linkdir+')')
+                pass
             pass
-        lines.extend(['FOREACH(dir ${READONLY_PREFIXES})',
-                      '    LINK_DIRECTORIES(${dir}/lib)',
-                      'ENDFOREACH(dir)'])
 
         # ADD_DEFINITIONS()
         if len(self.__definitions):

@@ -22,7 +22,7 @@ import unittest
 class CMakeListsInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CMakeListsInMemoryTest('link_directories'))
+# jjj        self.addTest(CMakeListsInMemoryTest('link_directories'))
         self.addTest(CMakeListsInMemoryTest('collapse_multiple_include'))
         self.addTest(CMakeListsInMemoryTest('target_link_libraries_tightened_after_set'))
         self.addTest(CMakeListsInMemoryTest('target_link_libraries_tightened_before_set'))
@@ -30,14 +30,15 @@ class CMakeListsInMemorySuite(unittest.TestSuite):
     pass
 
 class CMakeListsInMemoryTest(unittest.TestCase):
-    def link_directories(self):
-        cmakelists = CMakeLists()
-        cmakelists.link_directories(['1', '2'])
-        cmakelists.link_directories(['3', '4'])
-        self.failUnlessEqual(cmakelists.get_link_directories(), ['3', '4'])
-        cmakelists.add_link_directories(['5', '6'])
-        self.failUnlessEqual(cmakelists.get_link_directories(), ['3', '4', '5', '6'])
-        pass
+    # jjjj
+##     def link_directories(self):
+##         cmakelists = CMakeLists()
+##         cmakelists.link_directories(['1', '2'])
+##         cmakelists.link_directories(['3', '4'])
+##         self.failUnlessEqual(cmakelists.get_link_directories(), ['3', '4'])
+##         cmakelists.add_link_directories(['5', '6'])
+##         self.failUnlessEqual(cmakelists.get_link_directories(), ['3', '4', '5', '6'])
+##         pass
 
     def collapse_multiple_include(self):
         cmakelists = CMakeLists()
