@@ -262,9 +262,9 @@ class CMakeLists:
         for incdir in self.__include_directories:
             lines.append('INCLUDE_DIRECTORIES('+incdir+')')
             pass
-        lines.extend(['FOREACH(dir ${READONLY_PREFIXES})',
-                      '    INCLUDE_DIRECTORIES(${dir}/include)',
-                      'ENDFOREACH(dir)'])
+##         lines.extend(['FOREACH(dir ${READONLY_PREFIXES})',
+##                       '    INCLUDE_DIRECTORIES(${dir}/include)',
+##                       'ENDFOREACH(dir)'])
 
         # LINK_DIRECTORIES()
         for linkdir in self.__link_directories:
@@ -323,6 +323,9 @@ class CMakeLists:
                 pass
             if len(depends):
                 lines.append('    DEPENDS '+' '.join(depends))
+                pass
+            if working_directory:
+                lines.append('    WORKING_DIRECTORY '+working_directory)
                 pass
             lines.append(')')
             pass

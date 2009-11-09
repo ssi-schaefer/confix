@@ -45,16 +45,28 @@ class CMakeInterfaceProxy(InterfaceProxy):
 
         self.__dirbuilder = dirbuilder
 
-        self.add_global('CMAKE_BUILDINFO_PROPAGATE', getattr(self, 'CMAKE_BUILDINFO_PROPAGATE'))
-        self.add_global('CMAKE_BUILDINFO_LOCAL', getattr(self, 'CMAKE_BUILDINFO_LOCAL'))
+        self.add_global('CMAKE_BUILDINFO_PROPAGATE',
+                        getattr(self, 'CMAKE_BUILDINFO_PROPAGATE'))
+        self.add_global('CMAKE_BUILDINFO_LOCAL',
+                        getattr(self, 'CMAKE_BUILDINFO_LOCAL'))
 
-        self.add_global('CMAKE_CMAKELISTS_ADD_INCLUDE', getattr(self, 'CMAKE_CMAKELISTS_ADD_INCLUDE'))
-        self.add_global('CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY', getattr(self, 'CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY'))
-        self.add_global('CMAKE_ADD_MODULE_FILE', getattr(self, 'CMAKE_ADD_MODULE_FILE'))
-        self.add_global('CMAKE_CMAKELISTS_ADD_FIND_CALL', getattr(self, 'CMAKE_CMAKELISTS_ADD_FIND_CALL'))
-        self.add_global('CMAKE_CMDLINE_MACROS', getattr(self, 'CMAKE_CMDLINE_MACROS'))
-        self.add_global('CMAKE_EXTERNAL_LIBRARY', getattr(self, 'CMAKE_EXTERNAL_LIBRARY'))
-        self.add_global('CMAKE_PKG_CONFIG_LIBRARY', getattr(self, 'CMAKE_PKG_CONFIG_LIBRARY'))
+        self.add_global('CMAKE_CMAKELISTS_ADD_INCLUDE',
+                        getattr(self, 'CMAKE_CMAKELISTS_ADD_INCLUDE'))
+        self.add_global('CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY',
+                        getattr(self, 'CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY'))
+        self.add_global('CMAKE_CMAKELISTS_ADD_FIND_CALL',
+                        getattr(self, 'CMAKE_CMAKELISTS_ADD_FIND_CALL'))
+        self.add_global('CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT',
+                        getattr(self, 'CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT'))
+        
+        self.add_global('CMAKE_ADD_MODULE_FILE',
+                        getattr(self, 'CMAKE_ADD_MODULE_FILE'))
+        self.add_global('CMAKE_CMDLINE_MACROS',
+                        getattr(self, 'CMAKE_CMDLINE_MACROS'))
+        self.add_global('CMAKE_EXTERNAL_LIBRARY',
+                        getattr(self, 'CMAKE_EXTERNAL_LIBRARY'))
+        self.add_global('CMAKE_PKG_CONFIG_LIBRARY',
+                        getattr(self, 'CMAKE_PKG_CONFIG_LIBRARY'))
         pass
 
     def CMAKE_CMAKELISTS_ADD_INCLUDE(self, include, flags):
@@ -107,28 +119,6 @@ class CMakeInterfaceProxy(InterfaceProxy):
             pass
         pass
 
-    def CMAKE_ADD_MODULE_FILE(self, name, lines, flags):
-        """
-        Add a module file to the package.
-
-        If CMAKE_BUILDINFO_LOCAL is in flags, then it is added to the
-        toplevel CMakeLists.txt file of the local package. If
-        CMAKE_BUILDINFO_PROPAGATE is in flags, then it is added to the
-        toplevel CMakeLists.txt file of the receiving package.
-        """
-        if type(flags) is int:
-            flags = (flags,)
-            pass
-        if type(flags) not in (tuple, list):
-            raise Error('CMAKE_ADD_MODULE_FILE(): "flags" parameter must be int, list or tuple')
-        if self.CMAKE_BUILDINFO_LOCAL in flags:
-            find_cmake_output_builder(self.__dirbuilder).add_module_file(name, lines)
-            pass
-        if self.CMAKE_BUILDINFO_PROPAGATE in flags:
-            self.__dirbuilder.add_buildinfo(BuildInfo_CMakeModule(name=name, lines=lines))
-            pass
-        pass
-
     def CMAKE_CMAKELISTS_ADD_FIND_CALL(self, find_call, flags):
         """
         Add a find call to the toplevel CMakeLists.txt file. A find
@@ -155,6 +145,49 @@ class CMakeInterfaceProxy(InterfaceProxy):
             pass
         if self.CMAKE_BUILDINFO_PROPAGATE in flags:
             self.__dirbuilder.add_buildinfo(BuildInfo_Toplevel_CMakeLists_FindCall(find_call=find_call))
+            pass
+        pass
+
+    def CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(self, outputs, commands, depends, working_directory):
+        """
+        Add a ADD_CUSTOM_COMMAND (OUTPUT signature) to the
+        CMakeLists.txt file of the current directory.
+        """
+        if type(outputs) not in (tuple, list):
+            raise Error('CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(): "outputs" parameter must be a list or tuple')
+        if type(commands) not in (tuple, list):
+            raise Error('CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(): "commands" parameter must be a list or tuple')
+        if type(depends) not in (tuple, list):
+            raise Error('CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(): "depends" parameter must be a list or tuple')
+        if working_directory is not None and type(working_directory) is not str:
+            raise Error('CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(): "working_directory" must be None os string')
+        find_cmake_output_builder(self.__dirbuilder).local_cmakelists().add_custom_command__output(
+            outputs=outputs,
+            commands=commands,
+            depends=depends,
+            working_directory=working_directory,
+            )
+        pass
+
+    def CMAKE_ADD_MODULE_FILE(self, name, lines, flags):
+        """
+        Add a module file to the package.
+
+        If CMAKE_BUILDINFO_LOCAL is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the local package. If
+        CMAKE_BUILDINFO_PROPAGATE is in flags, then it is added to the
+        toplevel CMakeLists.txt file of the receiving package.
+        """
+        if type(flags) is int:
+            flags = (flags,)
+            pass
+        if type(flags) not in (tuple, list):
+            raise Error('CMAKE_ADD_MODULE_FILE(): "flags" parameter must be int, list or tuple')
+        if self.CMAKE_BUILDINFO_LOCAL in flags:
+            find_cmake_output_builder(self.__dirbuilder).add_module_file(name, lines)
+            pass
+        if self.CMAKE_BUILDINFO_PROPAGATE in flags:
+            self.__dirbuilder.add_buildinfo(BuildInfo_CMakeModule(name=name, lines=lines))
             pass
         pass
 
