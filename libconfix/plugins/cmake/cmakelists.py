@@ -135,10 +135,6 @@ class CMakeLists:
         plain CMake code snippet which will be output among the calls
         to INCLUDE_DIRECTORIES().
         """
-# jjjj
-##         assert type(directory) is str
-##         if directory in self.__include_directories:
-##             return
         self.__include_directories.append((directory, literally))
         pass
     def get_include_directories(self):
