@@ -15,6 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.core.utils import helper
+
 import types
 
 class CMakeLists:
@@ -36,9 +38,11 @@ class CMakeLists:
         # set("include file")
         self.__includes = set()
 
-        # (no CMake pendant. we just want to place calls to find
-        # functions at a particular position.)
+        # no CMake pendant. we just want to place calls to find
+        # functions at a particular position. we remember the md5 hash
+        # of each to sort out duplicates.
         self.__find_calls = []
+        self.__find_call_md5 = set()
 
         # CMake: INCLUDE_DIRECTORIES()
         # [("directory", literally)]
@@ -117,10 +121,13 @@ class CMakeLists:
     def add_find_call(self, find_call):
         assert type(find_call) in (str, list, tuple)
         if type(find_call) is str:
-            self.__find_calls.append(find_call)
-        else:
-            self.__find_calls.extend(find_call)
+            find_call = [find_call]
             pass
+        md5 = helper.md5_hexdigest_from_lines(find_call)
+        if md5 in self.__find_call_md5:
+            return
+        self.__find_call_md5.add(md5)
+        self.__find_calls.extend(find_call)
         pass
     def get_find_calls(self):
         return self.__find_calls

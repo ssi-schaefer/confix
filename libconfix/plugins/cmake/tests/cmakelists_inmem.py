@@ -22,6 +22,7 @@ import unittest
 class CMakeListsInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
+        self.addTest(CMakeListsInMemoryTest('unique_find_call'))
         self.addTest(CMakeListsInMemoryTest('collapse_multiple_include'))
         self.addTest(CMakeListsInMemoryTest('target_link_libraries_tightened_after_set'))
         self.addTest(CMakeListsInMemoryTest('target_link_libraries_tightened_before_set'))
@@ -29,6 +30,13 @@ class CMakeListsInMemorySuite(unittest.TestSuite):
     pass
 
 class CMakeListsInMemoryTest(unittest.TestCase):
+    def unique_find_call(self):
+        cmakelists = CMakeLists()
+        cmakelists.add_find_call('xxx')
+        cmakelists.add_find_call('xxx')
+        self.failUnlessEqual(len(cmakelists.get_find_calls()), 1)
+        pass
+    
     def collapse_multiple_include(self):
         cmakelists = CMakeLists()
         cmakelists.add_include('xxx')
