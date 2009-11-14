@@ -36,7 +36,8 @@ import unittest
 class GeneratorBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(GeneratorBuildTest('test_basic'))
+#        self.addTest(GeneratorBuildTest('test_basic'))
+        self.addTest(GeneratorBuildTest('generated_headers_install'))
     pass
 
 class GeneratorBuildTest(PersistentTestCase):
@@ -57,9 +58,9 @@ class GeneratorBuildTest(PersistentTestCase):
             name=const.CONFIX2_DIR,
             entry=File(lines=["CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(",
                               "    outputs=['main.c'],",
-                              "    commands=['cp ${PROJECT_SOURCE_DIR}/main.c.template ${PROJECT_BINARY_DIR}/main.c'],",
+                              "    commands=[('cp', ",
+                              "               ['${PROJECT_SOURCE_DIR}/main.c.template', '${PROJECT_BINARY_DIR}/main.c'])],",
                               "    depends=['${PROJECT_SOURCE_DIR}/main.c.template'],",
-                              "    working_directory=None,",
                               ")",
                               "EXECUTABLE(",
                               "    exename='exe',",
@@ -88,6 +89,61 @@ class GeneratorBuildTest(PersistentTestCase):
         # I doubt that this will hold under Windows :-) if it becomes
         # an issue we will skip this check
         self.failUnless(build.find(['exe']))
+
+        pass
+
+    def generated_headers_install(self):
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+        install = fs.rootdirectory().add(
+            name='install',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('generated_headers')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=[
+                "LIBRARY(members=[H(filename='generated.h'), C(filename='generated.c')])",
+                "CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(",
+                "    outputs=['generated.h', 'generated.c'],",
+                "    commands=[('touch', ['generated.h']),",
+                "              ('touch', ['generated.c'])],",
+                "    depends=[],",
+                ")",
+                ]))
+        source.add(
+            name='generated.h',
+            entry=File(state=FileState.VIRTUAL, lines=[]))
+        source.add(
+            name='generated.c',
+            entry=File(state=FileState.VIRTUAL, lines=[]))
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[Boilerplate(), C(), CMake(library_dependencies=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(
+            packageroot=source.abspath(),
+            builddir=build.abspath(),
+            args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(install.abspath())])
+        commands.make(
+            builddir=build.abspath(),
+            args=['install'])
+
+        scan.rescan_dir(build)
+
+        self.failUnless(install.find(['include', 'generated.h']))
 
         pass
 

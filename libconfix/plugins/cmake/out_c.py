@@ -98,25 +98,25 @@ class HeaderOutputBuilder(Builder):
                 commands = []
 
                 # create stamp directory.
-                commands.append('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR)
+                commands.append(('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR, []))
                 # create install directories.
                 for dir in sorted(set(('/'.join(visible_dir) for (file, visible_dir) in local_install_info))):
-                    commands.append('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/confix-include/'+dir)
+                    commands.append(('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/confix-include/'+dir, []))
                     pass
                 # create symlinks for headers.
                 for (file, visible_dir) in local_install_info:
-                    commands.append('${CMAKE_COMMAND} -E create_symlink '
-                                    '${PROJECT_SOURCE_DIR}/'+slashed_relpath+'/'+file+' '
-                                    '${PROJECT_BINARY_DIR}/confix-include/'+'/'.join(visible_dir)+'/'+file)
+                    commands.append(('${CMAKE_COMMAND} -E create_symlink '
+                                     '${PROJECT_SOURCE_DIR}/'+slashed_relpath+'/'+file+' '
+                                     '${PROJECT_BINARY_DIR}/confix-include/'+'/'.join(visible_dir)+'/'+file, []))
                     pass
                 # touch stamp file
-                commands.append('${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR+'/local-header-install.'+dotted_relpath)
+                commands.append(('${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR+'/local-header-install.'+dotted_relpath, []))
                 
                 cmake_output_builder.local_cmakelists().add_custom_command__output(
                     outputs=['${PROJECT_BINARY_DIR}/confix-stamps/local-header-install.'+dotted_relpath],
                     commands=commands,
                     depends=[file for (file, visible_dir) in local_install_info],
-                    working_directory=None)
+                    )
                 pass
 
             # ADD_CUSTOM_TARGET(...ALL...) to hook local header

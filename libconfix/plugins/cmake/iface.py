@@ -148,7 +148,7 @@ class CMakeInterfaceProxy(InterfaceProxy):
             pass
         pass
 
-    def CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(self, outputs, commands, depends, working_directory):
+    def CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(self, outputs, commands, depends, working_directory=None):
         """
         Add a ADD_CUSTOM_COMMAND (OUTPUT signature) to the
         CMakeLists.txt file of the current directory.

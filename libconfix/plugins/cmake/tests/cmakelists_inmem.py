@@ -56,6 +56,8 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         cmakelists.add_include('xxx')
         cmakelists.add_include('yyy')
         self.failUnlessEqual(len(cmakelists.get_includes()), 2)
+        self.failUnlessEqual(cmakelists.get_includes()[0], 'xxx')
+        self.failUnlessEqual(cmakelists.get_includes()[1], 'yyy')
         pass
     
     def target_link_libraries_tightened_after_set(self):
@@ -74,6 +76,28 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         cmakelists.target_link_libraries('target', ['a', 'b'])
         self.failUnlessEqual(cmakelists.get_target_link_libraries('target'),
                              ['tight_a', 'tight_b'])
+        pass
+
+    def add_custom_command__output(self):
+        # only asserting parameters here. I don't know how this will
+        # evolve, and I'll likely change much as time passes.
+
+        cmakelists = CMakeLists()
+
+        # full set of parameters.
+        cmakelists.add_custom_command__output(
+            outputs=['output1', 'output2'],
+            commands=[('command1', ['arg1.1', 'arg1.2']),
+                      ('command2', ['arg2.1', 'arg2.2'])],
+            depends=['depend1', 'depend2'],
+            working_directory='working_directory')
+
+        # working_directory is optional.
+        cmakelists.add_custom_command__output(
+            outputs=['output1', 'output2'],
+            commands=[('command1', ['arg1.1', 'arg1.2']),
+                      ('command2', ['arg2.1', 'arg2.2'])],
+            depends=['depend1', 'depend2'])
         pass
     pass
 

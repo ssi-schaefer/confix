@@ -35,8 +35,10 @@ class CMakeLists:
         self.__sets = {}
 
         # CMake: INCLUDE()
-        # set("include file")
-        self.__includes = set()
+        # ["include file"]. we remember the md5 of each to sort out
+        # duplicates.
+        self.__includes = []
+        self.__includes_have = set()
 
         # no CMake pendant. we just want to place calls to find
         # functions at a particular position. we remember the md5 hash
@@ -75,7 +77,7 @@ class CMakeLists:
         self.__target_tightened_libraries = {}
 
         # CMake: ADD_CUSTOM_COMMAND(OUTPUT ...)
-        # [(['output'], ['command'], ['depends'], 'working_directory')]
+        # [(['output'], [('command', ['arg', ...])], ['depends'], 'working_directory')]
         self.__custom_commands__output = []
 
         # CMake: ADD_CUSTOM_TARGET()
@@ -113,7 +115,14 @@ class CMakeLists:
         return self.__sets.get(name)
 
     def add_include(self, include):
-        self.__includes.add(include)
+        if type(include) is str:
+            include = [include]
+            pass
+        md5 = helper.md5_hexdigest_from_lines(include)
+        if md5 in self.__includes_have:
+            return
+        self.__includes.extend(include)
+        self.__includes_have.add(md5)
         pass
     def get_includes(self):
         return self.__includes
@@ -238,8 +247,11 @@ class CMakeLists:
     def get_target_link_libraries(self, target):
         return self.__target_link_libraries.get(target)
 
-    def add_custom_command__output(self, outputs, commands, depends, working_directory):
+    def add_custom_command__output(self, outputs, commands, depends, working_directory=None):
         assert len(outputs)
+        for c in commands:
+            assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+c
+            pass
         self.__custom_commands__output.append((outputs, commands, depends, working_directory))
         pass
 
@@ -357,7 +369,7 @@ class CMakeLists:
             lines.append('ADD_CUSTOM_COMMAND(')
             lines.append('    OUTPUT '+' '.join(outputs))
             for c in commands:
-                lines.append('    COMMAND '+c)
+                lines.append('    COMMAND '+c[0]+' ARGS '+' '.join(c[1]))
                 pass
             if len(depends):
                 lines.append('    DEPENDS '+' '.join(depends))
@@ -365,6 +377,9 @@ class CMakeLists:
             if working_directory:
                 lines.append('    WORKING_DIRECTORY '+working_directory)
                 pass
+            # according to CMake docs VERBATIM sounds like a good
+            # idea.
+            lines.append('    VERBATIM')
             lines.append(')')
             pass
 
