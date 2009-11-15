@@ -20,6 +20,7 @@ from out_cmake import find_cmake_output_builder
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
+from libconfix.core.filesys.file import FileState
 
 class PlainfileOutputSetup(Setup):
     def setup(self, dirbuilder):
@@ -44,13 +45,24 @@ class PlainfileOutputBuilder(Builder):
                     assert output_builder is not None
                     pass
 
+                # cmake makes a difference between files that have
+                # been generated in the build directory and regular
+                # ones from the source directory. we use the
+                # FileState.VIRTUAL as a heuristic, until we find a
+                # better way.
+                if b.file().state() is FileState.VIRTUAL:
+                    path = '${CMAKE_CURRENT_BINARY_DIR}/'+b.file().name()
+                else:
+                    path = b.file().name()
+                    pass
+
                 if b.datadir() is not None:
                     output_builder.local_cmakelists().add_install__files(
-                        files=[b.file().name()],
+                        files=[path],
                         destination='share/'+'/'.join(b.datadir()))
                 elif b.prefixdir() is not None:
                     output_builder.local_cmakelists().add_install__files(
-                        files=[b.file().name()],
+                        files=[path],
                         destination='/'.join(b.prefixdir()))
                 else:
                     assert 0

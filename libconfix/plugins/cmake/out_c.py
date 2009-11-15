@@ -34,6 +34,7 @@ from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.machinery.builder import Builder
+from libconfix.core.filesys.file import FileState
 from libconfix.core.utils import const
 
 import itertools
@@ -58,73 +59,58 @@ class HeaderOutputBuilder(Builder):
         # [('file', [rel-path])]
         local_install_info = []
 
-        # headers that have to be publicly installed.
-        # [('file', [rel-path])]
-        public_install_info = []
-
         for header in self.parentbuilder().iter_builders():
             if not isinstance(header, HeaderBuilder):
                 continue
 
+            # cmake makes a difference between files that have been
+            # generated in the build directory and regular ones from
+            # the source directory. we use the FileState.VIRTUAL as a
+            # heuristic, until we find a better way.
+            generated = header.file().state() is FileState.VIRTUAL
+
+            # install headers that want this.
             if header.public():
-                public_install_info.append((header.file().name(), header.visibility()))
+                if generated:
+                    path = '${CMAKE_CURRENT_BINARY_DIR}/'+header.file().name()
+                else:
+                    path = header.file().name()
+                    pass
+                cmake_output_builder.local_cmakelists().add_install__files(
+                    files=[path],
+                    destination='/'.join(['include']+header.visibility()))
                 pass
 
-            package_visibility_action = header.package_visibility_action()
-            assert package_visibility_action[0] in \
-                   (HeaderBuilder.LOCALVISIBILITY_INSTALL, HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
-            if package_visibility_action[0] == HeaderBuilder.LOCALVISIBILITY_INSTALL:
-                local_install_info.append((header.file().name(), package_visibility_action[1]))
-            elif package_visibility_action[0] is HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE:
+            if header.package_visibility_action()[0] == HeaderBuilder.LOCALVISIBILITY_INSTALL:
+                install_dir = '/'.join(header.package_visibility_action()[1])
+                dotted_relpath = '.'.join(header.package_visibility_action()[1])
+                stampfile = '${PROJECT_BINARY_DIR}/'+const.STAMP_DIR+\
+                            '/local-header-install.'+dotted_relpath
+                if generated:
+                    sourcepath = '${CMAKE_CURRENT_BINARY_DIR}/'+header.file().name()
+                else:
+                    sourcepath = '${CMAKE_CURRENT_SOURCE_DIR}/'+header.file().name()
+                    pass
+                cmake_output_builder.local_cmakelists().add_custom_command__output(
+                    outputs=[stampfile],
+                    commands=[
+                        ('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR, []),
+                        ('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/confix-include/'+install_dir, []),
+                        ('${CMAKE_COMMAND} -E create_symlink '+sourcepath+
+                                 ' ${PROJECT_BINARY_DIR}/confix-include/'+install_dir+'/'+header.file().name(), []),
+                        ('${CMAKE_COMMAND} -E touch '+stampfile, []),
+                        ],
+                    depends=[sourcepath],
+                    )
+                cmake_output_builder.local_cmakelists().add_custom_target(
+                    name='confix-local-install.'+dotted_relpath,
+                    all=True,
+                    depends=[stampfile])
+            elif header.package_visibility_action()[0] is HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE:
                 pass
             else:
                 assert False, package_visibility_action[0]
                 pass
-            pass
-
-        # publicly install headers
-        for (file, installdir) in public_install_info:
-            cmake_output_builder.local_cmakelists().add_install__files(files=[file], destination='/'.join(['include']+installdir))
-            pass
-        
-        # locally install headers if necessary.
-        if len(local_install_info):
-            slashed_relpath = '/'.join(self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
-            dotted_relpath = '.'.join(self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
-
-            # ADD_CUSTOM_COMMAND() to link the headers to
-            # confix-include and create a stamp file.
-            if True:
-                commands = []
-
-                # create stamp directory.
-                commands.append(('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR, []))
-                # create install directories.
-                for dir in sorted(set(('/'.join(visible_dir) for (file, visible_dir) in local_install_info))):
-                    commands.append(('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/confix-include/'+dir, []))
-                    pass
-                # create symlinks for headers.
-                for (file, visible_dir) in local_install_info:
-                    commands.append(('${CMAKE_COMMAND} -E create_symlink '
-                                     '${PROJECT_SOURCE_DIR}/'+slashed_relpath+'/'+file+' '
-                                     '${PROJECT_BINARY_DIR}/confix-include/'+'/'.join(visible_dir)+'/'+file, []))
-                    pass
-                # touch stamp file
-                commands.append(('${CMAKE_COMMAND} -E touch ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR+'/local-header-install.'+dotted_relpath, []))
-                
-                cmake_output_builder.local_cmakelists().add_custom_command__output(
-                    outputs=['${PROJECT_BINARY_DIR}/confix-stamps/local-header-install.'+dotted_relpath],
-                    commands=commands,
-                    depends=[file for (file, visible_dir) in local_install_info],
-                    )
-                pass
-
-            # ADD_CUSTOM_TARGET(...ALL...) to hook local header
-            # install to the toplevel directory build order.
-            cmake_output_builder.local_cmakelists().add_custom_target(
-                name='confix-local-install.'+dotted_relpath,
-                all=True,
-                depends=['${PROJECT_BINARY_DIR}/confix-stamps/local-header-install.'+dotted_relpath])
             pass
         pass
     pass

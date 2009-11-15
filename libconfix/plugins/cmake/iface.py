@@ -58,6 +58,8 @@ class CMakeInterfaceProxy(InterfaceProxy):
                         getattr(self, 'CMAKE_CMAKELISTS_ADD_FIND_CALL'))
         self.add_global('CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT',
                         getattr(self, 'CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT'))
+        self.add_global('CMAKE_CMAKELISTS_ADD_CUSTOM_TARGET',
+                        getattr(self, 'CMAKE_CMAKELISTS_ADD_CUSTOM_TARGET'))
         
         self.add_global('CMAKE_ADD_MODULE_FILE',
                         getattr(self, 'CMAKE_ADD_MODULE_FILE'))
@@ -166,6 +168,22 @@ class CMakeInterfaceProxy(InterfaceProxy):
             commands=commands,
             depends=depends,
             working_directory=working_directory,
+            )
+        pass
+
+    def CMAKE_CMAKELISTS_ADD_CUSTOM_TARGET(self, name, all, depends):
+        """
+        Add a ADD_CUSTOM_TARGET to the CMakeLists.txt file of the
+        current directory.
+        """
+        if type(name) is not str:
+            raise Error('CMAKE_CMAKELISTS_ADD_CUSTOM_TARGET(): "name" parameter must be a string')
+        if type(depends) not in (tuple, list):
+            raise Error('CMAKE_CMAKELISTS_ADD_CUSTOM_TARGET(): "depends" parameter must be a list or tuple')
+        find_cmake_output_builder(self.__dirbuilder).local_cmakelists().add_custom_target(
+            name=name,
+            all=all,
+            depends=depends,
             )
         pass
 
