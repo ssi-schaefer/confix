@@ -258,7 +258,7 @@ class GeneratorBuildTest(PersistentTestCase):
                 # without doing anything, nothing will be built. hook
                 # it to the 'all' target.
                 "CMAKE_CMAKELISTS_ADD_CUSTOM_TARGET(",
-                "    name='generate_those_bloody_files',",
+                "    name='generate_those_bloody_files_when_I_say_make',",
                 "    all=True,",
                 "    depends=['prefixfile', 'datafile'],",
                 ")",
