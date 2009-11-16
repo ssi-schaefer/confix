@@ -23,19 +23,19 @@ import types
 
 class InstalledNode(Node):
     def get_marshalling_data(self):
-        assert self.package_ is not None
-        assert type(self.name_) is types.ListType
-        assert type(self.provides_) is types.ListType
-        assert type(self.requires_) is types.ListType
-        assert type(self.buildinfos_) is types.ListType
+        assert self.__package is not None
+        assert type(self.__name) is types.ListType
+        assert type(self.__provides) is types.ListType
+        assert type(self.__requires) is types.ListType
+        assert type(self.__buildinfos) is types.ListType
         return update_marshalling_data(
             marshalling_data=Node.get_marshalling_data(self),
             generating_class=InstalledNode,
-            attributes={'package': self.package_,
-                        'name': self.name_,
-                        'provides': self.provides_,
-                        'requires': self.requires_,
-                        'buildinfos': self.buildinfos_},
+            attributes={'package': self.__package,
+                        'name': self.__name,
+                        'provides': self.__provides,
+                        'requires': self.__requires,
+                        'buildinfos': self.__buildinfos},
             version={'InstalledNode': 1})
     def set_marshalling_data(self, data):
         version = data[Marshallable.VERSIONS]['InstalledNode']
@@ -44,41 +44,57 @@ class InstalledNode(Node):
                 klass=self.__class__,
                 marshalled_version=version,
                 current_version=1)
-        self.package_ = data[Marshallable.ATTRIBUTES]['package']
-        self.name_ = data[Marshallable.ATTRIBUTES]['name']
-        self.provides_ = data[Marshallable.ATTRIBUTES]['provides']
-        self.requires_ = data[Marshallable.ATTRIBUTES]['requires']
-        self.buildinfos_ = data[Marshallable.ATTRIBUTES]['buildinfos']
-        assert type(self.provides_) is types.ListType
-        assert type(self.requires_) is types.ListType
-        assert type(self.buildinfos_) is types.ListType
+        self.__package = data[Marshallable.ATTRIBUTES]['package']
+        self.__name = data[Marshallable.ATTRIBUTES]['name']
+        self.__provides = data[Marshallable.ATTRIBUTES]['provides']
+        self.__requires = data[Marshallable.ATTRIBUTES]['requires']
+        self.__buildinfos = data[Marshallable.ATTRIBUTES]['buildinfos']
+        assert type(self.__provides) is types.ListType
+        assert type(self.__requires) is types.ListType
+        assert type(self.__buildinfos) is types.ListType
         Node.set_marshalling_data(self, data)
+
+        self.__type_cache = {}
         pass
     
     def __init__(self, name, provides, requires, buildinfos):
         assert type(name) is types.ListType
-        self.package_ = None
-        self.name_ = name
-        self.provides_ = provides
-        self.requires_ = requires
-        self.buildinfos_ = buildinfos
+        self.__package = None
+        self.__name = name
+        self.__provides = provides
+        self.__requires = requires
+        self.__buildinfos = buildinfos
+
+        self.__type_cache = {}
         pass
     def __str__(self):
-        return '.'.join([self.package_.name()]+self.name_)
+        return '.'.join([self.__package.name()]+self.__name)
     def short_description(self):
-        return '.'.join([self.package_.name()]+self.name_)
+        return '.'.join([self.__package.name()]+self.__name)
     def package(self):
-        return self.package_
+        return self.__package
     def name(self):
-        return self.name_
+        return self.__name
     def provides(self):
-        return self.provides_
+        return self.__provides
     def requires(self):
-        return self.requires_
+        return self.__requires
     def iter_buildinfos(self):
-        return iter(self.buildinfos_)
+        return iter(self.__buildinfos)
+    def iter_buildinfos_type(self, t):
+        ret = self.__type_cache.get(t)
+        if ret is not None:
+            return ret
+        ret = []
+        self.__type_cache[t] = ret
+        for b in self.__buildinfos:
+            if type(b) is t:
+                ret.append(b)
+                pass
+            pass
+        return ret
 
     def set_package(self, package):
-        self.package_ = package
+        self.__package = package
         pass
     pass

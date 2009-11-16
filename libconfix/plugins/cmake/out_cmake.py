@@ -106,16 +106,14 @@ class CMakeBackendOutputBuilder(Builder):
         super(CMakeBackendOutputBuilder, self).relate(node, digraph, topolist)
 
         for n in topolist:
-            for bi in n.iter_buildinfos():
-                if type(bi) is BuildInfo_Toplevel_CMakeLists_Include:
-                    self.__top_cmakelists.add_include(bi.include())
-                    continue
-                if type(bi) is BuildInfo_Toplevel_CMakeLists_FindCall:
-                    self.__top_cmakelists.add_find_call(bi.find_call())
-                    continue
-                if type(bi) is BuildInfo_CMakeModule:
-                    self.__modules_builder.add_module_file(bi.name(), bi.lines())
-                    continue
+            for bi in n.iter_buildinfos_type(BuildInfo_Toplevel_CMakeLists_Include):
+                self.__top_cmakelists.add_include(bi.include())
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_Toplevel_CMakeLists_FindCall):
+                self.__top_cmakelists.add_find_call(bi.find_call())
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CMakeModule):
+                self.__modules_builder.add_module_file(bi.name(), bi.lines())
                 pass
             pass
         pass

@@ -59,13 +59,6 @@ class DirectoryBuilder(EntryBuilder, Node):
         # initialize collected dependency information
         self.__init_dep_info()
 
-        # build information is iterated over quite often. a good
-        # amount of it is dynamically created, so we cache it here. if
-        # it is not the cache is created an filled in
-        # iter_buildinfos(), and cleared for the next round in
-        # enlarge().
-        self.__buildinfo_cache = None
-
         pass
 
     def short_description(self):
@@ -282,18 +275,6 @@ class DirectoryBuilder(EntryBuilder, Node):
     def requires(self):
         return self.__requires
 
-    def enlarge(self):
-        self.__buildinfo_cache = None
-
-    def iter_buildinfos(self):
-        if self.__buildinfo_cache is None:
-            self.__buildinfo_cache = {}
-            for bi in self.__do_iter_buildinfos():
-                self.__buildinfo_cache.setdefault(bi.unique_key(), bi)
-                pass
-            pass
-        return self.__buildinfo_cache.itervalues()
-
     def iter_buildinfos(self):
         for bi in super(EntryBuilder, self).iter_buildinfos():
             yield bi
@@ -303,6 +284,14 @@ class DirectoryBuilder(EntryBuilder, Node):
                 for bi in b.iter_buildinfos():
                     yield bi
                     pass
+                pass
+            pass
+        pass
+
+    def iter_buildinfos_type(self, t):
+        for b in self.iter_buildinfos():
+            if type(b) is t:
+                yield b
                 pass
             pass
         pass

@@ -130,31 +130,29 @@ class CompiledOutputBuilder(Builder):
         self.__external_cxxflags = []
 
         for n in topolist:
-            for bi in n.iter_buildinfos():
-                if type(bi) is BuildInfo_IncludePath_External_CMake:
-                    incpath = bi.incpath()
-                    key = '.'.join(incpath)
-                    if not key in self.__have_external_incpath:
-                        self.__external_incpath.insert(0, incpath)
-                        self.__have_external_incpath.add(key)
-                        pass
-                    continue
-                if type(bi) is BuildInfo_CommandlineMacros_CMake:
-                    for (k, v) in bi.macros().iteritems():
-                        existing_value = self.__external_cmdlinemacros.get(k)
-                        if existing_value is not None and existing_value != v:
-                            raise Error(os.sep.join(self.file().relpath())+': '
-                                        'conflicting values for macro "'+key+'": '
-                                        '"'+existing_value+'"/"'+value+'"')
-                        self.__external_cmdlinemacros[k] = v
-                        pass
-                    continue
-                if type(bi) is BuildInfo_CFLAGS_CMake:
-                    self.__external_cflags.extend(bi.cflags())
-                    continue
-                if type(bi) is BuildInfo_CXXFLAGS_CMake:
-                    self.__external_cxxflags.extend(bi.cxxflags())
-                    continue
+            for bi in n.iter_buildinfos_type(BuildInfo_IncludePath_External_CMake):
+                incpath = bi.incpath()
+                key = '.'.join(incpath)
+                if not key in self.__have_external_incpath:
+                    self.__external_incpath.insert(0, incpath)
+                    self.__have_external_incpath.add(key)
+                    pass
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CommandlineMacros_CMake):
+                for (k, v) in bi.macros().iteritems():
+                    existing_value = self.__external_cmdlinemacros.get(k)
+                    if existing_value is not None and existing_value != v:
+                        raise Error(os.sep.join(self.file().relpath())+': '
+                                    'conflicting values for macro "'+key+'": '
+                                    '"'+existing_value+'"/"'+value+'"')
+                    self.__external_cmdlinemacros[k] = v
+                    pass
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CFLAGS_CMake):
+                self.__external_cflags.extend(bi.cflags())
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CXXFLAGS_CMake):
+                self.__external_cxxflags.extend(bi.cxxflags())
                 pass
             pass
 
@@ -265,23 +263,21 @@ class LinkedOutputBuilder(Builder):
         self.__external_libraries = []
 
         for n in topolist:
-            for bi in n.iter_buildinfos():
-                if type(bi) is BuildInfo_LibraryPath_External_CMake:
-                    for p in reversed(bi.libpath()):
-                        if p in self.__have_external_libpath:
-                            continue
-                        self.__have_external_libpath.add(p)
-                        self.__external_libpath.insert(0, p)
-                        pass
-                    continue
-                if type(bi) is BuildInfo_Library_External_CMake:
-                    for l in reversed(bi.libs()):
-                        if l in self.__have_external_libraries:
-                            continue
-                        self.__have_external_libraries.add(l)
-                        self.__external_libraries.insert(0, l)
-                        pass
-                    continue
+            for bi in n.iter_buildinfos_type(BuildInfo_LibraryPath_External_CMake):
+                for p in reversed(bi.libpath()):
+                    if p in self.__have_external_libpath:
+                        continue
+                    self.__have_external_libpath.add(p)
+                    self.__external_libpath.insert(0, p)
+                    pass
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_Library_External_CMake):
+                for l in reversed(bi.libs()):
+                    if l in self.__have_external_libraries:
+                        continue
+                    self.__have_external_libraries.add(l)
+                    self.__external_libraries.insert(0, l)
+                    pass
                 pass
             pass
 

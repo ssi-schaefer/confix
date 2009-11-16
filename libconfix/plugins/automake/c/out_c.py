@@ -136,28 +136,26 @@ class CompiledOutputBuilder(Builder):
         self.__external_cmdlinemacros = {}
 
         for n in topolist:
-            for bi in n.iter_buildinfos():
-                if type(bi) is BuildInfo_IncludePath_External_AM:
-                    incpath = bi.incpath()
-                    key = '.'.join(incpath)
-                    if not key in self.__have_external_incpath:
-                        self.__external_incpath.insert(0, incpath)
-                        self.__have_external_incpath.add(key)
-                        pass
-                    continue
-                if type(bi) is BuildInfo_CFLAGS_AM:
-                    self.__external_cflags.extend(bi.cflags())
-                    continue
-                if type(bi) is BuildInfo_CommandlineMacros_AM:
-                    for (k, v) in bi.macros().iteritems():
-                        existing_value = self.__external_cmdlinemacros.get(k)
-                        if existing_value is not None and existing_value != v:
-                            raise Error(os.sep.join(self.file().relpath())+': '
-                                        'conflicting values for macro "'+key+'": '
-                                        '"'+existing_value+'"/"'+value+'"')
-                        self.__external_cmdlinemacros[k] = v
-                        pass
-                    continue
+            for bi in n.iter_buildinfos_type(BuildInfo_IncludePath_External_AM):
+                incpath = bi.incpath()
+                key = '.'.join(incpath)
+                if not key in self.__have_external_incpath:
+                    self.__external_incpath.insert(0, incpath)
+                    self.__have_external_incpath.add(key)
+                    pass
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CFLAGS_AM):
+                self.__external_cflags.extend(bi.cflags())
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CommandlineMacros_AM):
+                for (k, v) in bi.macros().iteritems():
+                    existing_value = self.__external_cmdlinemacros.get(k)
+                    if existing_value is not None and existing_value != v:
+                        raise Error(os.sep.join(self.file().relpath())+': '
+                                    'conflicting values for macro "'+key+'": '
+                                    '"'+existing_value+'"/"'+value+'"')
+                    self.__external_cmdlinemacros[k] = v
+                    pass
                 pass
             pass
         pass
@@ -245,10 +243,8 @@ class CXXOutputBuilder(CompiledOutputBuilder):
         super(CXXOutputBuilder, self).relate(node, digraph, topolist)
         self.__external_cxxflags = []
         for n in topolist:
-            for bi in n.iter_buildinfos():
-                if type(bi) is BuildInfo_CXXFLAGS_AM:
-                    self.__external_cxxflags.extend(bi.cxxflags())
-                    continue
+            for bi in n.iter_buildinfos_type(BuildInfo_CXXFLAGS_AM):
+                self.__external_cxxflags.extend(bi.cxxflags())
                 pass
             pass
         pass
@@ -373,15 +369,13 @@ class LinkedOutputBuilder(Builder):
         self.__external_libraries = []
 
         for n in topolist:
-            for bi in n.iter_buildinfos():
-                if type(bi) is BuildInfo_Library_External_AM:
-                    key = '.'.join(bi.libpath())
-                    if not key in self.__have_external_libpath:
-                        self.__have_external_libpath.add(key)
-                        self.__external_libpath.insert(0, bi.libpath())
-                        pass
-                    self.__external_libraries.insert(0, bi.libs())
-                    continue
+            for bi in n.iter_buildinfos_type(BuildInfo_Library_External_AM):
+                key = '.'.join(bi.libpath())
+                if not key in self.__have_external_libpath:
+                    self.__have_external_libpath.add(key)
+                    self.__external_libpath.insert(0, bi.libpath())
+                    pass
+                self.__external_libraries.insert(0, bi.libs())
                 pass
             pass
         pass

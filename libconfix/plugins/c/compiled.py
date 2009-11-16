@@ -116,29 +116,27 @@ class CompiledCBuilder(CBaseBuilder):
         CBaseBuilder.relate(self, node, digraph, topolist)
         self.__init_buildinfo()
         for n in topolist:
-            for bi in n.iter_buildinfos():
-                if type(bi) is BuildInfo_CIncludePath_NativeLocal:
-                    if bi.include_dir() is None:
-                        self.__have_locally_installed_includes = True
-                    else:
-                        key = '.'.join(bi.include_dir())
-                        if key not in self.__have_native_local_include_dirs:
-                            self.__have_native_local_include_dirs.add(key)
-                            self.__native_local_include_dirs.insert(0, bi.include_dir())
-                            pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CIncludePath_NativeLocal):
+                if bi.include_dir() is None:
+                    self.__have_locally_installed_includes = True
+                else:
+                    key = '.'.join(bi.include_dir())
+                    if key not in self.__have_native_local_include_dirs:
+                        self.__have_native_local_include_dirs.add(key)
+                        self.__native_local_include_dirs.insert(0, bi.include_dir())
                         pass
-                    continue
-                if type(bi) is BuildInfo_CIncludePath_NativeInstalled:
-                    self.__buildinfo_includepath_native_installed = True
-                    continue
-                if type(bi) is BuildInfo_CommandlineMacros:
-                    for (k, v) in bi.macros().iteritems():
-                        self.__insert_cmdlinemacro(k, v)
-                        pass
-                    continue
-                if type(bi) is BuildInfo_CFLAGS:
-                    self.__cflags.extend(bi.cflags())
-                    continue
+                    pass
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CIncludePath_NativeInstalled):
+                self.__buildinfo_includepath_native_installed = True
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CommandlineMacros):
+                for (k, v) in bi.macros().iteritems():
+                    self.__insert_cmdlinemacro(k, v)
+                    pass
+                pass
+            for bi in n.iter_buildinfos_type(BuildInfo_CFLAGS):
+                self.__cflags.extend(bi.cflags())
                 pass
             pass
         pass

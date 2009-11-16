@@ -48,4 +48,7 @@ class Node(Marshallable):
     def iter_buildinfos(self):
         assert False, 'abstract'
         pass
+    def iter_buildinfos_type(self, t):
+        assert False, 'abstract'
+        pass
     pass
