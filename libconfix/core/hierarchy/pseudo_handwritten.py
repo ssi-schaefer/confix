@@ -66,7 +66,7 @@ class PseudoHandWrittenFileManager(Builder):
             pass
         except Error, e:
             raise Error('Cannot add pseudo-handwritten file "'+filename+'"')
-        return ret
+        pass
 
     def locally_unique_id(self):
         return self.__class__.__name__
