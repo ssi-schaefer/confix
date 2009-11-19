@@ -18,6 +18,7 @@
 from libconfix.core.filesys import scan
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
+from libconfix.core.filesys.directory import Directory
 from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
@@ -25,12 +26,14 @@ import unittest
 class ScanSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(NewFileTest('test'))
+        self.addTest(Test('new_file'))
+        self.addTest(Test('new_directory'))
+        self.addTest(Test('new_file_in_existing_directory'))
         pass
     pass
 
-class NewFileTest(PersistentTestCase):
-    def test(self):
+class Test(PersistentTestCase):
+    def new_file(self):
         # use a filesystem instance to conveniently create the initial
         # directory.
         fs_orig = FileSystem(self.rootpath())
@@ -53,6 +56,40 @@ class NewFileTest(PersistentTestCase):
         scan.rescan_dir(fs_dup.rootdirectory())
         self.failUnless(fs_dup.rootdirectory().get('file2'))
         pass
+
+    def new_directory(self):
+        fs_orig = FileSystem(self.rootpath())
+        fs_orig.sync()
+
+        fs_dup = scan.scan_filesystem(self.rootpath())
+
+        fs_orig.rootdirectory().add(
+            name='dir',
+            entry=Directory())
+        fs_orig.sync()
+
+        scan.rescan_dir(fs_dup.rootdirectory())
+        self.failUnless(fs_dup.rootdirectory().get('dir'))
+        pass
+
+    def new_file_in_existing_directory(self):
+        fs_orig = FileSystem(self.rootpath())
+        orig_dir = fs_orig.rootdirectory().add(
+            name='dir',
+            entry=Directory())
+        fs_orig.sync()
+
+        fs_dup = scan.scan_filesystem(self.rootpath())
+
+        orig_dir.add(
+            name='file',
+            entry=File())
+        fs_orig.sync()
+
+        scan.rescan_dir(fs_dup.rootdirectory())
+        self.failUnless(fs_dup.rootdirectory().find(['dir', 'file']))
+        pass
+        
     pass
 
 if __name__ == '__main__':

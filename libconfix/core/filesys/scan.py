@@ -54,26 +54,31 @@ def rescan_dir(dir):
             continue
         absname = os.path.join(abspath, name)
         existing_entry = dir.get(name)
-        # <paranoia>
         if existing_entry is not None:
             if os.path.isfile(absname):
                 if not isinstance(existing_entry, File):
+                    # entry type change; bail out
                     raise Error('Cannot convert existing entry '+name+' to a file')
-                continue
-            if os.path.isdir(absname):
+                pass
+            elif os.path.isdir(absname):
                 if not isinstance(existing_entry, Directory):
+                    # entry type change; bail out
                     raise Error('Cannot convert existing entry '+name+' to a directory')
-                continue
-            raise Error(absname+' has unknown type')
-        # </paranoia>
-
-        # go add the new entry
-        if os.path.isfile(absname):
-            dir.add(name=name, entry=File(state=FileState.SYNC_CLEAR))
-        elif os.path.isdir(absname):
-            dir.add(name=name, entry=scan_dir(dir.abspath()+[name]))
+                # descend rescanning into subdirectory.
+                rescan_dir(existing_entry)
+                pass
+            else:
+                raise Error(absname+' has unknown type')
+            pass
         else:
-            raise Error(absname+' has unknown type')
+            # go add the new entry
+            if os.path.isfile(absname):
+                dir.add(name=name, entry=File(state=FileState.SYNC_CLEAR))
+            elif os.path.isdir(absname):
+                dir.add(name=name, entry=scan_dir(dir.abspath()+[name]))
+            else:
+                raise Error(absname+' has unknown type')
+            pass
         pass
     pass
 
