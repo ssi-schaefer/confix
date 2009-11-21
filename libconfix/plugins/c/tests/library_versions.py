@@ -53,7 +53,7 @@ class ExplicitLibraryVersionTest(unittest.TestCase):
             name='file.c',
             entry=File())
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=True)])
+                               setups=[ConfixSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
         for b in package.rootbuilder().iter_builders():
@@ -84,7 +84,7 @@ class DefaultLibraryVersionTest(unittest.TestCase):
             name='file.c',
             entry=File())
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=True)])
+                               setups=[ConfixSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
         for b in package.rootbuilder().iter_builders():

@@ -84,7 +84,7 @@ class InterPackageBuildBase(PersistentTestCase):
         self.lo_fs_ = FileSystem(path=self.lo_sourcedir_, rootdirectory=lo_root)
 
         self.lo_package_ = LocalPackage(rootdirectory=self.lo_fs_.rootdirectory(),
-                                        setups=[ConfixSetup(short_libnames=False, use_libtool=self.use_libtool())])
+                                        setups=[ConfixSetup(use_libtool=self.use_libtool())])
         
         
         hi_root = Directory()
@@ -128,8 +128,7 @@ class InterPackageBuildBase(PersistentTestCase):
 
         self.hi_fs_ = FileSystem(path=self.hi_sourcedir_, rootdirectory=hi_root)
         self.hi_package_ = LocalPackage(rootdirectory=self.hi_fs_.rootdirectory(),
-                                        setups=[ConfixSetup(short_libnames=False,
-                                                            use_libtool=self.use_libtool())])
+                                        setups=[ConfixSetup(use_libtool=self.use_libtool())])
         
         pass
 
@@ -266,7 +265,7 @@ class InstalledIncludeDirTest(PersistentTestCase):
 
         # bootstrap ... install lo
         package = LocalPackage(rootdirectory=lo_source,
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()
@@ -295,7 +294,7 @@ class InstalledIncludeDirTest(PersistentTestCase):
 
         
         package = LocalPackage(rootdirectory=hi_source,
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=repo.iter_nodes())
         package.output()
         fs.sync()

@@ -72,7 +72,7 @@ class BasicCXXSetup(unittest.TestCase):
             entry=File(lines=['void main() {}']))
         
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -134,7 +134,7 @@ class HeadersOnlyMakeNoLibrary(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         for b in package.rootbuilder().iter_builders():

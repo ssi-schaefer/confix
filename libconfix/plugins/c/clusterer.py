@@ -33,12 +33,13 @@ import os
 import types
 
 class CClustererSetup(Setup):
-    def __init__(self, short_libnames):
+    def __init__(self, linkednamefinder=None):
+        assert linkednamefinder is None or isinstance(linkednamefinder, NameFinder)
         Setup.__init__(self)
-        if short_libnames == True:
-            self.__namefinder = ShortNameFinder()
-        else:
+        if linkednamefinder is None:
             self.__namefinder = LongNameFinder()
+        else:
+            self.__namefinder = linkednamefinder
             pass
         pass
 
@@ -245,36 +246,8 @@ class LongNameFinder(NameFinder):
     def __init__(self):
         NameFinder.__init__(self)
         pass
-
     def find_exename(self, packagename, path, centername):
         return '_'.join([packagename] + path + [centername])
     def find_libname(self, packagename, path):
         return '_'.join([packagename] + path)
-    pass
-
-class ShortNameFinder(NameFinder):
-    def __init__(self):
-        NameFinder.__init__(self)
-        self.__assigned_libnames = set()
-        pass
-
-    def find_exename(self, packagename, path, centername):
-        return '_'.join([packagename] + path + [centername])
-
-    def find_libname(self, packagename, path):
-        if len(path) == 0:
-            if packagename in self.__assigned_libnames:
-                raise Error('Name '+packagename+' has already been assigned')
-            return packagename
-        
-        candidate = []
-        for i in reversed(xrange(len(path))):
-            candidate.insert(0, path[i])
-            name = '_'.join([packagename]+candidate)
-            if name not in self.__assigned_libnames:
-                self.__assigned_libnames.add(name)
-                return name
-            pass
-
-        raise Error('Could not find unique name for '+'.'.join([packagename]+path))
     pass

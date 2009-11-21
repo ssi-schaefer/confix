@@ -52,7 +52,7 @@ class IgnoredEntriesTest(unittest.TestCase):
             entry=File(lines=['PACKAGE_NAME("xx")',
                               'PACKAGE_VERSION("1.2.3")',
                               'from libconfix.frontends.confix2.confix_setup import ConfixSetup',
-                              'SETUP([ConfixSetup(use_libtool=False, short_libnames=False)])']))
+                              'SETUP([ConfixSetup(use_libtool=False)])']))
         fs.rootdirectory().add(
             name=const.CONFIX2_DIR,
             entry=File(lines=["IGNORE_ENTRIES(names=['h.h',",

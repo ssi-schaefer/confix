@@ -87,7 +87,7 @@ class Interfaces(unittest.TestCase):
             entry=File(lines=[]))
         file.set_property(name='INSTALLPATH_CINCLUDE', value=['xxx'])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -114,7 +114,7 @@ class Interfaces(unittest.TestCase):
             name='file.h',
             entry=File(lines=["// CONFIX:INSTALLPATH(['xxx'])"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -142,7 +142,7 @@ class Interfaces(unittest.TestCase):
             entry=File(lines=["// CONFIX:INSTALLPATH(['xxx'])"]))
         file.set_property(name='INSTALLPATH_CINCLUDE', value=['xxx'])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -164,7 +164,7 @@ class Interfaces(unittest.TestCase):
             name='file.h',
             entry=File(lines=["// CONFIX:INSTALLPATH(['yyy'])"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -187,7 +187,7 @@ class Interfaces(unittest.TestCase):
             entry=File())
         file.set_property(name='INSTALLPATH_CINCLUDE', value=['xxx'])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -229,7 +229,7 @@ class Interfaces(unittest.TestCase):
             entry=File(lines=["//CONFIX:REQUIRE_H('lo.h', REQUIRED)"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         pass
@@ -265,7 +265,7 @@ class Interfaces(unittest.TestCase):
             entry=File(lines=["//CONFIX:REQUIRE_H('lo.h', REQUIRED)"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         pass
@@ -357,7 +357,7 @@ class Namespace(unittest.TestCase):
             entry=File(lines=['namespace A {',
                               '}; // /namespace']))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -387,7 +387,7 @@ class Namespace(unittest.TestCase):
                               '}; // /namespace',
                               '}; // /namespace']))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -414,7 +414,7 @@ class Namespace(unittest.TestCase):
             name='file.h',
             entry=File(lines=[]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -444,7 +444,7 @@ class Namespace(unittest.TestCase):
                               '}; // /namespace'
                               ]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -473,7 +473,7 @@ class Namespace(unittest.TestCase):
                               '}; // /namespace'
                               ]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -493,7 +493,7 @@ class Namespace(unittest.TestCase):
                                                  "    value=['xxx'])"]))
         fs.rootdirectory().add(name='file.h', entry=File(lines=[]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -522,7 +522,7 @@ class Namespace(unittest.TestCase):
                               '}']))
 
         package = LocalPackage(rootdirectory=rootdirectory,
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -545,7 +545,7 @@ class Namespace(unittest.TestCase):
                               '}']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         pass
@@ -574,7 +574,7 @@ class InstallPriorities(unittest.TestCase):
                               '} // /namespace',
                               ]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -603,7 +603,7 @@ class HeaderInstallPath(unittest.TestCase):
             name='file.h',
             entry=File(lines=["// CONFIX:INSTALLPATH('a/b')"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
@@ -630,7 +630,7 @@ class HeaderInstallPath(unittest.TestCase):
         file.set_property('INSTALLPATH_CINCLUDE', ['x'])
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -656,7 +656,7 @@ class HeaderInstallPath(unittest.TestCase):
         file.set_property('INSTALLPATH_CINCLUDE', ['x'])
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         try:
             package.boil(external_nodes=[])
             package.output()
@@ -715,7 +715,7 @@ class IntelligentConditionalLocalInstall(unittest.TestCase):
             entry=File(lines=['#include <hi.h>']))
 
         package = LocalPackage(rootdirectory=rootdirectory,
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -774,8 +774,7 @@ class IntelligentConditionalLocalInstall(unittest.TestCase):
                               '// CONFIX:REQUIRE_H(filename="x/y/file.h", urgency=REQUIRED)']))
 
         package = LocalPackage(rootdirectory=rootdirectory,
-                               setups=[ConfixSetup(short_libnames=False,
-                                                   use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -840,7 +839,7 @@ class NoPublicInstall(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

@@ -122,7 +122,7 @@ class NoPublicInstall(PersistentTestCase):
 
         package = LocalPackage(rootdirectory=source,
                                setups=[Boilerplate(),
-                                       AutoC(short_libnames=False),
+                                       AutoC(),
                                        Automake(use_libtool=False, library_dependencies=False)])
         package.boil(external_nodes=[])
         package.output()

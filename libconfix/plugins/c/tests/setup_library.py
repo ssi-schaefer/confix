@@ -35,7 +35,6 @@ class LibrarySetupSuite(unittest.TestSuite):
         unittest.TestSuite.__init__(self)
         self.addTest(LibrarySetupBasic('test'))
         self.addTest(LibraryNames('testLongName'))
-        self.addTest(LibraryNames('testShortName'))
         self.addTest(LibraryNames('testExplicitName'))
         pass
     pass        
@@ -47,7 +46,7 @@ class LibrarySetupBasic(unittest.TestCase):
         fs.rootdirectory().add(name='file.c', entry=File(lines=[]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = None
@@ -91,7 +90,7 @@ class LibraryNames(unittest.TestCase):
     def testLongName(self):
         
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         dir3lib_builder = None
@@ -106,24 +105,6 @@ class LibraryNames(unittest.TestCase):
                              '_'.join([package.name()]+self.dir3_.relpath(self.fs_.rootdirectory())))
         pass
     
-    def testShortName(self):
-        
-        package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=True, use_libtool=False)])
-        package.boil(external_nodes=[])
-
-        dir3lib_builder = None
-        for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).iter_builders():
-            if isinstance(b, LibraryBuilder):
-                self.failIf(dir3lib_builder is not None)
-                dir3lib_builder = b
-                pass
-            pass
-
-        self.failUnlessEqual(dir3lib_builder.basename(),
-                             '_'.join([package.name(), self.dir3_.name()]))
-        pass
-
     def testExplicitName(self):
         fs = FileSystem(path=['don\'t', 'care'])
         fs.rootdirectory().add(
@@ -138,7 +119,7 @@ class LibraryNames(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         for b in package.rootbuilder().iter_builders():

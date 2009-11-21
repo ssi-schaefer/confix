@@ -58,7 +58,7 @@ class LexYaccSetupTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

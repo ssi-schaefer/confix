@@ -154,7 +154,7 @@ def _generate(source, use_libtool, explicit):
     if explicit:
         setup = ExplicitSetup(use_libtool=use_libtool)
     else:
-        setup = ConfixSetup(short_libnames=False, use_libtool=use_libtool)
+        setup = ConfixSetup(use_libtool=use_libtool)
         pass
     package = LocalPackage(
         rootdirectory=source,

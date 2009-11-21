@@ -140,7 +140,7 @@ class LibtoolTest(unittest.TestCase):
                               'int main() {}']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=True, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=True)])
         package.boil(external_nodes=[])
         package.output()
 

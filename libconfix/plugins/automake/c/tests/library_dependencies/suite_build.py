@@ -50,7 +50,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
 
         # bootstrap&&configure&&build&&install packages in order
         first_local_package = LocalPackage(rootdirectory=dirstructure.first_source(),
-                                           setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                                           setups=[ConfixSetup(use_libtool=False)])
         first_local_package.boil(external_nodes=[])
         first_local_package.output()
         dirstructure.sync()
@@ -70,7 +70,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
 
 
         second_local_package = LocalPackage(rootdirectory=dirstructure.second_source(),
-                                            setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                                            setups=[ConfixSetup(use_libtool=False)])
         second_local_package.boil(external_nodes=AutomakePackageRepository(prefix=dirstructure.first_install().abspath()).iter_nodes())
         second_local_package.output()
         dirstructure.sync()
@@ -90,7 +90,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
 
 
         third_local_package = LocalPackage(rootdirectory=dirstructure.third_source(),
-                                           setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                                           setups=[ConfixSetup(use_libtool=False)])
         third_local_package.boil(external_nodes=itertools.chain(
             AutomakePackageRepository(prefix=dirstructure.first_install().abspath()).iter_nodes(),
             AutomakePackageRepository(prefix=dirstructure.second_install().abspath()).iter_nodes()))
@@ -155,7 +155,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
                               "from libconfix.setups.automake import Automake",
 
                               "SETUP([AutoBoilerplate(),",
-                              "       AutoC(short_libnames=False),",
+                              "       AutoC(),",
                               "       Automake(use_libtool=False, library_dependencies=True)])"
                               ]))
         source.add(

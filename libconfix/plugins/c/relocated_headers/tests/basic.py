@@ -171,7 +171,7 @@ class BasicTest(unittest.TestCase):
 
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+            setups=[ConfixSetup(use_libtool=False)])
 
         package.boil(external_nodes=[])
 
@@ -274,7 +274,7 @@ class RelocatedHeaderRequiresRelocatedHeaderTest(unittest.TestCase):
 
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+            setups=[ConfixSetup(use_libtool=False)])
 
         package.boil(external_nodes=[])
 

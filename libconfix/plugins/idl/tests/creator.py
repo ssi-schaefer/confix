@@ -48,7 +48,7 @@ class CreatorTest(unittest.TestCase):
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+            setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         self.failIf(package.rootbuilder().find_entry_builder(path=['ignored1.idl']))

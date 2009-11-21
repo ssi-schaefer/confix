@@ -30,15 +30,13 @@ from libconfix.plugins.automake.setup import AutomakeSetup
 from libconfix.plugins.automake.c.library_dependencies import LibraryDependenciesFinderSetup
 
 class ConfixSetup(CompositeSetup):
-    def __init__(self,
-                 use_libtool,
-                 short_libnames):
+    def __init__(self, use_libtool, linkednamefinder=None):
         CompositeSetup.__init__(
             self,
             [CoreSetup(),
              PseudoHandWrittenFileSetup(),
              ImplicitDirectorySetup(),
-             DefaultCSetup(short_libnames=short_libnames),
+             DefaultCSetup(linkednamefinder=linkednamefinder),
              ScriptSetup(),
              IDLSetup(),
              PlainFileInterfaceSetup(),

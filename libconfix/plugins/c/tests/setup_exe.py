@@ -61,7 +61,7 @@ class ExecutableSetupTest(unittest.TestCase):
             entry=File(lines=['// CONFIX:EXENAME("main2")']))
         
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         file_h_builder = None

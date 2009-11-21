@@ -15,8 +15,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from name_mangling import NameManglingSuite
-
 from provide_require import Provide_CInclude_and_Require_CInclude_Suite
 from requires import RequireTestSuite
 from relate import RelateSuite
@@ -48,7 +46,6 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(RequireTestSuite())
         self.addTest(RelateSuite())
         self.addTest(LibrarySuite())
-        self.addTest(NameManglingSuite())
         self.addTest(SetupsInMemorySuite())
         self.addTest(RelocatedHeadersInMemorySuite())
         self.addTest(HeaderVisibilityInMemorySuite())

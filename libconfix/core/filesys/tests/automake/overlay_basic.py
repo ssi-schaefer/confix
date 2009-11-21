@@ -120,7 +120,7 @@ class OverlayBasicTest(PersistentTestCase):
         overlay_fs = OverlayFileSystem(original=source_fs, overlay=overlay_fs)
         
         package = LocalPackage(rootdirectory=overlay_fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

@@ -59,8 +59,7 @@ class LibraryBase(unittest.TestCase):
 
         self.package_ = LocalPackage(
             rootdirectory=self.fs_.rootdirectory(),
-            setups=[ConfixSetup(short_libnames=False,
-                                use_libtool=self.use_libtool())])
+            setups=[ConfixSetup(use_libtool=self.use_libtool())])
         self.package_.boil(external_nodes=[])
         self.package_.output()
 
@@ -172,7 +171,7 @@ class LIBADD(unittest.TestCase):
 
     def test_libtool(self):
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=True, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=True)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -186,7 +185,7 @@ class LIBADD(unittest.TestCase):
 
     def test_no_libtool(self):
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

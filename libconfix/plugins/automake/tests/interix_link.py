@@ -107,7 +107,7 @@ class InterixLink(PersistentTestCase):
             entry=Directory())
 
         package = LocalPackage(rootdirectory=source,
-                               setups=[ConfixSetup(use_libtool=True, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=True)])
         package.boil(external_nodes=[])
         package.output()
 

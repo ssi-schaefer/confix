@@ -58,8 +58,7 @@ class InternalRequires(unittest.TestCase):
         fs.rootdirectory().add(name='file.c',
                                entry=File(lines=['#include "file.h"']))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False,
-                                                   use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         self.failUnlessEqual(len(package.rootbuilder().requires()), 0)
         pass
@@ -71,8 +70,7 @@ class RelateBasic(unittest.TestCase):
                         rootdirectory=packages.lo_hi1_hi2_highest_exe(name='xxx', version='1.2.3'))
         
         self.package_ = LocalPackage(rootdirectory=fs.rootdirectory(),
-                                     setups=[ConfixSetup(short_libnames=False,
-                                                         use_libtool=False)])
+                                     setups=[ConfixSetup(use_libtool=False)])
         self.package_.boil(external_nodes=[])
 
         # from here on, we collect things that we will need in the

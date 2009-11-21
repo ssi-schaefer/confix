@@ -42,7 +42,7 @@ class PlainFileInMemoryTest(unittest.TestCase):
         fs = FileSystem(path=['don\'t', 'care'], rootdirectory=make_package())
         
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         
         plainfile_data = package.rootbuilder().find_entry_builder(['plainfile_data'])

@@ -104,7 +104,7 @@ class CONFIGURE_AC_ACINCLUDE_M4(unittest.TestCase):
                               "ACINCLUDE_M4(lines=['the_token_for_acinclude_m4'],",
                               "             flags=[LOCAL])"]))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -163,7 +163,7 @@ class CONFIGURE_AC_ACINCLUDE_M4(unittest.TestCase):
             entry=File(lines=['REQUIRE_SYMBOL("lo", URGENCY_ERROR)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -218,7 +218,7 @@ class CONFIGURE_AC_ACINCLUDE_M4(unittest.TestCase):
             entry=File(lines=['REQUIRE_SYMBOL("lo", URGENCY_ERROR)']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

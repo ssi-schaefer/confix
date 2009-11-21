@@ -82,7 +82,7 @@ class ReadonlyPrefixesBuildBase(PersistentTestCase):
                               'void lo() {}']))
 
         lo_package = LocalPackage(rootdirectory=lo_fs.rootdirectory(),
-                                  setups=[ConfixSetup(short_libnames=False, use_libtool=self.use_libtool())])
+                                  setups=[ConfixSetup(use_libtool=self.use_libtool())])
         lo_package.boil(external_nodes=[])
         lo_package.output()
         lo_fs.sync()
@@ -165,7 +165,7 @@ class ReadonlyPrefixesBuildBase(PersistentTestCase):
                               '}']))
 
         hi_package = LocalPackage(rootdirectory=hi_fs.rootdirectory(),
-                                  setups=[ConfixSetup(short_libnames=False, use_libtool=self.use_libtool())])
+                                  setups=[ConfixSetup(use_libtool=self.use_libtool())])
         hi_package.boil(external_nodes=repo.iter_nodes())
         hi_package.output()
         hi_fs.sync()

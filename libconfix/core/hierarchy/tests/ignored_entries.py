@@ -83,7 +83,7 @@ class IgnoredEntries(unittest.TestCase):
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[ConfixSetup(use_libtool=False, short_libnames=False),
+            setups=[ConfixSetup(use_libtool=False),
                     IgnoreTestSetup()])
         package.boil(external_nodes=[])
 

@@ -45,8 +45,7 @@ class BasicHeaderInstallTest(unittest.TestCase):
                                         entry=File())
         file_h.set_property(name='INSTALLPATH_CINCLUDE', value=[])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False,
-                                                   use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -72,8 +71,7 @@ class BasicHeaderInstallTest(unittest.TestCase):
                                         entry=File())
         file_h.set_property(name='INSTALLPATH_CINCLUDE', value=['xxx'])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False,
-                                                   use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 
@@ -127,8 +125,7 @@ class BasicHeaderInstallTest(unittest.TestCase):
                                         entry=File())
         file_h.set_property(name='INSTALLPATH_CINCLUDE', value=['xxx/yyy'])
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False,
-                                                   use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

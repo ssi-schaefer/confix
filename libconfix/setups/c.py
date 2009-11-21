@@ -26,7 +26,7 @@ class C(CompositeSetup):
     pass
 
 class AutoC(CompositeSetup):
-    def __init__(self, short_libnames):
-        CompositeSetup.__init__(self, [DefaultCSetup(short_libnames)])
+    def __init__(self, libnamefinder=None):
+        CompositeSetup.__init__(self, [DefaultCSetup(libnamefinder)])
         pass
     pass

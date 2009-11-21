@@ -50,7 +50,7 @@ class CheckProgramInMemory(unittest.TestCase):
             entry=File(lines=['int main(void) {}']))
         
         package = LocalPackage(rootdirectory=filesys.rootdirectory(),
-                               setups=ConfixSetup(use_libtool=False, short_libnames=False))
+                               setups=ConfixSetup(use_libtool=False))
         package.boil(external_nodes=[])
         package.output()
 

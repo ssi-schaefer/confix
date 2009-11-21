@@ -61,7 +61,7 @@ class IntraPackageBuildBase(PersistentTestCase):
                                                                             version='1.2.3'))
         
         self.package_ = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
-                                     setups=[ConfixSetup(short_libnames=False, use_libtool=self.use_libtool())])
+                                     setups=[ConfixSetup(use_libtool=self.use_libtool())])
         self.package_.boil(external_nodes=[])
         self.package_.output()
         self.fs_.sync()
@@ -160,7 +160,7 @@ class LocalIncludeDirTest(PersistentTestCase):
                               "#include <path/to/deep/deep.h>"]))
 
         package = LocalPackage(rootdirectory=source,
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

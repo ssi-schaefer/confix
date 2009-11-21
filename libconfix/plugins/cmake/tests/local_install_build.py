@@ -40,8 +40,8 @@ class LocalInstallBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(LocalInstallTest('test_basic'))
-        self.addTest(NoPublicInstall('test_explicit_no_public_visibility'))
-        self.addTest(NoPublicInstall('test_auto_no_public_visibility'))
+##         self.addTest(NoPublicInstall('test_explicit_no_public_visibility'))
+##         self.addTest(NoPublicInstall('test_auto_no_public_visibility'))
         pass
     pass
 
@@ -217,7 +217,7 @@ class NoPublicInstall(PersistentTestCase):
 
         package = LocalPackage(rootdirectory=source,
                                setups=[Boilerplate(),
-                                       AutoC(short_libnames=False),
+                                       AutoC(),
                                        CMake(library_dependencies=False)])
         package.boil(external_nodes=[])
         package.output()

@@ -77,7 +77,7 @@ class Bug1713807Test(unittest.TestCase):
                                                                   buildinfos=[])])
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=installed_package.nodes())
         pass
     pass

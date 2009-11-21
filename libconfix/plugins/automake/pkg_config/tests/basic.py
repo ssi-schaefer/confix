@@ -67,7 +67,7 @@ class BasicTest(unittest.TestCase):
             entry=File())
 
         package = LocalPackage(rootdirectory=root,
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False),
+                               setups=[ConfixSetup(use_libtool=False),
                                        PkgConfigSetup()])
         package.boil(external_nodes=[])
         package.output()

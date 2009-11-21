@@ -37,7 +37,6 @@ class InterPackageBuildSuite(unittest.TestSuite):
 
 class InterPackageBuildTest(PersistentTestCase):
     def use_libtool(self): return False
-    def short_libnames(self): return False
     def use_kde_hack(self): return False
     
     def test(self):
@@ -79,7 +78,7 @@ class InterPackageBuildTest(PersistentTestCase):
         
         common_package = LocalPackage(
             rootdirectory=common_source,
-            setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
+            setups=[ConfixSetup(use_libtool=self.use_libtool())])
         common_package.boil(external_nodes=[])
         common_package.output()
         fs.sync()                                      
@@ -100,7 +99,7 @@ class InterPackageBuildTest(PersistentTestCase):
 
         lo_package = LocalPackage(
             rootdirectory=lo_source,
-            setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
+            setups=[ConfixSetup(use_libtool=self.use_libtool())])
         lo_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
         lo_package.output()
         fs.sync()
@@ -122,7 +121,7 @@ class InterPackageBuildTest(PersistentTestCase):
 
         hi_package = LocalPackage(
             rootdirectory=hi_source,
-            setups=[ConfixSetup(short_libnames=self.short_libnames(), use_libtool=self.use_libtool())])
+            setups=[ConfixSetup(use_libtool=self.use_libtool())])
         hi_package.boil(external_nodes=AutomakePackageRepository(prefix=install.abspath()).nodes())
         hi_package.output()
         fs.sync()

@@ -34,17 +34,17 @@ class InterPackageInMemoryTest(unittest.TestCase):
         common, lo, hi = inter_package.make_source(classname=self.__class__.__name__)
         
         common_package = LocalPackage(rootdirectory=common,
-                                      setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                                      setups=[ConfixSetup(use_libtool=False)])
         common_package.boil(external_nodes=[])
         common_installed = common_package.install()
 
         lo_package = LocalPackage(rootdirectory=lo,
-                                  setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                                  setups=[ConfixSetup(use_libtool=False)])
         lo_package.boil(external_nodes=common_installed.nodes())
         lo_installed = lo_package.install()
 
         hi_package = LocalPackage(rootdirectory=hi,
-                                  setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                                  setups=[ConfixSetup(use_libtool=False)])
         hi_package.boil(external_nodes=common_installed.nodes() + lo_installed.nodes())
 
         pass

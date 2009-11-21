@@ -59,7 +59,7 @@ class ProvideRequireInclude(unittest.TestCase):
             entry=File(lines=["REQUIRE_H('lo.h', URGENCY_ERROR)"]))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(use_libtool=False, short_libnames=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
         lo_builder = package.rootbuilder().find_entry_builder(['lo'])

@@ -48,7 +48,7 @@ class ExplicitExecutableNameInMemoryTest(unittest.TestCase):
                               'int main() { return 0; }']))
 
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
 

@@ -67,7 +67,7 @@ class GeneratedPackageTest(PersistentTestCase):
         fs.sync()
         
         package = LocalPackage(rootdirectory=source,
-                               setups=[ConfixSetup(short_libnames=False, use_libtool=False)])
+                               setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
         package.output()
         

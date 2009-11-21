@@ -53,7 +53,7 @@ class LibraryTest(unittest.TestCase):
         
         package = LocalPackage(
             rootdirectory=fs.rootdirectory(),
-            setups=[DefaultCSetup(short_libnames=True), ImplicitDirectorySetup()])
+            setups=[DefaultCSetup(), ImplicitDirectorySetup()])
 
         package.boil(external_nodes=[])
 
