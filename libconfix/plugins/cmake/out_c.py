@@ -55,9 +55,7 @@ class HeaderOutputBuilder(Builder):
 
         cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
 
-        # headers that have to be locally installed.
-        # [('file', [rel-path])]
-        local_install_info = []
+        destdirs_created = set()
 
         for header in self.parentbuilder().iter_builders():
             if not isinstance(header, HeaderBuilder):
@@ -81,31 +79,44 @@ class HeaderOutputBuilder(Builder):
                     destination='/'.join(['include']+header.visibility()))
                 pass
 
+            # local install
             if header.package_visibility_action()[0] == HeaderBuilder.LOCALVISIBILITY_INSTALL:
-                install_dir = '/'.join(header.package_visibility_action()[1])
-                dotted_relpath = '.'.join(header.package_visibility_action()[1])
-                stampfile = '${PROJECT_BINARY_DIR}/'+const.STAMP_DIR+\
-                            '/local-header-install.'+dotted_relpath
+                destdir = '/'.join(['${PROJECT_BINARY_DIR}', 'confix-include']+header.package_visibility_action()[1])
+                destfile = destdir+'/'+header.file().name()
+                destfile_all_target = '.'.join(['confix-local-install']+header.package_visibility_action()[1]+[header.file().name()])
                 if generated:
-                    sourcepath = '${CMAKE_CURRENT_BINARY_DIR}/'+header.file().name()
+                    sourcefile = '${CMAKE_CURRENT_BINARY_DIR}/'+header.file().name()
                 else:
-                    sourcepath = '${CMAKE_CURRENT_SOURCE_DIR}/'+header.file().name()
+                    sourcefile = '${CMAKE_CURRENT_SOURCE_DIR}/'+header.file().name()
                     pass
+
+                # create rule to create installdir if not done
+                # already.
+                if not destdir in destdirs_created:
+                    destdirs_created.add(destdir)
+                    cmake_output_builder.local_cmakelists().add_custom_command__output(
+                        outputs=[destdir],
+                        commands=[
+                            ('${CMAKE_COMMAND} -E make_directory '+destdir, [])
+                            ],
+                        depends=[])
+                    pass
+
+                # create rule for the header local install
                 cmake_output_builder.local_cmakelists().add_custom_command__output(
-                    outputs=[stampfile],
+                    outputs=[destfile],
                     commands=[
-                        ('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/'+const.STAMP_DIR, []),
-                        ('${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/confix-include/'+install_dir, []),
-                        ('${CMAKE_COMMAND} -E create_symlink '+sourcepath+
-                                 ' ${PROJECT_BINARY_DIR}/confix-include/'+install_dir+'/'+header.file().name(), []),
-                        ('${CMAKE_COMMAND} -E touch '+stampfile, []),
+                        ('${CMAKE_COMMAND} -E copy '+sourcefile+' '+destfile, []),
                         ],
-                    depends=[sourcepath],
+                    depends=[sourcefile, destdir],
                     )
+
+                # hook header local install to the 'all' target.
                 cmake_output_builder.local_cmakelists().add_custom_target(
-                    name='confix-local-install.'+dotted_relpath,
+                    name=destfile_all_target,
                     all=True,
-                    depends=[stampfile])
+                    depends=[destfile])
+                pass
             elif header.package_visibility_action()[0] is HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE:
                 pass
             else:
