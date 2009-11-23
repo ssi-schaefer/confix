@@ -35,13 +35,17 @@ from libconfix.setups.cmake import CMake
 from libconfix.setups.boilerplate import Boilerplate
 
 import unittest
+import time
+import os
 
 class LocalInstallBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
         self.addTest(LocalInstallTest('test_basic'))
-        self.addTest(NoPublicInstall('test_explicit_no_public_visibility'))
-        self.addTest(NoPublicInstall('test_auto_no_public_visibility'))
+        self.addTest(LocalInstallTest('test_explicit_no_public_visibility'))
+        self.addTest(LocalInstallTest('test_auto_no_public_visibility'))
+        self.addTest(LocalInstallTest('test_no_timestamp_clobber'))
+        self.addTest(LocalInstallTest('test_sourcefile_dependency'))
         pass
     pass
 
@@ -145,9 +149,6 @@ class LocalInstallTest(PersistentTestCase):
 
         pass
 
-    pass
-
-class NoPublicInstall(PersistentTestCase):
     def test_explicit_no_public_visibility(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
@@ -235,6 +236,112 @@ class NoPublicInstall(PersistentTestCase):
         self.failIf(install.find(['include', 'header.h']))
         pass
 
+    # provided that the sourcefile does not change, local install must
+    # not take place at every call to make.
+
+    # I observed that this happens when having lots of header files in
+    # a directory, so I use 200 for this test. finally it turned out
+    # that the local-install rule's dependency on the local-install
+    # directory's timestamp didn't work out right.
+    def test_no_timestamp_clobber(self):
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('test_no_timestamp_clobber')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=[
+                "for f in xrange(200):",
+                "    H(filename='%s.h' % str(f), install=['subdir'])",
+                ]))
+        for f in xrange(200):
+            source.add(
+                name='%s.h' % str(f),
+                entry=File())
+            pass            
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(packageroot=source.abspath(), builddir=build.abspath(), args=[])
+
+        commands.make(builddir=build.abspath(), args=[])
+        mtimes = {}
+        for f in xrange(200):
+            mtime = os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', '%s.h' % str(f)])).st_mtime
+            mtimes[f] = mtime
+            pass
+
+        # wait a bit and then call 'make' again
+        time.sleep(1)
+
+        commands.make(builddir=build.abspath(), args=[])
+        for f in xrange(200):
+            mtime = os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', '%s.h' % str(f)])).st_mtime
+            self.failIf(mtime != mtimes[f], f)
+            pass
+        pass
+
+    # if the sourcefile changes it must be locally installed again.
+    def test_sourcefile_dependency(self):
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('test_sourcefile_dependency')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=[
+                "H(filename='h.h', install=['subdir'])",
+                ]))
+        h = source.add(
+            name='h.h',
+            entry=File())
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(packageroot=source.abspath(), builddir=build.abspath(), args=[])
+
+        commands.make(builddir=build.abspath(), args=[])
+        before_mtime = os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', 'h.h'])).st_mtime
+
+        # wait a bit. then touch the source file, call make again, and
+        # check that the file was locally installed again.
+        time.sleep(1)
+
+        h.add_lines(['x'])
+        fs.sync()
+
+        commands.make(builddir=build.abspath(), args=[])
+
+        self.failUnless(os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', 'h.h'])).st_mtime > before_mtime)
+
+        pass
+        
     pass
 
 if __name__ == '__main__':

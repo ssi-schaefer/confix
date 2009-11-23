@@ -55,8 +55,6 @@ class HeaderOutputBuilder(Builder):
 
         cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
 
-        destdirs_created = set()
-
         for header in self.parentbuilder().iter_builders():
             if not isinstance(header, HeaderBuilder):
                 continue
@@ -90,25 +88,14 @@ class HeaderOutputBuilder(Builder):
                     sourcefile = '${CMAKE_CURRENT_SOURCE_DIR}/'+header.file().name()
                     pass
 
-                # create rule to create installdir if not done
-                # already.
-                if not destdir in destdirs_created:
-                    destdirs_created.add(destdir)
-                    cmake_output_builder.local_cmakelists().add_custom_command__output(
-                        outputs=[destdir],
-                        commands=[
-                            ('${CMAKE_COMMAND} -E make_directory '+destdir, [])
-                            ],
-                        depends=[])
-                    pass
-
                 # create rule for the header local install
                 cmake_output_builder.local_cmakelists().add_custom_command__output(
                     outputs=[destfile],
                     commands=[
+                        ('${CMAKE_COMMAND} -E make_directory '+destdir, []),
                         ('${CMAKE_COMMAND} -E copy '+sourcefile+' '+destfile, []),
                         ],
-                    depends=[sourcefile, destdir],
+                    depends=[sourcefile],
                     )
 
                 # hook header local install to the 'all' target.
