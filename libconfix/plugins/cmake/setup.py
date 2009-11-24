@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-
+from readonly_prefixes import ReadonlyPrefixesSetup
 from out_cmake import CMakeBackendOutputBuilder
 from out_c import COutputSetup
 from out_plainfile import PlainfileOutputSetup
@@ -28,21 +28,18 @@ class CMakeSetup(CompositeSetup):
     def __init__(self):
         CompositeSetup.__init__(
             self,
-            setups=[CMakeCSetup(),
-                    PlainfileOutputSetup(),
-                    CMakeInterfaceSetup(),
-                    InfraStructureSetup()])
+            setups=[
+                ReadonlyPrefixesSetup(),
+                COutputSetup(),
+                PlainfileOutputSetup(),
+                CMakeInterfaceSetup(),
+                InfraStructureSetup(),
+                ])
         pass
     pass
 
 class InfraStructureSetup(Setup):
     def setup(self, dirbuilder):
         dirbuilder.add_backend_builder(CMakeBackendOutputBuilder())
-        pass
-    pass
-
-class CMakeCSetup(CompositeSetup):
-    def __init__(self):
-        CompositeSetup.__init__(self, setups=[COutputSetup()])
         pass
     pass

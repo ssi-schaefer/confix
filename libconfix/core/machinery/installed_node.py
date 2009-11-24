@@ -55,6 +55,7 @@ class InstalledNode(Node):
         Node.set_marshalling_data(self, data)
 
         self.__type_cache = {}
+        self.__isinstance_cache = {}
         pass
     
     def __init__(self, name, provides, requires, buildinfos):
@@ -66,11 +67,15 @@ class InstalledNode(Node):
         self.__buildinfos = buildinfos
 
         self.__type_cache = {}
+        self.__isinstance_cache = {}
         pass
     def __str__(self):
         return '.'.join([self.__package.name()]+self.__name)
     def short_description(self):
         return '.'.join([self.__package.name()]+self.__name)
+    def set_package(self, package):
+        self.__package = package
+        pass
     def package(self):
         return self.__package
     def name(self):
@@ -81,6 +86,7 @@ class InstalledNode(Node):
         return self.__requires
     def iter_buildinfos(self):
         return iter(self.__buildinfos)
+
     def iter_buildinfos_type(self, t):
         ret = self.__type_cache.get(t)
         if ret is not None:
@@ -94,7 +100,16 @@ class InstalledNode(Node):
             pass
         return ret
 
-    def set_package(self, package):
-        self.__package = package
-        pass
+    def iter_buildinfos_isinstance(self, t):
+        ret = self.__isinstance_cache.get(t)
+        if ret is not None:
+            return ret
+        ret = []
+        self.__isinstance_cache[t] = ret
+        for b in self.__buildinfos:
+            if isinstance(b, t):
+                ret.append(b)
+                pass
+            pass
+        return ret
     pass

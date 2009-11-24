@@ -296,6 +296,14 @@ class DirectoryBuilder(EntryBuilder, Node):
             pass
         pass
 
+    def iter_buildinfos_isinstance(self, t):
+        for b in self.iter_buildinfos():
+            if isinstance(b, t):
+                yield b
+                pass
+            pass
+        pass
+
     def install(self):
         return InstalledNode(
             name=self.__directory.relpath(self.package().rootdirectory()),
