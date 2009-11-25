@@ -35,7 +35,7 @@ from libconfix.plugins.automake.out_automake import find_automake_output_builder
 import re
 import os
 
-class Builder(FileBuilder):
+class IDLBuilder(FileBuilder):
     def __init__(self, file):
         FileBuilder.__init__(self, file=file)
         self.__includes = []
@@ -46,7 +46,7 @@ class Builder(FileBuilder):
         return 'IDL.Builder'
 
     def initialize(self, package):
-        super(Builder, self).initialize(package)
+        super(IDLBuilder, self).initialize(package)
         
         lines = self.file().lines()
 
@@ -80,7 +80,7 @@ class Builder(FileBuilder):
 
     def dependency_info(self):
         ret = DependencyInformation()
-        ret.add(super(Builder, self).dependency_info())
+        ret.add(super(IDLBuilder, self).dependency_info())
 
         external_name = '/'.join(self.__install_path + [self.file().name()])
         internal_name = self.file().name()
@@ -100,19 +100,6 @@ class Builder(FileBuilder):
     def install_path(self):
         return self.__install_path
 
-    def output(self):
-        super(Builder, self).output()
-
-        automake_output = find_automake_output_builder(self.parentbuilder())
-        automake_output.makefile_am().add_extra_dist(self.file().name())
-        automake_output.file_installer().add_private_header(
-            filename=self.file().name(),
-            dir=self.__install_path)
-        automake_output.file_installer().add_public_header(
-            filename=self.file().name(),
-            dir=self.__install_path)
-        pass
-
     re_beg_mod_ = re.compile(r'^\s*module(.*){')
     re_beg_mod_named_ = re.compile(r'^\s*(\w+)')
     re_end_mod_ = re.compile(r'^\s*}\s*;?\s*//.*(end of|/)\s*module')
@@ -126,15 +113,15 @@ class Builder(FileBuilder):
         lineno = 0
         for l in lines:
             lineno = lineno + 1
-            m = Builder.re_beg_mod_.search(l)
+            m = IDLBuilder.re_beg_mod_.search(l)
             if m:
-                n = Builder.re_beg_mod_named_.search(m.group(1))
+                n = IDLBuilder.re_beg_mod_named_.search(m.group(1))
                 mod_name = n and n.group(1) or ''
                 stack.append(mod_name)
                 stack_growth = 1
                 continue
 
-            m = Builder.re_end_mod_.search(l)            
+            m = IDLBuilder.re_end_mod_.search(l)            
             if m:
                 if len(stack) == 0:
                     raise Error('/'.join(self.file().relpath(self.package().rootdirectory())) + ':' + \

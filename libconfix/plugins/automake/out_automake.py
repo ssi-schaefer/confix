@@ -44,7 +44,7 @@ def find_automake_output_builder(dirbuilder):
     Find the directory's dedicated automake output builder.
     """
     for b in dirbuilder.iter_builders():
-        if isinstance(b, AutomakeBackendOutputBuilder):
+        if type(b) is AutomakeBackendOutputBuilder:
             return b
         pass
     else:

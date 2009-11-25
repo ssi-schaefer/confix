@@ -17,6 +17,7 @@
 
 from iface import AutomakeInterfaceSetup
 from out_automake import AutomakeBackendOutputBuilder
+from out_idl import IDLSetup
 from c.setup import CSetup
 from script.setup import AutomakeScriptSetup
 from plainfile.setup import AutomakePlainfileSetup
@@ -30,6 +31,7 @@ class AutomakeSetup(CompositeSetup):
             self,
             setups=[AutomakeInterfaceSetup(),
                     CSetup(use_libtool=use_libtool),
+                    IDLOutputSetup(),
                     AutomakeScriptSetup(),
                     AutomakePlainfileSetup(),
                     InfraStructureSetup(),

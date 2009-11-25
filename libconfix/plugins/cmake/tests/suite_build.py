@@ -24,6 +24,7 @@ from readonly_prefixes_build import ReadonlyPrefixesBuildSuite
 from external_library_build import ExternalLibraryBuildSuite
 from plainfile_build import PlainfileBuildSuite
 from generator_build import GeneratorBuildSuite
+from idl_build import IDLBuildSuite
 
 import unittest
 
@@ -39,6 +40,7 @@ class CMakeBuildSuite(unittest.TestSuite):
         self.addTest(ExternalLibraryBuildSuite())
         self.addTest(PlainfileBuildSuite())
         self.addTest(GeneratorBuildSuite())
+        self.addTest(IDLBuildSuite())
         pass
     pass
 

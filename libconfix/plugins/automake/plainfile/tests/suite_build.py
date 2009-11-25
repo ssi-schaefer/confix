@@ -16,19 +16,24 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.plainfile.tests.package import make_package
-from libconfix.plugins.automake.setup import AutomakeSetup
-
-from libconfix.plugins.automake import bootstrap, configure, make
-from libconfix.core.filesys.directory import Directory
-from libconfix.core.filesys.filesys import FileSystem
-from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
-from libconfix.core.machinery.local_package import LocalPackage
-
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
+
+from libconfix.plugins.automake.setup import AutomakeSetup
+from libconfix.plugins.automake import bootstrap, configure, make
+
+from libconfix.setups.plainfile import Plainfile
+from libconfix.setups.automake import Automake 
+from libconfix.setups.boilerplate import Boilerplate 
+
+from libconfix.core.filesys.directory import Directory
+from libconfix.core.filesys.file import File
+from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.hierarchy.implicit_setup import ImplicitDirectorySetup
+from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.utils import const
 
 import os
 import sys
@@ -45,43 +50,61 @@ class AutomakePlainfileBuildTest(PersistentTestCase):
     def __init__(self, methodname):
         PersistentTestCase.__init__(self, methodname)
         pass
-    
+
     def test(self):
-        source = make_package()
-    
         fs = FileSystem(path=self.rootpath())
-        fs.rootdirectory().add(
+        source = fs.rootdirectory().add(
             name='source',
-            entry=source)
-        fs.rootdirectory().add(
+            entry=Directory())
+        build = fs.rootdirectory().add(
             name='build',
             entry=Directory())
-        fs.rootdirectory().add(
+        install = fs.rootdirectory().add(
             name='install',
             entry=Directory())
 
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('SimplePlainFileTest')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["ADD_PLAINFILE(filename='plainfile_data', ",
+                              "              datadir=['subdir', 'data'])", # list of path components
+                              "ADD_PLAINFILE(filename='plainfile_prefix',",
+                              "              prefixdir='subdir/prefix')", # string
+                              ]))
+        source.add(
+            name='plainfile_data',
+            entry=File())
+        source.add(
+            name='plainfile_prefix',
+            entry=File())
+
+##         package = LocalPackage(rootdirectory=source,
+##                                setups=[ImplicitDirectorySetup(), PlainFileInterfaceSetup(), AutomakeSetup(use_libtool=False)])
         package = LocalPackage(rootdirectory=source,
-                               setups=[ImplicitDirectorySetup(), PlainFileInterfaceSetup(), AutomakeSetup(use_libtool=False)])
+                               setups=[Boilerplate(), Plainfile(), Automake(use_libtool=False, library_dependencies=False)])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()
 
         bootstrap.bootstrap(
-            packageroot=self.rootpath() + ['source'],
+            packageroot=source.abspath(),
             path=None,
             use_kde_hack=False, # (same)
             argv0=sys.argv[0])
         configure.configure(
-            packageroot=self.rootpath() + ['source'],
-            builddir=self.rootpath() + ['build'],
-            prefix=self.rootpath() + ['install'],
+            packageroot=source.abspath(),
+            builddir=build.abspath(),
+            prefix=install.abspath(),
             readonly_prefixes=[])
-        make.make(builddir=self.rootpath() + ['build'], args=['install'])
+        make.make(builddir=build.abspath(), args=['install'])
         
         self.failUnless(os.path.isfile(os.sep.join(
-            self.rootpath()+['install', 'share', 'subdir', 'data', 'plainfile_data'])))
+            install.abspath() + ['share', 'subdir', 'data', 'plainfile_data'])))
         self.failUnless(os.path.isfile(os.sep.join(
-            self.rootpath()+['install', 'subdir', 'prefix', 'plainfile_prefix'])))
+            install.abspath() + ['subdir', 'prefix', 'plainfile_prefix'])))
 
         pass
     pass        

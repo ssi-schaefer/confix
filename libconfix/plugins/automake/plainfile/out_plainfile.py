@@ -29,7 +29,7 @@ class AutomakePlainfileOutputBuilder(Builder):
         output_builder = None
         
         for b in self.parentbuilder().iter_builders():
-            if isinstance(b, PlainFileBuilder):
+            if type(b) is PlainFileBuilder:
 
                 if output_builder is None:
                     output_builder = find_automake_output_builder(self.parentbuilder())

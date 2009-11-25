@@ -19,6 +19,7 @@ from readonly_prefixes import ReadonlyPrefixesSetup
 from out_cmake import CMakeBackendOutputBuilder
 from out_c import COutputSetup
 from out_plainfile import PlainfileOutputSetup
+from out_idl import IDLOutputSetup
 from iface import CMakeInterfaceSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
@@ -32,6 +33,7 @@ class CMakeSetup(CompositeSetup):
                 ReadonlyPrefixesSetup(),
                 COutputSetup(),
                 PlainfileOutputSetup(),
+                IDLOutputSetup(),
                 CMakeInterfaceSetup(),
                 InfraStructureSetup(),
                 ])

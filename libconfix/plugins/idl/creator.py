@@ -46,7 +46,7 @@ class IDLCreator(Builder):
             if not name.endswith('.idl'):
                 continue
 
-            self.parentbuilder().add_builder(builder.Builder(file=entry))
+            self.parentbuilder().add_builder(builder.IDLBuilder(file=entry))
 
             self.handled_entries_.add(name)
             pass

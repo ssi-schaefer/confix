@@ -34,7 +34,7 @@ def find_cmake_output_builder(dirbuilder):
     Find the directory's dedicated automake output builder.
     """
     for b in dirbuilder.iter_builders():
-        if isinstance(b, CMakeBackendOutputBuilder):
+        if type(b) is CMakeBackendOutputBuilder:
             return b
         pass
     else:
