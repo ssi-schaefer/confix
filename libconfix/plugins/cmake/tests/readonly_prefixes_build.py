@@ -22,12 +22,17 @@ from libconfix.plugins.cmake import commands
 
 from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 
+from libconfix.setups.boilerplate import Boilerplate
+from libconfix.setups.cmake import CMake
+from libconfix.setups.c import C
+
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.repo import AutomakeCascadedPackageRepository
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.filesys import FileSystem
+from libconfix.core.filesys import scan
 from libconfix.core.utils import const
 
 from libconfix.testutils.persistent import PersistentTestCase
@@ -39,8 +44,9 @@ import time
 class ReadonlyPrefixesBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(ReadonlyPrefixesBuildTest('test'))
-        self.addTest(ReadonlyPrefixesBuildTest('test_library_dependencies_with_readonly_prefixes'))
+##         self.addTest(ReadonlyPrefixesBuildTest('test'))
+##         self.addTest(ReadonlyPrefixesBuildTest('test_library_dependencies_with_readonly_prefixes'))
+        self.addTest(ReadonlyPrefixesUtilityBuildTest('test_copy_include_files_to_local_package'))
         pass
     pass
 
@@ -313,6 +319,195 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
 
         pass
     pass
+
+class ReadonlyPrefixesUtilityBuildTest(PersistentTestCase):
+    def test_copy_include_files_to_local_package(self):
+        fs = FileSystem(path=self.rootpath())
+
+        if True:
+            # readonly_prefix1 has a file flatfile.h, flat in
+            # prefix/include.
+            readonly_prefix1_source = fs.rootdirectory().add(
+                name='readonly_prefix1_source',
+                entry=Directory())
+            readonly_prefix1_source.add(
+                name=const.CONFIX2_PKG,
+                entry=File(lines=["PACKAGE_NAME('readonly_prefix1')",
+                                  "PACKAGE_VERSION('1.2.3')"]))
+            readonly_prefix1_source.add(
+                name=const.CONFIX2_DIR,
+                entry=File(lines=["H(filename='flatfile.h')"]))
+            readonly_prefix1_source.add(
+                name='flatfile.h',
+                entry=File())
+            readonly_prefix1_build = fs.rootdirectory().add(
+                name='readonly_prefix1_build',
+                entry=Directory())
+            readonly_prefix1_install = fs.rootdirectory().add(
+                name='readonly_prefix1_install',
+                entry=Directory())
+
+            readonly_prefix1_package = LocalPackage(
+                rootdirectory=readonly_prefix1_source,
+                setups=[Boilerplate(), C(), CMake(library_dependencies=False)])
+            readonly_prefix1_package.boil(external_nodes=[])
+            readonly_prefix1_package.output()
+            fs.sync()
+
+            commands.cmake(
+                packageroot=readonly_prefix1_source.abspath(),
+                builddir=readonly_prefix1_build.abspath(),
+                prefix=readonly_prefix1_install.abspath())
+            commands.make(
+                builddir=readonly_prefix1_build.abspath(),
+                args=['install'])
+
+            # readonly_prefix2 has a file subdirfile.h, in a subdir,
+            # prefix/include/subdir.
+            readonly_prefix2_source = fs.rootdirectory().add(
+                name='readonly_prefix2_source',
+                entry=Directory())
+            readonly_prefix2_source.add(
+                name=const.CONFIX2_PKG,
+                entry=File(lines=["PACKAGE_NAME('readonly_prefix2')",
+                                  "PACKAGE_VERSION('1.2.3')"]))
+            readonly_prefix2_source.add(
+                name=const.CONFIX2_DIR,
+                entry=File(lines=["H(filename='subdirfile.h', install=['subdir'])"]))
+            readonly_prefix2_source.add(
+                name='subdirfile.h',
+                entry=File())
+            readonly_prefix2_build = fs.rootdirectory().add(
+                name='readonly_prefix2_build',
+                entry=Directory())
+            readonly_prefix2_install = fs.rootdirectory().add(
+                name='readonly_prefix2_install',
+                entry=Directory())
+
+            readonly_prefix2_package = LocalPackage(
+                rootdirectory=readonly_prefix2_source,
+                setups=[Boilerplate(), C(), CMake(library_dependencies=False)])
+            readonly_prefix2_package.boil(external_nodes=readonly_prefix1_package.install().nodes())
+            readonly_prefix2_package.output()
+            fs.sync()
+
+            commands.cmake(
+                packageroot=readonly_prefix2_source.abspath(),
+                builddir=readonly_prefix2_build.abspath(),
+                prefix=readonly_prefix2_install.abspath())
+            commands.make(
+                builddir=readonly_prefix2_build.abspath(),
+                args=['install'])
+
+            # prefix has
+            # prefix/include/prefixsubdir/prefixsubdirfile.h
+            prefix_source = fs.rootdirectory().add(
+                name='prefix_source',
+                entry=Directory())
+            prefix_source.add(
+                name=const.CONFIX2_PKG,
+                entry=File(lines=["PACKAGE_NAME('prefix')",
+                                  "PACKAGE_VERSION('1.2.3')"]))
+            prefix_source.add(
+                name=const.CONFIX2_DIR,
+                entry=File(lines=["H(filename='prefixsubdirfile.h', install=['prefixsubdir'])"]))
+            prefix_source.add(
+                name='prefixsubdirfile.h',
+                entry=File())
+            prefix_build = fs.rootdirectory().add(
+                name='prefix_build',
+                entry=Directory())
+            prefix_install = fs.rootdirectory().add(
+                name='prefix_install',
+                entry=Directory())
+
+            prefix_package = LocalPackage(
+                rootdirectory=prefix_source,
+                setups=[Boilerplate(), C(), CMake(library_dependencies=False)])
+            prefix_package.boil(external_nodes=readonly_prefix1_package.install().nodes() + readonly_prefix2_package.install().nodes())
+            prefix_package.output()
+            fs.sync()
+
+            commands.cmake(
+                packageroot=prefix_source.abspath(),
+                builddir=prefix_build.abspath(),
+                prefix=prefix_install.abspath())
+            commands.make(
+                builddir=prefix_build.abspath(),
+                args=['install'])
+            pass
+
+        test_source = fs.rootdirectory().add(
+            name='test_source',
+            entry=Directory())
+        test_source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('test_source')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        test_source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_FIND_CALL([',
+                              '    "ConfixFindNativeInstalledFile(flatfile_dir flatfile.h include)",',
+                              '    "ConfixFindNativeInstalledFile(subdirfile_dir subdirfile.h include/subdir)",',
+                              '    "ConfixFindNativeInstalledFile(prefixsubdirfile_dir prefixsubdirfile.h include/prefixsubdir)",',
+                              '    "MESSAGE(STATUS flatfile: ${flatfile_dir})",',
+                              '    "MESSAGE(STATUS subdirfile: ${subdirfile_dir})",',
+                              '    "MESSAGE(STATUS prefixsubdirfile: ${prefixsubdirfile_dir})",',
+                              '    ],',
+                              '    flags=CMAKE_BUILDINFO_LOCAL,',
+                              ')',
+                              'CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(',
+                              '    outputs=["flatfile-copy.h"],',
+                              '    commands=[("cp ${flatfile_dir}/flatfile.h flatfile-copy.h", [])],',
+                              '    depends=["${flatfile_dir}/flatfile.h"],',
+                              ')',
+                              'CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(',
+                              '    outputs=["subdirfile-copy.h"],',
+                              '    commands=[("cp ${subdirfile_dir}/subdirfile.h subdirfile-copy.h", [])],',
+                              '    depends=["${subdirfile_dir}/subdirfile.h"],',
+                              ')',
+                              'CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(',
+                              '    outputs=["prefixsubdirfile-copy.h"],',
+                              '    commands=[("cp ${prefixsubdirfile_dir}/prefixsubdirfile.h prefixsubdirfile-copy.h", [])],',
+                              '    depends=["${prefixsubdirfile_dir}/prefixsubdirfile.h"],',
+                              ')',
+                              'CMAKE_CMAKELISTS_ADD_CUSTOM_TARGET(',
+                              '    name="we-make-them-with-all-target",',
+                              '    all=True,',
+                              '    depends=["flatfile-copy.h", "subdirfile-copy.h", "prefixsubdirfile-copy.h"])',
+                              ]))
+        test_build = fs.rootdirectory().add(
+            name='test_build',
+            entry=Directory())
+
+        test_package = LocalPackage(
+            rootdirectory=test_source,
+            setups=[Boilerplate(), C(), CMake(library_dependencies=False)])
+        test_package.boil(external_nodes=readonly_prefix1_package.install().nodes() + \
+                          readonly_prefix2_package.install().nodes() + \
+                          prefix_package.install().nodes())
+        test_package.output()
+        fs.sync()
+
+        commands.cmake(
+            packageroot=test_source.abspath(),
+            builddir=test_build.abspath(),
+            args=['-DREADONLY_PREFIXES='+\
+                  '/'.join(prefix_install.abspath())+';'+ \
+                  '/'.join(readonly_prefix2_install.abspath())+';'+ \
+                  '/'.join(readonly_prefix1_install.abspath())])
+        commands.make(
+            builddir=test_build.abspath())
+
+        scan.rescan_dir(test_build)
+        self.failUnless(test_build.get('flatfile-copy.h'))
+        self.failUnless(test_build.get('subdirfile-copy.h'))
+        self.failUnless(test_build.get('prefixsubdirfile-copy.h'))
+            
+        self.fail('comment the others back in')
+        pass
+    pass
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(ReadonlyPrefixesBuildSuite())

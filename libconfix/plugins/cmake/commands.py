@@ -21,18 +21,32 @@ from libconfix.core.utils.error import Error
 
 import os
 
-def cmake(packageroot, builddir, args, path=None):
+def cmake(packageroot, builddir, args=None, prefix=None, path=None):
     cmake_prog = external_cmd.search_program('cmake', path)
     if cmake_prog is None:
         raise Error('cmake not found along path')
+    the_args = []
+    if args is not None:
+        the_args.extend(args)
+        pass
+    if prefix is not None:
+        assert type(prefix) in (list, tuple)
+        the_args.append('-DCMAKE_INSTALL_PREFIX='+'/'.join(prefix))
+        pass
+    the_args.append(os.sep.join(packageroot))
     external_cmd.exec_program(
         program=cmake_prog,
         dir=os.path.join(builddir),
-        args=args+[os.sep.join(packageroot)],
+        args=the_args,
         path=path,
         print_cmdline=True)
     pass
 
-def make(builddir, args, env=None):
-    external_cmd.exec_program(program='make', dir=builddir, args=args, env=env)
+def make(builddir, args=None, env=None):
+    if args is None:
+        the_args = []
+    else:
+        the_args = args
+        pass
+    external_cmd.exec_program(program='make', dir=builddir, args=the_args, env=env)
     pass

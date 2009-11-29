@@ -30,8 +30,6 @@ from libconfix.core.utils.error import Error
 
 import libconfix.plugins.c.helper
 
-from libconfix.plugins.automake.out_automake import find_automake_output_builder
-
 import re
 import os
 
