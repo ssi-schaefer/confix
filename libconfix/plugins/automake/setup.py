@@ -17,7 +17,7 @@
 
 from iface import AutomakeInterfaceSetup
 from out_automake import AutomakeBackendOutputBuilder
-from out_idl import IDLSetup
+from out_idl import IDLOutputSetup
 from c.setup import CSetup
 from script.setup import AutomakeScriptSetup
 from plainfile.setup import AutomakePlainfileSetup
