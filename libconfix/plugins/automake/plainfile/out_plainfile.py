@@ -36,6 +36,8 @@ class AutomakePlainfileOutputBuilder(Builder):
                     assert output_builder is not None
                     pass
 
+                output_builder.makefile_am().add_extra_dist(b.file().name())
+
                 if b.datadir() is not None:
                     output_builder.file_installer().add_datafile(
                         filename=b.file().name(),

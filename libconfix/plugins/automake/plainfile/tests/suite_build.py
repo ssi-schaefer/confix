@@ -16,6 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
+
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
 
@@ -81,12 +83,15 @@ class AutomakePlainfileBuildTest(PersistentTestCase):
             name='plainfile_prefix',
             entry=File())
 
-##         package = LocalPackage(rootdirectory=source,
-##                                setups=[ImplicitDirectorySetup(), PlainFileInterfaceSetup(), AutomakeSetup(use_libtool=False)])
         package = LocalPackage(rootdirectory=source,
                                setups=[Boilerplate(), Plainfile(), Automake(use_libtool=False, library_dependencies=False)])
         package.boil(external_nodes=[])
         package.output()
+
+        automake_output_builder = find_automake_output_builder(package.rootbuilder())
+        self.failUnless('plainfile_data' in automake_output_builder.makefile_am().extra_dist())
+        self.failUnless('plainfile_prefix' in automake_output_builder.makefile_am().extra_dist())
+        
         fs.sync()
 
         bootstrap.bootstrap(
