@@ -19,6 +19,8 @@
 from h import HeaderBuilder
 from c import CBuilder
 from cxx import CXXBuilder
+from lex import LexBuilder
+from yacc import YaccBuilder
 from library import LibraryBuilder
 from executable import ExecutableBuilder
 from clusterer import LongNameFinder
@@ -88,6 +90,16 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         cxx = CXXBuilder(file=self.__find_file(filename))
         self.__dirbuilder.add_builder(cxx)
         return cxx
+
+    def LEX(self, filename):
+        lex = LexBuilder(file=self.__find_file(filename))
+        self.__dirbuilder.add_builder(lex)
+        return lex
+
+    def YACC(self, filename):
+        yacc = YaccBuilder(file=self.__find_file(filename))
+        self.__dirbuilder.add_builder(yacc)
+        return yacc
 
     def LIBRARY(self, members, basename=None, version=None):
         the_basename = basename
