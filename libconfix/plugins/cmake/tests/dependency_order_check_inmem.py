@@ -209,7 +209,8 @@ class DependencyOrderTest(unittest.TestCase):
 
         cmake_output_builder = find_cmake_output_builder(final_package.rootbuilder().find_entry_builder(['bin']))
         self.failUnlessEqual(cmake_output_builder.local_cmakelists().get_include_directories(),
-                             ['${final_BINARY_DIR}/local2',
+                             ['${CMAKE_CURRENT_BINARY_DIR}',
+                              '${final_BINARY_DIR}/local2',
                               '${final_SOURCE_DIR}/local2',
                               '${final_BINARY_DIR}/local1',
                               '${final_SOURCE_DIR}/local1',

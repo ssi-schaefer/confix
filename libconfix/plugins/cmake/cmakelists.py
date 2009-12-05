@@ -250,7 +250,7 @@ class CMakeLists:
     def add_custom_command__output(self, outputs, commands, depends, working_directory=None):
         assert len(outputs)
         for c in commands:
-            assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+c
+            assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+str(c)
             pass
         self.__custom_commands__output.append((outputs, commands, depends, working_directory))
         pass

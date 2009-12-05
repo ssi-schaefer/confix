@@ -58,6 +58,10 @@ class CMakeBackendOutputBuilder(Builder):
         return self.__top_cmakelists
 
     def add_module_file(self, name, lines):
+        """
+        Add a file @name (consisting of @lines) to the package's
+        Modules directory.
+        """
         self.__modules_builder.add_module_file(name, lines)
         pass
 

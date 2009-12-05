@@ -20,6 +20,9 @@ from out_cmake import find_cmake_output_builder
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
 
+def includefile(packagename):
+    return '${%s_SOURCE_DIR}/confix-admin/cmake/Modules/ConfixReadonlyPrefixes.cmake' % packagename    
+
 class ReadonlyPrefixesSetup(Setup):
     def setup(self, dirbuilder):
         dirbuilder.add_builder(ReadonlyPrefixesBuilder())
@@ -41,12 +44,14 @@ class ReadonlyPrefixesBuilder(Builder):
         cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
 
         cmake_output_builder.top_cmakelists().add_include(
-            '${'+self.package().name()+'_SOURCE_DIR}/'
-            'confix-admin/cmake/Modules/ConfixReadonlyPrefixes.cmake')
+            includefile(self.package().name()))            
 
         cmake_output_builder.add_module_file(
             name='ConfixReadonlyPrefixes.cmake',
             lines=[
+                '# Find subdir/filename along the prefix and readonly-prefixes.',
+                '# The directory where the file has been found is stored ',
+                '# in the output variable "directory"',
                 'FUNCTION(ConfixFindNativeInstalledFile directory filename subdir)',
                 '    SET(my_path ${CMAKE_INSTALL_PREFIX}/${subdir})',
                 '    FOREACH(dir ${READONLY_PREFIXES})',

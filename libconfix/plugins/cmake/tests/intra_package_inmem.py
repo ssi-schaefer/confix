@@ -97,28 +97,38 @@ class IntraPackageTest(unittest.TestCase):
         pass
 
     def test_include_paths(self):
-        # same for include paths. note that we add the associated
-        # build directory in case it contains generated files - hence
-        # the '*2' in the checks.
-        self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().get_include_directories()), 0)
+        self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().get_include_directories()),
+                             # the binary directory that is associated with 'lo'
+                             1
+                             )
 
         hi_include_directories = self.__hi_output_builder.local_cmakelists().get_include_directories()
-        self.failUnlessEqual(len(hi_include_directories), 1*2)
-        self.failUnless(hi_include_directories[0] == '${'+self.__package.name()+'_SOURCE_DIR}/lo' and
-                        hi_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/lo' or
-                        hi_include_directories[0] == '${'+self.__package.name()+'_BINARY_DIR}/lo' and
-                        hi_include_directories[1] == '${'+self.__package.name()+'_SOURCE_DIR}/lo')
+        self.failUnlessEqual(len(hi_include_directories),
+                             # the binary directory that is associated
+                             # with 'hi', plus twice 'lo' (binary and
+                             # source)
+                             1 + 1*2)
+        self.failUnless(hi_include_directories[0] == '${CMAKE_CURRENT_BINARY_DIR}' and 
+                        hi_include_directories[1] == '${'+self.__package.name()+'_SOURCE_DIR}/lo' and
+                        hi_include_directories[2] == '${'+self.__package.name()+'_BINARY_DIR}/lo' or
+                        hi_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/lo' and
+                        hi_include_directories[2] == '${'+self.__package.name()+'_SOURCE_DIR}/lo')
         
         exe_include_directories = self.__exe_output_builder.local_cmakelists().get_include_directories()
-        self.failUnlessEqual(len(exe_include_directories), 2*2)
-        self.failUnless(exe_include_directories[0] == '${'+self.__package.name()+'_SOURCE_DIR}/hi' and
-                        exe_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/hi' or
-                        exe_include_directories[0] == '${'+self.__package.name()+'_BINARY_DIR}/hi' and
-                        exe_include_directories[1] == '${'+self.__package.name()+'_SOURCE_DIR}/hi')
-        self.failUnless(exe_include_directories[2] == '${'+self.__package.name()+'_SOURCE_DIR}/lo' and
-                        exe_include_directories[3] == '${'+self.__package.name()+'_BINARY_DIR}/lo' or
-                        exe_include_directories[2] == '${'+self.__package.name()+'_BINARY_DIR}/lo' and
-                        exe_include_directories[3] == '${'+self.__package.name()+'_SOURCE_DIR}/lo')
+        self.failUnlessEqual(len(exe_include_directories),
+                             # the binary directory that is
+                             # associaated with 'exe', plus two each
+                             # for 'hi' and 'lo'.
+                             1 + 2*2)
+        self.failUnless(exe_include_directories[0] == '${CMAKE_CURRENT_BINARY_DIR}')
+        self.failUnless(exe_include_directories[1] == '${'+self.__package.name()+'_SOURCE_DIR}/hi' and
+                        exe_include_directories[2] == '${'+self.__package.name()+'_BINARY_DIR}/hi' or
+                        exe_include_directories[1] == '${'+self.__package.name()+'_BINARY_DIR}/hi' and
+                        exe_include_directories[2] == '${'+self.__package.name()+'_SOURCE_DIR}/hi')
+        self.failUnless(exe_include_directories[3] == '${'+self.__package.name()+'_SOURCE_DIR}/lo' and
+                        exe_include_directories[4] == '${'+self.__package.name()+'_BINARY_DIR}/lo' or
+                        exe_include_directories[3] == '${'+self.__package.name()+'_BINARY_DIR}/lo' and
+                        exe_include_directories[4] == '${'+self.__package.name()+'_SOURCE_DIR}/lo')
 
         pass
 

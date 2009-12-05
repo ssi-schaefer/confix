@@ -46,11 +46,13 @@ class PlainFileBuilder(FileBuilder):
         pass
 
     def locally_unique_id(self):
-        if(self.datadir_):
+        if self.datadir_ is not None:
             suffix = 'datadir:'+'/'.join(self.datadir())
-
-        if(self.prefixdir_):
+        elif self.prefixdir_ is not None:
             suffix = 'prefixdir:'+'/'.join(self.prefixdir())
+        else:
+            assert False, 'neither data nor prefix?'
+            pass
 
         return FileBuilder.locally_unique_id(self)+'-'+suffix
 

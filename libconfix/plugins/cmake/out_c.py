@@ -191,22 +191,27 @@ class CompiledOutputBuilder(Builder):
 
         cmake_output_builder = find_cmake_output_builder(self.parentbuilder())
 
-        # if we have locally installed headers, add the
-        # 'confix-include' directory to the include path.
-        if using_locally_installed_headers:
-            cmake_output_builder.local_cmakelists().add_include_directory(
-                '${PROJECT_BINARY_DIR}/'+const.LOCAL_INCLUDE_DIR)
-            pass
+        # add the associated binary directory of the current source
+        # directory, in case there are generated headers.
+        cmake_output_builder.local_cmakelists().add_include_directory(
+            '${CMAKE_CURRENT_BINARY_DIR}')
 
-        # in addition to the source directory, add the associated
-        # build directory in case it contains generated headers
-        # (automake has this built-in as it uses VPATH, and we don't
-        # want to break with it).
+        # header files from directories in the local package, other
+        # than the directory being compiled: in addition to the source
+        # directory, add the associated build directory in case it
+        # contains generated headers.
         for dir in native_local_include_dirs:
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${'+self.package().name()+'_BINARY_DIR}/'+dir)
             cmake_output_builder.local_cmakelists().add_include_directory(
                 '${'+self.package().name()+'_SOURCE_DIR}/'+dir)
+            pass
+
+        # if we have locally installed headers, add the
+        # 'confix-include' directory to the include path.
+        if using_locally_installed_headers:
+            cmake_output_builder.local_cmakelists().add_include_directory(
+                '${PROJECT_BINARY_DIR}/'+const.LOCAL_INCLUDE_DIR)
             pass
 
         # finding installed headers if need be. use our good old

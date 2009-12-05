@@ -186,6 +186,7 @@ class Makefile_am(object):
 
     def add_cleanfiles(self, name): self.__cleanfiles.add(name)
 
+    def distcleanfiles(self): return self.__distcleanfiles
     def add_distcleanfiles(self, name): self.__distcleanfiles.add(name)
 
     def maintainercleanfiles(self): return self.__maintainercleanfiles

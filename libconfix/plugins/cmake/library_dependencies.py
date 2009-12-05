@@ -43,9 +43,6 @@ class LibraryDependenciesBuilder(Builder):
             found_exe = True
             for bi in exe.topo_libraries():
                 if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
-                    cmake_output_builder.top_cmakelists().add_include(
-                        '${'+self.package().name()+'_SOURCE_DIR}/'
-                        'confix-admin/cmake/Modules/ConfixReadonlyPrefixes.cmake')
                     cmake_output_builder.top_cmakelists().add_find_call(
                         'ConfixFindNativeInstalledLibrary('+bi.basename()+' '+exe.exename()+')')
                     cmake_output_builder.local_cmakelists().tighten_target_link_library(
