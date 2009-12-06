@@ -88,6 +88,10 @@ class CMakeLists:
         # [(['file'], 'destination')]
         self.__install__files = []
 
+        # CMake: INSTALL(PROGRAMS ...)
+        # [(['file'], 'destination')]
+        self.__install__programs = []
+
         # CMake: INSTALL(TARGETS ...)
         # [(['target'], 'destination')]
         self.__install__targets = []
@@ -263,6 +267,10 @@ class CMakeLists:
         self.__install__files.append((files, destination))
         pass
 
+    def add_install__programs(self, programs, destination):
+        self.__install__programs.append((programs, destination))
+        pass
+
     def add_install__targets(self, targets, destination):
         self.__install__targets.append((targets, destination))
         pass
@@ -369,7 +377,11 @@ class CMakeLists:
             lines.append('ADD_CUSTOM_COMMAND(')
             lines.append('    OUTPUT '+' '.join(outputs))
             for c in commands:
-                lines.append('    COMMAND '+c[0]+' ARGS '+' '.join(c[1]))
+                if len(c[1]) > 0:
+                    lines.append('    COMMAND '+c[0]+' ARGS '+' '.join(c[1]))
+                else:
+                    lines.append('    COMMAND '+c[0])
+                    pass
                 pass
             if len(depends):
                 lines.append('    DEPENDS '+' '.join(depends))
@@ -400,6 +412,14 @@ class CMakeLists:
         for (files, destination) in self.__install__files:
             lines.append('INSTALL(')
             lines.append('    FILES '+' '.join(files))
+            lines.append('    DESTINATION '+destination)
+            lines.append(')')
+            pass
+        
+        # INSTALL(PROGRAMS ...)
+        for (programs, destination) in self.__install__programs:
+            lines.append('INSTALL(')
+            lines.append('    PROGRAMS '+' '.join(programs))
             lines.append('    DESTINATION '+destination)
             lines.append(')')
             pass

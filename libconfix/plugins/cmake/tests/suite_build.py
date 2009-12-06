@@ -25,6 +25,7 @@ from external_library_build import ExternalLibraryBuildSuite
 from plainfile_build import PlainfileBuildSuite
 from generator_build import GeneratorBuildSuite
 from idl_build import IDLBuildSuite
+from script_build import ScriptBuildSuite
 
 import unittest
 
@@ -41,6 +42,7 @@ class CMakeBuildSuite(unittest.TestSuite):
         self.addTest(PlainfileBuildSuite())
         self.addTest(GeneratorBuildSuite())
         self.addTest(IDLBuildSuite())
+        self.addTest(ScriptBuildSuite())
         pass
     pass
 

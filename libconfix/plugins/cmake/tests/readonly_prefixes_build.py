@@ -44,8 +44,8 @@ import time
 class ReadonlyPrefixesBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-##         self.addTest(ReadonlyPrefixesBuildTest('test'))
-##         self.addTest(ReadonlyPrefixesBuildTest('test_library_dependencies_with_readonly_prefixes'))
+        self.addTest(ReadonlyPrefixesBuildTest('test'))
+        self.addTest(ReadonlyPrefixesBuildTest('test_library_dependencies_with_readonly_prefixes'))
         self.addTest(ReadonlyPrefixesUtilityBuildTest('test_copy_include_files_to_local_package'))
         pass
     pass
@@ -503,8 +503,7 @@ class ReadonlyPrefixesUtilityBuildTest(PersistentTestCase):
         self.failUnless(test_build.get('flatfile-copy.h'))
         self.failUnless(test_build.get('subdirfile-copy.h'))
         self.failUnless(test_build.get('prefixsubdirfile-copy.h'))
-            
-        self.fail('comment the others back in')
+
         pass
     pass
 
