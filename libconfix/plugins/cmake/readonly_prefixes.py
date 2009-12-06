@@ -31,7 +31,9 @@ class ReadonlyPrefixesSetup(Setup):
 
 class ReadonlyPrefixesBuilder(Builder):
     """
-    Installs the module file in confix-admin.
+    Installs a confix helper module file in the root/confix-admin
+    directory, and includes that file early in the toplevel
+    CMakeLists.txt file of the package.
     """
     def locally_unique_id(self):
         return self.__class__.__name__
