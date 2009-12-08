@@ -296,11 +296,19 @@ class LinkedOutputBuilder(Builder):
 
             # add the linked entity.
             if True:
+                members = []
+                for member in linked.members():
+                    if member.file().state() == FileState.VIRTUAL:
+                        members.append('${CMAKE_CURRENT_BINARY_DIR}/%s' % member.file().name())
+                    else:
+                        members.append(member.file().name())
+                        pass
+                    pass
+                
                 if isinstance(linked, ExecutableBuilder):
                     target_name = linked.exename()
                     cmake_output_builder.local_cmakelists().add_executable(
-                        target_name,
-                        [member.file().name() for member in linked.members()])
+                        target_name, members)
                     if linked.what() == ExecutableBuilder.BIN:
                         cmake_output_builder.local_cmakelists().add_install__targets(
                             targets=[target_name],
@@ -310,8 +318,7 @@ class LinkedOutputBuilder(Builder):
                 elif isinstance(linked, LibraryBuilder):
                     target_name = linked.basename()
                     cmake_output_builder.local_cmakelists().add_library(
-                        target_name,
-                        [member.file().name() for member in linked.members()])
+                        target_name, members)
                     cmake_output_builder.local_cmakelists().add_install__targets(
                         targets=[target_name],
                         destination='lib')
