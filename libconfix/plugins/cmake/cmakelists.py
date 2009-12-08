@@ -96,6 +96,10 @@ class CMakeLists:
         # [(['target'], 'destination')]
         self.__install__targets = []
 
+        # CMake: INSTALL(DIRECTORY ...)
+        # [(['directory'], 'destination')]
+        self.__install__directory = []
+
         pass
 
     def set_project(self, project):
@@ -275,6 +279,10 @@ class CMakeLists:
         self.__install__targets.append((targets, destination))
         pass
 
+    def add_install__directory(self, directories, destination):
+        self.__install__directory.append((directories, destination))
+        pass
+
     def lines(self):
         lines = []
 
@@ -428,6 +436,14 @@ class CMakeLists:
         for (targets, destination) in self.__install__targets:
             lines.append('INSTALL(')
             lines.append('    TARGETS '+' '.join(targets))
+            lines.append('    DESTINATION '+destination)
+            lines.append(')')
+            pass
+        
+        # INSTALL(DIRECTORY ...)
+        for (directories, destination) in self.__install__directory:
+            lines.append('INSTALL(')
+            lines.append('    DIRECTORY '+' '.join(directories))
             lines.append('    DESTINATION '+destination)
             lines.append(')')
             pass
