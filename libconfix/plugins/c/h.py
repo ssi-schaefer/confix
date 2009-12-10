@@ -23,7 +23,6 @@ import namespace
 
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.dependency_utils import DependencyInformation
-from libconfix.core.machinery.buildinfo import BuildInformationSet
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper
 from libconfix.core.utils import const

@@ -19,7 +19,6 @@ from external_library import ExternalLibraryBuilder
 from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.buildinfo import BuildInformationSet
 
 class PkgConfigLibraryBuilder(Builder):
     def __init__(self, packagename):

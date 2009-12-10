@@ -23,7 +23,6 @@ from provide import Provide_Callable
 from require import Require
 from require import Require_Symbol
 from require import Require_Callable
-from buildinfo import BuildInformationSet
 from interface import InterfaceProxy
 
 from libconfix.core.utils.error import Error

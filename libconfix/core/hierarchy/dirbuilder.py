@@ -19,7 +19,6 @@
 from libconfix.core.digraph import toposort
 from libconfix.core.filesys.vfs_directory import VFSDirectory
 from libconfix.core.filesys.file import File
-from libconfix.core.machinery.buildinfo import BuildInformationSet
 from libconfix.core.machinery.dependency_utils import DependencySet
 from libconfix.core.machinery.dependency_utils import ProvideMap
 from libconfix.core.machinery.entrybuilder import EntryBuilder
@@ -27,6 +26,7 @@ from libconfix.core.machinery.installed_node import InstalledNode
 from libconfix.core.machinery.node import Node
 from libconfix.core.machinery.provide import Provide
 from libconfix.core.machinery.require import Require
+from libconfix.core.machinery.buildinfo import BuildInformationSet
 from libconfix.core.machinery.filebuilder import FileBuilder
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
@@ -58,6 +58,12 @@ class DirectoryBuilder(EntryBuilder, Node):
 
         # initialize collected dependency information
         self.__init_dep_info()
+
+
+        # buildinfo cache
+        self.__buildinfo_cache_all = None
+        self.__buildinfo_cache_type = None
+        self.__buildinfo_cache_isinstance = None
 
         pass
 
@@ -206,7 +212,9 @@ class DirectoryBuilder(EntryBuilder, Node):
         self.__prev_requires = self.__requires
 
         self.__init_dep_info()
-        
+        self.__buildinfo_cache_all = None
+        self.__buildinfo_cache_type = None
+
         # collect dependency information. we sort out requires that
         # are resolved internally (i.e. within our builders).
         
@@ -276,33 +284,52 @@ class DirectoryBuilder(EntryBuilder, Node):
         return self.__requires
 
     def iter_buildinfos(self):
+        if self.__buildinfo_cache_all is not None:
+            return self.__buildinfo_cache_all
+        self.__buildinfo_cache_all = BuildInformationSet()
         for bi in super(EntryBuilder, self).iter_buildinfos():
-            yield bi
+            self.__buildinfo_cache_all.add(bi)
             pass
         for b in self.iter_builders():
             if not isinstance(b, Node):
                 for bi in b.iter_buildinfos():
-                    yield bi
+                    self.__buildinfo_cache_all.add(bi)
                     pass
                 pass
             pass
-        pass
+        return self.__buildinfo_cache_all
 
     def iter_buildinfos_type(self, t):
-        for b in self.iter_buildinfos():
-            if type(b) is t:
-                yield b
+        if self.__buildinfo_cache_type is None:
+            self.__buildinfo_cache_type = {}
+            pass
+        bi_set = self.__buildinfo_cache_type.get(t)
+        if bi_set is None:
+            bi_set = BuildInformationSet()
+            self.__buildinfo_cache_type[t] = bi_set
+            for bi in self.iter_buildinfos():
+                if type(bi) is t:
+                    bi_set.add(bi)
+                    pass
                 pass
             pass
-        pass
+        return bi_set
 
     def iter_buildinfos_isinstance(self, t):
-        for b in self.iter_buildinfos():
-            if isinstance(b, t):
-                yield b
+        if self.__buildinfo_cache_isinstance is None:
+            self.__buildinfo_cache_isinstance = {}
+            pass
+        bi_set = self.__buildinfo_cache_isinstance.get(t)
+        if bi_set is None:
+            bi_set = BuildInformationSet()
+            self.__buildinfo_cache_isinstance[t] = bi_set
+            for bi in self.iter_buildinfos():
+                if isinstance(bi, t):
+                    bi_set.add(bi)
+                    pass
                 pass
             pass
-        pass
+        return bi_set
 
     def install(self):
         return InstalledNode(

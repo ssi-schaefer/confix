@@ -23,7 +23,6 @@ from libconfix.plugins.automake import helper
 from libconfix.plugins.automake.c.external_library import ExternalLibraryBuilder
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.buildinfo import BuildInformationSet
 
 class PkgConfigLibraryAdapter(Builder):
     """

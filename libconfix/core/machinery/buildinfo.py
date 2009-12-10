@@ -47,18 +47,18 @@ class BuildInformation(Marshallable):
 class BuildInformationSet(Unmarshallable):
 
     def __init__(self):
-        self.dict_ = {}
+        self.__dict = {}
         pass
 
     def add(self, b):
-        self.dict_[b.unique_key()] = b
+        self.__dict[b.unique_key()] = b
         pass
 
     def merge(self, other):
-        self.dict_.update(other.dict_)
+        self.__dict.update(other.dict_)
         pass
 
     def __iter__(self):
-        return self.dict_.itervalues()
+        return self.__dict.itervalues()
 
     pass

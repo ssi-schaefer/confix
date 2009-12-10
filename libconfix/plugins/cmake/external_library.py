@@ -23,7 +23,6 @@ from buildinfo import BuildInfo_CFLAGS_CMake
 from buildinfo import BuildInfo_CXXFLAGS_CMake
 
 from libconfix.core.machinery.builder import Builder
-from libconfix.core.machinery.buildinfo import BuildInformationSet
 
 class ExternalLibraryBuilder(Builder):
     def __init__(self,

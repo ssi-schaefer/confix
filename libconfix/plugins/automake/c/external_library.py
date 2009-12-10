@@ -17,7 +17,6 @@
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.buildinfo import BuildInformation
-from libconfix.core.machinery.buildinfo import BuildInformationSet
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.repo import \

@@ -68,11 +68,9 @@ class ReadonlyPrefixesBuilder(Builder):
                 '        LIST(APPEND prefixlib_list ${prefix}/lib)',
                 '    ENDFOREACH(prefix)',
                 '    FIND_LIBRARY(${basename}_LIBRARY ${basename} ${prefixlib_list})',
-                '    IF (${basename}_LIBRARY)',
-                '        MESSAGE(STATUS "add dependency ${exename} -> ${${basename}_LIBRARY}")',
-                '    ELSE (${basename}_LIBRARY)',
+                '    IF (NOT ${basename}_LIBRARY)',
                 '        MESSAGE(FATAL_ERROR "cannot find confix native installed library \'${basename}\'")',
-                '    ENDIF (${basename}_LIBRARY)',
+                '    ENDIF (NOT ${basename}_LIBRARY)',
                 'ENDFUNCTION(ConfixFindNativeInstalledLibrary)',
                 ])
         pass

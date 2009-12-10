@@ -19,8 +19,6 @@
 from linked import LinkedBuilder
 from buildinfo import BuildInfo_CLibrary_NativeLocal
 
-from libconfix.core.machinery.buildinfo import BuildInformationSet
-
 import types
 
 class LibraryBuilder(LinkedBuilder):

@@ -16,7 +16,6 @@
 # USA
 
 from libconfix.core.machinery.buildinfo import BuildInformation
-from libconfix.core.machinery.buildinfo import BuildInformationSet
 from libconfix.core.machinery.repo import \
      update_marshalling_data, \
      MarshalledVersionUnknownError, \
