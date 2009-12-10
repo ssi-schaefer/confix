@@ -262,7 +262,6 @@ def intersect_lists(l1, l2):
     return ret
 
 def normalize_filename(fn):
-    assert type(fn) is str, fn
     return fn.replace('\\', '/')
 
 def clone_value(v):
