@@ -266,4 +266,19 @@ class CMakeInterfaceProxy(InterfaceProxy):
             raise Error("CMAKE_PKG_CONFIG_LIBRARY(): 'packagename' argument must be a string")
         self.__dirbuilder.add_builder(PkgConfigLibraryBuilder(packagename=packagename))
         pass
+
+    def CMAKE_LOCAL_CMAKELISTS(self):
+        """
+        Returns the object representing the CMakeLists.txt file of the
+        current directory.
+        """
+        return find_cmake_output_builder(self.__dirbuilder).local_cmakelists()
+        
+    def CMAKE_TOP_CMAKELISTS(self):
+        """
+        Returns the object representing the CMakeLists.txt file of the
+        package's root directory.
+        """
+        return find_cmake_output_builder(self.__dirbuilder).top_cmakelists()
+        
     pass
