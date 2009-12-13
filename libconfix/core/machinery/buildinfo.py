@@ -55,7 +55,7 @@ class BuildInformationSet(Unmarshallable):
         pass
 
     def merge(self, other):
-        self.__dict.update(other.dict_)
+        self.__dict.update(other.__dict)
         pass
 
     def __iter__(self):
