@@ -16,6 +16,7 @@
 # USA
 
 from libconfix.core.utils import helper
+from libconfix.core.utils.error import Error
 
 import types
 
@@ -267,8 +268,9 @@ class CMakeLists:
         self.__custom_targets.append((name, all, depends))
         pass
 
-    def add_install__files(self, files, destination):
-        self.__install__files.append((files, destination))
+    def add_install__files(self, files, destination, permissions=None):
+        assert permissions is None or type(permissions) in (str, list, tuple)
+        self.__install__files.append((files, destination, permissions))
         pass
 
     def add_install__programs(self, programs, destination):
@@ -417,10 +419,17 @@ class CMakeLists:
             pass
 
         # INSTALL(FILES ...)
-        for (files, destination) in self.__install__files:
+        for (files, destination, permissions) in self.__install__files:
             lines.append('INSTALL(')
             lines.append('    FILES '+' '.join(files))
             lines.append('    DESTINATION '+destination)
+            if permissions is not None:
+                if type(permissions) in (list, tuple):
+                    lines.append('    PERMISSIONS '+' '.join(permissions))
+                else:
+                    lines.append('    PERMISSIONS '+permissions)
+                    pass
+                pass
             lines.append(')')
             pass
         
