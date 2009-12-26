@@ -19,6 +19,7 @@ from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
 
 import types
+import os
 
 class CMakeLists:
     def __init__(self):
@@ -160,7 +161,11 @@ class CMakeLists:
         plain CMake code snippet which will be output among the calls
         to INCLUDE_DIRECTORIES().
         """
-        self.__include_directories.append((directory, literally))
+        if literally:
+            self.__include_directories.append((directory, literally))
+        else:
+            self.__include_directories.append((_path(directory), literally))
+            pass
         pass
     def get_include_directories(self):
         # return only the literal part - we don't want to bother the
@@ -183,7 +188,11 @@ class CMakeLists:
         plain CMake code snippet which will be output among the calls
         to LINK_DIRECTORIES().
         """
-        self.__link_directories.append((directory, literally))
+        if literally:
+            self.__link_directories.append((directory, literally))
+        else:
+            self.__link_directories.append((_path(directory), literally))
+            pass
         pass
     def get_link_directories(self):
         # return only the literal part - we don't want to bother the
@@ -204,7 +213,7 @@ class CMakeLists:
     
     def add_subdirectory(self, directoryname):
         assert type(directoryname) is types.StringType
-        self.__subdirectories.append(directoryname)
+        self.__subdirectories.append(_path(directoryname))
         pass
     def get_subdirectories(self):
         return self.__subdirectories
@@ -270,19 +279,19 @@ class CMakeLists:
 
     def add_install__files(self, files, destination, permissions=None):
         assert permissions is None or type(permissions) in (str, list, tuple)
-        self.__install__files.append((files, destination, permissions))
+        self.__install__files.append((files, _path(destination), permissions))
         pass
 
     def add_install__programs(self, programs, destination):
-        self.__install__programs.append((programs, destination))
+        self.__install__programs.append((programs, _path(destination)))
         pass
 
     def add_install__targets(self, targets, destination):
-        self.__install__targets.append((targets, destination))
+        self.__install__targets.append((targets, _path(destination)))
         pass
 
     def add_install__directory(self, directories, destination):
-        self.__install__directory.append((directories, destination))
+        self.__install__directory.append((directories, _path(destination)))
         pass
 
     def lines(self):
@@ -460,3 +469,9 @@ class CMakeLists:
         return lines
 
     pass
+
+def _path(str_or_list):
+    if type(str_or_list) is str:
+        return str_or_list
+    assert type(str_or_list) in (list, tuple), str_or_list
+    return os.sep.join(str_or_list)

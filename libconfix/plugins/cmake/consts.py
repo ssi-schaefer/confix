@@ -17,5 +17,4 @@
 
 from libconfix.core.utils import const as core_consts
 
-repo_install_dir = 'share/confix2/repo'
 modules_dir = core_consts.ADMIN_DIR + '/cmake/Modules'

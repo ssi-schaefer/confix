@@ -16,7 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from libconfix.core.machinery.repo import AutomakePackageRepository
+
 import os
 
-def dir_for_automake(): return os.path.join('$(datadir)', 'confix2', 'repo')
-
+def dir_for_automake():
+    return os.sep.join(['$(datadir)'] + AutomakePackageRepository.REPO_DATADIR_PATH)

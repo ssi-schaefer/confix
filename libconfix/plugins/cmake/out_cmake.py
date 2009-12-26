@@ -23,6 +23,7 @@ from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
 from buildinfo import BuildInfo_CMakeModule
 
 from libconfix.core.machinery.builder import Builder
+from libconfix.core.machinery.repo import AutomakePackageRepository
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.hierarchy import confix_admin
 from libconfix.core.filesys.file import File
@@ -172,7 +173,7 @@ class CMakeBackendOutputBuilder(Builder):
         # piggy-back repo install
         top_cmakelists.add_install__files(
             files=[self.package().repofilename()],
-            destination=consts.repo_install_dir)
+            destination=AutomakePackageRepository.REPO_FULL_PATH)
         
         # register subdirectories with our toplevel CMakeLists.txt
         for dirnode in self.package().topo_directories():

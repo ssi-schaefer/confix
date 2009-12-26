@@ -140,7 +140,7 @@ class PublicInstallTest(PersistentTestCase):
         self.failUnless(install.find(['bin', 'exe']))
         self.failIf(install.find(['bin', 'test']))
 
-        self.failUnless(install.find(['share', 'confix2', 'repo', package.repofilename()]))
+        self.failUnless(install.find(['share', 'confix-%s' % const.CONFIX_VERSION, 'repo', package.repofilename()]))
         
         pass
 

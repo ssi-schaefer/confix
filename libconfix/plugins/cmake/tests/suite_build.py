@@ -26,6 +26,7 @@ from plainfile_build import PlainfileBuildSuite
 from generator_build import GeneratorBuildSuite
 from idl_build import IDLBuildSuite
 from script_build import ScriptBuildSuite
+from repo_install_build import RepoInstallBuildSuite
 
 import unittest
 
@@ -43,6 +44,7 @@ class CMakeBuildSuite(unittest.TestSuite):
         self.addTest(GeneratorBuildSuite())
         self.addTest(IDLBuildSuite())
         self.addTest(ScriptBuildSuite())
+        self.addTest(RepoInstallBuildSuite())
         pass
     pass
 

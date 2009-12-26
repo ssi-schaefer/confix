@@ -20,6 +20,7 @@ from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import helper_pickle
 from libconfix.core.utils import debug
+from libconfix.core.utils import const
 
 import itertools
 import pickle
@@ -254,15 +255,19 @@ _re_repo = re.compile('^.*\\.repo$')
 
 class AutomakePackageRepository(CompositePackageRepository):
     """
-    Composite for <prefix>/share/confix2/repo/*.repo style repo
-    collection.
+    Composite for <prefix>/share/confix-<version>/repo/*.repo style
+    repo collection.
     """
+
+    REPO_DATADIR_PATH = ['confix-%s' % const.CONFIX_VERSION, 'repo']
+    REPO_FULL_PATH = ['share'] + REPO_DATADIR_PATH
+    
     def __init__(self, prefix):
         assert type(prefix) in [types.ListType, types.TupleType], prefix
 
         CompositePackageRepository.__init__(self, [])
 
-        repodir = prefix+['share', 'confix2', 'repo']
+        repodir = prefix+self.REPO_FULL_PATH
         if not os.path.isdir(os.sep.join(repodir)):
             debug.warn('No repository directory '+os.sep.join(repodir))
             return

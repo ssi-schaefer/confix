@@ -193,7 +193,7 @@ def _check_program(stampfile_path):
             '    if (strcmp(name, "value"))',
             '        return 1;',
             '    return open("'+stampfile_path+'",',
-            '                O_CREAT|O_RDWR) >=0?0:1;',
+            '                O_CREAT|O_RDWR, S_IRUSR|S_IWUSR) >=0?0:1;',
             '}']
 
 if __name__ == '__main__':
