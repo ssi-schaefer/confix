@@ -27,6 +27,7 @@ from generator_build import GeneratorBuildSuite
 from idl_build import IDLBuildSuite
 from script_build import ScriptBuildSuite
 from repo_install_build import RepoInstallBuildSuite
+from all_hook_workaround_build import AllHookWorkaroundBuildSuite
 
 import unittest
 
@@ -45,6 +46,7 @@ class CMakeBuildSuite(unittest.TestSuite):
         self.addTest(IDLBuildSuite())
         self.addTest(ScriptBuildSuite())
         self.addTest(RepoInstallBuildSuite())
+        self.addTest(AllHookWorkaroundBuildSuite())
         pass
     pass
 

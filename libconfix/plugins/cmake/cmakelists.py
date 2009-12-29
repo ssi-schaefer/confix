@@ -86,6 +86,14 @@ class CMakeLists:
         # [('name', bool all, ['depends'])]
         self.__custom_targets = []
 
+        # CMake: ADD_DEPENDENCIES()
+        # [('name', ['depend'])]
+        self.__dependencies = []
+
+        # (no CMake equivalent but CMake bug 0010082)
+        # "target-name"
+        self.__previous_all_target_hook = None
+
         # CMake: INSTALL(FILES ...)
         # [(['file'], 'destination')]
         self.__install__files = []
@@ -274,7 +282,31 @@ class CMakeLists:
         pass
 
     def add_custom_target(self, name, all, depends):
+        assert type(depends) in (list, tuple)
         self.__custom_targets.append((name, all, depends))
+        pass
+
+    def add_dependencies(self, name, depends):
+        assert type(depends) in (list, tuple)
+        self.__dependencies.append((name, depends))
+        pass
+
+    def add_all_target_hook(self, name, depends):
+        """
+        CMake has bug 0010082: hooking a command
+        (ADD_CUSTOM_COMMAND()) into the 'all' target twice via
+        ADD_CUSTOM_TARGET() leads to multiple execution of the custom
+        command when doing a parallel build. Use this convenience
+        routine to chain all such hooks together and force linear
+        execution.
+        """
+        self.add_custom_target(name=name, all=True, depends=depends)
+        # chain the new all-target to the one that was previously
+        # added (if any).
+        if self.__previous_all_target_hook is not None:
+            self.add_dependencies(name=name, depends=[self.__previous_all_target_hook])
+            pass
+        self.__previous_all_target_hook = name
         pass
 
     def add_install__files(self, files, destination, permissions=None):
@@ -424,6 +456,14 @@ class CMakeLists:
             if len(depends):
                 lines.append('    DEPENDS '+' '.join(depends))
                 pass
+            lines.append(')')
+            pass
+
+        # ADD_DEPENDENCIES()
+        for (name, depends) in self.__dependencies:
+            lines.append('ADD_DEPENDENCIES(')
+            lines.append('    '+name)
+            lines.append('    '+' '.join(depends))
             lines.append(')')
             pass
 
