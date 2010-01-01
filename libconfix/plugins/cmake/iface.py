@@ -69,6 +69,10 @@ class CMakeInterfaceProxy(InterfaceProxy):
                         getattr(self, 'CMAKE_EXTERNAL_LIBRARY'))
         self.add_global('CMAKE_PKG_CONFIG_LIBRARY',
                         getattr(self, 'CMAKE_PKG_CONFIG_LIBRARY'))
+        self.add_global('CMAKE_LOCAL_CMAKELISTS',
+                        getattr(self, 'CMAKE_LOCAL_CMAKELISTS'))
+        self.add_global('CMAKE_TOP_CMAKELISTS',
+                        getattr(self, 'CMAKE_TOP_CMAKELISTS'))
         pass
 
     def CMAKE_CMAKELISTS_ADD_INCLUDE(self, include, flags):
