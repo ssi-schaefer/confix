@@ -30,6 +30,7 @@ from explicit_package_build import ExplicitPackageBuildSuite
 from libconfix.plugins.automake.c.tests.suite_build import AutomakeCBuildSuite
 from libconfix.plugins.automake.plainfile.tests.suite_build import AutomakePlainfileBuildSuite
 from libconfix.plugins.automake.tests.idl_build import AutomakeIDLBuildSuite
+from libconfix.plugins.automake.script.tests.suite_build import AutomakeScriptBuildSuite
 
 import unittest
 
@@ -50,6 +51,7 @@ class AutomakeBuildSuite(unittest.TestSuite):
         self.addTest(ExplicitPackageBuildSuite())
         self.addTest(AutomakePlainfileBuildSuite())
         self.addTest(AutomakeIDLBuildSuite())
+        self.addTest(AutomakeScriptBuildSuite())
         pass
     pass
 

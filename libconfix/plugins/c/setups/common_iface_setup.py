@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,13 +19,11 @@ from libconfix.core.machinery.setup import Setup
 
 from libconfix.plugins.c.common_iface import \
      REQUIRE_H, \
-     PROVIDE_H, \
-     TESTS_ENVIRONMENT
+     PROVIDE_H
 
 class CommonInterfaceSetup(Setup):
     def setup(self, dirbuilder):
         dirbuilder.add_interface(REQUIRE_H(builder=dirbuilder))
         dirbuilder.add_interface(PROVIDE_H(builder=dirbuilder))
-        dirbuilder.add_interface(TESTS_ENVIRONMENT(dirbuilder=dirbuilder))
         pass
     pass

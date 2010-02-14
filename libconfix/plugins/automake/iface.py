@@ -54,6 +54,7 @@ class AutomakeInterfaceProxy(InterfaceProxy):
         self.add_global('MAKEFILE_AM', getattr(self, 'MAKEFILE_AM'))
         self.add_global('ADD_AM_CFLAGS', getattr(self, 'ADD_AM_CFLAGS'))
         self.add_global('ADD_AM_CXXFLAGS', getattr(self, 'ADD_AM_CXXFLAGS'))
+        self.add_global('TESTS_ENVIRONMENT', getattr(self, 'TESTS_ENVIRONMENT'))
 
         pass
 
@@ -111,6 +112,16 @@ class AutomakeInterfaceProxy(InterfaceProxy):
         automake_output_builder = find_automake_output_builder(self.__dirbuilder)
         assert automake_output_builder
         automake_output_builder.makefile_am().add_am_cxxflags(str)
+        pass
+
+    def TESTS_ENVIRONMENT(self, name, value):
+        if type(name) is not types.StringType:
+            raise Error('TESTS_ENVIRONMENT(): key must be a string')
+        if type(value) is not types.StringType:
+            raise Error('TESTS_ENVIRONMENT(): value must be a string')
+
+        automake_output_builder = find_automake_output_builder(self.__dirbuilder)
+        automake_output_builder.makefile_am().add_tests_environment(name, value)
         pass
         
     pass

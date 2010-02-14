@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -24,9 +24,6 @@ from buildinfo import \
     BuildInfo_CFLAGS, \
     BuildInfo_CXXFLAGS, \
     BuildInfo_CommandlineMacros
-
-# jjj remove automake dependency
-from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.provide import Provide
@@ -76,24 +73,3 @@ class PROVIDE_H(InterfaceProxy):
         pass
     pass
 
-class TESTS_ENVIRONMENT(InterfaceProxy):
-    def __init__(self, dirbuilder):
-        assert isinstance(dirbuilder, DirectoryBuilder)
-        InterfaceProxy.__init__(self)
-        self.__dirbuilder = dirbuilder
-        self.add_global('TESTS_ENVIRONMENT', getattr(self, 'TESTS_ENVIRONMENT'))
-        pass
-    def TESTS_ENVIRONMENT(self, name, value):
-        if type(name) is not types.StringType:
-            raise Error('TESTS_ENVIRONMENT(): key must be a string')
-        if type(value) is not types.StringType:
-            raise Error('TESTS_ENVIRONMENT(): value must be a string')
-
-        # jjj this is coupled to automake, but should rather be
-        # anonymous. CMake as well may have the functionality of
-        # providing tests with an enviroment.
-
-        automake_output_builder = find_automake_output_builder(self.__dirbuilder)
-        automake_output_builder.makefile_am().add_tests_environment(name, value)
-        pass
-    pass

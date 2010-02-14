@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,14 +28,20 @@ class AutomakeScriptOutputBuilder(Builder):
 
         output_builder = None
 
-        for b in self.parentbuilder().iter_builders():
-            if isinstance(b, ScriptBuilder):
+        for script in self.parentbuilder().iter_builders():
+            if isinstance(script, ScriptBuilder):
                 if output_builder is None:
                     output_builder = find_automake_output_builder(self.parentbuilder())
                     assert output_builder is not None
                     pass
 
-                output_builder.makefile_am().add_bin_script(scriptname=b.file().name())
+                if script.what() == ScriptBuilder.BIN:
+                    output_builder.makefile_am().add_bin_script(scriptname=script.file().name())
+                elif script.what() == ScriptBuilder.CHECK:
+                    output_builder.makefile_am().add_check_script(scriptname=script.file().name())
+                else:
+                    assert False
+                    pass
                 pass
             pass
         pass
