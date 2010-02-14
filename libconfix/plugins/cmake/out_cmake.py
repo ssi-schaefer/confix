@@ -30,6 +30,8 @@ from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.utils import const
 
+import itertools
+
 def find_cmake_output_builder(dirbuilder):
     """
     Find the directory's dedicated automake output builder.
@@ -50,6 +52,11 @@ class CMakeBackendOutputBuilder(Builder):
         self.__top_cmakelists = None
         self.__modules_builder = None
         self.__bursted = False
+
+        # remember the dependency graph for use in output(). (we
+        # generated inter-node dependencies to force module build
+        # order.)
+        self.__last_digraph = None
         pass
 
     def local_cmakelists(self):
@@ -121,6 +128,8 @@ class CMakeBackendOutputBuilder(Builder):
                 self.__modules_builder.add_module_file(bi.name(), bi.lines())
                 pass
             pass
+
+        self.__last_digraph = digraph
         pass
                     
     def output(self):
@@ -129,6 +138,72 @@ class CMakeBackendOutputBuilder(Builder):
         # regular module content.
         if self.parentbuilder() is self.package().rootbuilder():
             self.__output_top_cmakelists()
+            pass
+
+        # generate node dependencies, mainly to work around CMake bug
+        # 10082.
+
+        # * a node-specific target for my own node
+
+        # * dependencies from my node-specific target to all of my
+        #   node's toplevel targets (executable, libraries, and custom
+        #   targets)
+
+        # * dependencies from my node's toplevel targets to all
+        #   toplevel targets of my node's successors.
+
+        # * dependencies from my node-specific target to all successor
+        #   nodes' node-specific targets.
+        
+        if True:
+            assert self.__last_digraph is not None
+
+            local_target = 'confix-internal-node-target-'+'.'.join(
+                self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
+
+            # dependencies to my node's toplevel targets
+            for t in itertools.chain(self.__local_cmakelists.iter_executable_target_names(),
+                                     self.__local_cmakelists.iter_library_target_names(),
+                                     self.__local_cmakelists.iter_custom_target_names()):
+                self.__local_cmakelists.add_dependencies(
+                    name=local_target,
+                    depends=[t])
+                pass
+
+            # node-specific target. add this after the outgoing
+            # dependencies, or else we have a cycle.
+            self.__local_cmakelists.add_custom_target(
+                name=local_target,
+                depends=[],
+                all=False)
+
+            # intra-package dependencies...
+            for succ in self.__last_digraph.successors(self.parentbuilder()):
+                if not isinstance(succ, DirectoryBuilder):
+                    # exclude installed nodes
+                    continue
+
+                # node-specific target dependencies
+                self.__local_cmakelists.add_dependencies(
+                    name=local_target,
+                    depends=['confix-internal-node-target-'+'.'.join(
+                        succ.directory().relpath(self.package().rootbuilder().directory()))])
+
+                # dependencies from my node's toplevel targets to
+                # every successor's toplevel targets.
+                succ_cmakelists = find_cmake_output_builder(succ).local_cmakelists()
+                for local_toptarget in itertools.chain(self.__local_cmakelists.iter_executable_target_names(),
+                                                       self.__local_cmakelists.iter_library_target_names(),
+                                                       self.__local_cmakelists.iter_custom_target_names()):
+                    for succ_toptarget in itertools.chain(succ_cmakelists.iter_executable_target_names(),
+                                                          succ_cmakelists.iter_library_target_names(),
+                                                          succ_cmakelists.iter_custom_target_names()):
+                        self.__local_cmakelists.add_dependencies(
+                            name=local_toptarget,
+                            depends=[succ_toptarget])
+                        pass
+                    pass
+                pass
             pass
 
         # write the CMakeLists.txt file.

@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
 
+import hashlib
 import types
 import os
 
@@ -90,7 +91,7 @@ class CMakeLists:
         # [('name', ['depend'])]
         self.__dependencies = []
 
-        # (no CMake equivalent but CMake bug 0010082)
+        # (no CMake equivalent but CMake bug 10082)
         # "target-name"
         self.__previous_all_target_hook = None
 
@@ -133,6 +134,11 @@ class CMakeLists:
         return self.__sets.get(name)
 
     def add_include(self, include):
+        """
+        Add a CMake INCLUDE() statement. This can be called multiple
+        times with the same include; only the first will be added to
+        the resulting CMakeLists.txt file.
+        """
         if type(include) is str:
             include = [include]
             pass
@@ -232,13 +238,23 @@ class CMakeLists:
         pass
     def get_library(self, basename):
         return self.__libraries.get(basename)
-
+    def iter_library_target_names(self):
+        """
+        Iterate over the names of the library targets I have.
+        """
+        return self.__libraries.iterkeys()
+    
     def add_executable(self, exename, members):
         assert exename not in self.__executables
         self.__executables[exename] = members
         pass
     def get_executable(self, exename):
         return self.__executables.get(exename)
+    def iter_executable_target_names(self):
+        """
+        Iterate over the names of the executable targets I have.
+        """
+        return (exe[0] for exe in self.__executables)
 
     def target_link_libraries(self, target, basenames):
         assert target not in self.__target_link_libraries
@@ -274,17 +290,49 @@ class CMakeLists:
         return self.__target_link_libraries.get(target)
 
     def add_custom_command__output(self, outputs, commands, depends, working_directory=None):
+        """
+        Add a custom command woth the OUTPUT signature (see the CMake
+        manual for what that means).
+
+        Internally, in addition to adding the command, a custom target
+        is created that depends on the command. This is needed to hook
+        Confix's node dependencies to generator commands, in order to
+        circumvent traps that CMake has all over code generators. (See
+        CMake bug #10082.)
+        """
         assert len(outputs)
         for c in commands:
             assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+str(c)
             pass
         self.__custom_commands__output.append((outputs, commands, depends, working_directory))
+
+        # we don't have a natural name for the custom target, so
+        # calculate one. cannot simply concatenate the outputs, as
+        # this could become large, so I do a hash.
+        md5 = hashlib.md5()
+        for o in outputs:
+            md5.update(o)
+            pass
+        for c in commands:
+            assert(type(c) is tuple)
+            md5.update(c[0])
+            pass
+        
+        self.add_custom_target(
+            name='confix-internal-custom-command-target-'+md5.hexdigest(),
+            depends=outputs,
+            all=False)
         pass
 
     def add_custom_target(self, name, all, depends):
         assert type(depends) in (list, tuple)
         self.__custom_targets.append((name, all, depends))
         pass
+    def iter_custom_target_names(self):
+        """
+        Iterate over the names of the custom targets I have.
+        """
+        return (cust[0] for cust in self.__custom_targets)
 
     def add_dependencies(self, name, depends):
         assert type(depends) in (list, tuple)
