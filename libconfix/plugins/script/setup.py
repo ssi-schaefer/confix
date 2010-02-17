@@ -34,7 +34,7 @@ class ADD_SCRIPT(InterfaceProxy):
         self.add_global('ADD_SCRIPT', getattr(self, 'ADD_SCRIPT'))
         pass
 
-    def ADD_SCRIPT(self, filename, what):
+    def ADD_SCRIPT(self, filename, what=ScriptBuilder.BIN):
         if type(filename) is not types.StringType:
             raise Error('ADD_SCRIPT(): filename must be a string')
         if not what in (ScriptBuilder.BIN, ScriptBuilder.CHECK):
