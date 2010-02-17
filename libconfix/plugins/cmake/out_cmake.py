@@ -184,9 +184,9 @@ class CMakeBackendOutputBuilder(Builder):
         # artificially chain together everything that would be
         # triggered by 'make all'. this way we force linearization
         # inside one directory. it is likely that an otherwise correct
-        # parallel build is inhibited by this: the 'all' entry points
-        # into a directory can well be independent. but we sure take
-        # that penalty in order to yield a correct build.
+        # parallel build is slowed down by this: the 'all' entry
+        # points into a directory can well be independent. but we sure
+        # take that penalty in order to yield a correct build.
         
         if True:
             assert self.__last_digraph is not None
