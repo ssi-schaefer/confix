@@ -80,20 +80,16 @@ class CMakeLists:
         self.__target_tightened_libraries = {}
 
         # CMake: ADD_CUSTOM_COMMAND(OUTPUT ...)
-        # [(['output'], [('command', ['arg', ...])], ['depends'], 'working_directory')]
+        # [(['output'], [('command', ['arg', ...])], ['depends'], 'working_directory', ['comment'])]
         self.__custom_commands__output = []
 
         # CMake: ADD_CUSTOM_TARGET()
-        # [('name', bool all, ['depends'])]
+        # [('name', bool all, ['depends'], ['comment'])]
         self.__custom_targets = []
 
         # CMake: ADD_DEPENDENCIES()
-        # [('name', ['depend'])]
+        # [('name', ['depend'], ['comment'])]
         self.__dependencies = []
-
-        # (no CMake equivalent but CMake bug 10082)
-        # "target-name"
-        self.__previous_all_target_hook = None
 
         # CMake: INSTALL(FILES ...)
         # [(['file'], 'destination')]
@@ -254,7 +250,7 @@ class CMakeLists:
         """
         Iterate over the names of the executable targets I have.
         """
-        return (exe[0] for exe in self.__executables)
+        return self.__executables.iterkeys()
 
     def target_link_libraries(self, target, basenames):
         assert target not in self.__target_link_libraries
@@ -289,7 +285,7 @@ class CMakeLists:
     def get_target_link_libraries(self, target):
         return self.__target_link_libraries.get(target)
 
-    def add_custom_command__output(self, outputs, commands, depends, working_directory=None):
+    def add_custom_command__output(self, outputs, commands, depends, working_directory=None, comment=None):
         """
         Add a custom command woth the OUTPUT signature (see the CMake
         manual for what that means).
@@ -304,10 +300,10 @@ class CMakeLists:
         for c in commands:
             assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+str(c)
             pass
-        self.__custom_commands__output.append((outputs, commands, depends, working_directory))
+        self.__custom_commands__output.append((outputs, commands, depends, working_directory, _comment(comment)))
 
         # we don't have a natural name for the custom target, so
-        # calculate one. cannot simply concatenate the outputs, as
+        # calculate one. I cannot simply concatenate the outputs as
         # this could become large, so I do a hash.
         md5 = hashlib.md5()
         for o in outputs:
@@ -324,37 +320,29 @@ class CMakeLists:
             all=False)
         pass
 
-    def add_custom_target(self, name, all, depends):
+    def add_custom_target(self, name, all, depends, comment=None):
         assert type(depends) in (list, tuple)
-        self.__custom_targets.append((name, all, depends))
+        self.__custom_targets.append((name, all, depends, _comment(comment)))
         pass
     def iter_custom_target_names(self):
         """
         Iterate over the names of the custom targets I have.
         """
         return (cust[0] for cust in self.__custom_targets)
-
-    def add_dependencies(self, name, depends):
-        assert type(depends) in (list, tuple)
-        self.__dependencies.append((name, depends))
-        pass
-
-    def add_all_target_hook(self, name, depends):
-        """
-        CMake has bug 0010082: hooking a command
-        (ADD_CUSTOM_COMMAND()) into the 'all' target twice via
-        ADD_CUSTOM_TARGET() leads to multiple execution of the custom
-        command when doing a parallel build. Use this convenience
-        routine to chain all such hooks together and force linear
-        execution.
-        """
-        self.add_custom_target(name=name, all=True, depends=depends)
-        # chain the new all-target to the one that was previously
-        # added (if any).
-        if self.__previous_all_target_hook is not None:
-            self.add_dependencies(name=name, depends=[self.__previous_all_target_hook])
+    def custom_target_is_all(self, target_name):
+        ret = None
+        for (name, all, depends, comment) in self.__custom_targets:
+            if target_name == name:
+                assert ret is None
+                ret = all
+                pass
             pass
-        self.__previous_all_target_hook = name
+        assert ret is not None
+        return ret
+
+    def add_dependencies(self, name, depends, comment=None):
+        assert type(depends) in (list, tuple)
+        self.__dependencies.append((name, depends, _comment(comment)))
         pass
 
     def add_install__files(self, files, destination, permissions=None):
@@ -472,7 +460,8 @@ class CMakeLists:
             pass
 
         # ADD_CUSTOM_COMMAND(OUTPUT ...)
-        for (outputs, commands, depends, working_directory) in self.__custom_commands__output:
+        for (outputs, commands, depends, working_directory, comment) in self.__custom_commands__output:
+            lines.extend(_format_comment(comment))
             lines.append('ADD_CUSTOM_COMMAND(')
             lines.append('    OUTPUT '+' '.join(outputs))
             for c in commands:
@@ -495,7 +484,8 @@ class CMakeLists:
             pass
 
         # ADD_CUSTOM_TARGET()
-        for (name, all, depends) in self.__custom_targets:
+        for (name, all, depends, comment) in self.__custom_targets:
+            lines.extend(_format_comment(comment))
             lines.append('ADD_CUSTOM_TARGET(')
             lines.append('    '+name)
             if all:
@@ -508,7 +498,8 @@ class CMakeLists:
             pass
 
         # ADD_DEPENDENCIES()
-        for (name, depends) in self.__dependencies:
+        for (name, depends, comment) in self.__dependencies:
+            lines.extend(_format_comment(comment))
             lines.append('ADD_DEPENDENCIES(')
             lines.append('    '+name)
             lines.append('    '+' '.join(depends))
@@ -563,3 +554,18 @@ def _path(str_or_list):
         return str_or_list
     assert type(str_or_list) in (list, tuple), str_or_list
     return os.sep.join(str_or_list)
+
+def _comment(comment):
+    if comment is None:
+        return []
+    if type(comment) is str:
+        return [comment]
+    if type(comment) in (tuple, list):
+        for c in comment: assert type(c) is str
+        return comment
+    assert False, comment
+    pass
+
+def _format_comment(comment):
+    assert type(comment) is list
+    return ['# '+c for c in comment]

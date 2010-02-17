@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -140,26 +140,58 @@ class CMakeBackendOutputBuilder(Builder):
             self.__output_top_cmakelists()
             pass
 
-        # generate node dependencies, mainly to work around CMake bug
-        # 10082.
+        # generate additional dependencies to work around CMake bug
+        # #10082
+        # ================================================================
 
-        # * a node-specific target for my own node
+        # CMake calls make recursively in an extremely idiotic way
+        # which renders it almost unusable for parallel make. in the
+        # presence of code generators and explicit 'all' targets this
+        # can lead to multiple parallel invocations of the same code
+        # generator. depending on the code generator, this will result
+        # in an error (if you are lucky), or lead to subtle bugs -
+        # without any error.
+
+        # specify explicit dependencies between nodes
+        # -------------------------------------------
+        
+        # it is obviously a good idea to specify as many explicit
+        # dependencies as we can. we maintain a directed graph between
+        # directories that have CMakeLists.txt files, so we can add
+        # the following.
+
+        # * a node-specific target for my own node. this is to let
+        #   others point an edge towards us.
 
         # * dependencies from my node-specific target to all of my
         #   node's toplevel targets (executable, libraries, and custom
-        #   targets)
+        #   targets). when somebody points an edge towards us, then
+        #   this way we make sure that all that we have is built.
 
         # * dependencies from my node's toplevel targets to all
-        #   toplevel targets of my node's successors.
+        #   toplevel targets of my node's successors. this is a
+        #   necessary refinement of the above.
 
         # * dependencies from my node-specific target to all successor
-        #   nodes' node-specific targets.
+        #   nodes' node-specific targets. this is not strictly
+        #   necessary, but it sure can't hurt.
+
+        # chain a node's 'all' targets together
+        # -------------------------------------
+
+        # in order to prevent multiple parallel 'all' entry points
+        # into one node (and thus parallel build failures), we
+        # artificially chain together everything that would be
+        # triggered by 'make all'. this way we force linearization
+        # inside one directory. it is likely that an otherwise correct
+        # parallel build is inhibited by this: the 'all' entry points
+        # into a directory can well be independent. but we sure take
+        # that penalty in order to yield a correct build.
         
         if True:
             assert self.__last_digraph is not None
-
-            local_target = 'confix-internal-node-target-'+'.'.join(
-                self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
+            node_name = '.'.join(self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
+            local_target = 'confix-internal-node-target-'+node_name
 
             # dependencies to my node's toplevel targets
             for t in itertools.chain(self.__local_cmakelists.iter_executable_target_names(),
@@ -167,7 +199,9 @@ class CMakeBackendOutputBuilder(Builder):
                                      self.__local_cmakelists.iter_custom_target_names()):
                 self.__local_cmakelists.add_dependencies(
                     name=local_target,
-                    depends=[t])
+                    depends=[t],
+                    comment=['edge from my node\'s node-specific target to',
+                             'my node\' toplevel target '+t])
                 pass
 
             # node-specific target. add this after the outgoing
@@ -175,7 +209,8 @@ class CMakeBackendOutputBuilder(Builder):
             self.__local_cmakelists.add_custom_target(
                 name=local_target,
                 depends=[],
-                all=False)
+                all=False,
+                comment='node-specific target for '+node_name)
 
             # intra-package dependencies...
             for succ in self.__last_digraph.successors(self.parentbuilder()):
@@ -183,11 +218,13 @@ class CMakeBackendOutputBuilder(Builder):
                     # exclude installed nodes
                     continue
 
+                succ_name = '.'.join(succ.directory().relpath(self.package().rootbuilder().directory()))
+
                 # node-specific target dependencies
                 self.__local_cmakelists.add_dependencies(
                     name=local_target,
-                    depends=['confix-internal-node-target-'+'.'.join(
-                        succ.directory().relpath(self.package().rootbuilder().directory()))])
+                    depends=['confix-internal-node-target-'+succ_name],
+                    comment=['edge from this node to successor node ', succ_name])
 
                 # dependencies from my node's toplevel targets to
                 # every successor's toplevel targets.
@@ -200,12 +237,33 @@ class CMakeBackendOutputBuilder(Builder):
                                                           succ_cmakelists.iter_custom_target_names()):
                         self.__local_cmakelists.add_dependencies(
                             name=local_toptarget,
-                            depends=[succ_toptarget])
+                            depends=[succ_toptarget],
+                            comment=['edge from this node\'s target "'+local_toptarget+'"',
+                                     'to target "'+succ_toptarget+'" of node ',
+                                     succ_name])
                         pass
                     pass
                 pass
-            pass
 
+            # chain 'all' entry points together.
+            all_targets = []
+            for target_name in self.__local_cmakelists.iter_custom_target_names():
+                if self.__local_cmakelists.custom_target_is_all(target_name):
+                    all_targets.append(target_name)
+                    pass
+                pass
+            all_targets.extend(list(self.__local_cmakelists.iter_executable_target_names()))
+            all_targets.extend(list(self.__local_cmakelists.iter_library_target_names()))
+            for i in xrange(len(all_targets)):
+                if i+1 == len(all_targets):
+                    break
+                self.__local_cmakelists.add_dependencies(
+                    name=all_targets[i],
+                    depends=[all_targets[i+1]],
+                    comment='artificial all-target chaining')
+                pass
+            pass
+        
         # write the CMakeLists.txt file.
         cmakelists_file = self.parentbuilder().directory().find(['CMakeLists.txt'])
         if cmakelists_file is None:

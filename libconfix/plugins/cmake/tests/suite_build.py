@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,7 @@ from generator_build import GeneratorBuildSuite
 from idl_build import IDLBuildSuite
 from script_build import ScriptBuildSuite
 from repo_install_build import RepoInstallBuildSuite
-from all_hook_workaround_build import AllHookWorkaroundBuildSuite
+from cmake_bug_10082_build import CMakeBug10082BuildSuite
 
 import unittest
 
@@ -46,7 +46,7 @@ class CMakeBuildSuite(unittest.TestSuite):
         self.addTest(IDLBuildSuite())
         self.addTest(ScriptBuildSuite())
         self.addTest(RepoInstallBuildSuite())
-        self.addTest(AllHookWorkaroundBuildSuite())
+        self.addTest(CMakeBug10082BuildSuite())
         pass
     pass
 
