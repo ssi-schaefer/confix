@@ -26,7 +26,9 @@ from libconfix.testutils.persistent import PersistentTestCase
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
+from libconfix.core.filesys import scan
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.repo import AutomakePackageRepository
 from libconfix.core.utils import const
 
 import unittest
@@ -84,7 +86,7 @@ class RepoInstallTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failUnless(install.find(['share', 'confix2', 'repo', 'Repo-Install.repo']))
+        self.failUnless(install.find(AutomakePackageRepository.REPO_FULL_PATH+['Repo-Install.repo']))
         pass
 
     pass

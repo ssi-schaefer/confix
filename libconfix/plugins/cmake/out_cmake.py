@@ -303,10 +303,29 @@ class CMakeBackendOutputBuilder(Builder):
         self.__apply_cpack_settings(top_cmakelists)
 
         # piggy-back repo install
-        top_cmakelists.add_install__files(
-            files=[self.package().repofilename()],
-            destination=AutomakePackageRepository.REPO_FULL_PATH)
-        
+        if True:
+            top_cmakelists.add_install__files(
+                files=[self.package().repofilename()],
+                destination=AutomakePackageRepository.REPO_FULL_PATH)
+
+            # add a custom target 'repo-install' to give the user the
+            # possibility to install the repo file without building
+            # the package first. (Salomon wants this - if it hurts one
+            # day, we can easily make it a plugin there.)
+            installed_file = '${CMAKE_INSTALL_PREFIX}/'+\
+                             '/'.join(AutomakePackageRepository.REPO_FULL_PATH)+\
+                             '/'+self.package().repofilename()
+            top_cmakelists.add_custom_command__output(
+                outputs=[installed_file],
+                commands=[('${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/%s %s' % \
+                           (self.package().repofilename(), installed_file), [])],
+                depends=['${CMAKE_CURRENT_SOURCE_DIR}/%s' % self.package().repofilename()])
+            top_cmakelists.add_custom_target(
+                name='repo-install',
+                all=False,
+                depends=[installed_file])
+            pass
+
         # register subdirectories with our toplevel CMakeLists.txt
         for dirnode in self.package().topo_directories():
             assert isinstance(dirnode, DirectoryBuilder)
