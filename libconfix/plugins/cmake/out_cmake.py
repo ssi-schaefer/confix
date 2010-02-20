@@ -157,8 +157,7 @@ class CMakeBackendOutputBuilder(Builder):
         
         # it is obviously a good idea to specify as many explicit
         # dependencies as we can. we maintain a directed graph between
-        # directories that have CMakeLists.txt files, so we can add
-        # the following.
+        # directories anyway, so we can add the following.
 
         # * a node-specific target for my own node. this is to let
         #   others point an edge towards us.
