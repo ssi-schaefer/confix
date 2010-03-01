@@ -347,6 +347,21 @@ class CMakeLists:
 
     def add_install__files(self, files, destination, permissions=None):
         assert permissions is None or type(permissions) in (str, list, tuple)
+        if permissions is not None:
+            valid_perms = ('OWNER_READ', 'OWNER_WRITE', 'OWNER_EXECUTE',
+                           'GROUP_READ', 'GROUP_WRITE', 'GROUP_EXECUTE',
+                           'WORLD_READ', 'WORLD_WRITE', 'WORLD_EXECUTE',
+                           'SETUID', 'SETGID')
+            if type(permissions) is str:
+                assert permissions in valid_perms, 'permission must be one of '+str(valid_perms)
+                pass
+            else:
+                for p in permissions:
+                    assert p in valid_perms, 'permission must be one of '+str(valid_perms)
+                    pass
+                pass
+            pass
+
         self.__install__files.append((files, _path(destination), permissions))
         pass
 
