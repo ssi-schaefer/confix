@@ -45,6 +45,8 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         self.add_global('H', getattr(self, 'H'))
         self.add_global('C', getattr(self, 'C'))
         self.add_global('CXX', getattr(self, 'CXX'))
+        self.add_global('LEX', getattr(self, 'LEX'))
+        self.add_global('YACC', getattr(self, 'YACC'))
         self.add_global('LIBRARY', getattr(self, 'LIBRARY'))
 
         self.add_global('EXECUTABLE_BIN', ExecutableBuilder.BIN)

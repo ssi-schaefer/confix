@@ -149,9 +149,11 @@ class AutomakeBackendOutputBuilder(Builder):
 
         # distribute the package configuration file, but only if it is
         # part of the physical package structure.
-        confix2_pkg = self.package().rootdirectory().get(const.CONFIX2_PKG)
-        if not confix2_pkg.is_overlayed():
-            self.makefile_am().add_extra_dist(const.CONFIX2_PKG)
+        if self.parentbuilder() is self.package().rootbuilder():
+            confix2_pkg = self.package().rootdirectory().get(const.CONFIX2_PKG)
+            if not confix2_pkg.is_overlayed():
+                self.makefile_am().add_extra_dist(const.CONFIX2_PKG)
+                pass
             pass
 
         self.configure_ac().set_packagename(self.package().name())
