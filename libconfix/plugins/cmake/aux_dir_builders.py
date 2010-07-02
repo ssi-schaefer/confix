@@ -40,38 +40,9 @@ class ModulesDirectoryBuilder(DirectoryBuilder):
 
     pass
 
-confix_generator_lock = [
-    '#!/bin/sh',
-    '',
-    'LOCKDIR=.confix-generator-lock-$1',
-    '',
-    'wait=no',
-    'mkdir ${LOCKDIR} 2>/dev/null || wait=yes',
-    '',
-    'if test "${wait}" = "yes"; then',
-    '    echo "$$: waiting"',
-    '    while test -d ${LOCKDIR}; do',
-    '        echo Lock directory "${LOCKDIR} is (still?) in place; generator running"',
-    '        sleep 1',
-    '    done',
-    'else',
-    '    # trapping condition 0 means trapping "EXIT"',
-    '    trap "rmdir ${LOCKDIR}" 0',
-    '    while read cmd; do',
-    '        echo executing ${cmd} 2>&1',
-    '        (eval ${cmd}) || { echo xxxxxxxxxxxxxxxxxx; exit $?; }',
-    '    done',
-    'fi',
-    ]
-
 class ScriptsDirectoryBuilder(DirectoryBuilder):
     def __init__(self, directory):
         DirectoryBuilder.__init__(self, directory)
-
-        # HACK ALERT!
-        self.add_script_file(
-            name='confix-cmake-generator-lock-loop', 
-            lines=confix_generator_lock)
         pass
 
     def add_script_file(self, name, lines):

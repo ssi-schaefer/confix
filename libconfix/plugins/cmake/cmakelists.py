@@ -16,6 +16,7 @@
 # USA
 
 import cmake_consts
+from custom_command_bullshit import CustomCommandHelper
 
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
@@ -25,7 +26,7 @@ import types
 import os
 
 class CMakeLists:
-    def __init__(self):
+    def __init__(self, custom_command_helper):
 
         # CMake: PROJECT()
         # string
@@ -108,6 +109,12 @@ class CMakeLists:
         # CMake: INSTALL(DIRECTORY ...)
         # [(['directory'], 'destination')]
         self.__install__directory = []
+
+
+        # see the description of the class itself, and the code using
+        # that here in this file. (don't want to talk too much about
+        # that crap.)
+        self.__custom_command_helper = custom_command_helper
 
         pass
 
@@ -289,37 +296,24 @@ class CMakeLists:
 
     def add_custom_command__output(self, outputs, commands, depends, working_directory=None, comment=None):
         """
-        Add a custom command woth the OUTPUT signature (see the CMake
+        Add a custom command with the OUTPUT signature (see the CMake
         manual for what that means).
-
-        Internally, in addition to adding the command, a custom target
-        is created that depends on the command. This is needed to hook
-        Confix's node dependencies to generator commands, in order to
-        circumvent traps that CMake has all over code generators. (See
-        CMake bug #10082.)
         """
         assert len(outputs)
         for c in commands:
             assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+str(c)
             pass
-        self.__custom_commands__output.append((outputs, commands, depends, working_directory, _comment(comment)))
+        self.__custom_command_helper.create_custom_command_bullshit(
+            self, outputs, commands, depends, working_directory, comment)
+        pass
 
-        # we don't have a natural name for the custom target, so
-        # calculate one. I cannot simply concatenate the outputs as
-        # this could become large, so I do a hash.
-        md5 = hashlib.md5()
-        for o in outputs:
-            md5.update(o)
-            pass
+    def add_custom_command__output_internal(self, outputs, commands, depends, working_directory, comment):
+        assert len(outputs)
         for c in commands:
-            assert(type(c) is tuple)
-            md5.update(c[0])
+            assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+str(c)
             pass
-        
-        self.add_custom_target(
-            name='confix-internal-custom-command-target-'+md5.hexdigest(),
-            depends=outputs,
-            all=False)
+
+        self.__custom_commands__output.append((outputs, commands, depends, working_directory, _comment(comment)))
         pass
 
     def add_custom_target(self, name, all, depends, comment=None):
@@ -481,36 +475,11 @@ class CMakeLists:
             lines.extend(_format_comment(comment))
             lines.append('ADD_CUSTOM_COMMAND(')
             lines.append('    OUTPUT '+' '.join(outputs))
-            if True:
-                loop_command = ''
-                if len(commands):
-                    md5 = hashlib.md5()
-                    for o in outputs:
-                        md5.update(o)
-                        pass
-                    lockdirname = md5.hexdigest()
-
-                    loop_command += 'sh -c "('
-                    for c in commands:
-                        if len(c[1]) > 0:
-                            esc_command = "echo '" + ' '.join([c[0]] + c[1]) + "';"
-                        else:
-                            esc_command = "echo '" + c[0] + "';"
-                            pass
-                        esc_command = esc_command.replace('"', '\\"')
-                        loop_command += esc_command
-                        pass
-                    loop_command += ')|${CMAKE_SOURCE_DIR}/'+cmake_consts.scripts_dir+'/confix-cmake-generator-lock-loop '+lockdirname+'"'
-                    lines.append('    COMMAND '+loop_command)
-                    pass
-                pass
-            else:
-                for c in commands:
-                    if len(c[1]) > 0:
-                        lines.append('    COMMAND '+c[0]+' ARGS '+' '.join(c[1]))
-                    else:
-                        lines.append('    COMMAND '+c[0])
-                        pass
+            for c in commands:
+                if len(c[1]) > 0:
+                    lines.append('    COMMAND '+c[0]+' ARGS '+' '.join(c[1]))
+                else:
+                    lines.append('    COMMAND '+c[0])
                     pass
                 pass
             if len(depends):

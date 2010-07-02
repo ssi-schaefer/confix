@@ -32,26 +32,26 @@ class CMakeListsInMemorySuite(unittest.TestSuite):
 
 class CMakeListsInMemoryTest(unittest.TestCase):
     def unique_find_call(self):
-        cmakelists = CMakeLists()
+        cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.add_find_call('xxx')
         cmakelists.add_find_call('xxx')
         self.failUnlessEqual(len(cmakelists.get_find_calls()), 1)
 
-        cmakelists = CMakeLists()
+        cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.add_find_call('xxx')
         cmakelists.add_find_call(['xxx'])
         self.failUnlessEqual(len(cmakelists.get_find_calls()), 1)
         pass
 
     def find_call_list(self):
-        cmakelists = CMakeLists()
+        cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.add_find_call(['0', '1'])
         self.failUnlessEqual(cmakelists.get_find_calls()[0], '0')
         self.failUnlessEqual(cmakelists.get_find_calls()[1], '1')
         pass
     
     def collapse_multiple_include(self):
-        cmakelists = CMakeLists()
+        cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.add_include('xxx')
         cmakelists.add_include('xxx')
         cmakelists.add_include('yyy')
@@ -61,7 +61,7 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         pass
     
     def target_link_libraries_tightened_after_set(self):
-        cmakelists = CMakeLists()
+        cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.target_link_libraries('target', ['a', 'b'])
         cmakelists.tighten_target_link_library(target='target', basename='a', tightened='tight_a')
         cmakelists.tighten_target_link_library(target='target', basename='b', tightened='tight_b')
@@ -70,7 +70,7 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         pass
 
     def target_link_libraries_tightened_before_set(self):
-        cmakelists = CMakeLists()
+        cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.tighten_target_link_library(target='target', basename='a', tightened='tight_a')
         cmakelists.tighten_target_link_library(target='target', basename='b', tightened='tight_b')
         cmakelists.target_link_libraries('target', ['a', 'b'])
@@ -82,7 +82,7 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         # only asserting parameters here. I don't know how this will
         # evolve, and I'll likely change much as time passes.
 
-        cmakelists = CMakeLists()
+        cmakelists = CMakeLists(custom_command_helper=None)
 
         # full set of parameters.
         cmakelists.add_custom_command__output(

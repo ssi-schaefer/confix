@@ -17,6 +17,7 @@
 
 import cmake_consts
 from cmakelists import CMakeLists
+from custom_command_bullshit import CustomCommandHelper
 from aux_dir_builders import ModulesDirectoryBuilder
 from aux_dir_builders import ScriptsDirectoryBuilder
 from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
@@ -75,30 +76,72 @@ class CMakeBackendOutputBuilder(Builder):
         self.__modules_dir_builder.add_module_file(name, lines)
         pass
 
-    def add_scripts_file(self, name, lines):
-        """
-        Add a file @name (consisting of @lines) to the package's
-        Scripts directory.
-        """
-        self.__scripts_dir_builder.add_script_file(name, lines)
-        pass
-
     def locally_unique_id(self):
         return str(self.__class__)
 
-    def initialize(self, package):
-        super(CMakeBackendOutputBuilder, self).initialize(package)
+    # def initialize(self, package):
+    #     super(CMakeBackendOutputBuilder, self).initialize(package)
 
-        # CMakeLists.txt files all over
-        self.__local_cmakelists = CMakeLists()
-        if self.parentbuilder() is package.rootbuilder():
-            self.__top_cmakelists = self.__local_cmakelists
-            pass
-        else:
-            top_cmake_builder = find_cmake_output_builder(package.rootbuilder())
-            self.__top_cmakelists = top_cmake_builder.local_cmakelists()
-            pass
-        pass
+    #     print self
+
+    #     # if in the top directory, add the CMake admin section to
+    #     # confix-admin. if not in the top directory, steal it from
+    #     # there.
+    #     if self.parentbuilder() is self.package().rootbuilder():
+    #         # create the directory hierarchy if necessary.
+    #         admin_dir_builder = confix_admin.add_confix_admin(self.package())
+    #         cmake_dir = admin_dir_builder.directory().get('cmake')
+    #         if cmake_dir is None:
+    #             cmake_dir = admin_dir_builder.directory().add(name='cmake', entry=Directory())
+    #             pass
+    #         modules_dir = cmake_dir.get('Modules')
+    #         if modules_dir is None:
+    #             modules_dir = cmake_dir.add(name='Modules', entry=Directory())
+    #             pass
+    #         scripts_dir = cmake_dir.get('Scripts')
+    #         if scripts_dir is None:
+    #             scripts_dir = cmake_dir.add(name='Scripts', entry=Directory())
+    #             pass
+
+    #         # wrap builder hierarchy around directory hierarchy. NOTE
+    #         # that the modules and scripts directory builders are
+    #         # backend builders.
+    #         self.__modules_dir_builder = ModulesDirectoryBuilder(directory=modules_dir)
+    #         self.__scripts_dir_builder = ScriptsDirectoryBuilder(directory=scripts_dir)
+    #         # add them later on, when everything is done (else they
+    #         # get initialized too early; this is a bit of a mess.)
+    #         cmake_dir_builder = admin_dir_builder.add_builder(DirectoryBuilder(directory=cmake_dir))
+    #         print 'yesssss'
+    #     else:
+    #         self.__modules_dir_builder = find_cmake_output_builder(self.package().rootbuilder()).__modules_dir_builder
+    #         self.__scripts_dir_builder = find_cmake_output_builder(self.package().rootbuilder()).__scripts_dir_builder
+    #         print 'noooooo'
+    #         pass
+
+    #     # CMakeLists.txt files all over
+    #     self.__local_cmakelists = CMakeLists(
+    #         custom_command_helper=CustomCommandHelper(scripts_directory_builder=self.__scripts_dir_builder))
+    #     if self.parentbuilder() is package.rootbuilder():
+    #         self.__top_cmakelists = self.__local_cmakelists
+    #         pass
+    #     else:
+    #         top_cmake_builder = find_cmake_output_builder(package.rootbuilder())
+    #         self.__top_cmakelists = top_cmake_builder.local_cmakelists()
+    #         pass
+
+    #     if cmake_dir_builder:
+    #         cmake_dir_builder.add_backend_builder(self.__modules_dir_builder)
+    #         cmake_dir_builder.add_backend_builder(self.__scripts_dir_builder)
+    #         pass
+
+    #     pass
+
+    def enlarge(self):
+        super(CMakeBackendOutputBuilder, self).enlarge()
+
+        if self.__bursted:
+            return
+        self.__bursted = True
 
         # if in the top directory, add the CMake admin section to
         # confix-admin. if not in the top directory, steal it from
@@ -130,6 +173,18 @@ class CMakeBackendOutputBuilder(Builder):
             self.__scripts_dir_builder = find_cmake_output_builder(self.package().rootbuilder()).__scripts_dir_builder
             pass
 
+        # CMakeLists.txt files all over
+        self.__local_cmakelists = CMakeLists(
+            custom_command_helper=CustomCommandHelper(scripts_directory_builder=self.__scripts_dir_builder))
+
+        if self.parentbuilder() is self.package().rootbuilder():
+            self.__top_cmakelists = self.__local_cmakelists
+            pass
+        else:
+            top_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
+            self.__top_cmakelists = top_cmake_builder.local_cmakelists()
+            pass
+
         pass
 
     def relate(self, node, digraph, topolist):
@@ -158,53 +213,6 @@ class CMakeBackendOutputBuilder(Builder):
             self.__output_top_cmakelists()
             pass
 
-        # generate additional dependencies to work around CMake bug
-        # #10082
-        # ================================================================
-
-        # CMake calls make recursively in an extremely idiotic way
-        # which renders it almost unusable for parallel make. in the
-        # presence of code generators and explicit 'all' targets this
-        # can lead to multiple parallel invocations of the same code
-        # generator. depending on the code generator, this will result
-        # in an error (if you are lucky), or lead to subtle bugs -
-        # without any error.
-
-        # specify explicit dependencies between nodes
-        # -------------------------------------------
-        
-        # it is obviously a good idea to specify as many explicit
-        # dependencies as we can. we maintain a directed graph between
-        # directories anyway, so we can add the following.
-
-        # * a node-specific target for my own node. this is to let
-        #   others point an edge towards us.
-
-        # * dependencies from my node-specific target to all of my
-        #   node's toplevel targets (executable, libraries, and custom
-        #   targets). when somebody points an edge towards us, then
-        #   this way we make sure that all that we have is built.
-
-        # * dependencies from my node's toplevel targets to all
-        #   toplevel targets of my node's successors. this is a
-        #   necessary refinement of the above.
-
-        # * dependencies from my node-specific target to all successor
-        #   nodes' node-specific targets. this is not strictly
-        #   necessary, but it sure can't hurt.
-
-        # chain a node's 'all' targets together
-        # -------------------------------------
-
-        # in order to prevent multiple parallel 'all' entry points
-        # into one node (and thus parallel build failures), we
-        # artificially chain together everything that would be
-        # triggered by 'make all'. this way we force linearization
-        # inside one directory. it is likely that an otherwise correct
-        # parallel build is slowed down by this: the 'all' entry
-        # points into a directory can well be independent. but we sure
-        # take that penalty in order to yield a correct build.
-        
         if True:
             assert self.__last_digraph is not None
 
@@ -256,58 +264,6 @@ class CMakeBackendOutputBuilder(Builder):
                     comment=["edges from top-level target "+t+" to",
                              "all successors' node-specific targets"])
                 pass
-
-#             # intra-package dependencies...
-#             for succ in self.__last_digraph.successors(self.parentbuilder()):
-#                 if not isinstance(succ, DirectoryBuilder):
-#                     # exclude installed nodes
-#                     continue
-# 
-#                 succ_name = '.'.join(succ.directory().relpath(self.package().rootbuilder().directory()))
-# 
-#                 # node-specific target dependencies
-#                 self.__local_cmakelists.add_dependencies(
-#                     name=local_target,
-#                     depends=['confix-internal-node-target-'+succ_name],
-#                     comment=['edge from this node to successor node ', succ_name])
-# 
-#                 # dependencies from my node's toplevel targets to
-#                 # every successor's toplevel targets.
-#                 succ_cmakelists = find_cmake_output_builder(succ).local_cmakelists()
-#                 for local_toptarget in itertools.chain(self.__local_cmakelists.iter_executable_target_names(),
-#                                                        self.__local_cmakelists.iter_library_target_names(),
-#                                                        self.__local_cmakelists.iter_custom_target_names()):
-#                     for succ_toptarget in itertools.chain(succ_cmakelists.iter_executable_target_names(),
-#                                                           succ_cmakelists.iter_library_target_names(),
-#                                                           succ_cmakelists.iter_custom_target_names()):
-#                         self.__local_cmakelists.add_dependencies(
-#                             name=local_toptarget,
-#                             depends=[succ_toptarget],
-#                             comment=['edge from this node\'s target "'+local_toptarget+'"',
-#                                      'to target "'+succ_toptarget+'" of node ',
-#                                      succ_name])
-#                         pass
-#                     pass
-#                 pass
-# 
-#             # chain 'all' entry points together.
-#             all_targets = []
-#             for target_name in self.__local_cmakelists.iter_custom_target_names():
-#                 if self.__local_cmakelists.custom_target_is_all(target_name):
-#                     all_targets.append(target_name)
-#                     pass
-#                 pass
-#             all_targets.extend(list(self.__local_cmakelists.iter_executable_target_names()))
-#             all_targets.extend(list(self.__local_cmakelists.iter_library_target_names()))
-#             for i in xrange(len(all_targets)):
-#                 if i+1 == len(all_targets):
-#                     break
-#                 self.__local_cmakelists.add_dependencies(
-#                     name=all_targets[i],
-#                     depends=[all_targets[i+1]],
-#                     comment='artificial all-target chaining')
-#                 pass
-#             pass
 
         # write the CMakeLists.txt file.
         cmakelists_file = self.parentbuilder().directory().find(['CMakeLists.txt'])
@@ -426,5 +382,6 @@ class CMakeBackendOutputBuilder(Builder):
     def __node_specific_target_name(dirbuilder):
         assert isinstance(dirbuilder, DirectoryBuilder)
         return 'confix-node-specific-target--'+'.'.join(dirbuilder.directory().relpath(dirbuilder.package().rootbuilder().directory()))
+    
     
     pass
