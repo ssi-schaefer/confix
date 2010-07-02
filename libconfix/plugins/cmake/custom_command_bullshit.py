@@ -34,12 +34,12 @@ class CustomCommandHelper(object):
     http://public.kitware.com/Bug/view.php?id=10082.
 
     During initialization, the cmake output builder creates a
-    ScriptsDirectoryBuilder where we put wrapper scripts that we
-    generate. A wrapper script contains logic to guard against
-    multiple invocations, and executes the commands that the user
-    thinks are part of ADD_CUSTOM_COMMAND() invocation. The only
-    command of an ADD_CUSTOM_COMMAND() is a call to the wrapper
-    script. (But read on.)
+    ScriptsDirectoryBuilder where we put a wrapper script. The wrapper
+    script contains logic to guard against multiple invocations, and
+    executes the commands that the user thinks are part of
+    ADD_CUSTOM_COMMAND() invocation. The only command of an
+    ADD_CUSTOM_COMMAND() is a call to the wrapper script. (But read
+    on.)
     """
 
     def __init__(self, scripts_directory_builder):
