@@ -15,9 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import consts
+import cmake_consts
 from cmakelists import CMakeLists
-from modules_dir_builder import ModulesDirectoryBuilder
+from aux_dir_builders import ModulesDirectoryBuilder
+from aux_dir_builders import ScriptsDirectoryBuilder
 from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
 from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
 from buildinfo import BuildInfo_CMakeModule
@@ -50,7 +51,8 @@ class CMakeBackendOutputBuilder(Builder):
         Builder.__init__(self)
         self.__local_cmakelists = None
         self.__top_cmakelists = None
-        self.__modules_builder = None
+        self.__modules_dir_builder = None
+        self.__scripts_dir_builder = None
         self.__bursted = False
 
         # remember the dependency graph for use in output(). (we
@@ -70,7 +72,15 @@ class CMakeBackendOutputBuilder(Builder):
         Add a file @name (consisting of @lines) to the package's
         Modules directory.
         """
-        self.__modules_builder.add_module_file(name, lines)
+        self.__modules_dir_builder.add_module_file(name, lines)
+        pass
+
+    def add_scripts_file(self, name, lines):
+        """
+        Add a file @name (consisting of @lines) to the package's
+        Scripts directory.
+        """
+        self.__scripts_dir_builder.add_script_file(name, lines)
         pass
 
     def locally_unique_id(self):
@@ -104,14 +114,22 @@ class CMakeBackendOutputBuilder(Builder):
             if modules_dir is None:
                 modules_dir = cmake_dir.add(name='Modules', entry=Directory())
                 pass
+            scripts_dir = cmake_dir.get('Scripts')
+            if scripts_dir is None:
+                scripts_dir = cmake_dir.add(name='Scripts', entry=Directory())
+                pass
 
             # wrap builder hierarchy around directory hierarchy. NOTE
-            # that the modules directory builder is a backend builder.
+            # that the modules and scripts directory builders are
+            # backend builders.
             cmake_dir_builder = admin_dir_builder.add_builder(DirectoryBuilder(directory=cmake_dir))
-            self.__modules_builder = cmake_dir_builder.add_backend_builder(ModulesDirectoryBuilder(directory=modules_dir))
+            self.__modules_dir_builder = cmake_dir_builder.add_backend_builder(ModulesDirectoryBuilder(directory=modules_dir))
+            self.__scripts_dir_builder = cmake_dir_builder.add_backend_builder(ScriptsDirectoryBuilder(directory=scripts_dir))
         else:
-            self.__modules_builder = find_cmake_output_builder(self.package().rootbuilder()).__modules_builder
+            self.__modules_dir_builder = find_cmake_output_builder(self.package().rootbuilder()).__modules_dir_builder
+            self.__scripts_dir_builder = find_cmake_output_builder(self.package().rootbuilder()).__scripts_dir_builder
             pass
+
         pass
 
     def relate(self, node, digraph, topolist):
@@ -125,7 +143,7 @@ class CMakeBackendOutputBuilder(Builder):
                 self.__top_cmakelists.add_find_call(bi.find_call())
                 pass
             for bi in n.iter_buildinfos_type(BuildInfo_CMakeModule):
-                self.__modules_builder.add_module_file(bi.name(), bi.lines())
+                self.__modules_dir_builder.add_module_file(bi.name(), bi.lines())
                 pass
             pass
 
@@ -189,80 +207,108 @@ class CMakeBackendOutputBuilder(Builder):
         
         if True:
             assert self.__last_digraph is not None
-            node_name = '.'.join(self.parentbuilder().directory().relpath(self.package().rootbuilder().directory()))
-            local_target = 'confix-internal-node-target-'+node_name
 
+            toplevel_targets = list(itertools.chain(
+                    self.__local_cmakelists.iter_executable_target_names(),
+                    self.__local_cmakelists.iter_library_target_names(),
+                    self.__local_cmakelists.iter_custom_target_names()))
+            
             # dependencies to my node's toplevel targets
-            for t in itertools.chain(self.__local_cmakelists.iter_executable_target_names(),
-                                     self.__local_cmakelists.iter_library_target_names(),
-                                     self.__local_cmakelists.iter_custom_target_names()):
-                self.__local_cmakelists.add_dependencies(
-                    name=local_target,
-                    depends=[t],
-                    comment=['edge from my node\'s node-specific target to',
-                             'my node\' toplevel target '+t])
-                pass
+            self.__local_cmakelists.add_dependencies(
+                name=self.__node_specific_target_name(self.parentbuilder()),
+                depends=toplevel_targets,
+                comment=['edge from my node\'s node-specific target to',
+                         'all toplevel targets of this directory'])
 
             # node-specific target. add this after the outgoing
             # dependencies, or else we have a cycle.
             self.__local_cmakelists.add_custom_target(
-                name=local_target,
+                name=self.__node_specific_target_name(self.parentbuilder()),
                 depends=[],
                 all=False,
-                comment='node-specific target for '+node_name)
+                comment='node-specific target for this directory')
 
-            # intra-package dependencies...
+            # outgoing dependencies ...
+
+            # determine the successors for later use.
+            successor_nodes = []
             for succ in self.__last_digraph.successors(self.parentbuilder()):
-                if not isinstance(succ, DirectoryBuilder):
+                if isinstance(succ, DirectoryBuilder):
                     # exclude installed nodes
-                    continue
-
-                succ_name = '.'.join(succ.directory().relpath(self.package().rootbuilder().directory()))
-
-                # node-specific target dependencies
-                self.__local_cmakelists.add_dependencies(
-                    name=local_target,
-                    depends=['confix-internal-node-target-'+succ_name],
-                    comment=['edge from this node to successor node ', succ_name])
-
-                # dependencies from my node's toplevel targets to
-                # every successor's toplevel targets.
-                succ_cmakelists = find_cmake_output_builder(succ).local_cmakelists()
-                for local_toptarget in itertools.chain(self.__local_cmakelists.iter_executable_target_names(),
-                                                       self.__local_cmakelists.iter_library_target_names(),
-                                                       self.__local_cmakelists.iter_custom_target_names()):
-                    for succ_toptarget in itertools.chain(succ_cmakelists.iter_executable_target_names(),
-                                                          succ_cmakelists.iter_library_target_names(),
-                                                          succ_cmakelists.iter_custom_target_names()):
-                        self.__local_cmakelists.add_dependencies(
-                            name=local_toptarget,
-                            depends=[succ_toptarget],
-                            comment=['edge from this node\'s target "'+local_toptarget+'"',
-                                     'to target "'+succ_toptarget+'" of node ',
-                                     succ_name])
-                        pass
+                    successor_nodes.append(succ)
                     pass
                 pass
+            
+            # dependencies from the node-specific target to all
+            # successors' node-specific targets.
+            self.__local_cmakelists.add_dependencies(
+                name=self.__node_specific_target_name(self.parentbuilder()),
+                depends=[self.__node_specific_target_name(succ) for succ in successor_nodes],
+                comment=["edges from this directory's node-specific target",
+                         "to all successors' node-specific targets"])
 
-            # chain 'all' entry points together.
-            all_targets = []
-            for target_name in self.__local_cmakelists.iter_custom_target_names():
-                if self.__local_cmakelists.custom_target_is_all(target_name):
-                    all_targets.append(target_name)
-                    pass
-                pass
-            all_targets.extend(list(self.__local_cmakelists.iter_executable_target_names()))
-            all_targets.extend(list(self.__local_cmakelists.iter_library_target_names()))
-            for i in xrange(len(all_targets)):
-                if i+1 == len(all_targets):
-                    break
+            # dependencies from each top-level target to all
+            # successors' node-specific targets
+            for t in toplevel_targets:
                 self.__local_cmakelists.add_dependencies(
-                    name=all_targets[i],
-                    depends=[all_targets[i+1]],
-                    comment='artificial all-target chaining')
+                    name=t,
+                    depends=[self.__node_specific_target_name(succ) for succ in successor_nodes],
+                    comment=["edges from top-level target "+t+" to",
+                             "all successors' node-specific targets"])
                 pass
-            pass
-        
+
+#             # intra-package dependencies...
+#             for succ in self.__last_digraph.successors(self.parentbuilder()):
+#                 if not isinstance(succ, DirectoryBuilder):
+#                     # exclude installed nodes
+#                     continue
+# 
+#                 succ_name = '.'.join(succ.directory().relpath(self.package().rootbuilder().directory()))
+# 
+#                 # node-specific target dependencies
+#                 self.__local_cmakelists.add_dependencies(
+#                     name=local_target,
+#                     depends=['confix-internal-node-target-'+succ_name],
+#                     comment=['edge from this node to successor node ', succ_name])
+# 
+#                 # dependencies from my node's toplevel targets to
+#                 # every successor's toplevel targets.
+#                 succ_cmakelists = find_cmake_output_builder(succ).local_cmakelists()
+#                 for local_toptarget in itertools.chain(self.__local_cmakelists.iter_executable_target_names(),
+#                                                        self.__local_cmakelists.iter_library_target_names(),
+#                                                        self.__local_cmakelists.iter_custom_target_names()):
+#                     for succ_toptarget in itertools.chain(succ_cmakelists.iter_executable_target_names(),
+#                                                           succ_cmakelists.iter_library_target_names(),
+#                                                           succ_cmakelists.iter_custom_target_names()):
+#                         self.__local_cmakelists.add_dependencies(
+#                             name=local_toptarget,
+#                             depends=[succ_toptarget],
+#                             comment=['edge from this node\'s target "'+local_toptarget+'"',
+#                                      'to target "'+succ_toptarget+'" of node ',
+#                                      succ_name])
+#                         pass
+#                     pass
+#                 pass
+# 
+#             # chain 'all' entry points together.
+#             all_targets = []
+#             for target_name in self.__local_cmakelists.iter_custom_target_names():
+#                 if self.__local_cmakelists.custom_target_is_all(target_name):
+#                     all_targets.append(target_name)
+#                     pass
+#                 pass
+#             all_targets.extend(list(self.__local_cmakelists.iter_executable_target_names()))
+#             all_targets.extend(list(self.__local_cmakelists.iter_library_target_names()))
+#             for i in xrange(len(all_targets)):
+#                 if i+1 == len(all_targets):
+#                     break
+#                 self.__local_cmakelists.add_dependencies(
+#                     name=all_targets[i],
+#                     depends=[all_targets[i+1]],
+#                     comment='artificial all-target chaining')
+#                 pass
+#             pass
+
         # write the CMakeLists.txt file.
         cmakelists_file = self.parentbuilder().directory().find(['CMakeLists.txt'])
         if cmakelists_file is None:
@@ -294,7 +340,7 @@ class CMakeBackendOutputBuilder(Builder):
         # there.
         top_cmakelists.add_set(
             'CMAKE_MODULE_PATH',
-            '${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/%s"' % consts.modules_dir)
+            '${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/%s"' % cmake_consts.modules_dir)
 
         # rpath wizardry
         self.__apply_rpath_settings(top_cmakelists)
@@ -375,5 +421,10 @@ class CMakeBackendOutputBuilder(Builder):
         top_cmakelists.add_set('CPACK_SOURCE_PACKAGE_FILE_NAME', '"${PROJECT_NAME}-${VERSION}"')
         top_cmakelists.add_set('CPACK_SOURCE_IGNORE_FILES', "${CPACK_SOURCE_IGNORE_FILES};~\$")
         pass
+
+    @staticmethod
+    def __node_specific_target_name(dirbuilder):
+        assert isinstance(dirbuilder, DirectoryBuilder)
+        return 'confix-node-specific-target--'+'.'.join(dirbuilder.directory().relpath(dirbuilder.package().rootbuilder().directory()))
     
     pass

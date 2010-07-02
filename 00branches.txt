@@ -92,7 +92,13 @@ Developer experiments     TRY-<developer>-<short-desc>
                  653<------- | --------------- | ---------+ 649
                  |           v RB-2.2          |          |
                  |                             |          v TRY-jfasch-automake-plugin(dead)
-                 v                             |
-               trunk                           |
-                                               v RB-2.1
-
+   (ongoing cmake|                             |
+    development) |                             |
+                 |                             v RB-2.1
+                 |
+                 |
+                 |
+                 |
+                 |
+                 v
+                 

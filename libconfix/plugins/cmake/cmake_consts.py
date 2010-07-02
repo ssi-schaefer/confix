@@ -18,3 +18,4 @@
 from libconfix.core.utils import const as core_consts
 
 modules_dir = core_consts.ADMIN_DIR + '/cmake/Modules'
+scripts_dir = core_consts.ADMIN_DIR + '/cmake/Scripts'

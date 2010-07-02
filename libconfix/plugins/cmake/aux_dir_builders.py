@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -33,6 +33,54 @@ class ModulesDirectoryBuilder(DirectoryBuilder):
             self.directory().add(name=name, entry=File(lines=my_lines))
         elif helper.md5_hexdigest_from_lines(my_lines) != helper.md5_hexdigest_from_lines(existing_file.lines()):
             debug.warn('Module file '+name+' already exists with different content')
+            existing_file.truncate()
+            existing_file.add_lines(my_lines)
+            pass
+        pass
+
+    pass
+
+confix_generator_lock = [
+    '#!/bin/sh',
+    '',
+    'LOCKDIR=.confix-generator-lock-$1',
+    '',
+    'wait=no',
+    'mkdir ${LOCKDIR} 2>/dev/null || wait=yes',
+    '',
+    'if test "${wait}" = "yes"; then',
+    '    echo "$$: waiting"',
+    '    while test -d ${LOCKDIR}; do',
+    '        echo Lock directory "${LOCKDIR} is (still?) in place; generator running"',
+    '        sleep 1',
+    '    done',
+    'else',
+    '    # trapping condition 0 means trapping "EXIT"',
+    '    trap "rmdir ${LOCKDIR}" 0',
+    '    while read cmd; do',
+    '        echo executing ${cmd} 2>&1',
+    '        (eval ${cmd}) || { echo xxxxxxxxxxxxxxxxxx; exit $?; }',
+    '    done',
+    'fi',
+    ]
+
+class ScriptsDirectoryBuilder(DirectoryBuilder):
+    def __init__(self, directory):
+        DirectoryBuilder.__init__(self, directory)
+
+        # HACK ALERT!
+        self.add_script_file(
+            name='confix-cmake-generator-lock-loop', 
+            lines=confix_generator_lock)
+        pass
+
+    def add_script_file(self, name, lines):
+        my_lines = helper.normalize_lines(lines)
+        existing_file = self.directory().get(name)
+        if existing_file is None:
+            self.directory().add(name=name, entry=File(lines=my_lines, mode=0755))
+        elif helper.md5_hexdigest_from_lines(my_lines) != helper.md5_hexdigest_from_lines(existing_file.lines()):
+            debug.warn('Script file '+name+' already exists with different content')
             existing_file.truncate()
             existing_file.add_lines(my_lines)
             pass

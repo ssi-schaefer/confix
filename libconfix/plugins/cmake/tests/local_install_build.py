@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -46,6 +46,7 @@ class LocalInstallBuildSuite(unittest.TestSuite):
         self.addTest(LocalInstallTest('test_auto_no_public_visibility'))
         self.addTest(LocalInstallTest('test_no_timestamp_clobber'))
         self.addTest(LocalInstallTest('test_sourcefile_dependency'))
+        self.addTest(LocalInstallTest('test_parallel_build'))
         pass
     pass
 
@@ -342,6 +343,65 @@ class LocalInstallTest(PersistentTestCase):
 
         pass
         
+    def test_parallel_build(self):
+        num_dirs = 50
+
+        
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('test_basic')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['DIRECTORY(["dir_'+str(i)+'"])' for i in xrange(50)]+['DIRECTORY(["user"])']))
+
+        for i in xrange(num_dirs):
+            dir_i = source.add(
+                name='dir_'+str(i),
+                entry=Directory())
+            dir_i.add(
+                name=const.CONFIX2_DIR,
+                entry=File(lines=["LIBRARY(members=[H(filename='file_"+str(i)+".h', ",
+                                  "                   install=['prefix', 'subdir_"+str(i)+"']), ",
+                                  "                 C(filename='file_"+str(i)+".c')])"]))
+            dir_i.add(
+                name='file_'+str(i)+'.h',
+                entry=File())
+            dir_i.add(
+                name='file_'+str(i)+'.c',
+                entry=File())
+            pass
+
+        user = source.add(
+            name='user',
+            entry=Directory())
+        user.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["LIBRARY(members=[C(filename='user.c')])"]))
+        user.add(
+            name='user.c',
+            entry=File(lines=['#include <prefix/subdir_'+str(i)+'/file_'+str(i)+'.h>' for i in xrange(num_dirs)]))
+            
+        package = LocalPackage(rootdirectory=source,
+                               setups=[Boilerplate(), C(), CMake(library_dependencies=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(packageroot=source.abspath(), builddir=build.abspath(), args=[])
+        commands.make(builddir=build.abspath(), args=['-j'])
+
+        pass
+
     pass
 
 if __name__ == '__main__':
