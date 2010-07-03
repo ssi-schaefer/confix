@@ -92,9 +92,11 @@ class CustomCommandHelper(object):
             else:
                 esc_command = c[0]
                 pass
-            esc_command = esc_command.replace('"', '\\"')
-            esc_command = esc_command.replace('(', '\\(')
-            esc_command = esc_command.replace(')', '\\)')
+            # esc_command = esc_command.replace('"', '\\"')
+            # esc_command = esc_command.replace('(', '\\(')
+            # esc_command = esc_command.replace(')', '\\)')
+            esc_command = esc_command.replace("'", "\\'")
+            esc_command = "'" + esc_command + "'"
             command_file_create_commands.append(('echo', [esc_command + ' >> ' + command_file_name]))
             pass
 
