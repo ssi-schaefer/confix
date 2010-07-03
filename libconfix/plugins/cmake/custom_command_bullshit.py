@@ -99,8 +99,8 @@ class CustomCommandHelper(object):
             esc_command = esc_command.replace('(', r'\\\\\(')
             esc_command = esc_command.replace(')', r'\\\\\)')
             esc_command = esc_command.replace("'", r"\\\\'")
-            esc_command = esc_command.replace('<', r'\\\\<')
-            esc_command = esc_command.replace('>', r'\\\\>')
+            esc_command = esc_command.replace('<', r'\\<')
+            esc_command = esc_command.replace('>', r'\\>')
             command_file_create_commands.append(('echo', [esc_command + ' >> ' + command_file_name]))
             pass
 
