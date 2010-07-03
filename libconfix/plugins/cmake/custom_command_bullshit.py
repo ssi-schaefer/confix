@@ -48,7 +48,8 @@ class CustomCommandHelper(object):
         pass
 
     def create_custom_command_bullshit(self, cmakelists, outputs, commands, depends, working_directory, comment):
-        assert len(outputs)>0
+        assert len(outputs)>0, "custom command that doesn't geenrate anything?"
+
         custom_command_md5 = hashlib.md5()
         for o in outputs:
             custom_command_md5.update(o)
@@ -114,7 +115,7 @@ class CustomCommandHelper(object):
 
         cmakelists.add_custom_target(
             name='confix-internal-custom-command-target-'+custom_command_key,
-            depends=outputs,
+            depends=[outputs[0]],
             all=False,
             comment=comment)
 
