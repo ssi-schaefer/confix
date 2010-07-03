@@ -93,6 +93,7 @@ class CustomCommandHelper(object):
                 pass
             esc_command = esc_command.replace('"', '\\"')
             esc_command = esc_command.replace('(', '\\(')
+            esc_command = esc_command.replace(')', '\\)')
             command_file_create_commands.append(('echo', [esc_command + ' >> ' + command_file_name]))
             pass
 
