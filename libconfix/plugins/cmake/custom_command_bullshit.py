@@ -95,9 +95,9 @@ class CustomCommandHelper(object):
             # see
             # tests/handwritten-prototypes/add_custom_command__quoting
             # for an example.
-            esc_command = esc_command.replace('"', r'\\\\\"')
-            esc_command = esc_command.replace('(', r'\\\\\(')
-            esc_command = esc_command.replace(')', r'\\\\\)')
+            esc_command = esc_command.replace('"', r'\\\"')
+            esc_command = esc_command.replace('(', r'\\\(')
+            esc_command = esc_command.replace(')', r'\\\)')
             esc_command = esc_command.replace("'", r"\\\\'")
             esc_command = esc_command.replace('<', r'\\<')
             esc_command = esc_command.replace('>', r'\\>')
