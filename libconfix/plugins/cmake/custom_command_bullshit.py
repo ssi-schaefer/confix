@@ -78,7 +78,7 @@ class CustomCommandHelper(object):
                 '    trap "rmdir ${LOCKDIR}" 0',
                 '    while read cmd; do',
                 '        echo executing ${cmd} 2>&1',
-                '        (eval ${cmd}) || { echo xxxxxxxxxxxxxxxxxx; exit $?; }',
+                '        (eval ${cmd}) || { _status=$?; echo Error: ${cmd}; exit $_status; }',
                 '    done',
                 'fi',
                 ])
@@ -92,11 +92,15 @@ class CustomCommandHelper(object):
             else:
                 esc_command = c[0]
                 pass
-            # esc_command = esc_command.replace('"', '\\"')
-            # esc_command = esc_command.replace('(', '\\(')
-            # esc_command = esc_command.replace(')', '\\)')
-            esc_command = esc_command.replace("'", "\\'")
-            esc_command = "'" + esc_command + "'"
+            # see
+            # tests/handwritten-prototypes/add_custom_command__quoting
+            # for an example.
+            esc_command = esc_command.replace('"', r'\\\\\"')
+            esc_command = esc_command.replace('(', r'\\\\\(')
+            esc_command = esc_command.replace(')', r'\\\\\)')
+            esc_command = esc_command.replace("'", r"\\\\'")
+            esc_command = esc_command.replace('<', r'\\\\<')
+            esc_command = esc_command.replace('>', r'\\\\>')
             command_file_create_commands.append(('echo', [esc_command + ' >> ' + command_file_name]))
             pass
 
