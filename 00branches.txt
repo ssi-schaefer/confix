@@ -95,10 +95,15 @@ Developer experiments     TRY-<developer>-<short-desc>
    (ongoing cmake|                             |
     development) |                             |
                  |                             v RB-2.1
-                 |
-                 |
-                 |
-                 |
-                 |
-                 v
-                 
+                 867------------+
+                 |              |
+                 |              872 REL-2.3.0
+                 |              |
+                 |              |
+                 v              |
+                                |
+                                |
+                                |
+                                |
+                                v RB-2.3
+
