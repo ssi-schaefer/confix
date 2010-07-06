@@ -36,4 +36,3 @@ def add_confix_admin(package):
         admin_dir = package.rootdirectory().add(name=const.ADMIN_DIR, entry=Directory())
         pass
     return package.rootbuilder().add_builder(DirectoryBuilder(directory=admin_dir))
-    
