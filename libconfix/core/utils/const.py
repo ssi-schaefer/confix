@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 # Confix package version
 
-CONFIX_VERSION = '2.3.0'
+CONFIX_VERSION = '2.3.1'
 
 # the default name of interface files
 CONFIX2_DIR = 'Confix2.dir'
