@@ -16,9 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-# Confix package version
-
+# Confix version
 CONFIX_VERSION = '2.3.1'
+
+# version of persistent data, the repo.
+REPO_VERSION = '2.3.0'
 
 # the default name of interface files
 CONFIX2_DIR = 'Confix2.dir'

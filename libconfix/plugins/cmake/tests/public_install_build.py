@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -140,7 +140,7 @@ class PublicInstallTest(PersistentTestCase):
         self.failUnless(install.find(['bin', 'exe']))
         self.failIf(install.find(['bin', 'test']))
 
-        self.failUnless(install.find(['share', 'confix-%s' % const.CONFIX_VERSION, 'repo', package.repofilename()]))
+        self.failUnless(install.find(['share', 'confix-%s' % const.REPO_VERSION, 'repo', package.repofilename()]))
         
         pass
 
