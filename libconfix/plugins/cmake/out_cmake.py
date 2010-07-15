@@ -64,8 +64,10 @@ class CMakeBackendOutputBuilder(Builder):
 
     def local_cmakelists(self):
         if self.__local_cmakelists is None:
+            scripts_directory_builder = self.__get_scripts_dir_builder()
+            assert scripts_directory_builder is not None
             self.__local_cmakelists = CMakeLists(
-                custom_command_helper=CustomCommandHelper(scripts_directory_builder=self.__scripts_dir_builder))
+                custom_command_helper=CustomCommandHelper(scripts_directory_builder=scripts_directory_builder))
             pass
         return self.__local_cmakelists
 
@@ -81,7 +83,7 @@ class CMakeBackendOutputBuilder(Builder):
         Add a file @name (consisting of @lines) to the package's
         Modules directory.
         """
-        self.__modules_dir_builder.add_module_file(name, lines)
+        self.__get_modules_dir_builder().add_module_file(name, lines)
         pass
 
     def locally_unique_id(self):
@@ -121,25 +123,6 @@ class CMakeBackendOutputBuilder(Builder):
             pass
         pass
 
-    def enlarge(self):
-        root_cmake_builder = None
-
-        if self.__modules_dir_builder == None:
-            if root_cmake_builder is None:
-                root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
-                pass
-            self.__modules_dir_builder = root_cmake_builder.__modules_dir_builder
-            pass
-        
-        if self.__scripts_dir_builder == None:
-            if root_cmake_builder is None:
-                root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
-                pass
-            self.__scripts_dir_builder = root_cmake_builder.__scripts_dir_builder
-            pass
-
-        pass
-
     def relate(self, node, digraph, topolist):
         super(CMakeBackendOutputBuilder, self).relate(node, digraph, topolist)
 
@@ -151,7 +134,7 @@ class CMakeBackendOutputBuilder(Builder):
                 self.top_cmakelists().add_find_call(bi.find_call())
                 pass
             for bi in n.iter_buildinfos_type(BuildInfo_CMakeModule):
-                self.__modules_dir_builder.add_module_file(bi.name(), bi.lines())
+                self.__get_modules_dir_builder().add_module_file(bi.name(), bi.lines())
                 pass
             pass
 
@@ -330,6 +313,23 @@ class CMakeBackendOutputBuilder(Builder):
         top_cmakelists.add_set('CPACK_SOURCE_PACKAGE_FILE_NAME', '"${PROJECT_NAME}-${VERSION}"')
         top_cmakelists.add_set('CPACK_SOURCE_IGNORE_FILES', "${CPACK_SOURCE_IGNORE_FILES};~\$")
         pass
+
+    def __get_modules_dir_builder(self):
+        if self.__modules_dir_builder == None:
+            if root_cmake_builder is None:
+                root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
+                pass
+            self.__modules_dir_builder = root_cmake_builder.__modules_dir_builder
+            pass
+        return self.__modules_dir_builder
+
+    def __get_scripts_dir_builder(self):
+        if self.__scripts_dir_builder == None:
+            root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
+            assert root_cmake_builder is not None
+            self.__scripts_dir_builder = root_cmake_builder.__scripts_dir_builder
+            pass
+        return self.__scripts_dir_builder
 
     @staticmethod
     def __node_specific_target_name(dirbuilder):
