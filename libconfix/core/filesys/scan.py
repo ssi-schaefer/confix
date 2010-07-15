@@ -126,9 +126,13 @@ def rescan_dir(dir):
     # physical directory. (first iterate, then remove)
     remove_names = []
     for name, entry in dir.entries():
-        if name not in physical_dir_entries:
-            remove_names.append(name)
-            pass
+        if not entry.is_persistent():
+            # the file has been added up in the air for the purpose of
+            # persisting it later.
+            continue
+        if name in physical_dir_entries:
+            continue
+        remove_names.append(name)
         pass
     for name in remove_names:
         dir.remove_but_be_careful_no_sync(name)
