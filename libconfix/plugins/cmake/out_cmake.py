@@ -316,9 +316,8 @@ class CMakeBackendOutputBuilder(Builder):
 
     def __get_modules_dir_builder(self):
         if self.__modules_dir_builder == None:
-            if root_cmake_builder is None:
-                root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
-                pass
+            root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
+            assert root_cmake_builder is not None
             self.__modules_dir_builder = root_cmake_builder.__modules_dir_builder
             pass
         return self.__modules_dir_builder
