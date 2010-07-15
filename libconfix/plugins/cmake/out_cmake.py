@@ -63,9 +63,17 @@ class CMakeBackendOutputBuilder(Builder):
         pass
 
     def local_cmakelists(self):
+        if self.__local_cmakelists is None:
+            self.__local_cmakelists = CMakeLists(
+                custom_command_helper=CustomCommandHelper(scripts_directory_builder=self.__scripts_dir_builder))
+            pass
         return self.__local_cmakelists
 
     def top_cmakelists(self):
+        if self.__top_cmakelists is None:
+            root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
+            self.__top_cmakelists = root_cmake_builder.local_cmakelists()
+            pass
         return self.__top_cmakelists
 
     def add_module_file(self, name, lines):
@@ -129,18 +137,7 @@ class CMakeBackendOutputBuilder(Builder):
                 pass
             self.__scripts_dir_builder = root_cmake_builder.__scripts_dir_builder
             pass
-        
-        if self.__top_cmakelists is None:
-            if root_cmake_builder is None:
-                root_cmake_builder = find_cmake_output_builder(self.package().rootbuilder())
-                pass
-            self.__top_cmakelists = root_cmake_builder.local_cmakelists()
-            pass
-        
-        if self.__local_cmakelists is None:
-            self.__local_cmakelists = CMakeLists(
-                custom_command_helper=CustomCommandHelper(scripts_directory_builder=self.__scripts_dir_builder))
-            pass
+
         pass
 
     def relate(self, node, digraph, topolist):
