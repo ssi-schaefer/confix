@@ -48,6 +48,7 @@ class BuildInfo_IncludePath_External_AM(BuildInformation):
         BuildInformation.__init__(self)
         self.incpath_ = incpath
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + '.'.join(self.incpath_)
     def incpath(self): return self.incpath_

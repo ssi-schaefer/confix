@@ -56,6 +56,7 @@ class BuildInfo_Configure_in(BuildInformation):
         self.__order = order
         self.__md5 = helper.md5_hexdigest_from_lines(lines)
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + self.__md5
     def lines(self): return self.__lines
@@ -94,6 +95,7 @@ class BuildInfo_ACInclude_m4(BuildInformation):
         self.__lines = lines
         self.__md5 = helper.md5_hexdigest_from_lines(lines)
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + self.__md5
     def lines(self): return self.__lines
