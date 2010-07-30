@@ -76,7 +76,7 @@ class BuildInfo_CFLAGS_AM(BuildInformation):
         BuildInformation.__init__(self)
         self.__cflags = cflags
         pass
-    def __str__(self): return unique_key()
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + ','.join(self.__cflags)
     def cflags(self): return self.__cflags
@@ -134,7 +134,7 @@ class BuildInfo_CommandlineMacros_AM(BuildInformation):
         BuildInformation.__init__(self)
         self.__macros = macros
         pass
-    def __str__(self): return unique_key()
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         ret = self.__class__.__name__ + ':'
         for k, v in self.__macros.iteritems():
@@ -173,7 +173,7 @@ class BuildInfo_Library_External_AM(BuildInformation):
         self.__libpath = libpath
         self.__libs = libs
         pass
-    def __str__(self): return unique_key()
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + ','.join(self.__libpath) + ':' + ','.join(self.__libs)
     def libpath(self): return self.__libpath
