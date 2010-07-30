@@ -45,43 +45,6 @@ def scan_dir(path):
         raise Error(next_path_str+' has unknown type')
     return ret
 
-# def rescan_dir(dir):
-#     if dir.state() != DirectoryState.SYNC:
-#         raise Error('Cannot rescan directory: not yet in sync')
-#     abspath = os.sep.join(dir.abspath())
-#     for name in os.listdir(abspath):
-#         if name in ['.', '..']:
-#             continue
-#         absname = os.path.join(abspath, name)
-#         existing_entry = dir.get(name)
-#         if existing_entry is not None:
-#             if os.path.isfile(absname):
-#                 if not isinstance(existing_entry, File):
-#                     # entry type change; bail out
-#                     raise Error('Cannot convert existing entry '+name+' to a file')
-#                 pass
-#             elif os.path.isdir(absname):
-#                 if not isinstance(existing_entry, Directory):
-#                     # entry type change; bail out
-#                     raise Error('Cannot convert existing entry '+name+' to a directory')
-#                 # descend rescanning into subdirectory.
-#                 rescan_dir(existing_entry)
-#                 pass
-#             else:
-#                 raise Error(absname+' has unknown type')
-#             pass
-#         else:
-#             # go add the new entry
-#             if os.path.isfile(absname):
-#                 dir.add(name=name, entry=File(state=FileState.SYNC_CLEAR))
-#             elif os.path.isdir(absname):
-#                 dir.add(name=name, entry=scan_dir(dir.abspath()+[name]))
-#             else:
-#                 raise Error(absname+' has unknown type')
-#             pass
-#         pass
-#     pass
-
 def rescan_dir(dir):
     if dir.state() != DirectoryState.SYNC:
         raise Error('Cannot rescan directory: not yet in sync')
