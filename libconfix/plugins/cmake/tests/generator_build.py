@@ -41,6 +41,7 @@ class GeneratorBuildSuite(unittest.TestSuite):
         self.addTest(GeneratorBuildTest('generated_headers_public_install'))
         self.addTest(GeneratorBuildTest('generated_headers_local_install'))
         self.addTest(GeneratorBuildTest('generated_plainfile_install'))
+        self.addTest(GeneratorBuildTest('two_directories_with_generator_same_outputfilename'))
     pass
 
 class GeneratorBuildTest(PersistentTestCase):
@@ -289,6 +290,68 @@ class GeneratorBuildTest(PersistentTestCase):
 
         self.failUnless(install.find(['prefixdir', 'prefixfile']))
         self.failUnless(install.find(['share', 'datadir', 'datafile']))
+
+        pass
+    
+    def two_directories_with_generator_same_outputfilename(self):
+        """
+        The artificial custom target that we generate for every custom
+        command has a name that is derived from the command's
+        output(s). This leads to clashes when two directories have
+        commands that generate outputs with the same name.
+        """
+
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('two_directories_with_generator_same_outputfilename')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['DIRECTORY(["dira"])',
+                              'DIRECTORY(["dirb"])']))
+
+        dira = source.add(
+            name='dira',
+            entry=Directory())
+        dira.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(',
+                              '    outputs=["output"],',
+                              '    commands=[("touch", ["output"])],',
+                              '    depends=[])']))
+
+        dirb = source.add(
+            name='dirb',
+            entry=Directory())
+        dirb.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(',
+                              '    outputs=["output"],',
+                              '    commands=[("touch", ["output"])],',
+                              '    depends=[])']))
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[Boilerplate(), Plainfile(), CMake(library_dependencies=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(
+            packageroot=source.abspath(),
+            builddir=build.abspath(),
+            args=[])
+        commands.make(
+            builddir=build.abspath(),
+            args=[])
 
         pass
 

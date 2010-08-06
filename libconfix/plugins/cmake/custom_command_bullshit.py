@@ -40,10 +40,16 @@ class CustomCommandHelper(object):
     ADD_CUSTOM_COMMAND() invocation. The only command of an
     ADD_CUSTOM_COMMAND() is a call to the wrapper script. (But read
     on.)
+
+    The directory_buider ctor argument is my creator's parentbuilder
+    that I need to make the MD5 hash unique. One hack implies another
+    and another, as always.
     """
 
-    def __init__(self, scripts_directory_builder):
+    def __init__(self, parent_builder, scripts_directory_builder):
         assert isinstance(scripts_directory_builder, ScriptsDirectoryBuilder)
+        assert parent_builder is not None
+        self.__parent_builder = parent_builder
         self.__scripts_directory_builder = scripts_directory_builder
         pass
 
@@ -51,7 +57,7 @@ class CustomCommandHelper(object):
         assert len(outputs)>0, "custom command that doesn't geenrate anything?"
 
         custom_command_md5 = hashlib.md5()
-        for o in outputs:
+        for o in outputs + self.__parent_builder.directory().relpath(self.__parent_builder.package().rootdirectory()):
             custom_command_md5.update(o)
             pass
 

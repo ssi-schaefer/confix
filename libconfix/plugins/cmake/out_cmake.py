@@ -66,8 +66,11 @@ class CMakeBackendOutputBuilder(Builder):
         if self.__local_cmakelists is None:
             scripts_directory_builder = self.__get_scripts_dir_builder()
             assert scripts_directory_builder is not None
+            assert self.parentbuilder() is not None
             self.__local_cmakelists = CMakeLists(
-                custom_command_helper=CustomCommandHelper(scripts_directory_builder=scripts_directory_builder))
+                custom_command_helper=CustomCommandHelper(
+                    parent_builder=self.parentbuilder(),
+                    scripts_directory_builder=scripts_directory_builder))
             pass
         return self.__local_cmakelists
 
@@ -118,8 +121,11 @@ class CMakeBackendOutputBuilder(Builder):
             self.__modules_dir_builder = cmake_dir_builder.add_backend_builder(ModulesDirectoryBuilder(directory=modules_dir))
             self.__scripts_dir_builder = cmake_dir_builder.add_backend_builder(ScriptsDirectoryBuilder(directory=scripts_dir))
 
+            assert self.parentbuilder() is not None
             self.__local_cmakelists = self.__top_cmakelists = CMakeLists(
-                custom_command_helper=CustomCommandHelper(scripts_directory_builder=self.__scripts_dir_builder))
+                custom_command_helper=CustomCommandHelper(
+                    parent_builder=self.parentbuilder(),
+                    scripts_directory_builder=self.__scripts_dir_builder))
             pass
         pass
 
