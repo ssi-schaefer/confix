@@ -14,6 +14,9 @@ for filename in sys.argv[1:]:
     
     # this could certainly be done simpler :-}
     dirname = os.path.dirname(filename)
+    if len(dirname) == 0:
+        dirname = '.'
+        pass
     filesystem = scan.scan_filesystem(dirname.split(os.sep))
     file_object = filesystem.rootdirectory().get(os.path.basename(filename))
     assert file_object is not None
