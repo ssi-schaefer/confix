@@ -1,0 +1,4 @@
+* bug fixes
+  - 3039467: "dump-repofile.py crashes if given a filename without path."
+  - 3040462: "CMake: custom command's artificial target is ambiguous"
+
