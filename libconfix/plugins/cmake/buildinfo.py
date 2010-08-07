@@ -140,7 +140,7 @@ class BuildInfo_CommandlineMacros_CMake(BuildInformation):
                 ret += v
                 pass
             pass
-        pass
+        return ret
     def macros(self): return self.__macros
     def install(self): return self
     pass
