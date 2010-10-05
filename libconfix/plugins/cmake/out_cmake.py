@@ -155,21 +155,23 @@ class CMakeBackendOutputBuilder(Builder):
             self.__output_top_cmakelists()
             pass
 
-        if True:
-            assert self.__last_digraph is not None
+        assert self.__last_digraph is not None
 
-            toplevel_targets = list(itertools.chain(
-                    self.local_cmakelists().iter_executable_target_names(),
-                    self.local_cmakelists().iter_library_target_names(),
-                    self.local_cmakelists().iter_custom_target_names()))
+        toplevel_targets = list(itertools.chain(
+                self.local_cmakelists().iter_executable_target_names(),
+                self.local_cmakelists().iter_library_target_names(),
+                self.local_cmakelists().iter_custom_target_names()))
             
+        # add an artificial "node-specific" target which depends on
+        # all top-level targets of the node.
+        if True:
             # dependencies to my node's toplevel targets
             self.local_cmakelists().add_dependencies(
                 name=self.__node_specific_target_name(self.parentbuilder()),
                 depends=toplevel_targets,
                 comment=['edge from my node\'s node-specific target to',
                          'all toplevel targets of this directory'])
-
+            
             # node-specific target. add this after the outgoing
             # dependencies, or else we have a cycle.
             self.local_cmakelists().add_custom_target(
@@ -177,9 +179,11 @@ class CMakeBackendOutputBuilder(Builder):
                 depends=[],
                 all=False,
                 comment='node-specific target for this directory')
+            pass
 
-            # outgoing dependencies ...
-
+        # outgoing dependencies from every top-level target of this
+        # node to the node-specific targets of each successor.
+        if True:
             # determine the successors for later use.
             successor_nodes = []
             for succ in self.__last_digraph.successors(self.parentbuilder()):
@@ -189,14 +193,6 @@ class CMakeBackendOutputBuilder(Builder):
                     pass
                 pass
             
-            # dependencies from the node-specific target to all
-            # successors' node-specific targets.
-            self.local_cmakelists().add_dependencies(
-                name=self.__node_specific_target_name(self.parentbuilder()),
-                depends=[self.__node_specific_target_name(succ) for succ in successor_nodes],
-                comment=["edges from this directory's node-specific target",
-                         "to all successors' node-specific targets"])
-
             # dependencies from each top-level target to all
             # successors' node-specific targets
             for t in toplevel_targets:
