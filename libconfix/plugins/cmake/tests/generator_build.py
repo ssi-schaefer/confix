@@ -48,6 +48,7 @@ class GeneratorBuildSuite(unittest.TestSuite):
         self.addTest(GeneratorBuildTest('generated_plainfile_install'))
         self.addTest(GeneratorBuildTest('two_directories_with_generator_same_outputfilename'))
         self.addTest(GeneratorBuildTest('library_depends_on_generated_header__from_a_header_only_directory'))
+        pass
     pass
 
 class GeneratorBuildTest(PersistentTestCase):
@@ -374,22 +375,34 @@ class GeneratorBuildTest(PersistentTestCase):
             name=const.CONFIX2_PKG,
             entry=File(lines=["PACKAGE_NAME('library_depends_on_generated_header__from_a_header_only_directory')",
                               "PACKAGE_VERSION('1.2.3')"]))
-        source.add(
-            name=const.CONFIX2_DIR,
-            entry=File(lines=["DIRECTORY(['generated-header'])",
-                              "DIRECTORY(['library'])"]))
-
         generated_header = source.add(
             name='generated-header',
             entry=Directory())
 
-        library = source.add(
-            name='library',
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["DIRECTORY(['generated-header'])",
+                              "DIRECTORY(['library1'])",
+                              "DIRECTORY(['library2'])",
+                              ]))
+
+        library1 = source.add(
+            name='library1',
             entry=Directory())
-        library.add(
+        library1.add(
             name=const.CONFIX2_DIR,
             entry=File(lines=["LIBRARY(members=[C(filename='using-generated-header.c')])"]))
-        library.add(
+        library1.add(
+            name='using-generated-header.c',
+            entry=File(lines=['#include <generated-header.h>']))
+
+        library2 = source.add(
+            name='library2',
+            entry=Directory())
+        library2.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["LIBRARY(members=[C(filename='using-generated-header.c')])"]))
+        library2.add(
             name='using-generated-header.c',
             entry=File(lines=['#include <generated-header.h>']))
 
@@ -405,7 +418,8 @@ class GeneratorBuildTest(PersistentTestCase):
             packageroot=source.abspath(),
             builddir=build.abspath())
         commands.make(
-            builddir=build.abspath())
+            builddir=build.abspath(),
+            args=['-j', 'VERBOSE=1'])
         pass
 
     pass
@@ -440,18 +454,8 @@ class HeaderGenerator(Builder):
         cmake_output = find_cmake_output_builder(self.parentbuilder())
         cmake_output.local_cmakelists().add_custom_command__output(
             outputs=['generated-header.h'],
-            commands=[('touch', ['generated.h'])],
+            commands=[('echo', ['generating generated-header.h']), ('touch', ['generated-header.h'])],
             depends=[])
-        
-        # add an all-target that pulls generation of the header
-        # file. this is not strictly necessary, as the goal is to let
-        # the depender point at us anyways.
-
-        # jjjjj
-        cmake_output.local_cmakelists().add_custom_target(
-            name='all-hook-generated-header',
-            all=True,
-            depends=['generated-header.h'])
         pass
     pass
 
