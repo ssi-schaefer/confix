@@ -303,10 +303,10 @@ class CMakeLists:
         for c in commands:
             assert type(c) is tuple, "command must be a tuple ('command', ['args', ...]): "+str(c)
             pass
-        # have to do a "little" more to make this going.see there for
+        # have to do a "little" more to make this going. see there for
         # details and rants.
         self.__custom_command_helper.create_custom_command_bullshit(
-            self, outputs, commands, depends, working_directory, comment)
+            cmakelists=self, outputs=outputs, commands=commands, depends=depends, working_directory=working_directory, comment=comment)
         pass
 
     def add_custom_command__output_internal(self, outputs, commands, depends, working_directory, comment):
