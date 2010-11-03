@@ -35,18 +35,6 @@ class CustomCommandHelper(object):
     multiple times in parallel - when multiple dependencies point
     towards the generator. See CMake bug #10082,
     http://public.kitware.com/Bug/view.php?id=10082.
-
-    During initialization, the cmake output builder creates a
-    ScriptsDirectoryBuilder where we put a wrapper script. The wrapper
-    script contains logic to guard against multiple invocations, and
-    executes the commands that the user thinks are part of
-    ADD_CUSTOM_COMMAND() invocation. The only command of an
-    ADD_CUSTOM_COMMAND() is a call to the wrapper script. (But read
-    on.)
-
-    The directory_buider ctor argument is my creator's parentbuilder
-    that I need to make the MD5 hash unique. One hack implies another
-    and another, as always.
     """
 
     def __init__(self, parent_builder, scripts_directory_builder):
@@ -106,13 +94,6 @@ class CustomCommandHelper(object):
                 '#!/bin/sh',
                 '',
                 'LOCKDIR=$1',
-                # 'shift',
-                # 'echo 1: $1 1>&2',
-                # 'echo 2: $2 1>&2',
-                # 'echo 3: $3 1>&2',
-                # 'echo 4: $4 1>&2',
-                # 'COMMAND=$*',
-                # 'echo command: ::${COMMAND}:: 1>&2',
                 '',
                 'read COMMAND',
                 'if [ -d ${LOCKDIR} ]; then',
