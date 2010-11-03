@@ -18,6 +18,8 @@
 from aux_dir_builders import ScriptsDirectoryBuilder
 import cmake_consts
 
+from libconfix.core.utils.error import Error
+
 import hashlib
 import itertools
 
@@ -54,127 +56,109 @@ class CustomCommandHelper(object):
         self.__scripts_directory_builder = scripts_directory_builder
         pass
 
-    # def create_custom_command_bullshit(self, cmakelists, outputs, commands, depends, working_directory, comment):
-    #     assert len(outputs)>0, "custom command that doesn't generate anything?"
-
-    #     custom_command_md5 = hashlib.md5()
-    #     for o in outputs + self.__parent_builder.directory().relpath(self.__parent_builder.package().rootdirectory()):
-    #         custom_command_md5.update(o)
-    #         pass
-
-    #     custom_command_key = custom_command_md5.hexdigest()
-
-    #     self.__scripts_directory_builder.add_script_file(
-    #         name=self.SCRIPT_NAME,
-    #         lines=[
-    #             '#!/bin/sh',
-    #             '',
-    #             'LOCKDIR=.confix-generator-lock-$1',
-    #             '',
-    #             'wait=no',
-    #             'mkdir ${LOCKDIR} 2>/dev/null || wait=yes',
-    #             '',
-    #             'if test "${wait}" = "yes"; then',
-    #             '    echo "$$: waiting"',
-    #             '    while test -d ${LOCKDIR}; do',
-    #             '        echo Lock directory "${LOCKDIR} is (still?) in place; generator running"',
-    #             '        sleep 1',
-    #             '    done',
-    #             'else',
-    #             '    # trapping condition 0 means trapping "EXIT"',
-    #             '    trap "rmdir ${LOCKDIR}" 0',
-    #             '    while read cmd; do',
-    #             '        echo executing ${cmd} 2>&1',
-    #             '        (eval ${cmd}) || { _status=$?; echo Error: ${cmd}; exit $_status; }',
-    #             '    done',
-    #             'fi',
-    #             ])
-
-    #     # custom command to create the commands file.
-    #     command_file_name = '.commands-'+custom_command_key
-    #     command_file_create_commands = [('rm', ['-f', command_file_name])]
-    #     for c in commands:
-    #         if len(c[1]) > 0:
-    #             esc_command = ' '.join([c[0]] + c[1])
-    #         else:
-    #             esc_command = c[0]
-    #             pass
-    #         # see
-    #         # tests/handwritten-prototypes/add_custom_command__quoting
-    #         # for an example.
-    #         esc_command = esc_command.replace('"', r'\\\"')
-    #         esc_command = esc_command.replace('(', r'\\\(')
-    #         esc_command = esc_command.replace(')', r'\\\)')
-    #         esc_command = esc_command.replace("'", r"\\\\'")
-    #         esc_command = esc_command.replace('<', r'\\<')
-    #         esc_command = esc_command.replace('>', r'\\>')
-    #         command_file_create_commands.append(('echo', [esc_command + ' >> ' + command_file_name]))
-    #         pass
-
-    #     cmakelists.add_custom_command__output_internal(
-    #         outputs=['.commands-'+custom_command_key],
-    #         commands=command_file_create_commands,
-    #         depends=depends,
-    #         working_directory=working_directory,
-    #         comment=comment)
-
-    #     cmakelists.add_custom_command__output_internal(
-    #         outputs=outputs,
-    #         commands=[('${CMAKE_SOURCE_DIR}/'+cmake_consts.scripts_dir+'/'+self.SCRIPT_NAME,
-    #                    [custom_command_key, ' < ' + command_file_name])],
-    #         depends=[command_file_name],
-    #         working_directory=working_directory,
-    #         comment=comment)
-
-    #     cmakelists.add_custom_target(
-    #         name='confix-internal-custom-command-target-'+custom_command_key,
-    #         depends=[outputs[0]],
-    #         all=False,
-    #         comment=comment)
-
-    #     pass
-
     def create_custom_command_bullshit(self, cmakelists, outputs, commands, depends, working_directory, comment):
         assert len(outputs)>0, "custom command that doesn't generate anything?"
 
         custom_command_md5 = hashlib.md5()
-        # jjj generate even more unique key
+
+        for c in commands:
+            custom_command_md5.update(c[0])
+            for a in c[1]:
+                custom_command_md5.update(a)
+                pass
+            pass
         for o in outputs + self.__parent_builder.directory().relpath(self.__parent_builder.package().rootdirectory()):
             custom_command_md5.update(o)
             pass
 
         custom_command_key = custom_command_md5.hexdigest()
+        custom_command_lock = 'custom-command-lock--'+custom_command_key
 
         self.__scripts_directory_builder.add_script_file(
-            name='wait-for-lock',
+            name='custom-command-lock-wait',
             lines=[
                 '#!/bin/sh',
                 '',
                 'LOCKDIR=$1',
                 '',
-                'if ! mkdir ${LOCKDIR} then',
+                'if ! mkdir ${LOCKDIR} 2>/dev/null; then',
                 '    while [ -d ${LOCKDIR} ]; do',
-                '        echo \'Lock directory ${LOCKDIR} is (still?) in place; generator running\'',
+                '        echo "Lock directory ${LOCKDIR} is (still?) in place; generator running"',
                 '        sleep 1',
                 '    done',
                 'fi',
                 ])
-    
 
-jjjjj wait-for-lock lockfile
-jjjjj echo futsau | execute-if-locked lockfile # mit quoting von vorher
+        self.__scripts_directory_builder.add_script_file(
+            name='custom-command-unlock-if-locked',
+            lines=[
+                '#!/bin/sh',
+                '',
+                'LOCKDIR=$1',
+                '',
+                'rmdir ${LOCKDIR} 2>/dev/null',
+                'exit 0',
+                ])
 
-        
-        # jjj document this crap
-        lock_dir = '.confix-generator-lock-' + custom_command_key
+        self.__scripts_directory_builder.add_script_file(
+            name='custom-command-lock-exec-if-locked',
+            lines=[
+                '#!/bin/sh',
+                '',
+                'LOCKDIR=$1',
+                # 'shift',
+                # 'echo 1: $1 1>&2',
+                # 'echo 2: $2 1>&2',
+                # 'echo 3: $3 1>&2',
+                # 'echo 4: $4 1>&2',
+                # 'COMMAND=$*',
+                # 'echo command: ::${COMMAND}:: 1>&2',
+                '',
+                'read COMMAND',
+                'if [ -d ${LOCKDIR} ]; then',
+                '    echo executing ${COMMAND} 1>&2',
+                '    if (eval ${COMMAND}); then',
+                '        exit 0',
+                '    else',
+                '        _status=$?',
+                '        echo Error: ${COMMAND} 1>&2',
+                '        rmdir ${LOCKDIR}',
+                '        exit $_status',
+                '    fi',
+                '    # eval might have failed (?)',
+                '    exit 42',
+                'fi',
+                ])
+
         real_commands = []
         real_commands.append(
-            ('mkdir '+lock_dir+' || '
-             'while [ -d '+lock_dir+' ]; do \'echo Lock directory '+lock_dir+' is in place; generator running\'; sleep 1; done', []))
+            ('${CMAKE_SOURCE_DIR}/'+cmake_consts.scripts_dir+'/custom-command-lock-wait',
+             [custom_command_lock]))
         for c in commands:
-            real_commands.append(('[ -d '+lock_dir+' ] || exit 0;', [c[0]] + c[1] + ['|| rmdir '+lock_dir]))
+            if len(c[1]) > 0:
+                esc_command = ' '.join([c[0]] + c[1])
+            else:
+                esc_command = c[0]
+                pass
+
+            if esc_command.find(';') >= 0:
+                raise Error("Custom command contains ';'. Don't use it - CMake will do unutterable things with it.")
+
+            esc_command = esc_command.replace('"', r'\\\"')
+            esc_command = esc_command.replace('(', r'\\\(')
+            esc_command = esc_command.replace(')', r'\\\)')
+            esc_command = esc_command.replace("'", r"\\\\'")
+            esc_command = esc_command.replace('<', r'\\<')
+            esc_command = esc_command.replace('>', r'\\>')
+
+            real_commands.append(('echo', [esc_command, 
+                                           '|',
+                                           '${CMAKE_SOURCE_DIR}/'+cmake_consts.scripts_dir+'/custom-command-lock-exec-if-locked',
+                                           custom_command_lock]))
             pass
-        real_commands.append(('rmdir '+lock_dir+' 2>/dev/null', []))
+        real_commands.append(
+            ('${CMAKE_SOURCE_DIR}/'+cmake_consts.scripts_dir+'/custom-command-unlock-if-locked',
+             [custom_command_lock]))
 
         cmakelists.add_custom_command__output_internal(
             outputs=outputs,

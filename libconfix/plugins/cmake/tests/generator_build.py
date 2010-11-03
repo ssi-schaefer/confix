@@ -42,13 +42,11 @@ import unittest
 class GeneratorBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        # jjjjjjj
-        print 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   GeneratorBuildSuite'
-        # self.addTest(GeneratorBuildTest('test_basic'))
-        # self.addTest(GeneratorBuildTest('generated_headers_public_install'))
-        # self.addTest(GeneratorBuildTest('generated_headers_local_install'))
-        # self.addTest(GeneratorBuildTest('generated_plainfile_install'))
-        # self.addTest(GeneratorBuildTest('two_directories_with_generator_same_outputfilename'))
+        self.addTest(GeneratorBuildTest('test_basic'))
+        self.addTest(GeneratorBuildTest('generated_headers_public_install'))
+        self.addTest(GeneratorBuildTest('generated_headers_local_install'))
+        self.addTest(GeneratorBuildTest('generated_plainfile_install'))
+        self.addTest(GeneratorBuildTest('two_directories_with_generator_same_outputfilename'))
         self.addTest(GeneratorBuildTest('library_depends_on_generated_header__from_a_header_only_directory'))
         pass
     pass
