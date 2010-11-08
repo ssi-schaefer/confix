@@ -17,7 +17,7 @@
 # USA
 
 # Confix version
-CONFIX_VERSION = '2.3.6'
+CONFIX_VERSION = '2.3.7'
 
 # version of persistent data, the repo.
 REPO_VERSION = '2.3.0'
