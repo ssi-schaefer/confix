@@ -343,6 +343,9 @@ class CMakeLists:
         self.__dependencies.append((name, depends, _comment(comment)))
         pass
 
+    def get_dependencies(self):
+        return self.__dependencies
+
     def add_install__files(self, files, destination, permissions=None):
         assert permissions is None or type(permissions) in (str, list, tuple)
         if permissions is not None:

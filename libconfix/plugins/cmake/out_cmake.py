@@ -31,6 +31,9 @@ from libconfix.core.hierarchy import confix_admin
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.utils import const
+from libconfix.core.digraph.digraph import DirectedGraph
+from libconfix.core.digraph.digraph import Edge
+from libconfix.core.digraph.toposort import toposort
 
 import itertools
 
@@ -161,7 +164,7 @@ class CMakeBackendOutputBuilder(Builder):
                 self.local_cmakelists().iter_executable_target_names(),
                 self.local_cmakelists().iter_library_target_names(),
                 self.local_cmakelists().iter_custom_target_names()))
-            
+
         # add an artificial "node-specific" target which depends on
         # all top-level targets of the node.
         if True:
@@ -171,7 +174,7 @@ class CMakeBackendOutputBuilder(Builder):
                 depends=toplevel_targets,
                 comment=['edge from my node\'s node-specific target to',
                          'all toplevel targets of this directory'])
-            
+
             # node-specific target. add this after the outgoing
             # dependencies, or else we have a cycle.
             self.local_cmakelists().add_custom_target(
@@ -202,6 +205,32 @@ class CMakeBackendOutputBuilder(Builder):
                     comment=["edges from top-level target "+t+" to",
                              "all successors' node-specific targets"])
                 pass
+            pass
+
+        # chain together the local top-level targets, topologically
+        # correct.
+        if True:
+            local_nodes = set(itertools.chain(
+                    self.local_cmakelists().iter_executable_target_names(),
+                    self.local_cmakelists().iter_library_target_names(),
+                    self.local_cmakelists().iter_custom_target_names()))
+            edges = []
+            for d in self.local_cmakelists().get_dependencies():
+                for head in d[1]:
+                    if head in local_nodes:
+                        edges.append(Edge(tail=d[0], head=head))
+                        pass
+                    pass
+                pass
+
+            graph = DirectedGraph(nodes=local_nodes, edges=edges)
+            chain = toposort(graph, local_nodes)
+            if len(chain) > 0:
+                for i in xrange(len(chain)-1):
+                    self.local_cmakelists().add_dependencies(chain[i+1], [chain[i]])
+                    pass
+                pass
+            pass
 
         # write the CMakeLists.txt file.
         cmakelists_file = self.parentbuilder().directory().find(['CMakeLists.txt'])
@@ -248,23 +277,24 @@ class CMakeBackendOutputBuilder(Builder):
                 files=[self.package().repofilename()],
                 destination=AutomakePackageRepository.REPO_FULL_PATH)
 
+# jjjjjj
             # add a custom target 'repo-install' to give the user the
             # possibility to install the repo file without building
             # the package first. (Salomon wants this - if it hurts one
             # day, we can easily make it a plugin there.)
-            installed_file = '${CMAKE_INSTALL_PREFIX}/'+\
-                             '/'.join(AutomakePackageRepository.REPO_FULL_PATH)+\
-                             '/'+self.package().repofilename()
-            top_cmakelists.add_custom_command__output(
-                outputs=[installed_file],
-                commands=[('${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/%s %s' % \
-                           (self.package().repofilename(), installed_file), [])],
-                depends=['${CMAKE_CURRENT_SOURCE_DIR}/%s' % self.package().repofilename()])
-            top_cmakelists.add_custom_target(
-                name='repo-install',
-                all=False,
-                depends=[installed_file])
-            pass
+# sic!            installed_file = '${CMAKE_INSTALL_PREFIX}/'+\
+# sic!                             '/'.join(AutomakePackageRepository.REPO_FULL_PATH)+\
+# sic!                             '/'+self.package().repofilename()
+# sic!            top_cmakelists.add_custom_command__output(
+# sic!                outputs=[installed_file],
+# sic!                commands=[('${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/%s %s' % \
+# sic!                           (self.package().repofilename(), installed_file), [])],
+# sic!                depends=['${CMAKE_CURRENT_SOURCE_DIR}/%s' % self.package().repofilename()])
+# sic!            top_cmakelists.add_custom_target(
+# sic!                name='repo-install',
+# sic!                all=False,
+# sic!                depends=[installed_file])
+# sic!            pass
 
         # register subdirectories with our toplevel CMakeLists.txt
         for dirnode in self.package().topo_directories():

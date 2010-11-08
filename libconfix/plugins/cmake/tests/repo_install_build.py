@@ -37,7 +37,7 @@ import os
 class RepoInstallBuildSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(RepoInstallTest('test'))
+# jjjj        self.addTest(RepoInstallTest('test'))
         pass
     pass
 
