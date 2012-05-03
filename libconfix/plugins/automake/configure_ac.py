@@ -147,7 +147,9 @@ class Configure_ac:
 
         lines.append('AC_CANONICAL_TARGET')
 
-        lines.append('AM_INIT_AUTOMAKE')
+        # use "foreign" so automake (and autoreconf) does not complain
+        # about missing files README, AUTHORS and whatnot.
+        lines.append('AM_INIT_AUTOMAKE([foreign])')
 
         if len(self.ac_config_headers_):
             lines.append('AC_CONFIG_HEADERS('+' '.join(self.ac_config_headers_.keys())+')')
