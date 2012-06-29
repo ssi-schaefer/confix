@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,23 +15,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from provide_require import Provide_CInclude_and_Require_CInclude_Suite
-from requires import RequireTestSuite
-from relate import RelateSuite
-from library import LibrarySuite
-from regressions.suite_inmem import RegressionsInMemorySuite
-from header_visibility_inmem import HeaderVisibilityInMemorySuite
-from confix2_dir import Confix2_dir_Suite
-from misc import MiscellaneousSuite
-from setup_cxx import CXXSetupSuite
-from setup_exe import ExecutableSetupSuite
-from setup_lexyacc import LexYaccSetupSuite
-from setup_library import LibrarySetupSuite
+import provide_require
+import requires
+import relate
+import library
+import regressions.suite_inmem
+import header_visibility_inmem
+import confix2_dir
+import misc
+import setup_cxx
+import setup_exe
+import setup_lexyacc
+import setup_library
 from clusterer.suite_inmem import ClustererInMemorySuite
-from ignored_entries import IgnoredEntriesInMemorySuite
-from library_versions import LibraryVersionsSuite
-from inter_package_inmem import InterPackageInMemorySuite
-from buildinfo_inmem import BuildInformationInMemorySuite
+import ignored_entries
+import library_versions
+import inter_package_inmem
+import buildinfo_inmem
 
 from libconfix.plugins.c.setups.tests.suite_inmem import SetupsInMemorySuite
 from libconfix.plugins.c.relocated_headers.tests.suite_inmem import RelocatedHeadersInMemorySuite
@@ -42,25 +42,25 @@ class CInMemoryTestSuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
 
-        self.addTest(Provide_CInclude_and_Require_CInclude_Suite())
-        self.addTest(RequireTestSuite())
-        self.addTest(RelateSuite())
-        self.addTest(LibrarySuite())
+        self.addTest(provide_require.suite)
+        self.addTest(requires.suite)
+        self.addTest(relate.suite)
+        self.addTest(library.suite)
         self.addTest(SetupsInMemorySuite())
         self.addTest(RelocatedHeadersInMemorySuite())
-        self.addTest(HeaderVisibilityInMemorySuite())
-        self.addTest(RegressionsInMemorySuite())
-        self.addTest(Confix2_dir_Suite())
-        self.addTest(MiscellaneousSuite())
-        self.addTest(CXXSetupSuite())
-        self.addTest(ExecutableSetupSuite())
-        self.addTest(LexYaccSetupSuite())
-        self.addTest(LibrarySetupSuite())
+        self.addTest(header_visibility_inmem.suite)
+        self.addTest(regressions.suite_inmem.suite)
+        self.addTest(confix2_dir.suite)
+        self.addTest(misc.suite)
+        self.addTest(setup_cxx.suite)
+        self.addTest(setup_exe.suite)
+        self.addTest(setup_lexyacc.suite)
+        self.addTest(setup_library.suite)
         self.addTest(ClustererInMemorySuite())
-        self.addTest(IgnoredEntriesInMemorySuite())
-        self.addTest(LibraryVersionsSuite())
-        self.addTest(InterPackageInMemorySuite())
-        self.addTest(BuildInformationInMemorySuite())
+        self.addTest(ignored_entries.suite)
+        self.addTest(library_versions.suite)
+        self.addTest(inter_package_inmem.suite)
+        self.addTest(buildinfo_inmem.suite)
         pass
     pass
 

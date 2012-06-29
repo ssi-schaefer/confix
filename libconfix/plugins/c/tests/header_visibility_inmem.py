@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -30,47 +30,6 @@ from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
 
 import unittest
-
-class HeaderVisibilityInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-
-        # tests with the (bloody) automatic builder recognition iface
-        self.addTest(Interfaces('test_auto_fileproperty_only'))
-        self.addTest(Interfaces('test_auto_fileiface_only'))
-        self.addTest(Interfaces('test_auto_fileiface_fileproperty_conflict'))
-        self.addTest(Interfaces('test_auto_fileiface_diriface_conflict'))
-        self.addTest(Interfaces('test_auto_fileproperty_diriface_conflict'))
-        self.addTest(Interfaces('test_auto_INSTALLDIR_H_empty_string'))
-        self.addTest(Interfaces('test_auto_INSTALLDIR_H_overrides_namespace'))
-        # tests with the explicit builder registration iface.
-        self.addTest(Interfaces('test_explicit_diriface'))
-        self.addTest(Interfaces('test_explicit_fileproperty_conflict'))
-        self.addTest(Interfaces('test_explicit_fileiface_conflict'))
-
-        self.addTest(Namespace('testSimple'))
-        self.addTest(Namespace('testNested'))
-        self.addTest(Namespace('testGlobal'))
-        self.addTest(Namespace('testAmbiguousFlat'))
-        self.addTest(Namespace('testAmbiguousNested'))
-        self.addTest(Namespace('testDirectory'))
-        self.addTest(Namespace('test_bad_namespace_and_no_idea_where_to_install'))
-        self.addTest(Namespace('test_bad_namespace_but_good_installdir'))
-
-        self.addTest(InstallPriorities('test'))
-
-        self.addTest(HeaderInstallPath('test_iface'))
-        self.addTest(HeaderInstallPath('test_ambig1'))
-        self.addTest(HeaderInstallPath('test_ambig2'))
-
-        self.addTest(IntelligentConditionalLocalInstall('test_basic'))
-        self.addTest(IntelligentConditionalLocalInstall('test_from_root_directory'))
-
-        self.addTest(NoPublicInstall('test_explicit_no_public_visibility'))
-        self.addTest(NoPublicInstall('test_auto_no_public_visibility'))
-
-        pass
-    pass
 
 class Interfaces(unittest.TestCase):
     def test_auto_fileproperty_only(self):
@@ -860,6 +819,14 @@ class NoPublicInstall(unittest.TestCase):
     
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(Interfaces))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(Namespace))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(InstallPriorities))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(HeaderInstallPath))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(IntelligentConditionalLocalInstall))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(NoPublicInstall))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(HeaderVisibilityInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -15,17 +15,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from bug1713807 import Bug1713807
+import bug1713807
 
 import unittest
 
-class RegressionsInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Bug1713807())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(bug1713807.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(RegressionsInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

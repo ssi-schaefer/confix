@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,6 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+""" These tests assert fundamental behavior: relating the
+nodes. Unfortunately, the tests are tied together with the C plugin -
+they should have been written using core objects. (The excuse is that
+C was long considered to be core)."""
+
 import unittest
 
 from libconfix.core.filesys.directory import Directory
@@ -31,24 +36,6 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils import dirhier
 from libconfix.testutils import packages
-
-class RelateSuite(unittest.TestSuite):
-
-    """ These tests assert fundamental behavior: relating the
-    nodes. Unfortunately, the tests are tied together with the C
-    plugin - they should have been written using core objects. (The
-    excuse is that C was long considered to be core)."""
-    
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(InternalRequires('testNoInstallPath'))
-        self.addTest(RelateBasic('testGraph'))
-        self.addTest(RelateBasic('testLocalBuildInfo'))
-        self.addTest(RelateBasic('testPropagatedLibraryInfo'))
-        self.addTest(RelateBasic('testPropagatedIncludeInfo'))
-        self.addTest(RelateBasic('testLinkOrder'))
-        pass
-    pass
 
 class InternalRequires(unittest.TestCase):
     def testNoInstallPath(self):
@@ -340,7 +327,12 @@ class RelateBasic(unittest.TestCase):
         pass
     
     pass
+
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(InternalRequires))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(RelateBasic))
         
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(RelateSuite())
+    unittest.TextTestRunner().run(suite)
     pass
+

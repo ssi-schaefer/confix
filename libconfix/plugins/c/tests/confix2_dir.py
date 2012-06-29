@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -25,13 +25,6 @@ from libconfix.core.utils import const
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
-
-class Confix2_dir_Suite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ProvideRequireInclude('test'))
-        pass
-    pass
 
 class ProvideRequireInclude(unittest.TestCase):
     def test(self):
@@ -68,8 +61,11 @@ class ProvideRequireInclude(unittest.TestCase):
         self.failUnless(lo_builder in package.digraph().successors(hi_builder))
         pass
     pass
-        
+
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ProvideRequireInclude))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(Confix2_dir_Suite())
+    unittest.TextTestRunner().run(suite)
     pass
 

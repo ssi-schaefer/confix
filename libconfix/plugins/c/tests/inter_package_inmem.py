@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,6 +15,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+""" These tests assert fundamental behavior: relating the
+nodes. Unfortunately, the tests are tied together with the C plugin -
+they should have been written using core objects. (The excuse is that
+C was long considered to be core)."""
+
+
 from libconfix.plugins.c.library import LibraryBuilder
 from libconfix.plugins.c.buildinfo import BuildInfo_CLibrary_NativeInstalled
 
@@ -29,19 +35,6 @@ from libconfix.plugins.c.setups.explicit_setup import ExplicitCSetup
 from libconfix.testutils import dirhier
 
 import unittest
-
-class InterPackageInMemorySuite(unittest.TestSuite):
-
-    """ These tests assert fundamental behavior: relating the
-    nodes. Unfortunately, the tests are tied together with the C
-    plugin - they should have been written using core objects. (The
-    excuse is that C was long considered to be core)."""
-    
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(InterPackageRelate('test'))
-        pass
-    pass
 
 class InterPackageRelate(unittest.TestCase):
     def test(self):
@@ -118,7 +111,10 @@ class InterPackageRelate(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(InterPackageRelate))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterPackageInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
         

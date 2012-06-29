@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,16 +28,6 @@ from libconfix.core.utils import const
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
-
-class LibraryVersionsSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExplicitLibraryVersionTest('test'))
-        self.addTest(DefaultLibraryVersionTest('testExactPackageVersion'))
-        self.addTest(DefaultLibraryVersionTest('testPostfixedPackageVersion'))
-        self.addTest(DefaultLibraryVersionTest('testUnparseablePackageVersion'))
-        pass
-    pass
 
 class ExplicitLibraryVersionTest(unittest.TestCase):
     def test(self):
@@ -114,6 +104,10 @@ class DefaultLibraryVersionTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ExplicitLibraryVersionTest))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(DefaultLibraryVersionTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibraryVersionsSuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,14 +29,6 @@ from libconfix.plugins.c.dependency import \
      Require_CInclude, \
      Provide_CInclude
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
-
-class Provide_CInclude_and_Require_CInclude_Suite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Provide_CInclude_and_Require_CInclude('testBasic'))
-        self.addTest(Provide_CInclude_and_Require_CInclude('testIface'))
-        pass
-    pass
 
 class Provide_CInclude_and_Require_CInclude(unittest.TestCase):
     def testBasic(self):
@@ -103,6 +95,9 @@ class Provide_CInclude_and_Require_CInclude(unittest.TestCase):
 
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(Provide_CInclude_and_Require_CInclude))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(Provide_CInclude_and_Require_CInclude_Suite())
+    unittest.TextTestRunner().run(suite)
     pass

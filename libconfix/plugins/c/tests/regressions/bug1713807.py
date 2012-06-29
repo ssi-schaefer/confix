@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,13 +27,6 @@ from libconfix.core.machinery.require import Require
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
-
-class Bug1713807(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Bug1713807Test('test'))
-        pass
-    pass
 
 class Bug1713807Test(unittest.TestCase):
     """ [ 1713807 ] Full graph computed even for unused installed packages """
@@ -82,7 +75,10 @@ class Bug1713807Test(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(Bug1713807Test))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(Bug1713807())
+    unittest.TextTestRunner().run(suite)
     pass
 

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,14 +28,6 @@ from libconfix.core.utils import const
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
-
-class CXXSetupSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicCXXSetup('test'))
-        self.addTest(HeadersOnlyMakeNoLibrary('test'))
-        pass
-    pass
 
 class BasicCXXSetup(unittest.TestCase):
     def test(self):
@@ -145,7 +137,11 @@ class HeadersOnlyMakeNoLibrary(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(BasicCXXSetup))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(HeadersOnlyMakeNoLibrary))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CXXSetupSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

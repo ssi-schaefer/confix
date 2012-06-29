@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,8 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
 from libconfix.plugins.c.c import CBuilder
 from libconfix.plugins.c.executable import ExecutableBuilder
 from libconfix.plugins.c.h import HeaderBuilder
@@ -28,12 +26,7 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.testutils import dirhier
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
-class ExecutableSetupSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExecutableSetupTest('test'))
-        pass
-    pass
+import unittest
 
 class ExecutableSetupTest(unittest.TestCase):
 
@@ -100,7 +93,10 @@ class ExecutableSetupTest(unittest.TestCase):
         pass
 
     pass
-    
+
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ExecutableSetupTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExecutableSetupSuite())
+    unittest.TextTestRunner().run(suite)
     pass

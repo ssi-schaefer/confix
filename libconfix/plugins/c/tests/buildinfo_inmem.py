@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,13 +20,6 @@ from libconfix.plugins.c.buildinfo import BuildInfo_CIncludePath_NativeLocal
 from libconfix.core.machinery.buildinfo import BuildInformationSet
 
 import unittest
-
-class BuildInformationInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BuildInformationTest('test'))
-        pass
-    pass
 
 class BuildInformationTest(unittest.TestCase):
     def test(self):
@@ -56,6 +49,9 @@ class BuildInformationTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(BuildInformationTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BuildInformationInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

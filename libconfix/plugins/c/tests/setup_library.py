@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,15 +29,6 @@ from libconfix.testutils import dirhier
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
-
-class LibrarySetupSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibrarySetupBasic('test'))
-        self.addTest(LibraryNames('testLongName'))
-        self.addTest(LibraryNames('testExplicitName'))
-        pass
-    pass        
 
 class LibrarySetupBasic(unittest.TestCase):
     def test(self):
@@ -133,6 +124,10 @@ class LibraryNames(unittest.TestCase):
         pass
     pass
     
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(LibrarySetupBasic))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(LibraryNames))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibrarySetupSuite())
+    unittest.TextTestRunner().run(suite)
     pass
