@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
 # USA
 
 from libconfix.plugins.cmake.setup import CMakeSetup
-from libconfix.plugins.cmake.modules_dir_builder import ModulesDirectoryBuilder
+from libconfix.plugins.cmake.aux_dir_builders import ModulesDirectoryBuilder
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File

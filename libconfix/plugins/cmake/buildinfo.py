@@ -44,6 +44,7 @@ class BuildInfo_IncludePath_External_CMake(BuildInformation):
         BuildInformation.__init__(self)
         self.__incpath = incpath
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + '.'.join(self.__incpath)
     def incpath(self): return self.__incpath
@@ -72,6 +73,7 @@ class BuildInfo_LibraryPath_External_CMake(BuildInformation):
         BuildInformation.__init__(self)
         self.__libpath = libpath
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + '.'.join(self.__libpath)
     def libpath(self): return self.__libpath
@@ -100,6 +102,7 @@ class BuildInfo_Library_External_CMake(BuildInformation):
         BuildInformation.__init__(self)
         self.__libs = libs
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return self.__class__.__name__ + ':' + '.'.join(self.__libs)
     def libs(self): return self.__libs
@@ -128,6 +131,7 @@ class BuildInfo_CommandlineMacros_CMake(BuildInformation):
         BuildInformation.__init__(self)
         self.__macros = macros
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         ret = self.__class__.__name__ + ':'
         for k, v in self.__macros.iteritems():
@@ -136,7 +140,7 @@ class BuildInfo_CommandlineMacros_CMake(BuildInformation):
                 ret += v
                 pass
             pass
-        pass
+        return ret
     def macros(self): return self.__macros
     def install(self): return self
     pass
@@ -163,6 +167,7 @@ class BuildInfo_Toplevel_CMakeLists_Include(BuildInformation):
         BuildInformation.__init__(self)
         self.__include = include
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return '%s:%s' %  (self.__class__.__name__, self.__include)
     def include(self): return self.__include
@@ -192,6 +197,7 @@ class BuildInfo_Toplevel_CMakeLists_FindCall(BuildInformation):
         BuildInformation.__init__(self)
         self.__find_call = find_call
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return '%s:%s' %  (self.__class__.__name__, str(self.__find_call))
     def find_call(self): return self.__find_call
@@ -220,6 +226,7 @@ class BuildInfo_CFLAGS_CMake(BuildInformation):
         BuildInformation.__init__(self)
         self.__cflags = cflags
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return '%s:%s' % (self.__class__.__name__, str(self.__cflags))
     def cflags(self): return self.__cflags
@@ -248,6 +255,7 @@ class BuildInfo_CXXFLAGS_CMake(BuildInformation):
         BuildInformation.__init__(self)
         self.__cxxflags = cxxflags
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return '%s:%s' % (self.__class__.__name__, str(self.__cxxflags))
     def cxxflags(self): return self.__cxxflags
@@ -279,6 +287,7 @@ class BuildInfo_CMakeModule(BuildInformation):
         self.__name = name
         self.__lines = lines
         pass
+    def __str__(self): return self.unique_key()
     def unique_key(self):
         return '%s:%s:%s' % (self.__class__.__name__, self.__name, helper.md5_hexdigest_from_lines(self.__lines))
     def name(self): return self.__name

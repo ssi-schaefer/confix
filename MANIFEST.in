@@ -1,6 +1,7 @@
 recursive-include libconfix *.py
 include scripts/*.py
 include ChangeLog*
+include relnotes/*.txt
 
 recursive-include share *
 

@@ -23,11 +23,12 @@ from library_dependencies_build import LibraryDependenciesBuildSuite
 from readonly_prefixes_build import ReadonlyPrefixesBuildSuite
 from external_library_build import ExternalLibraryBuildSuite
 from plainfile_build import PlainfileBuildSuite
-from generator_build import GeneratorBuildSuite
 from idl_build import IDLBuildSuite
 from script_build import ScriptBuildSuite
 from repo_install_build import RepoInstallBuildSuite
+from generator_build import GeneratorBuildSuite
 from cmake_bug_10082_build import CMakeBug10082BuildSuite
+from custom_command_build import CustomCommandBuildSuite
 
 import unittest
 
@@ -42,11 +43,14 @@ class CMakeBuildSuite(unittest.TestSuite):
         self.addTest(ReadonlyPrefixesBuildSuite())
         self.addTest(ExternalLibraryBuildSuite())
         self.addTest(PlainfileBuildSuite())
-        self.addTest(GeneratorBuildSuite())
         self.addTest(IDLBuildSuite())
         self.addTest(ScriptBuildSuite())
         self.addTest(RepoInstallBuildSuite())
+
+        self.addTest(GeneratorBuildSuite())
         self.addTest(CMakeBug10082BuildSuite())
+        self.addTest(CustomCommandBuildSuite())
+
         pass
     pass
 

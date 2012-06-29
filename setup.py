@@ -128,5 +128,6 @@ setup(
              'scripts/writedot.py',
              'scripts/confix-output.py',
              'scripts/confix-package-properties.py',
+             'scripts/dump-repofile.py',
              ],
     )

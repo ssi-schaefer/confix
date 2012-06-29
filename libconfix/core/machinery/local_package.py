@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -248,7 +248,10 @@ class LocalPackage(Package):
             pass
 
         for b in builders:
-            b.enlarge()
+            try:
+                b.enlarge()
+            except Error, e:
+                raise Error("Builder "+b.shortname()+" of "+b.parentbuilder().shortname()+" encountered an error", [e])
             pass
 
         for b in self.iter_builders():

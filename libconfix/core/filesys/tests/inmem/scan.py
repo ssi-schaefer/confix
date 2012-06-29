@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ from libconfix.core.filesys.directory import Directory
 from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
+import os
 
 class ScanSuite(unittest.TestSuite):
     def __init__(self):
@@ -29,6 +30,7 @@ class ScanSuite(unittest.TestSuite):
         self.addTest(Test('new_file'))
         self.addTest(Test('new_directory'))
         self.addTest(Test('new_file_in_existing_directory'))
+        self.addTest(Test('removed_file'))
         pass
     pass
 
@@ -88,6 +90,22 @@ class Test(PersistentTestCase):
 
         scan.rescan_dir(fs_dup.rootdirectory())
         self.failUnless(fs_dup.rootdirectory().find(['dir', 'file']))
+        pass
+
+    def removed_file(self):
+        # use a filesystem instance to conveniently create the initial
+        # directory.
+        fs = FileSystem(self.rootpath())
+        fs.rootdirectory().add(
+            name='file',
+            entry=File())
+        fs.sync()
+        
+        os.unlink(os.sep.join(self.rootpath()+['file']))
+
+        # rescan the fs's rootdirectory. the file must have gone.
+        scan.rescan_dir(fs.rootdirectory())
+        self.failIf(fs.rootdirectory().get('file'))
         pass
         
     pass

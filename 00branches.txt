@@ -99,11 +99,19 @@ Developer experiments     TRY-<developer>-<short-desc>
                  |              |
                  |              872 REL-2.3.0
                  |              889 REL-2.3.1
-                 v              894 REL-2.3.2
-                                |
-                                900 REL-2.3.6
-                                |
-       	       	       	       	947 REL-2.3.8
-                                |
-                                v RB-2.3
-
+                 |              894 REL-2.3.2
+                 |              |
+                 |              900 REL-2.3.6
+                 |              |
+       	       	 |     	       	947 REL-2.3.8
+                 |              |     
+                 | <------------+ 949  	
+                 |              |
+                 |              v RB-2.3
+		 |
+		 |
+		 |
+		 |
+		 |
+		 v
+		 

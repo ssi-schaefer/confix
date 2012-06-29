@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -255,11 +255,11 @@ _re_repo = re.compile('^.*\\.repo$')
 
 class AutomakePackageRepository(CompositePackageRepository):
     """
-    Composite for <prefix>/share/confix-<version>/repo/*.repo style
+    Composite for <prefix>/share/confix-<repo-version>/repo/*.repo style
     repo collection.
     """
 
-    REPO_DATADIR_PATH = ['confix-%s' % const.CONFIX_VERSION, 'repo']
+    REPO_DATADIR_PATH = ['confix-%s' % const.REPO_VERSION, 'repo']
     REPO_FULL_PATH = ['share'] + REPO_DATADIR_PATH
     
     def __init__(self, prefix):

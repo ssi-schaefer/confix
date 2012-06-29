@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,6 +16,9 @@
 # USA
 
 from libconfix.plugins.cmake import commands
+from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
+
+from libconfix.plugins.c.h import HeaderBuilder
 
 from libconfix.testutils.persistent import PersistentTestCase
 
@@ -25,6 +28,8 @@ from libconfix.setups.cmake import CMake
 from libconfix.setups.boilerplate import Boilerplate
 
 from libconfix.core.machinery.local_package import LocalPackage
+from libconfix.core.machinery.setup import Setup
+from libconfix.core.machinery.builder import Builder
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
 from libconfix.core.filesys.file import FileState
@@ -41,6 +46,9 @@ class GeneratorBuildSuite(unittest.TestSuite):
         self.addTest(GeneratorBuildTest('generated_headers_public_install'))
         self.addTest(GeneratorBuildTest('generated_headers_local_install'))
         self.addTest(GeneratorBuildTest('generated_plainfile_install'))
+        self.addTest(GeneratorBuildTest('two_directories_with_generator_same_outputfilename'))
+        self.addTest(GeneratorBuildTest('library_depends_on_generated_header__from_a_header_only_directory'))
+        pass
     pass
 
 class GeneratorBuildTest(PersistentTestCase):
@@ -291,7 +299,164 @@ class GeneratorBuildTest(PersistentTestCase):
         self.failUnless(install.find(['share', 'datadir', 'datafile']))
 
         pass
+    
+    def two_directories_with_generator_same_outputfilename(self):
+        """
+        The artificial custom target that we generate for every custom
+        command has a name that is derived from the command's
+        output(s). This leads to clashes when two directories have
+        commands that generate outputs with the same name.
+        """
 
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('two_directories_with_generator_same_outputfilename')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['DIRECTORY(["dira"])',
+                              'DIRECTORY(["dirb"])']))
+
+        dira = source.add(
+            name='dira',
+            entry=Directory())
+        dira.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(',
+                              '    outputs=["output"],',
+                              '    commands=[("touch", ["output"])],',
+                              '    depends=[])']))
+
+        dirb = source.add(
+            name='dirb',
+            entry=Directory())
+        dirb.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=['CMAKE_CMAKELISTS_ADD_CUSTOM_COMMAND__OUTPUT(',
+                              '    outputs=["output"],',
+                              '    commands=[("touch", ["output"])],',
+                              '    depends=[])']))
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[Boilerplate(), Plainfile(), CMake(library_dependencies=False)])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(
+            packageroot=source.abspath(),
+            builddir=build.abspath(),
+            args=[])
+        commands.make(
+            builddir=build.abspath(),
+            args=[])
+
+        pass
+
+    def library_depends_on_generated_header__from_a_header_only_directory(self):
+        fs = FileSystem(path=self.rootpath())
+        source = fs.rootdirectory().add(
+            name='source',
+            entry=Directory())
+        build = fs.rootdirectory().add(
+            name='build',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_PKG,
+            entry=File(lines=["PACKAGE_NAME('library_depends_on_generated_header__from_a_header_only_directory')",
+                              "PACKAGE_VERSION('1.2.3')"]))
+        generated_header = source.add(
+            name='generated-header',
+            entry=Directory())
+
+        source.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["DIRECTORY(['generated-header'])",
+                              "DIRECTORY(['library1'])",
+                              "DIRECTORY(['library2'])",
+                              ]))
+
+        library1 = source.add(
+            name='library1',
+            entry=Directory())
+        library1.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["LIBRARY(members=[C(filename='using-generated-header.c')])"]))
+        library1.add(
+            name='using-generated-header.c',
+            entry=File(lines=['#include <generated-header.h>']))
+
+        library2 = source.add(
+            name='library2',
+            entry=Directory())
+        library2.add(
+            name=const.CONFIX2_DIR,
+            entry=File(lines=["LIBRARY(members=[C(filename='using-generated-header.c')])"]))
+        library2.add(
+            name='using-generated-header.c',
+            entry=File(lines=['#include <generated-header.h>']))
+
+        package = LocalPackage(rootdirectory=source,
+                               setups=[Boilerplate(), C(), CMake(library_dependencies=False),
+                                       GeneratedHeaderSetup()])
+        package.boil(external_nodes=[])
+        package.output()
+
+        fs.sync()
+
+        commands.cmake(
+            packageroot=source.abspath(),
+            builddir=build.abspath())
+        commands.make(
+            builddir=build.abspath(),
+            args=['-j', 'VERBOSE=1'])
+        pass
+
+    pass
+
+class GeneratedHeaderSetup(Setup):
+    def setup(self, dirbuilder):
+        if dirbuilder.directory().name() == 'generated-header':
+            dirbuilder.add_builder(HeaderGenerator())
+            pass
+        pass
+    pass
+        
+class HeaderGenerator(Builder):
+    def __init__(self):
+        Builder.__init__(self)
+        self.__exploded = False
+        pass
+    def locally_unique_id(self):
+        return str(self.__class__)
+    def enlarge(self):
+        super(HeaderGenerator, self).enlarge()
+        if self.__exploded:
+            return
+        self.__exploded = True
+        generated_header = self.parentbuilder().directory().add(
+            name='generated-header.h',
+            entry=File(state=FileState.VIRTUAL, lines=[]))
+        self.parentbuilder().add_builder(HeaderBuilder(file=generated_header))
+        pass
+    def output(self):
+        super(HeaderGenerator, self).output()
+        cmake_output = find_cmake_output_builder(self.parentbuilder())
+        cmake_output.local_cmakelists().add_custom_command__output(
+            outputs=['generated-header.h'],
+            commands=[('echo', ['generating generated-header.h']), ('touch', ['generated-header.h'])],
+            depends=[])
+        pass
     pass
 
 if __name__ == '__main__':

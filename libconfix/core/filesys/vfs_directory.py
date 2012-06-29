@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2010 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -75,6 +75,23 @@ class VFSDirectory(VFSEntry):
             entry.set_filesystem(self.filesystem())
             pass
         return entry # for convenience
+
+    def remove_but_be_careful_no_sync(self, name):
+        """
+        Remove an entry from the directory's in-memory
+        incarnation. Careful: the removal is not carried out
+        physically when the directory is sync'ed; only the in-memory
+        cache is manipulated.
+
+        This is only useful scan.rescan_dir() when we bring the
+        in-memory cache in sync with the on-disk entries some of which
+        might have disappeared.
+        """
+        entry = self.__entry_by_name.get(name)
+        assert entry is not None
+        del self.__entry_by_name[name]
+        del self.__name_by_entry[entry]
+        pass
 
     def set_filesystem(self, filesystem):
         """
