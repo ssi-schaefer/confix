@@ -17,13 +17,13 @@
 # USA
 
 import algorithm
-from nearest_property import NearestPropertySuite
+import nearest_property
 
 import unittest
 
 suite = unittest.TestSuite()
 suite.addTest(algorithm.suite)
-suite.addTest(NearestPropertySuite())
+suite.addTest(nearest_property.suite)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite)
