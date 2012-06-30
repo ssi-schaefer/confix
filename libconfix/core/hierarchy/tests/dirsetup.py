@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -24,13 +24,6 @@ from libconfix.testutils import dirhier
 
 import unittest
 import types
-
-class BasicDirectorySetupSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicDirectorySetup('test'))
-        pass
-    pass
 
 class BasicDirectorySetup(unittest.TestCase):
 
@@ -60,6 +53,9 @@ class BasicDirectorySetup(unittest.TestCase):
 
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(BasicDirectorySetup))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BasicDirectorySetupSuite())
+    unittest.TextTestRunner().run(suite)
     pass

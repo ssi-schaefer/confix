@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,13 +28,6 @@ from libconfix.core.utils import helper_pickle
 
 import unittest
 import sys
-
-class PseudoHandwrittenSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(PseudoHandwritten('test'))
-        pass
-    pass
 
 class PseudoHandwritten(unittest.TestCase):
     def test(self):
@@ -95,7 +88,10 @@ class PseudoHandwritten(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(PseudoHandwritten))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PseudoHandwrittenSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

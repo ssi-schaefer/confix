@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Joerg Faschingbauer
+# Copyright (C) 2008-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,24 +28,6 @@ from libconfix.setups.boilerplate import Boilerplate
 from libconfix.setups.c import C
 
 import unittest
-
-class CommonDirectoryInterfaceSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-
-        self.addTest(CURRENT_BUILDER_Test('test'))
-        self.addTest(CWD_Test('test'))
-        self.addTest(CURRENT_DIRECTORY_Test('test'))
-        self.addTest(ADD_DIRECTORY_Test('test'))
-        self.addTest(FIND_ENTRY_Test('test'))
-        self.addTest(GET_ENTRIES_Test('test'))
-        self.addTest(RESCAN_CURRENT_DIRECTORY_Test('test'))
-        self.addTest(ADD_BUILDER_Test('test'))
-        self.addTest(SET_FILE_PROPERTIES_Test('test'))
-        self.addTest(SET_FILE_PROPERTY_Test('test'))
-        self.addTest(BUILDINFORMATION_propagates_Test('test'))
-        pass
-    pass
 
 class CURRENT_BUILDER_Test(unittest.TestCase):
     def test(self):
@@ -383,6 +365,19 @@ class BUILDINFORMATION_propagates_Test(PersistentTestCase):
         pass
     pass
         
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(CURRENT_BUILDER_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(CWD_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(CURRENT_DIRECTORY_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ADD_DIRECTORY_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(FIND_ENTRY_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(GET_ENTRIES_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(RESCAN_CURRENT_DIRECTORY_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ADD_BUILDER_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(SET_FILE_PROPERTIES_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(SET_FILE_PROPERTY_Test))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(BUILDINFORMATION_propagates_Test))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CommonDirectoryInterfaceSuite())
+    unittest.TextTestRunner().run(suite)
     pass

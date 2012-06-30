@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Joerg Faschingbauer
+# Copyright (C) 2008-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,27 +15,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dirsetup import BasicDirectorySetupSuite
+import dirsetup
 from explicit_iface import ExplicitInterfaceInMemorySuite
 from ignored_entries import IgnoredEntriesSuite
-from pseudo_handwritten import PseudoHandwrittenSuite
-from common_iface_suite import CommonDirectoryInterfaceSuite
+import pseudo_handwritten
+import common_iface_suite
 
 import unittest
 
-class HierarchyInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicDirectorySetupSuite())
-        self.addTest(ExplicitInterfaceInMemorySuite())
-        self.addTest(IgnoredEntriesSuite())
-        self.addTest(PseudoHandwrittenSuite())
-        self.addTest(CommonDirectoryInterfaceSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(dirsetup.suite)
+suite.addTest(ExplicitInterfaceInMemorySuite())
+suite.addTest(IgnoredEntriesSuite())
+suite.addTest(pseudo_handwritten.suite)
+suite.addTest(common_iface_suite.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(HierarchyInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 
 

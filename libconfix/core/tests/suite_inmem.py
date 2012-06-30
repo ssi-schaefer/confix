@@ -19,7 +19,7 @@ import libconfix.core.utils.tests.suite_inmem
 from libconfix.core.filesys.tests.inmem.suite import Suite as FileSystemSuite
 import libconfix.core.digraph.tests.suite_inmem
 import libconfix.core.machinery.tests.suite_inmem
-from libconfix.core.hierarchy.tests.suite_inmem import HierarchyInMemorySuite
+import libconfix.core.hierarchy.tests.suite_inmem
 
 import unittest
 
@@ -28,7 +28,7 @@ suite.addTest(libconfix.core.utils.tests.suite_inmem.suite)
 suite.addTest(FileSystemSuite())
 suite.addTest(libconfix.core.digraph.tests.suite_inmem.suite)
 suite.addTest(libconfix.core.machinery.tests.suite_inmem.suite)
-suite.addTest(HierarchyInMemorySuite())
+suite.addTest(libconfix.core.hierarchy.tests.suite_inmem.suite)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite)
