@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -30,13 +30,6 @@ from libconfix.core.utils import const
 
 import unittest
 
-class LocalPackageSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(PackageFileTest('test'))
-        pass
-    pass
-
 class PackageFileTest(unittest.TestCase):
     def test(self):
         package = InstalledPackage(
@@ -65,6 +58,9 @@ class PackageFileTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(PackageFileTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LocalPackageSuite())
+    unittest.TextTestRunner().run(suite)
     pass

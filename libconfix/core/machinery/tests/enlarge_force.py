@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,6 @@ from libconfix.core.machinery.setup import NullSetup
 from libconfix.core.utils import const
 
 import unittest
-
-class EnlargeForceSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(EnlargeForceTest('test'))
-        pass
-    pass
 
 class EnlargeForceDummy(Builder):
     def locally_unique_id(self):
@@ -58,8 +51,11 @@ class EnlargeForceTest(unittest.TestCase):
         
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(EnlargeForceTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(EnlargeForceSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 
 

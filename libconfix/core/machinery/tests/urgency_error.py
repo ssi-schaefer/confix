@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,13 +28,6 @@ from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.utils import const
 
 import unittest
-
-class UrgencyErrorSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(UrgencyErrorTest('test'))
-        pass
-    pass
 
 class DeferredProvider(Builder):
     def __init__(self, provide):
@@ -102,7 +95,10 @@ class UrgencyErrorTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(UrgencyErrorTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(UrgencyErrorSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

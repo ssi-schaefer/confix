@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,6 @@ from libconfix.core.machinery.provide import Provide
 
 import unittest
 
-class DependencySetSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(DependencySetTest('test'))
-        pass
-    pass
-
 class DependencySetTest(unittest.TestCase):
     def test(self):
         a = Provide('a')
@@ -47,7 +40,10 @@ class DependencySetTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(DependencySetTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(DependencySetSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

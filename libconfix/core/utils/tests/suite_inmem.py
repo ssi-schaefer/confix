@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,18 +15,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from helper_inmem import HelperInMemorySuite
+import helper_inmem
 
 import unittest
 
-class UtilsInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(HelperInMemorySuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(helper_inmem.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(UtilsInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

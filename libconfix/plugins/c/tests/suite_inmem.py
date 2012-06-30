@@ -27,14 +27,14 @@ import setup_cxx
 import setup_exe
 import setup_lexyacc
 import setup_library
-from clusterer.suite_inmem import ClustererInMemorySuite
+import clusterer.suite_inmem
 import ignored_entries
 import library_versions
 import inter_package_inmem
 import buildinfo_inmem
 
-from libconfix.plugins.c.setups.tests.suite_inmem import SetupsInMemorySuite
-from libconfix.plugins.c.relocated_headers.tests.suite_inmem import RelocatedHeadersInMemorySuite
+import libconfix.plugins.c.setups.tests.suite_inmem
+import libconfix.plugins.c.relocated_headers.tests.suite_inmem
 
 import unittest
 
@@ -46,8 +46,8 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(requires.suite)
         self.addTest(relate.suite)
         self.addTest(library.suite)
-        self.addTest(SetupsInMemorySuite())
-        self.addTest(RelocatedHeadersInMemorySuite())
+        self.addTest(libconfix.plugins.c.setups.tests.suite_inmem.suite)
+        self.addTest(libconfix.plugins.c.relocated_headers.tests.suite_inmem.suite)
         self.addTest(header_visibility_inmem.suite)
         self.addTest(regressions.suite_inmem.suite)
         self.addTest(confix2_dir.suite)
@@ -56,7 +56,7 @@ class CInMemoryTestSuite(unittest.TestSuite):
         self.addTest(setup_exe.suite)
         self.addTest(setup_lexyacc.suite)
         self.addTest(setup_library.suite)
-        self.addTest(ClustererInMemorySuite())
+        self.addTest(clusterer.suite_inmem.suite)
         self.addTest(ignored_entries.suite)
         self.addTest(library_versions.suite)
         self.addTest(inter_package_inmem.suite)

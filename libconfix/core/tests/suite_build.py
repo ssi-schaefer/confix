@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,14 +19,10 @@ from libconfix.core.filesys.tests.automake.suite import Suite as FileSystemSuite
 
 import unittest
 
-class CoreBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(FileSystemSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(FileSystemSuite())
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CoreBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

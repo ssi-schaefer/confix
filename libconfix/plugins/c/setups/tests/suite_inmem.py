@@ -28,6 +28,8 @@ class SetupsInMemorySuite(unittest.TestSuite):
         pass
     pass
 
+suite = SetupsInMemorySuite()
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(SetupsInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

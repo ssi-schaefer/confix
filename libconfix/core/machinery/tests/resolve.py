@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -35,15 +35,6 @@ from libconfix.testutils import dirhier
 from libconfix.testutils.ifacetestbuilder import FileInterfaceTestSetup
 
 import unittest
-
-class ResolveTestSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicResolveTest('test'))
-        self.addTest(NotResolvedTest('test'))
-        self.addTest(AmbiguousResolveTest('test'))
-        self.addTest(CycleTest('test'))
-        pass
 
 class BasicResolveTest(unittest.TestCase):
     def test(self):
@@ -165,8 +156,13 @@ class CycleTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(BasicResolveTest))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(NotResolvedTest))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(AmbiguousResolveTest))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(CycleTest))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ResolveTestSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

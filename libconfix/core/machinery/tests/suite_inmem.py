@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2007 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,34 +15,30 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dependencyset import DependencySetSuite
-from depinfo import DependencyInformationSuite
-from enlarge_force import EnlargeForceSuite
-from iface import BuilderInterfaceTestSuite
-from provide import ProvideSuite
-from relate import RelateTestSuite
-from resolve import ResolveTestSuite
-from urgency_error import UrgencyErrorSuite
-from local_package import LocalPackageSuite
+import dependencyset
+import depinfo
+import enlarge_force
+import iface
+import provide
+import relate
+import resolve
+import urgency_error
+import local_package
 
 import unittest
 
-class MachineryInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(EnlargeForceSuite())
-        self.addTest(DependencySetSuite())
-        self.addTest(DependencyInformationSuite())
-        self.addTest(BuilderInterfaceTestSuite())
-        self.addTest(ProvideSuite())
-        self.addTest(RelateTestSuite())
-        self.addTest(ResolveTestSuite())
-        self.addTest(LocalPackageSuite())
-        self.addTest(UrgencyErrorSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(enlarge_force.suite)
+suite.addTest(dependencyset.suite)
+suite.addTest(depinfo.suite)
+suite.addTest(iface.suite)
+suite.addTest(provide.suite)
+suite.addTest(relate.suite)
+suite.addTest(resolve.suite)
+suite.addTest(local_package.suite)
+suite.addTest(urgency_error.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(MachineryInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

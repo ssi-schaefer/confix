@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -32,14 +32,6 @@ from libconfix.testutils import dirhier
 from libconfix.testutils.ifacetestbuilder import FileInterfaceTestBuilder
 
 import unittest
-
-class BuilderInterfaceTestSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BuilderInterface('testFilePropertyOK'))
-        self.addTest(BuilderInterface('testRequires'))
-        self.addTest(BuilderInterface('testProvides'))
-        pass
 
 class BuilderInterface(unittest.TestCase):
     def testFilePropertyOK(self):
@@ -173,6 +165,9 @@ class BuilderInterface(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(BuilderInterface))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BuilderInterfaceTestSuite())
+    unittest.TextTestRunner().run(suite)
     pass

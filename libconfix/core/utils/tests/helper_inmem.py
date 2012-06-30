@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -19,13 +19,6 @@ from libconfix.core.utils import helper
 
 import unittest
 
-class HelperInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(HelperTest('test_normalize_lines'))
-        pass
-    pass
-
 class HelperTest(unittest.TestCase):
     def test_normalize_lines(self):
         self.failUnlessEqual(helper.normalize_lines(['\nxxx\n', 'yyyy']),
@@ -36,6 +29,9 @@ class HelperTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(HelperTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(HelperInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

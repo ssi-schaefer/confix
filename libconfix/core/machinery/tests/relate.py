@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2012 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -24,14 +24,6 @@ from libconfix.testutils import dirhier
 from libconfix.testutils.ifacetestbuilder import FileInterfaceTestSetup
 
 import unittest
-
-class RelateTestSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(RelateBasic('test'))
-        self.addTest(InternalRequires('test'))
-        pass
-    pass
 
 class RelateBasic(unittest.TestCase):
 
@@ -100,7 +92,11 @@ class InternalRequires(unittest.TestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(RelateBasic))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(InternalRequires))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(RelateTestSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

@@ -16,20 +16,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-
-from algorithm import AlgorithmSuite
+import algorithm
 from nearest_property import NearestPropertySuite
 
-class DiGraphSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(AlgorithmSuite())
-        self.addTest(NearestPropertySuite())
-        pass
-    pass
+import unittest
+
+suite = unittest.TestSuite()
+suite.addTest(algorithm.suite)
+suite.addTest(NearestPropertySuite())
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(DiGraphSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 
