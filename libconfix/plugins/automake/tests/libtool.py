@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -33,16 +33,8 @@ from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
-class LibtoolSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibtoolTest('testLibrary'))
-        self.addTest(LibtoolTest('testSeeThroughHeaders'))
-        pass
-    pass
-
 class LibtoolTest(unittest.TestCase):
-    def testLibrary(self):
+    def test__library(self):
         rootdir = Directory()
         rootdir.add(
             name=const.CONFIX2_PKG,
@@ -73,7 +65,7 @@ class LibtoolTest(unittest.TestCase):
         self.failUnless('lib'+library_builder.basename()+'.la' in automake_output_builder.makefile_am().ltlibraries())
         pass
     
-    def testSeeThroughHeaders(self):
+    def test__see_through_headers(self):
         fs = FileSystem(path=['don\'t', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -177,6 +169,8 @@ class LibtoolTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(LibtoolTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibtoolSuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,16 +28,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class BuildInfoSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicBuildInfoTest('test'))
-        self.addTest(UniqueFlags_n_MacrosTest('test'))
-        pass
-    pass
-
-class BasicBuildInfoTest(unittest.TestCase):
-    def test(self):
+class BuildInfoTest(unittest.TestCase):
+    def test__basic(self):
         fs = FileSystem(path=['', 'path', 'to', 'it'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -116,15 +108,14 @@ class BasicBuildInfoTest(unittest.TestCase):
         pass
     pass
 
-class UniqueFlags_n_MacrosTest(unittest.TestCase):
+    def test__unique_flags_n_macros(self):
 
-    # buildinformation (in the case of C: cflags, cxxflags,
-    # cmdlinemacros) may float to the receiver over multiple
-    # paths. (lo, mid1, hi) and (lo, mid2, hi) in this testcase.
+        # buildinformation (in the case of C: cflags, cxxflags,
+        # cmdlinemacros) may float to the receiver over multiple
+        # paths. (lo, mid1, hi) and (lo, mid2, hi) in this testcase.
 
-    # the receiver is responsible for sorting out duplicates.
-    
-    def test(self):
+        # the receiver is responsible for sorting out duplicates.
+
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -218,7 +209,9 @@ class UniqueFlags_n_MacrosTest(unittest.TestCase):
         pass
     pass
     
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(BuildInfoTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BuildInfoSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

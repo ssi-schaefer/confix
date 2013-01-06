@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Joerg Faschingbauer
+# Copyright (C) 2008-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -32,8 +32,8 @@ class AC_CONFIG_SRCDIR_Suite(unittest.TestSuite):
         pass
     pass
 
-class NoFiles(unittest.TestCase):
-    def test(self):
+class AC_CONFIG_SRCDIR_Test(unittest.TestCase):
+    def test__no_files(self):
         fs = FileSystem(path=['dont', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -53,10 +53,8 @@ class NoFiles(unittest.TestCase):
         self.failUnless(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() in ('Confix2.dir', 'Confix2.pkg'))
 
         pass
-    pass
         
-class NonTrivialFiles(unittest.TestCase):
-    def test(self):
+    def test__nontrivial_files(self):
         fs = FileSystem(path=['dont', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -80,8 +78,9 @@ class NonTrivialFiles(unittest.TestCase):
 
         pass
     pass
-        
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(AC_CONFIG_SRCDIR_Test)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AC_CONFIG_SRCDIR_Suite())
+    unittest.TextTestRunner().run(suite)
     pass

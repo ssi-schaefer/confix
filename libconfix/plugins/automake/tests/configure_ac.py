@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,13 +20,6 @@ from libconfix.plugins.automake.configure_ac import Configure_ac
 
 import unittest, re
 
-class ConfigureACSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ConfigureACTest('test'))
-        pass
-    pass
-
 class ConfigureACTest(unittest.TestCase):
 
     re_AC_INIT = re.compile(r'^\s*AC_INIT\((.*),(.*)\)\s*$')
@@ -36,7 +29,7 @@ class ConfigureACTest(unittest.TestCase):
     re_AC_PREREQ = re.compile(r'^\s*AC_PREREQ\((.*)\)\s*$')
     re_white = re.compile(r'\s+')
 
-    def test(self):
+    def test__basic(self):
         cf_ac = Configure_ac()
 
         cf_ac.set_packagename('package')
@@ -81,7 +74,9 @@ class ConfigureACTest(unittest.TestCase):
         
         pass
     pass
-            
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ConfigureACTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ConfigureACSuite())
+    unittest.TextTestRunner().run(suite)
     pass

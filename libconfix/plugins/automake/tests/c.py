@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -26,15 +26,8 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils import dirhier
 
-class CSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CTest('test'))
-        pass
-    pass
-
 class CTest(unittest.TestCase):
-    def test(self):
+    def test__basic(self):
         fs = dirhier.packageroot()
         fs.rootdirectory().add(name='file.h',
                                entry=File(lines=['#ifndef FILE_H',
@@ -66,6 +59,8 @@ class CTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(CTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CSuite())
+    unittest.TextTestRunner().run(suite)
     pass

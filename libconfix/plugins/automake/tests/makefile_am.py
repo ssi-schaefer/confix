@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -23,18 +23,8 @@ from libconfix.core.utils.error import Error
 
 import unittest
 
-class MakefileAmSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(MakefileAmTest('test_standard_lists'))
-        self.addTest(MakefileAmTest('test_errors'))
-        self.addTest(MakefileAmTest('test_default_install_directories'))
-        self.addTest(MakefileAmTest('test_nondefault_install_directories'))
-        pass
-    pass
-
 class MakefileAmTest(unittest.TestCase):
-    def test_standard_lists(self):
+    def test__standard_lists(self):
         mf_am = Makefile_am()
 
         mf_am.add_compound_sources('the_program', 'source.h')
@@ -163,7 +153,7 @@ class MakefileAmTest(unittest.TestCase):
         
         pass
 
-    def test_errors(self):
+    def test__errors(self):
         mf_am = Makefile_am()
 
         mf_am.add_compound_sources('the_program', 'source.c')
@@ -174,7 +164,7 @@ class MakefileAmTest(unittest.TestCase):
         
         pass
 
-    def test_default_install_directories(self):
+    def test__default_install_directories(self):
         mf_am = Makefile_am()
         # default directory
         mf_am.add_to_install_directory(symbolicname='',
@@ -193,7 +183,7 @@ class MakefileAmTest(unittest.TestCase):
         
         pass
 
-    def test_nondefault_install_directories(self):
+    def test__nondefault_install_directories(self):
         mf_am = Makefile_am()
 
         mf_am.define_install_directory(symbolicname='publicheaders_blah',
@@ -222,6 +212,8 @@ class MakefileAmTest(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(MakefileAmTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(MakefileAmSuite())
+    unittest.TextTestRunner().run(suite)
     pass

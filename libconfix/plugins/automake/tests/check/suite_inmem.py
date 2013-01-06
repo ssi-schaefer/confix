@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,16 +27,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class CheckProgramInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CheckProgramInMemory('test_with_implicit_setup'))
-        self.addTest(CheckProgramInMemory('test_with_explicit_setup'))
-        pass
-    pass
-
 class CheckProgramInMemory(unittest.TestCase):
-    def test_with_implicit_setup(self):
+    def test__with_implicit_setup(self):
         filesys = FileSystem(path=[])
         filesys.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -62,7 +54,7 @@ class CheckProgramInMemory(unittest.TestCase):
         self.failUnlessEqual(rootdir_output_builder.makefile_am().tests_environment()['name'], 'value')
         pass
 
-    def test_with_explicit_setup(self):
+    def test__with_explicit_setup(self):
         filesys = FileSystem(path=[])
         filesys.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -92,7 +84,9 @@ class CheckProgramInMemory(unittest.TestCase):
     
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(CheckProgramInMemory)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CheckProgramInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

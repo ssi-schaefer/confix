@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,19 +31,6 @@ from libconfix.core.utils import const
 from libconfix.testutils import dirhier
 
 import unittest
-
-class AutomakeOutputSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeOutputTest('test_subdirs'))
-        self.addTest(AutomakeOutputTest('test_configure_ac'))
-        self.addTest(AutomakeOutputTest('test_auxdir'))
-        self.addTest(AutomakeOutputTest('test_toplevel_makefile_am'))
-        self.addTest(AutomakeOutputTest('test_subdir1_makefile_am'))
-        self.addTest(AutomakeOutputTest('test_subdir2_makefile_am'))
-        self.addTest(AutomakeOutputTest('test_subdir3_makefile_am'))
-        pass
-    pass
 
 class AutomakeOutputTest(unittest.TestCase):
     def setUp(self):
@@ -79,7 +66,7 @@ class AutomakeOutputTest(unittest.TestCase):
         self.__package = None
         pass
 
-    def test_subdirs(self):
+    def test__subdirs(self):
         rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
 
         self.failIfEqual(self.__fs.rootdirectory().find(['Makefile.am']), None)
@@ -134,7 +121,7 @@ class AutomakeOutputTest(unittest.TestCase):
         
         pass
 
-    def test_configure_ac(self):
+    def test__configure_ac(self):
         rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
 
         self.failIfEqual(self.__fs.rootdirectory().find(['configure.ac']), None)
@@ -143,7 +130,7 @@ class AutomakeOutputTest(unittest.TestCase):
         self.failIf(rootdir_automake_builder.configure_ac().packageversion() is None)
         pass
 
-    def test_auxdir(self):
+    def test__auxdir(self):
         rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
 
         auxdir = self.__package.rootbuilder().directory().find(['confix-admin', 'automake'])
@@ -154,7 +141,7 @@ class AutomakeOutputTest(unittest.TestCase):
         self.failUnless('confix-admin/automake/Makefile' in rootdir_automake_builder.configure_ac().ac_config_files())
         pass
 
-    def test_toplevel_makefile_am(self):
+    def test__toplevel_makefile_am(self):
         rootdir_automake_builder = find_automake_output_builder(self.__package.rootbuilder())
 
         self.failUnless('1.9' in rootdir_automake_builder.makefile_am().automake_options())
@@ -168,7 +155,7 @@ class AutomakeOutputTest(unittest.TestCase):
         self.failUnless('Makefile.am' in rootdir_automake_builder.makefile_am().maintainercleanfiles())
         pass
 
-    def test_subdir1_makefile_am(self):
+    def test__subdir1_makefile_am(self):
         subdir1_automake_builder = find_automake_output_builder(
             self.__package.rootbuilder().find_entry_builder(['subdir1']))
 
@@ -178,7 +165,7 @@ class AutomakeOutputTest(unittest.TestCase):
         self.failUnless('Makefile.am' in subdir1_automake_builder.makefile_am().maintainercleanfiles())
         pass
 
-    def test_subdir2_makefile_am(self):
+    def test__subdir2_makefile_am(self):
         subdir2_automake_builder = find_automake_output_builder(
             self.__package.rootbuilder().find_entry_builder(['subdir2']))
 
@@ -188,7 +175,7 @@ class AutomakeOutputTest(unittest.TestCase):
         self.failUnless('Makefile.am' in subdir2_automake_builder.makefile_am().maintainercleanfiles())
         pass
 
-    def test_subdir3_makefile_am(self):
+    def test__subdir3_makefile_am(self):
         subdir3_automake_builder = find_automake_output_builder(
             self.__package.rootbuilder().find_entry_builder(['subdir3']))
 
@@ -200,7 +187,8 @@ class AutomakeOutputTest(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(AutomakeOutputTest)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeOutputSuite())
+    unittest.TextTestRunner().run(suite)
     pass

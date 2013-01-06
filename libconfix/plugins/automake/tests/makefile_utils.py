@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -22,19 +22,8 @@ from libconfix.core.utils.error import Error
 
 import unittest
 
-class MakefileUtilsSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(RuleTest('test_ok1'))
-        self.addTest(RuleTest('test_ok2'))
-        self.addTest(RuleTest('test_error'))
-        self.addTest(RuleTest('test_command_as_list'))
-        self.addTest(IncludeTest('test'))
-        pass
-    pass
-
-class RuleTest(unittest.TestCase):
-    def test_ok1(self):
+class MakefileUtilsTest(unittest.TestCase):
+    def test__rules_ok1(self):
         lines = []
         for element in [makefile.Rule(targets=['target'],
                                       prerequisites=['prereq1', 'prereq2'],
@@ -79,7 +68,7 @@ class RuleTest(unittest.TestCase):
         self.failIf(rule.commands() != [])
         pass
 
-    def test_ok2(self):
+    def test__rules_ok2(self):
         elements = makefile.parse_makefile(
             ['',
              'target1: prereq1 prereq2',
@@ -124,7 +113,7 @@ class RuleTest(unittest.TestCase):
         self.failIf(rule.commands() != ['command3'])
         pass
         
-    def test_error(self):
+    def test__rules_error(self):
         self.failUnlessRaises(Error,
                               makefile.parse_makefile,
                               lines=['xxx'])
@@ -137,7 +126,7 @@ class RuleTest(unittest.TestCase):
                                      'zzz'])
         pass
 
-    def test_command_as_list(self):
+    def test__rules_command_as_list(self):
         rule = makefile.Rule(targets=['target'],
                              commands=[['cmd1', 'cmd2'], ['cmd3']])
         elements = makefile.parse_makefile(lines=rule.lines())
@@ -146,10 +135,7 @@ class RuleTest(unittest.TestCase):
         self.failUnlessEqual(found_rule.commands(), ['cmd1 cmd2', 'cmd3'])
         pass
 
-    pass
-
-class IncludeTest(unittest.TestCase):
-    def test(self):
+    def test__include(self):
         lines = []
         for element in [makefile.Include('blah')]:
             lines.extend(element.lines())
@@ -161,7 +147,8 @@ class IncludeTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(MakefileUtilsTest)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(MakefileUtilsSuite())
+    unittest.TextTestRunner().run(suite)
     pass

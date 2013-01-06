@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,21 +15,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from makefile_utils import MakefileUtilsSuite
-from makefile_am import MakefileAmSuite
-from configure_ac import ConfigureACSuite
-from output import AutomakeOutputSuite
+import makefile_utils
+import makefile_am
+import configure_ac
+import output
 import iface
-from file_installer_suite import FileInstallerSuite
-from c import CSuite
-from exe import ExecutableSuite
-from exename.suite_inmem import ExecutableNameInMemorySuite
+import file_installer_suite
+import c
+import exe
+import exename.suite_inmem
 import readonly_prefixes.suite_inmem
-from libtool import LibtoolSuite
-from buildinfo import BuildInfoSuite
-from ac_config_srcdir_suite import AC_CONFIG_SRCDIR_Suite
-from inter_package_inmem import InterPackageInMemorySuite
-from check.suite_inmem import CheckProgramInMemorySuite
+import libtool
+import buildinfo
+import ac_config_srcdir_suite
+import inter_package_inmem
+import check.suite_inmem
 
 from libconfix.plugins.automake.pkg_config.tests.suite_inmem import PkgConfigInMemorySuite
 from libconfix.plugins.automake.c.tests.suite_inmem import AutomakeCInMemorySuite
@@ -41,23 +41,23 @@ class AutomakeInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
 
-        self.addTest(MakefileUtilsSuite())
-        self.addTest(MakefileAmSuite())
-        self.addTest(ConfigureACSuite())
-        self.addTest(AutomakeOutputSuite())
+        self.addTest(makefile_utils.suite)
+        self.addTest(makefile_am.suite)
+        self.addTest(configure_ac.suite)
+        self.addTest(output.suite)
         self.addTest(iface.suite)
-        self.addTest(FileInstallerSuite())
-        self.addTest(CSuite())
-        self.addTest(ExecutableSuite())
-        self.addTest(ExecutableNameInMemorySuite())
-        self.addTest(readonly_prefixes.suite_inmem.InMemorySuite())
-        self.addTest(LibtoolSuite())
-        self.addTest(BuildInfoSuite())
+        self.addTest(file_installer_suite.suite)
+        self.addTest(c.suite)
+        self.addTest(exe.suite)
+        self.addTest(exename.suite_inmem.suite)
+        self.addTest(readonly_prefixes.suite_inmem.suite)
+        self.addTest(libtool.suite)
+        self.addTest(buildinfo.suite)
         self.addTest(PkgConfigInMemorySuite())
         self.addTest(AutomakeCInMemorySuite())
-        self.addTest(AC_CONFIG_SRCDIR_Suite())
-        self.addTest(InterPackageInMemorySuite())
-        self.addTest(CheckProgramInMemorySuite())
+        self.addTest(ac_config_srcdir_suite.suite)
+        self.addTest(inter_package_inmem.suite)
+        self.addTest(check.suite_inmem.suite)
         self.addTest(AutomakeScriptInMemorySuite())
         pass
 

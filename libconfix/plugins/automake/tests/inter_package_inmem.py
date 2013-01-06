@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -34,21 +34,14 @@ from libconfix.testutils import dirhier
 
 import unittest
 
-class InterPackageInMemorySuite(unittest.TestSuite):
+class InterPackageInMemoryTest(unittest.TestCase):
 
-    """ These tests assert fundamental behavior: relating the
-    nodes. Unfortunately, the tests are tied together with the C
-    plugin - they should have been written using core objects. (The
-    excuse is that C was long considered to be core)."""
+    """ This test assert fundamental behavior: relating the
+    nodes. Unfortunately, the test is tied together with the C plugin
+    - it should have been written using core objects. (The excuse is
+    that C was long considered to be core)."""
     
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(RepoInstall('test'))
-        pass
-    pass
-
-class RepoInstall(unittest.TestCase):
-    def test(self):
+    def test__repo_install(self):
         rootdir = Directory()
         rootdir.add(name=const.CONFIX2_PKG,
                     entry=File(lines=["PACKAGE_NAME('blah')",
@@ -69,7 +62,9 @@ class RepoInstall(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(InterPackageInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterPackageInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
         

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -21,20 +21,9 @@ from libconfix.core.utils.error import Error
 
 import unittest
 
-class FileInstallerSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(OutputTest('test'))
-        self.addTest(InterfaceTest('testOk'))
-        self.addTest(InterfaceTest('testError'))
-        pass
-    pass
+class FileInstallerTest(unittest.TestCase):
 
-class OutputTest(unittest.TestCase):
-
-    """Makefile.am output correctness"""
-    
-    def test(self):
+    def test__makefile_am_output_correctness(self):
         file_installer = FileInstaller()
 
         # public headers
@@ -114,12 +103,7 @@ class OutputTest(unittest.TestCase):
         pass
     pass
 
-class InterfaceTest(unittest.TestCase):
-
-    """Nail down the interface of FileInstaller, to make changes
-    testable more locally."""
-    
-    def testOk(self):
+    def test__interface_ok(self):
         file_installer = FileInstaller()
 
         file_installer.add_public_header(filename='a.h', dir=[])
@@ -146,7 +130,7 @@ class InterfaceTest(unittest.TestCase):
         
         pass
 
-    def testError(self):
+    def test__interface_error(self):
         file_installer = FileInstaller()
         file_installer.add_public_header(filename='a.h', dir=[])
         try:
@@ -160,7 +144,9 @@ class InterfaceTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(FileInstallerTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(FileInstallerSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 
