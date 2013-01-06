@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,19 +29,8 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
-class InterfaceSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(MAKEFILE_AM_Test('test'))
-        self.addTest(ADD_EXTRA_DIST_Test('test'))
-        self.addTest(CONFIGURE_AC_ACINCLUDE_M4('test_local'))
-        self.addTest(CONFIGURE_AC_ACINCLUDE_M4('test_propagate'))
-        self.addTest(CONFIGURE_AC_ACINCLUDE_M4('test_defaults'))
-        pass
-    pass
-
-class MAKEFILE_AM_Test(unittest.TestCase):
-    def test(self):
+class InterfaceTest(unittest.TestCase):
+    def test__MAKEFILE_AM(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -59,10 +48,8 @@ class MAKEFILE_AM_Test(unittest.TestCase):
         rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
         self.failUnless(token in rootdir_automake_builder.makefile_am().lines())
         pass
-    pass
-        
-class ADD_EXTRA_DIST_Test(unittest.TestCase):
-    def test(self):
+
+    def test__ADD_EXTRA_DIST(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -82,10 +69,8 @@ class ADD_EXTRA_DIST_Test(unittest.TestCase):
         rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
         self.failUnless('file' in rootdir_automake_builder.makefile_am().extra_dist())
         pass
-    pass
         
-class CONFIGURE_AC_ACINCLUDE_M4(unittest.TestCase):
-    def test_local(self):
+    def test__CONFIGURE_AC_ACINCLUDE_M4_local(self):
 
         # We pass flags=[LOCAL] explicitly, to both ACINCLUDE_M4() and
         # CONFIGURE_AC(), and check if both go into acinclude.m4 and
@@ -130,7 +115,7 @@ class CONFIGURE_AC_ACINCLUDE_M4(unittest.TestCase):
             pass
         pass
     
-    def test_propagate(self):
+    def test__CONFIGURE_AC_ACINCLUDE_M4_propagate(self):
 
         """ We pass flags=[PROPAGATE] explicitly, to both
         ACINCLUDE_M4() and CONFIGURE_AC(), propagate it to a dependent
@@ -189,7 +174,7 @@ class CONFIGURE_AC_ACINCLUDE_M4(unittest.TestCase):
             pass
         pass
 
-    def test_defaults(self):
+    def test__CONFIGURE_AC_ACINCLUDE_M4_defaults(self):
 
         """ We do not pass any of flags, propagate it, and ..."""
         
@@ -247,8 +232,8 @@ class CONFIGURE_AC_ACINCLUDE_M4(unittest.TestCase):
     
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(InterfaceTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterfaceSuite())
+    unittest.TextTestRunner().run(suite)
     pass
-
-

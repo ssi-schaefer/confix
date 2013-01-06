@@ -19,7 +19,7 @@ from makefile_utils import MakefileUtilsSuite
 from makefile_am import MakefileAmSuite
 from configure_ac import ConfigureACSuite
 from output import AutomakeOutputSuite
-from iface import InterfaceSuite
+import iface
 from file_installer_suite import FileInstallerSuite
 from c import CSuite
 from exe import ExecutableSuite
@@ -45,7 +45,7 @@ class AutomakeInMemorySuite(unittest.TestSuite):
         self.addTest(MakefileAmSuite())
         self.addTest(ConfigureACSuite())
         self.addTest(AutomakeOutputSuite())
-        self.addTest(InterfaceSuite())
+        self.addTest(iface.suite)
         self.addTest(FileInstallerSuite())
         self.addTest(CSuite())
         self.addTest(ExecutableSuite())

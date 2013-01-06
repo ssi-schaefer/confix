@@ -81,6 +81,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
                 raise Error('H(): invalid "relocate_to" value', [e])
             self.__dirbuilder.add_builder(
                 Master(filename=filename, directory=the_path_to_relocate_to))
+            pass
         return h
 
     def C(self, filename):
