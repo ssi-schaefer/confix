@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,18 +28,6 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.testutils import dirhier
 
 import unittest
-
-class LibraryInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibtoolLibrary('test_library_alone'))
-        self.addTest(LibtoolLibrary('test_version'))
-        self.addTest(ArchiveLibrary('test_library_alone'))
-        self.addTest(ArchiveLibrary('test_AC_PROG_RANLIB'))
-        self.addTest(LIBADD('test_libtool'))
-        self.addTest(LIBADD('test_no_libtool'))
-        pass
-    pass
 
 class LibraryBase(unittest.TestCase):
     def use_libtool(self): assert 0
@@ -199,6 +187,11 @@ class LIBADD(unittest.TestCase):
 
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(LibtoolLibrary))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ArchiveLibrary))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(LIBADD))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibraryInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

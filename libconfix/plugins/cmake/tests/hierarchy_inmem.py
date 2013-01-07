@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,15 +27,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class HierarchyInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(HierarchyInMemoryTest('basic'))
-        pass
-    pass
-
 class HierarchyInMemoryTest(unittest.TestCase):
-    def basic(self):
+    def test__basic(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -71,6 +64,8 @@ class HierarchyInMemoryTest(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(HierarchyInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(HierarchyInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

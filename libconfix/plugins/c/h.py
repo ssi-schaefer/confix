@@ -29,30 +29,30 @@ from libconfix.core.utils import const
 
 import os
 
+class AmbiguousVisibility(Error):
+    def __init__(self, header_builder, cur, prev):
+        Error.__init__(self,
+                       msg='Ambiguous visibility of header "'+\
+                       '/'.join(header_builder.file().relpath(from_dir=header_builder.package().rootdirectory()))+'": '+\
+                       '/'.join(cur)+' vs. '+'/'.join(prev))
+        pass
+    pass
+
+class BadNamespace(Error):
+    def __init__(self, path, error):
+        assert isinstance(error, Error)
+        Error.__init__(self,
+                       msg='Bad namespace in file '+'/'.join(path),
+                       list=[error])
+        pass
+    pass
+
 class HeaderBuilder(CBaseBuilder):
     PROPERTY_INSTALLPATH = 'INSTALLPATH_CINCLUDE'
 
     LOCALVISIBILITY_INSTALL = 0
     LOCALVISIBILITY_DIRECT_INCLUDE = 1
 
-    class AmbiguousVisibility(Error):
-        def __init__(self, header_builder, cur, prev):
-            Error.__init__(self,
-                           msg='Ambiguous visibility of header "'+\
-                           '/'.join(header_builder.file().relpath(from_dir=header_builder.package().rootdirectory()))+'": '+\
-                           '/'.join(cur)+' vs. '+'/'.join(prev))
-            pass
-        pass
-
-    class BadNamespace(Error):
-        def __init__(self, path, error):
-            assert isinstance(error, Error)
-            Error.__init__(self,
-                           msg='Bad namespace in file '+'/'.join(path),
-                           list=[error])
-            pass
-        pass
-    
     def __init__(self, file):
         CBaseBuilder.__init__(self, file=file)
 
@@ -76,7 +76,7 @@ class HeaderBuilder(CBaseBuilder):
     def set_visibility(self, v):
         assert type(v) is list
         if self.__explicit_visibility is not None and self.__explicit_visibility != v:
-            raise self.AmbiguousVisibility(header_builder=self, cur=v, prev=self.__explicit_visibility)
+            raise AmbiguousVisibility(header_builder=self, cur=v, prev=self.__explicit_visibility)
         self.__explicit_visibility = v
 
         # others may want to be told about the fact.
@@ -214,7 +214,7 @@ class HeaderBuilder(CBaseBuilder):
             return vis
         try:
             return self.__calc_namespace()
-        except self.BadNamespace:
+        except BadNamespace:
             return []
         pass
 
@@ -228,7 +228,7 @@ class HeaderBuilder(CBaseBuilder):
         property_install_path = self.file().get_property(HeaderBuilder.PROPERTY_INSTALLPATH)
 
         if self.__explicit_visibility is not None and property_install_path is not None:
-            raise self.AmbiguousVisibility(header_builder=self, cur=self.__explicit_visibility, prev=property_install_path)
+            raise AmbiguousVisibility(header_builder=self, cur=self.__explicit_visibility, prev=property_install_path)
 
         if self.__explicit_visibility is not None:
             return self.__explicit_visibility
@@ -244,7 +244,7 @@ class HeaderBuilder(CBaseBuilder):
             try:
                 self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
             except Error, e:
-                self.__namespace_error = self.BadNamespace(
+                self.__namespace_error = BadNamespace(
                     path=self.file().relpath(from_dir=self.package().rootdirectory()),
                     error=e)
                 raise self.__namespace_error

@@ -30,19 +30,6 @@ from libconfix.testutils import dirhier
 
 import unittest
 
-class ExecutableSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibtoolExecutable('common_test'))
-        self.addTest(StandardExecutable('common_test'))
-        self.addTest(LibtoolExecutable('test'))
-        self.addTest(StandardExecutable('test'))
-        self.addTest(CheckAndNoinstProgram('test'))
-        self.addTest(LDADD('test_libtool'))
-        self.addTest(LDADD('test_no_libtool'))
-        pass
-    pass
-
 class ExecutableBase(unittest.TestCase):
     def use_libtool(self): assert 0, 'abstract'
     def setUp(self):
@@ -118,7 +105,7 @@ class ExecutableBase(unittest.TestCase):
         self.package_ = None
         pass
 
-    def common_test(self):
+    def test__common(self):
         exedir_automake_builder = find_automake_output_builder(self.exedir_builder_)
         
         self.failUnless('blah_exe_main' in exedir_automake_builder.makefile_am().bin_programs())
@@ -216,7 +203,7 @@ class LDADD(unittest.TestCase):
                               'int main() {}']))
         pass
 
-    def test_libtool(self):
+    def test__libtool(self):
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
                                setups=[ConfixSetup(use_libtool=True)])
         package.boil(external_nodes=[])
@@ -230,7 +217,7 @@ class LDADD(unittest.TestCase):
         self.failUnless('-lLDADD_lib' in exedir_output_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
         pass
 
-    def test_no_libtool(self):
+    def test__no_libtool(self):
         package = LocalPackage(rootdirectory=self.fs_.rootdirectory(),
                                setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
@@ -246,7 +233,11 @@ class LDADD(unittest.TestCase):
 
     pass
 
-suite = ExecutableSuite()
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(LibtoolExecutable))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(StandardExecutable))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(CheckAndNoinstProgram))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(LDADD))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite)

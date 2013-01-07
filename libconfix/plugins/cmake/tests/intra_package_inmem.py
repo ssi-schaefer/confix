@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,15 +31,6 @@ from libconfix.core.utils import const
 
 import unittest
 
-class IntraPackageInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(IntraPackageTest('test_output'))
-        self.addTest(IntraPackageTest('test_linklines'))
-        self.addTest(IntraPackageTest('test_include_paths'))
-        pass
-    pass
-
 class IntraPackageTest(unittest.TestCase):
     def setUp(self):
         fs = FileSystem(path=[], rootdirectory=intra_package.make_source_tree())
@@ -54,7 +45,7 @@ class IntraPackageTest(unittest.TestCase):
         self.__exe_output_builder = find_cmake_output_builder(self.__package.rootbuilder().find_entry_builder(['exe']))
         pass
 
-    def test_output(self):
+    def test__output(self):
         # library 'lo'
         self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().get_library('lo')), 4)
         self.failUnless('lo1.h' in self.__lo_output_builder.local_cmakelists().get_library('lo'))
@@ -79,7 +70,7 @@ class IntraPackageTest(unittest.TestCase):
 
         pass
 
-    def test_linklines(self):
+    def test__linklines(self):
         # lo needs nothing.
         self.failUnless(self.__lo_output_builder.local_cmakelists().get_target_link_libraries('lo') is None)
 
@@ -96,7 +87,7 @@ class IntraPackageTest(unittest.TestCase):
 
         pass
 
-    def test_include_paths(self):
+    def test__include_paths(self):
         self.failUnlessEqual(len(self.__lo_output_builder.local_cmakelists().get_include_directories()),
                              # the binary directory that is associated with 'lo'
                              1
@@ -134,6 +125,8 @@ class IntraPackageTest(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(IntraPackageTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(IntraPackageInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

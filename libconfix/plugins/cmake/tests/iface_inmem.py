@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -41,31 +41,8 @@ from libconfix.core.utils import const
 import itertools
 import unittest
 
-class InterfaceInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_ADD_MODULE_FILE'))
-
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_local_only'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_and_local'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_local'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_propagate'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_only'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_and_local'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMAKELISTS_ADD_FIND_CALL_multiline'))
-
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMDLINE_MACROS_local_only'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMDLINE_MACROS_propagate_only'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_CMDLINE_MACROS_propagate_and_local'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_EXTERNAL_LIBRARY'))
-        self.addTest(InterfaceInMemoryTest('test_CMAKE_PKG_CONFIG_LIBRARY'))
-        pass
-    pass
-
 class InterfaceInMemoryTest(unittest.TestCase):
-    def test_CMAKE_ADD_MODULE_FILE(self):
+    def test__CMAKE_ADD_MODULE_FILE(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -92,7 +69,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_local_only(self):
+    def test__CMAKE_CMAKELISTS_ADD_INCLUDE_local_only(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -116,7 +93,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only(self):
+    def test__CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_only(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -142,7 +119,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_and_local(self):
+    def test__CMAKE_CMAKELISTS_ADD_INCLUDE_propagate_and_local(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -168,7 +145,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_local(self):
+    def test__CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_local(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -194,7 +171,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnless('include-directory' in cmake_output_builder.local_cmakelists().get_include_directories())
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_propagate(self):
+    def test__CMAKE_CMAKELISTS_ADD_INCLUDE_DIRECTORY_propagate(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -235,7 +212,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
         self.failUnless('include-directory' in cmake_output_builder.local_cmakelists().get_include_directories())
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only(self):
+    def test__CMAKE_CMAKELISTS_ADD_FIND_CALL_local_only(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -259,7 +236,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_only(self):
+    def test__CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_only(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -285,7 +262,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_and_local(self):
+    def test__CMAKE_CMAKELISTS_ADD_FIND_CALL_propagate_and_local(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -311,7 +288,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMAKELISTS_ADD_FIND_CALL_multiline(self):
+    def test__CMAKE_CMAKELISTS_ADD_FIND_CALL_multiline(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -334,7 +311,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMDLINE_MACROS_local_only(self):
+    def test__CMAKE_CMDLINE_MACROS_local_only(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -357,7 +334,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMDLINE_MACROS_propagate_only(self):
+    def test__CMAKE_CMDLINE_MACROS_propagate_only(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -386,7 +363,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_CMDLINE_MACROS_propagate_and_local(self):
+    def test__CMAKE_CMDLINE_MACROS_propagate_and_local(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -415,7 +392,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
             pass
         pass
 
-    def test_CMAKE_EXTERNAL_LIBRARY(self):
+    def test__CMAKE_EXTERNAL_LIBRARY(self):
         fs = FileSystem(path=[''])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -482,7 +459,7 @@ class InterfaceInMemoryTest(unittest.TestCase):
 
         pass
 
-    def test_CMAKE_PKG_CONFIG_LIBRARY(self):
+    def test__CMAKE_PKG_CONFIG_LIBRARY(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -538,7 +515,9 @@ class InterfaceInMemoryTest(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(InterfaceInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterfaceInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

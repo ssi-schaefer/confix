@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,36 +15,31 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from cmakelists_inmem import CMakeListsInMemorySuite
-from toplevel_boilerplate import ToplevelBoilerplateInMemorySuite
-from modules_inmem import ModulesInMemorySuite
-from hierarchy_inmem import HierarchyInMemorySuite
-from intra_package_inmem import IntraPackageInMemorySuite
-from inter_package_inmem import InterPackageInMemorySuite
-from iface_inmem import InterfaceInMemorySuite
-from dependency_order_check_inmem import DependencyOrderInMemorySuite
-from external_library_inmem import ExternalLibraryInMemorySuite
-from buildinfo_inmem import BuildInformationInMemorySuite
+import cmakelists_inmem
+import toplevel_boilerplate
+import modules_inmem
+import hierarchy_inmem
+import intra_package_inmem
+import inter_package_inmem
+import iface_inmem
+import dependency_order_check_inmem
+import external_library_inmem
+import buildinfo_inmem
 
 import unittest
 
-class CMakeInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CMakeListsInMemorySuite())
-        self.addTest(ToplevelBoilerplateInMemorySuite())
-        self.addTest(ModulesInMemorySuite())
-        self.addTest(HierarchyInMemorySuite())
-        self.addTest(IntraPackageInMemorySuite())
-        self.addTest(InterPackageInMemorySuite())
-        self.addTest(InterfaceInMemorySuite())
-        self.addTest(DependencyOrderInMemorySuite())
-        self.addTest(ExternalLibraryInMemorySuite())
-        self.addTest(BuildInformationInMemorySuite())
-        pass
-
-    pass
+suite = unittest.TestSuite()
+suite.addTest(cmakelists_inmem.suite)
+suite.addTest(toplevel_boilerplate.suite)
+suite.addTest(modules_inmem.suite)
+suite.addTest(hierarchy_inmem.suite)
+suite.addTest(intra_package_inmem.suite)
+suite.addTest(inter_package_inmem.suite)
+suite.addTest(iface_inmem.suite)
+suite.addTest(dependency_order_check_inmem.suite)
+suite.addTest(external_library_inmem.suite)
+suite.addTest(buildinfo_inmem.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CMakeInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

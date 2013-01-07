@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -25,15 +25,6 @@ from libconfix.core.utils import const
 
 import unittest
 
-class ToplevelBoilerplateInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ToplevelBoilerplateTest('test_basics'))
-        self.addTest(ToplevelBoilerplateTest('test_cpack'))
-        self.addTest(ToplevelBoilerplateTest('test_rpath'))
-        pass
-    pass
-
 class ToplevelBoilerplateTest(unittest.TestCase):
     def setUp(self):
         rootdirectory = Directory()
@@ -52,13 +43,13 @@ class ToplevelBoilerplateTest(unittest.TestCase):
         self.__cmakelists = find_cmake_output_builder(package.rootbuilder()).top_cmakelists()
         pass
     
-    def test_basics(self):
+    def test__basics(self):
         self.failUnlessEqual(self.__cmakelists.get_project(), 'package-name')
         self.failUnlessEqual(self.__cmakelists.get_set('VERSION'), '1.2.3')
         self.failUnlessEqual(self.__cmakelists.get_cmake_minimum_required('VERSION'), '2.6')
         pass
 
-    def test_cpack(self):
+    def test__cpack(self):
         self.failUnless('CPack' in self.__cmakelists.get_includes())
         self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_PACKAGE_FILE_NAME'), '"${PROJECT_NAME}-${VERSION}"')
         self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_IGNORE_FILES'), "${CPACK_SOURCE_IGNORE_FILES};~\$")
@@ -68,7 +59,7 @@ class ToplevelBoilerplateTest(unittest.TestCase):
         self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_PATCH'), '3')
         pass
 
-    def test_rpath(self):
+    def test__rpath(self):
         # RPATH settings, according to
         # http://www.vtk.org/Wiki/CMake_RPATH_handling. this ought to
         # be the way that we know from automake/libtool.
@@ -88,11 +79,11 @@ class ToplevelBoilerplateTest(unittest.TestCase):
         # RPATH
         self.failUnlessEqual(self.__cmakelists.get_set('CMAKE_INSTALL_RPATH_USE_LINK_PATH'), 'TRUE')
         pass
-
-    
     
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ToplevelBoilerplateTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ToplevelBoilerplateInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

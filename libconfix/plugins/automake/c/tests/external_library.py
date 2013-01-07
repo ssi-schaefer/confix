@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,17 +29,6 @@ from libconfix.core.utils import const
 from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
-
-class ExternalLibraryInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExternalLibraryTest('testIncludePath'))
-        self.addTest(ExternalLibraryTest('testCmdlineMacros'))
-        self.addTest(ExternalLibraryTest('testCFlags'))
-        self.addTest(ExternalLibraryTest('testCXXFlags'))
-        self.addTest(ExternalLibraryTest('testLinkery'))
-        pass
-    pass
 
 class ExternalLibraryTest(unittest.TestCase):
     def setUp(self):
@@ -110,7 +99,7 @@ class ExternalLibraryTest(unittest.TestCase):
         self.__package = None
         pass
 
-    def testIncludePath(self):
+    def test__includepath(self):
         # lolo must not be seen in lo's include path since nothing is
         # built there
         lodir_builder = self.__package.rootbuilder().find_entry_builder(['lo'])
@@ -145,7 +134,7 @@ class ExternalLibraryTest(unittest.TestCase):
         self.failUnless(pos_lo < pos_lolo)
         pass
 
-    def testCmdlineMacros(self):
+    def test__cmdline_macros(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
@@ -157,7 +146,7 @@ class ExternalLibraryTest(unittest.TestCase):
         self.failUnless(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') == 'value_lo')
         pass
 
-    def testCFlags(self):
+    def test__cflags(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
@@ -167,7 +156,7 @@ class ExternalLibraryTest(unittest.TestCase):
         self.failUnless('lo_cflags' in hidir_output_builder.makefile_am().am_cflags())
         pass
 
-    def testCXXFlags(self):
+    def test__cxxflags(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
@@ -177,7 +166,7 @@ class ExternalLibraryTest(unittest.TestCase):
         self.failUnless('lo_cxxflags' in hidir_output_builder.makefile_am().am_cxxflags())
         pass
 
-    def testLinkery(self):
+    def test__linkery(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
         self.failIf(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
@@ -226,7 +215,9 @@ class ExternalLibraryTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExternalLibraryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExternalLibraryInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

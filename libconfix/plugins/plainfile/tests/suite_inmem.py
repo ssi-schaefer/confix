@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,16 +29,8 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
-class PlainFileSuiteInMemory(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(PlainFileInMemoryTest('test'))
-        self.addTest(PlainFileCreatorParamTest('test'))
-        pass
-    pass
-
-class PlainFileInMemoryTest(unittest.TestCase):
-    def test(self):
+class PlainFileTest(unittest.TestCase):
+    def test__basic(self):
         fs = FileSystem(path=['don\'t', 'care'], rootdirectory=make_package())
         
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
@@ -52,10 +44,8 @@ class PlainFileInMemoryTest(unittest.TestCase):
         self.failUnless(isinstance(plainfile_data, PlainFileBuilder))
         self.failUnless(isinstance(plainfile_prefix, PlainFileBuilder))
         pass
-    pass
 
-class PlainFileCreatorParamTest(unittest.TestCase):
-    def test(self):
+    def test__creator_with_params(self):
         fs = FileSystem(path=['don\'t', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -94,7 +84,9 @@ class PlainFileCreatorParamTest(unittest.TestCase):
         self.failUnless(prefixbuilder.datadir() is None)
         pass
     pass
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(PlainFileTest)
     
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PlainFileSuiteInMemory())
+    unittest.TextTestRunner().run(suite)
     pass

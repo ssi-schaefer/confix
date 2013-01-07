@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -39,16 +39,8 @@ from libconfix.setups.automake import Automake
 
 import unittest
 
-class LibraryDependenciesInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibraryDependenciesInMemoryTest('test_plain_output'))
-        self.addTest(LibraryDependenciesInMemoryTest('test_executable_come_and_go'))
-        pass
-    pass
-
 class LibraryDependenciesInMemoryTest(PersistentTestCase):
-    def test_plain_output(self):
+    def test__plain_output(self):
         dirstructure = DirectoryStructure(path=self.rootpath())
 
         # kind of bootstrap packages in order (just without writing
@@ -96,7 +88,7 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
         
         pass
 
-    def test_executable_come_and_go(self):
+    def test__executable_come_and_go(self):
         class TestGuide(Builder):
             """
             Removes executable as it sees it, and checks that the
@@ -179,6 +171,8 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(LibraryDependenciesInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibraryDependenciesInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

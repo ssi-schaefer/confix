@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,17 +27,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class ModulesInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ModulesInMemoryTest('test_ok'))
-        self.addTest(ModulesInMemoryTest('test_good_duplicate'))
-        self.addTest(ModulesInMemoryTest('test_live'))
-        pass
-    pass
-
 class ModulesInMemoryTest(unittest.TestCase):
-    def test_ok(self):
+    def test__ok(self):
         modules_dir_builder = ModulesDirectoryBuilder(directory=Directory())
         modules_dir_builder.add_module_file(name='mod1.cmake', lines=['mod1'])
         modules_dir_builder.add_module_file(name='mod2.cmake', lines=['mod2'])
@@ -51,7 +42,7 @@ class ModulesInMemoryTest(unittest.TestCase):
         self.failUnlessEqual(mod2.lines(), ['mod2'])        
         pass
     
-    def test_good_duplicate(self):
+    def test__good_duplicate(self):
         modules_dir_builder = ModulesDirectoryBuilder(directory=Directory())
         modules_dir_builder.add_module_file(name='mod1.cmake', lines=['mod1'])
         modules_dir_builder.add_module_file(name='mod1.cmake', lines=['mod1'])
@@ -61,7 +52,7 @@ class ModulesInMemoryTest(unittest.TestCase):
         self.failUnlessEqual(mod1.lines(), ['mod1'])        
         pass
 
-    def test_live(self):
+    def test__live(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -94,6 +85,8 @@ class ModulesInMemoryTest(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ModulesInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ModulesInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,15 +28,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class BuildInformationInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BuildInformationTest('test_confix_module_propagate'))
-        pass
-    pass
-
 class BuildInformationTest(unittest.TestCase):
-    def test_confix_module_propagate(self):
+    def test__confix_module_propagate(self):
         fs = FileSystem(path=[])
         source = fs.rootdirectory().add(
             name='source',
@@ -85,6 +78,8 @@ class BuildInformationTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(BuildInformationTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BuildInformationInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Joerg Faschingbauer
+# Copyright (C) 2008-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,24 +15,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from library_dependencies.suite_inmem import LibraryDependenciesInMemorySuite
-from external_library import ExternalLibraryInMemorySuite
-from library import LibraryInMemorySuite
-from header_install_inmem import HeaderInstallInMemorySuite
+import external_library
+import library_dependencies.suite_inmem
+import library
+import header_install_inmem
 
 import unittest
 
-class AutomakeCInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExternalLibraryInMemorySuite())
-        self.addTest(LibraryDependenciesInMemorySuite())
-        self.addTest(LibraryInMemorySuite())
-        self.addTest(HeaderInstallInMemorySuite())
-        pass
-
-    pass
+suite = unittest.TestSuite()
+suite.addTest(external_library.suite)
+suite.addTest(library_dependencies.suite_inmem.suite)
+suite.addTest(library.suite)
+suite.addTest(header_install_inmem.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeCInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

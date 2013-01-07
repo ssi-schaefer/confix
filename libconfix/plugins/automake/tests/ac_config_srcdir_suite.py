@@ -24,14 +24,6 @@ from libconfix.core.machinery.local_package import LocalPackage
 
 import unittest
 
-class AC_CONFIG_SRCDIR_Suite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(NoFiles('test'))
-        self.addTest(NonTrivialFiles('test'))
-        pass
-    pass
-
 class AC_CONFIG_SRCDIR_Test(unittest.TestCase):
     def test__no_files(self):
         fs = FileSystem(path=['dont', 'care'])

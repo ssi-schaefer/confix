@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,17 +29,8 @@ from libconfix.testutils import dirhier
 
 import unittest
 
-class HeaderInstallInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicHeaderInstallTest('test_zerodeep'))
-        self.addTest(BasicHeaderInstallTest('test_onedeep'))
-        self.addTest(BasicHeaderInstallTest('test_twodeep'))
-        pass
-    pass
-
-class BasicHeaderInstallTest(unittest.TestCase):
-    def test_zerodeep(self):
+class HeaderInstallTest(unittest.TestCase):
+    def test__zerodeep(self):
         fs = dirhier.packageroot()
         file_h = fs.rootdirectory().add(name='file.h',
                                         entry=File())
@@ -64,7 +55,7 @@ class BasicHeaderInstallTest(unittest.TestCase):
         # pointed to $(srcdir)
         pass
 
-    def test_onedeep(self):
+    def test__onedeep(self):
 
         fs = dirhier.packageroot()
         file_h = fs.rootdirectory().add(name='file.h',
@@ -119,7 +110,7 @@ class BasicHeaderInstallTest(unittest.TestCase):
         
         pass
 
-    def test_twodeep(self):
+    def test__twodeep(self):
         fs = dirhier.packageroot()
         file_h = fs.rootdirectory().add(name='file.h',
                                         entry=File())
@@ -141,6 +132,8 @@ class BasicHeaderInstallTest(unittest.TestCase):
         
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(HeaderInstallTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(HeaderInstallInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

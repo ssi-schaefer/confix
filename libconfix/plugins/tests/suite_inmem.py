@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,22 +15,22 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.c.tests.suite_inmem import CInMemoryTestSuite
-from libconfix.plugins.plainfile.tests.suite_inmem import PlainFileSuiteInMemory
-from libconfix.plugins.idl.tests.suite_inmem import IDLSuiteInMemory
-from libconfix.plugins.automake.tests.suite_inmem import AutomakeInMemorySuite
-from libconfix.plugins.cmake.tests.suite_inmem import CMakeInMemorySuite
+import libconfix.plugins.c.tests.suite_inmem as c
+import libconfix.plugins.plainfile.tests.suite_inmem as plainfile
+import libconfix.plugins.idl.tests.suite_inmem as idl
+import libconfix.plugins.automake.tests.suite_inmem as automake
+import libconfix.plugins.cmake.tests.suite_inmem as cmake
 
 import unittest
 
 class PluginsInMemorySuite(unittest.TestSuite):
     def __init__(self):
         unittest.TestSuite.__init__(self)
-        self.addTest(CInMemoryTestSuite())
-        self.addTest(PlainFileSuiteInMemory())
-        self.addTest(IDLSuiteInMemory())
-        self.addTest(AutomakeInMemorySuite())
-        self.addTest(CMakeInMemorySuite())
+        self.addTest(c.suite)
+        self.addTest(plainfile.suite)
+        self.addTest(idl.suite)
+        self.addTest(automake.suite)
+        self.addTest(cmake.suite)
         pass
     pass
 
