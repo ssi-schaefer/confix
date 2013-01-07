@@ -58,6 +58,21 @@ class Error(Exception):
                 pass
             pass
         return lines
+
+    def contains_error_of_type(self, t):
+        """ Do I contain a nested error of type t?
+        
+        This is true when I am of type t, or when I contain an error
+        of type t. """
+
+        if isinstance(self, t):
+            return True
+        for e in self.__list:
+            if e.contains_error_of_type(t):
+                return True
+            pass
+        return False
+
     pass
 
 class NativeError(Exception):

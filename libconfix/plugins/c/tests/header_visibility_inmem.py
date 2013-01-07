@@ -21,6 +21,7 @@ from libconfix.setups.boilerplate import Boilerplate
 from libconfix.setups.c import C
 
 from libconfix.plugins.c.h import HeaderBuilder
+import libconfix.plugins.c.h
 
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -105,7 +106,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.AmbiguousVisibility, e:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -127,7 +129,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.AmbiguousVisibility, e:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -150,7 +153,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.AmbiguousVisibility, e:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -272,7 +276,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.AmbiguousVisibility, e:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -407,7 +412,8 @@ class Namespace(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.BadNamespace:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
             return
         self.fail()
         pass
@@ -436,7 +442,8 @@ class Namespace(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.BadNamespace:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
             return
         self.fail()
         pass
@@ -485,7 +492,8 @@ class Namespace(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.BadNamespace:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
             pass
         pass
 
@@ -593,7 +601,8 @@ class HeaderInstallPath(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.AmbiguousVisibility:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -619,7 +628,8 @@ class HeaderInstallPath(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except HeaderBuilder.AmbiguousVisibility:
+        except Error, e:
+            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return 
         self.fail()
         pass
