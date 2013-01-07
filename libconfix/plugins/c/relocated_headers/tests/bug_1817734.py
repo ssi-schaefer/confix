@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,6 @@ from libconfix.plugins.c.dependency import Require_CInclude
 from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
-
-class Bug_1817734(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Bug_1817734_Test('test'))
-        pass
-    pass
 
 class Bug_1817734_Test(unittest.TestCase):
     def test(self):
@@ -89,7 +82,9 @@ class Bug_1817734_Test(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(Bug_1817734_Test)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(Bug_1817734())
+    unittest.TextTestRunner().run(suite)
     pass
 

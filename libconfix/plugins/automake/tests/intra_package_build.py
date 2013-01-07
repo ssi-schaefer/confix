@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,11 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import unittest
-import os
-import sys
-import shutil
-
 from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -34,14 +29,10 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
-class IntraPackageBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(IntraPackageBuildWithLibtool('test'))
-        self.addTest(IntraPackageBuildWithoutLibtool('test'))
-        self.addTest(LocalIncludeDirTest('test'))
-        pass
-    pass
+import unittest
+import os
+import sys
+import shutil
 
 class IntraPackageBuildBase(PersistentTestCase):
     def __init__(self, methodName):
@@ -182,7 +173,12 @@ class LocalIncludeDirTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(IntraPackageBuildWithLibtool))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(IntraPackageBuildWithoutLibtool))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(LocalIncludeDirTest))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(IntraPackageBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

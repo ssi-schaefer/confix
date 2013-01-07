@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -41,18 +41,7 @@ import os
 import sys
 import unittest
 
-class AutomakePlainfileBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(AutomakePlainfileBuildTest('test'))
-        pass
-    pass
-
 class AutomakePlainfileBuildTest(PersistentTestCase):
-    def __init__(self, methodname):
-        PersistentTestCase.__init__(self, methodname)
-        pass
-
     def test(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
@@ -114,6 +103,8 @@ class AutomakePlainfileBuildTest(PersistentTestCase):
         pass
     pass        
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(AutomakePlainfileBuildTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakePlainfileBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

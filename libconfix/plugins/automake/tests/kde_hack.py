@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,13 +31,6 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import sys
 import unittest
-
-class KDEHackTestSuiteBuild(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(KDEHackTest('test'))
-        pass
-    pass
 
 class KDEHackTest(PersistentTestCase):
     def test(self):
@@ -98,6 +91,8 @@ class KDEHackTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(KDEHackTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(KDEHackTestSuiteBuild())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -25,25 +25,8 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest, os, stat, shutil, sys
 
-class BasicSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Basics('test'))
-        self.addTest(RelativePath('test'))
-        self.addTest(Sync('test_mem2sync'))
-        self.addTest(Sync('test_dirty2sync'))
-        self.addTest(Sync('test_filechange'))
-        self.addTest(Sync('test_file_clear_on_sync_false'))
-        self.addTest(Sync('test_file_clear_on_sync_true'))
-        self.addTest(Sync('test_file_truncate_persistent'))
-        self.addTest(Sync_RootMoreThanOneDirectoryDeep('test'))
-        self.addTest(VirtualFile('test'))
-        self.addTest(ExplicitMode('test'))
-        pass
-    pass
-
-class Basics(unittest.TestCase):
-    def test(self):
+class BasicTest(PersistentTestCase):
+    def test__very_basic(self):
         fs = FileSystem(path=['a', 'b'])
         subdir = Directory()
         subdir.add(name='file', entry=File())
@@ -59,10 +42,8 @@ class Basics(unittest.TestCase):
         self.assertRaises(Directory.AlreadyMounted, fs.rootdirectory().add, name='subdir', entry=File())
 
         pass
-    pass
 
-class RelativePath(unittest.TestCase):
-    def test(self):
+    def test__relative_path(self):
         fs = FileSystem(path=['a', 'b'])
         subdir = fs.rootdirectory().add(name='subdir', entry=Directory())
         subsubdir = subdir.add(name='subsubdir', entry=Directory())
@@ -71,21 +52,9 @@ class RelativePath(unittest.TestCase):
         self.failUnless(subsubdir.relpath(fs.rootdirectory()) == ['subdir', 'subsubdir'])
         self.failUnless(file.relpath(subdir) == ['subsubdir', 'file'])
         pass
-    pass
-
-class Sync(unittest.TestCase):
-    def setUp(self):
-        self.rootpath_ = ['', 'tmp', 'confix.FileSystem.'+str(self.__class__.__name__)+'.'+str(os.getpid())] 
-        pass
-    def tearDown(self):
-        dir = os.sep.join(self.rootpath_)
-        if os.path.isdir(dir):
-            shutil.rmtree(dir)
-            pass
-        pass
         
-    def test_mem2sync(self):
-        fs = FileSystem(path=self.rootpath_)
+    def test__sync_mem2sync(self):
+        fs = FileSystem(path=self.rootpath())
         subdir = Directory(mode=0700)
         fs.rootdirectory().add(name='subdir', entry=subdir)
         file = File(mode=0755)
@@ -101,16 +70,16 @@ class Sync(unittest.TestCase):
         self.failUnlessEqual(subdir.state(), DirectoryState.SYNC)
         self.failUnlessEqual(file.state(), FileState.SYNC_INMEM)
 
-        self.failUnless(os.path.isdir(os.sep.join(self.rootpath_)))
-        self.failUnless(os.path.isdir(os.sep.join(self.rootpath_+['subdir'])))
-        self.failUnless(os.path.isfile(os.sep.join(self.rootpath_+['subdir', 'file'])))
+        self.failUnless(os.path.isdir(os.sep.join(self.rootpath())))
+        self.failUnless(os.path.isdir(os.sep.join(self.rootpath()+['subdir'])))
+        self.failUnless(os.path.isfile(os.sep.join(self.rootpath()+['subdir', 'file'])))
 
-        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath_+['subdir'])).st_mode), 0700)
-        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath_+['subdir', 'file'])).st_mode), 0755)
+        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath()+['subdir'])).st_mode), 0700)
+        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath()+['subdir', 'file'])).st_mode), 0755)
         pass
 
-    def test_dirty2sync(self):
-        fs = FileSystem(path=self.rootpath_)
+    def test__sync_dirty2sync(self):
+        fs = FileSystem(path=self.rootpath())
         subdir = Directory(mode=0700)
         fs.rootdirectory().add(name='subdir', entry=subdir)
         file = File(mode=0755)
@@ -125,20 +94,20 @@ class Sync(unittest.TestCase):
         fs.sync()
 
         self.failUnlessEqual(newfile.state(), FileState.SYNC_INMEM)
-        self.failUnless(os.path.isfile(os.sep.join(self.rootpath_+['subdir', 'newfile'])))
+        self.failUnless(os.path.isfile(os.sep.join(self.rootpath()+['subdir', 'newfile'])))
 
         pass
 
-    def test_filechange(self):
+    def test__sync_filechange(self):
         # build up filesystem with our test file and sync it.
-        fs = FileSystem(path=self.rootpath_)
+        fs = FileSystem(path=self.rootpath())
         file = File(lines=['line 0'])
         fs.rootdirectory().add(name='file', entry=file)
         file.add_lines(['line 1', 'line 2', 'line 3'])
         fs.sync()
 
         # re-read our file and see if everything is there
-        fs = scan_filesystem(path=self.rootpath_)
+        fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
         lines = file.lines()
         self.failUnlessEqual(lines[0], 'line 0')
@@ -149,13 +118,13 @@ class Sync(unittest.TestCase):
         fs.sync()
 
         # append to our file without explicitly reading it.
-        fs = scan_filesystem(path=self.rootpath_)
+        fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
         file.add_lines(['line 5'])
         fs.sync()
 
         # see if there's still everything there.
-        fs = scan_filesystem(path=self.rootpath_)
+        fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
         lines = file.lines()
         self.failUnlessEqual(lines[0], 'line 0')
@@ -166,43 +135,40 @@ class Sync(unittest.TestCase):
         self.failUnlessEqual(lines[5], 'line 5')
         pass
 
-    def test_file_clear_on_sync_false(self):
-        fs = FileSystem(path=self.rootpath_)
+    def test__sync_file_clear_on_sync_false(self):
+        fs = FileSystem(path=self.rootpath())
         file = File(lines=['line'])
         fs.rootdirectory().add(name='file', entry=file)
         fs.sync()
         self.failIf(file.raw_lines() is None)
         pass
         
-    def test_file_clear_on_sync_true(self):
-        fs = FileSystem(path=self.rootpath_, flags=set([FileSystem.CLEAR_ON_SYNC]))
+    def test__sync_file_clear_on_sync_true(self):
+        fs = FileSystem(path=self.rootpath(), flags=set([FileSystem.CLEAR_ON_SYNC]))
         file = File(lines=['line'])
         fs.rootdirectory().add(name='file', entry=file)
         fs.sync()
         self.failUnless(file.raw_lines() is None)
         pass
 
-    def test_file_truncate_persistent(self):
+    def test__sync_file_truncate_persistent(self):
 
-        fs = FileSystem(path=self.rootpath_)
+        fs = FileSystem(path=self.rootpath())
         file = File(lines=['line'])
         fs.rootdirectory().add(name='file', entry=file)
         fs.sync()
 
-        fs = scan_filesystem(path=self.rootpath_)
+        fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
         file.truncate()
         fs.sync()
 
-        fs = scan_filesystem(path=self.rootpath_)
+        fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
         self.failUnless(file.lines() == [])
         pass
 
-    pass
-
-class VirtualFile(PersistentTestCase):
-    def test(self):
+    def test__virtual_file(self):
         fs = FileSystem(path=self.rootpath())
         dir = fs.rootdirectory().add(
             name='dir',
@@ -220,24 +186,19 @@ class VirtualFile(PersistentTestCase):
         self.failIf(file.raw_lines() is None)
         self.failUnless(file.lines() == ['some token', 'some other token'])
         pass
-    pass            
 
-class Sync_RootMoreThanOneDirectoryDeep(PersistentTestCase):
+    def test__sync_root_more_than_one_deep(self):
+        # the above tests only test syncing an in-memory filesystem
+        # whose root is only one directory apart from a physical
+        # directory. here we test whether it work with two directory
+        # entries in the air as well.
 
-    # the above tests only test syncing an in-memory filesystem whose
-    # root is only one directory apart from a physical directory. here
-    # we test whether it work with two directory entries in the air as
-    # well.
-
-    def test(self):
         fs = FileSystem(path=self.rootpath())
         fs.sync()
         self.failUnless(os.path.isdir(os.sep.join(self.rootpath())))
         pass
-    pass
 
-class ExplicitMode(PersistentTestCase):
-    def test(self):
+    def test__explicit_mode(self):
         fs = FileSystem(path=self.rootpath())
         file_with_0755 = fs.rootdirectory().add(
             name='file_with_0755',
@@ -249,6 +210,8 @@ class ExplicitMode(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(BasicTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BasicSuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -23,15 +23,8 @@ from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
-class RelocatedHeaderInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(RelocatedHeaderInMemoryTest('test'))
-        pass
-    pass
-
 class RelocatedHeaderInMemoryTest(unittest.TestCase):
-    def test(self):
+    def test__basic(self):
         package = LocalPackage(rootdirectory=relocated_header.make_package_source(package_name=self.__class__.__name__),
                                setups=[ExplicitSetup(use_libtool=False)])
         package.boil(external_nodes=[])
@@ -49,6 +42,8 @@ class RelocatedHeaderInMemoryTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(RelocatedHeaderInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(RelocatedHeaderInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

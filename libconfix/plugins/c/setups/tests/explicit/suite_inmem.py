@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,23 +15,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from library import LibraryInMemorySuite
-from executable import ExecutableInMemorySuite
-from relocated_header_inmem import RelocatedHeaderInMemorySuite
-from complete_package_inmem import CompletePackageInMemorySuite
+import library
+import executable
+import relocated_header_inmem
+import complete_package_inmem
+import check_inmem
 
 import unittest
 
-class ExplicitCSetupInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibraryInMemorySuite())
-        self.addTest(ExecutableInMemorySuite())
-        self.addTest(RelocatedHeaderInMemorySuite())
-        self.addTest(CompletePackageInMemorySuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(library.suite)
+suite.addTest(executable.suite)
+suite.addTest(relocated_header_inmem.suite)
+suite.addTest(complete_package_inmem.suite)
+suite.addTest(check_inmem.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExplicitCSetupInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

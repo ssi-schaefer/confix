@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,21 +15,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import libconfix.core.tests.suite_build
-from libconfix.plugins.tests.suite_build import PluginsBuildSuite
+import libconfix.core.tests.suite_build as core_build
+import libconfix.plugins.tests.suite_build as plugins_build
 
 import unittest
 
-class LibConfixBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(libconfix.core.tests.suite_build.suite)
-        self.addTest(PluginsBuildSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(core_build.suite)
+suite.addTest(plugins_build.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibConfixBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 
 

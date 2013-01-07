@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2012 Joerg Faschingbauer
+# Copyright (C) 2008-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,8 +16,8 @@
 # USA
 
 import dirsetup
-from explicit_iface import ExplicitInterfaceInMemorySuite
-from ignored_entries import IgnoredEntriesSuite
+import explicit_iface
+import ignored_entries
 import pseudo_handwritten
 import common_iface_suite
 
@@ -25,8 +25,8 @@ import unittest
 
 suite = unittest.TestSuite()
 suite.addTest(dirsetup.suite)
-suite.addTest(ExplicitInterfaceInMemorySuite())
-suite.addTest(IgnoredEntriesSuite())
+suite.addTest(explicit_iface.suite)
+suite.addTest(ignored_entries.suite)
 suite.addTest(pseudo_handwritten.suite)
 suite.addTest(common_iface_suite.suite)
 

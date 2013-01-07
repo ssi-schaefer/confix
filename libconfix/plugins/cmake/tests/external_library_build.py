@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -33,16 +33,8 @@ import os
 import subprocess
 import unittest
 
-class ExternalLibraryBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExternalLibraryTest('test_nopropagate'))
-        self.addTest(ExternalLibraryTest('test_pthread_propagate'))
-        pass
-    pass
-
 class ExternalLibraryTest(PersistentTestCase):
-    def test_nopropagate(self):
+    def test__nopropagate(self):
         fs = FileSystem(path=self.rootpath())
 
         source = fs.rootdirectory().add(
@@ -242,7 +234,7 @@ class ExternalLibraryTest(PersistentTestCase):
     # mimic our jf-externals package: one package has a confix module
     # that contains the pthread test, and the other uses it to pull in
     # the intelligence of how to use pthread.
-    def test_pthread_propagate(self):
+    def test__pthread_propagate(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -314,8 +306,10 @@ class ExternalLibraryTest(PersistentTestCase):
         pass
 
     pass
-        
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExternalLibraryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExternalLibraryBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

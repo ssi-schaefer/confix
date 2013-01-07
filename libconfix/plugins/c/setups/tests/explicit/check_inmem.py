@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,14 +17,9 @@
 
 from check import CheckProgramBase
 
-import unittest
+from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
-class CheckProgramInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CheckProgramInMemory('test'))
-        pass
-    pass
+import unittest
 
 class CheckProgramInMemory(CheckProgramBase):
     def __init__(self, methodName):
@@ -34,13 +29,18 @@ class CheckProgramInMemory(CheckProgramBase):
     def use_libtool(self): return False
 
     def test(self):
-        self.failUnless('the-test-program' in self.package_.rootbuilder().makefile_am().check_programs())
-        self.failUnlessEqual(len(self.package_.rootbuilder().makefile_am().tests_environment()), 1)
-        self.failUnlessEqual(self.package_.rootbuilder().makefile_am().tests_environment()['name'], 'value')
+        automake_output_builder = find_automake_output_builder(self.package_.rootbuilder())
+        self.failUnless(automake_output_builder)
+        
+        self.failUnless('the-test-program' in automake_output_builder.makefile_am().check_programs())
+        self.failUnlessEqual(len(automake_output_builder.makefile_am().tests_environment()), 1)
+        self.failUnlessEqual(automake_output_builder.makefile_am().tests_environment()['name'], 'value')
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(CheckProgramInMemory)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CheckProgramInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

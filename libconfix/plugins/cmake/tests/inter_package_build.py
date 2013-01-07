@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -34,13 +34,6 @@ from libconfix.core.filesys.directory import Directory
 import unittest
 import subprocess
 import os
-
-class InterPackageBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(InterPackageTest('test'))
-        pass
-    pass
 
 class InterPackageTest(PersistentTestCase):
     def test(self):
@@ -136,6 +129,8 @@ class InterPackageTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(InterPackageTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterPackageBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

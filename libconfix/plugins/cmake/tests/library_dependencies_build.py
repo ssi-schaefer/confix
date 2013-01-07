@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -35,14 +35,6 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import os
 import time
-
-class LibraryDependenciesBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibraryDependenciesTest('test_intra_package'))
-        self.addTest(LibraryDependenciesTest('test_inter_package'))
-        pass
-    pass
 
 class LibraryDependenciesTest(PersistentTestCase):
 
@@ -238,6 +230,8 @@ class LibraryDependenciesTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(LibraryDependenciesTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibraryDependenciesBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

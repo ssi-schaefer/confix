@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,13 +29,6 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import sys
 import os
-
-class GeneratedPackageSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(GeneratedPackageTest('test'))
-        pass
-    pass
 
 class GeneratedPackageTest(PersistentTestCase):
     def test(self):
@@ -94,8 +87,9 @@ class GeneratedPackageTest(PersistentTestCase):
         pass
     pass
                             
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(GeneratedPackageTest)
         
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(GeneratedPackageSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

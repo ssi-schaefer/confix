@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2012 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,12 +15,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.core.filesys.tests.automake.suite import Suite as FileSystemSuite
+import libconfix.core.filesys.tests.automake.suite as filesys_build
 
 import unittest
 
 suite = unittest.TestSuite()
-suite.addTest(FileSystemSuite())
+suite.addTest(filesys_build.suite)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite)

@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Joerg Faschingbauer
+# Copyright (C) 2008-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,17 +28,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class LibraryInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibraryInMemoryTest('testExplicitName'))
-        self.addTest(LibraryInMemoryTest('testLongMangledName'))
-        self.addTest(LibraryInMemoryTest('testMembers'))
-        pass
-    pass
-
 class LibraryInMemoryTest(unittest.TestCase):
-    def testExplicitName(self):
+    def test__explicit_name(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -63,7 +54,7 @@ class LibraryInMemoryTest(unittest.TestCase):
         self.failUnless(found_lib_builder.basename() == 'hansi')
         pass
 
-    def testLongMangledName(self):
+    def test__long_mangled_name(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -88,7 +79,7 @@ class LibraryInMemoryTest(unittest.TestCase):
         self.failUnless(found_lib_builder.basename() == 'LibraryInMemoryTest')
         pass
 
-    def testMembers(self):
+    def test__members(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -183,7 +174,9 @@ class LibraryInMemoryTest(unittest.TestCase):
         pass
 
     pass
-        
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(LibraryInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibraryInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

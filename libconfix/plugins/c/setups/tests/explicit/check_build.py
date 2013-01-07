@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,14 +20,6 @@ from check import CheckProgramBase
 from libconfix.plugins.automake import bootstrap, configure, make
 
 import os, sys, unittest
-
-class CheckProgramBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CheckProgramBuildWithLibtool('test'))
-        self.addTest(CheckProgramBuildWithoutLibtool('test'))
-        pass
-    pass
 
 class CheckProgramBuildBase(CheckProgramBase):
     def __init__(self, methodName):
@@ -68,7 +60,11 @@ class CheckProgramBuildWithoutLibtool(CheckProgramBuildBase):
     def use_libtool(self): return False
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(CheckProgramBuildWithLibtool))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(CheckProgramBuildWithoutLibtool))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CheckProgramBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

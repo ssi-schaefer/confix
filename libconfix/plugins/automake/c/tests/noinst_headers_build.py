@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -36,16 +36,8 @@ from libconfix.setups.boilerplate import Boilerplate
 import unittest
 import sys
 
-class NoInstallHeadersBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(NoPublicInstall('test_explicit_no_public_visibility'))
-        self.addTest(NoPublicInstall('test_auto_no_public_visibility'))
-        pass
-    pass
-
 class NoPublicInstall(PersistentTestCase):
-    def test_explicit_no_public_visibility(self):
+    def test__explicit_no_public_visibility(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -97,7 +89,7 @@ class NoPublicInstall(PersistentTestCase):
         
         pass
     
-    def test_auto_no_public_visibility(self):
+    def test__auto_no_public_visibility(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -151,6 +143,8 @@ class NoPublicInstall(PersistentTestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(NoPublicInstall)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(NoInstallHeadersBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,13 +29,6 @@ from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 from libconfix.testutils.persistent import PersistentTestCase
-
-class InterixLinkSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(InterixLink('test'))
-        pass
-    pass
 
 class InterixLink(PersistentTestCase):
 
@@ -130,7 +123,9 @@ class InterixLink(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(InterixLink)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterixLinkSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

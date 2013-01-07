@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -39,20 +39,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class GeneratorBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(GeneratorBuildTest('test_basic'))
-        self.addTest(GeneratorBuildTest('generated_headers_public_install'))
-        self.addTest(GeneratorBuildTest('generated_headers_local_install'))
-        self.addTest(GeneratorBuildTest('generated_plainfile_install'))
-        self.addTest(GeneratorBuildTest('two_directories_with_generator_same_outputfilename'))
-        self.addTest(GeneratorBuildTest('library_depends_on_generated_header__from_a_header_only_directory'))
-        pass
-    pass
-
 class GeneratorBuildTest(PersistentTestCase):
-    def test_basic(self):
+    def test__basic(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -103,7 +91,7 @@ class GeneratorBuildTest(PersistentTestCase):
 
         pass
 
-    def generated_headers_public_install(self):
+    def test__generated_headers_public_install(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -158,7 +146,7 @@ class GeneratorBuildTest(PersistentTestCase):
 
         pass
 
-    def generated_headers_local_install(self):
+    def test__generated_headers_local_install(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -236,7 +224,7 @@ class GeneratorBuildTest(PersistentTestCase):
 
         pass
 
-    def generated_plainfile_install(self):
+    def test__generated_plainfile_install(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -300,7 +288,7 @@ class GeneratorBuildTest(PersistentTestCase):
 
         pass
     
-    def two_directories_with_generator_same_outputfilename(self):
+    def test__two_directories_with_generator_same_outputfilename(self):
         """
         The artificial custom target that we generate for every custom
         command has a name that is derived from the command's
@@ -362,7 +350,7 @@ class GeneratorBuildTest(PersistentTestCase):
 
         pass
 
-    def library_depends_on_generated_header__from_a_header_only_directory(self):
+    def test__library_depends_on_generated_header__from_a_header_only_directory(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -459,6 +447,8 @@ class HeaderGenerator(Builder):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(GeneratorBuildTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(GeneratorBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -33,13 +33,6 @@ from libconfix.plugins.automake import make
 import unittest
 import sys
 import os
-
-class OverlayBasicSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(OverlayBasicTest('test'))
-        pass
-    pass
 
 class OverlayBasicTest(PersistentTestCase):
     def test(self):
@@ -151,7 +144,9 @@ class OverlayBasicTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(OverlayBasicTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(OverlayBasicSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

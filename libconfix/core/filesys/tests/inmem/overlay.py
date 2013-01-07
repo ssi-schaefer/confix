@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,20 +15,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from overlay_basic import OverlayBasicSuite
-from overlay_error import OverlayErrorSuite
+import overlay_basic
+import overlay_error
 
 import unittest
 
-class OverlaySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(OverlayBasicSuite())
-        self.addTest(OverlayErrorSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(overlay_basic.suite)
+suite.addTest(overlay_error.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(OverlaySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

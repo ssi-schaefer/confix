@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,17 +15,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.frontends.confix2.tests.suite_inmem import ConfixSuite
+import libconfix.frontends.confix2.tests.suite_inmem as confix_inmem
 
 import unittest
 
-class FrontendsInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ConfixSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(confix_inmem.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(FrontendsInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

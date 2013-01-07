@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -26,15 +26,8 @@ from libconfix.setups.explicit_setup import ExplicitSetup
 
 import unittest
 
-class CompletePackageInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CompletePackageInMemoryTest('test'))
-        pass
-    pass
-
 class CompletePackageInMemoryTest(unittest.TestCase):
-    def test(self):
+    def test__basic(self):
         sourcedir = Directory()
         sourcedir.add(
             name=const.CONFIX2_PKG,
@@ -182,6 +175,8 @@ class CompletePackageInMemoryTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(CompletePackageInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CompletePackageInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

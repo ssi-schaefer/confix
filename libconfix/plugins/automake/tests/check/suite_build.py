@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -32,18 +32,8 @@ import os
 import sys
 import unittest
 
-class CheckProgramBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Test('test_implicit_with_libtool'))
-        self.addTest(Test('test_implicit_without_libtool'))
-        self.addTest(Test('test_explicit_with_libtool'))
-        self.addTest(Test('test_explicit_without_libtool'))
-        pass
-    pass
-
 class Test(PersistentTestCase):
-    def test_implicit_with_libtool(self):
+    def test__implicit_with_libtool(self):
         fs, source, build = _skeleton(path=self.rootpath())
 
         source.add(
@@ -65,7 +55,7 @@ class Test(PersistentTestCase):
         self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
         pass
     
-    def test_implicit_without_libtool(self):
+    def test__implicit_without_libtool(self):
         fs, source, build = _skeleton(path=self.rootpath())
 
         source.add(
@@ -87,7 +77,7 @@ class Test(PersistentTestCase):
         self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
         pass
     
-    def test_explicit_with_libtool(self):
+    def test__explicit_with_libtool(self):
         fs, source, build = _skeleton(path=self.rootpath())
 
         source.add(
@@ -112,7 +102,7 @@ class Test(PersistentTestCase):
         self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
         pass
     
-    def test_explicit_without_libtool(self):
+    def test__explicit_without_libtool(self):
         fs, source, build = _skeleton(path=self.rootpath())
 
         source.add(
@@ -196,7 +186,9 @@ def _check_program(stampfile_path):
             '                O_CREAT|O_RDWR, S_IRUSR|S_IWUSR) >=0?0:1;',
             '}']
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(Test)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CheckProgramBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

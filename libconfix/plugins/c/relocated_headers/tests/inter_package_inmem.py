@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -22,13 +22,6 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
 
-class InterPackageInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(InterPackageInMemoryTest('test'))
-        pass
-    pass
-
 class InterPackageInMemoryTest(unittest.TestCase):
     def test(self):
         common, lo, hi = inter_package.make_source(classname=self.__class__.__name__)
@@ -50,7 +43,9 @@ class InterPackageInMemoryTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(InterPackageInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterPackageInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

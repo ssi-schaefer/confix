@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2012 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,22 +15,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import basic
+import inter_package_inmem
+import bug_1817734
+
 import unittest
 
-from basic import BasicSuite
-from inter_package_inmem import InterPackageInMemorySuite
-from bug_1817734 import Bug_1817734
-
-class RelocatedHeadersInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicSuite())
-        self.addTest(InterPackageInMemorySuite())
-        self.addTest(Bug_1817734())
-        pass
-    pass
-
-suite = RelocatedHeadersInMemorySuite()
+suite = unittest.TestSuite()
+suite.addTest(basic.suite)
+suite.addTest(inter_package_inmem.suite)
+suite.addTest(bug_1817734.suite)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite)

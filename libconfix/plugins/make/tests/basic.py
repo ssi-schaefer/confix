@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -26,16 +26,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class BasicMakeSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CALL_MAKE_AND_RESCAN_Test('test'))
-        self.addTest(CALL_MAKE_AND_RESCAN_SYNC_Test('test'))
-        pass
-    pass
-
-class CALL_MAKE_AND_RESCAN_Test(PersistentTestCase):
-    def test(self):
+class MakeTest(PersistentTestCase):
+    def test__CALL_MAKE_AND_RESCAN(self):
         fs = FileSystem(self.rootpath())
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -58,19 +50,17 @@ class CALL_MAKE_AND_RESCAN_Test(PersistentTestCase):
 
         self.failUnless(fs.rootdirectory().find(['the_file']))
         pass
-    pass
 
-class CALL_MAKE_AND_RESCAN_SYNC_Test(PersistentTestCase):
+    def test__CALL_MAKE_AND_RESCAN_SYNC(self):
 
-    """CALL_MAKE_AND_RESCAN_SYNC() is supposed to make files that were
-    created by the call to make immediately available to the further
-    code in Confix2.dir. We check this in the Confix2.dir, and if we
-    found the created file, we set a file property on the Makefile
-    which we evaluate later in the test routine. (We could raise an
-    exception in Confix2.dir as well, but that makes the test result
-    less obvious."""
-    
-    def test(self):
+        # CALL_MAKE_AND_RESCAN_SYNC() is supposed to make files that
+        # were created by the call to make immediately available to the
+        # further code in Confix2.dir. We check this in the Confix2.dir,
+        # and if we found the created file, we set a file property on
+        # the Makefile which we evaluate later in the test routine. (We
+        # could raise an exception in Confix2.dir as well, but that
+        # makes the test result less obvious.
+
         fs = FileSystem(self.rootpath())
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -97,6 +87,8 @@ class CALL_MAKE_AND_RESCAN_SYNC_Test(PersistentTestCase):
         pass
     pass        
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(MakeTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BasicMakeSuite())
+    unittest.TextTestRunner().run(suite)
     pass

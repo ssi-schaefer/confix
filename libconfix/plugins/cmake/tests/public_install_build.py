@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,13 +31,6 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import os
 import unittest
-
-class PublicInstallBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(PublicInstallTest('test'))
-        pass
-    pass
 
 class PublicInstallTest(PersistentTestCase):
     def test(self):
@@ -146,6 +139,8 @@ class PublicInstallTest(PersistentTestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(PublicInstallTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PublicInstallBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

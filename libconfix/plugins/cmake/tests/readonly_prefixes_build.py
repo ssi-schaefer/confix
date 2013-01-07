@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -40,15 +40,6 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import os
 import time
-
-class ReadonlyPrefixesBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ReadonlyPrefixesBuildTest('test'))
-        self.addTest(ReadonlyPrefixesBuildTest('test_library_dependencies_with_readonly_prefixes'))
-        self.addTest(ReadonlyPrefixesUtilityBuildTest('test_copy_include_files_to_local_package'))
-        pass
-    pass
 
 class ReadonlyPrefixesBuildTest(PersistentTestCase):
     def setUp(self):
@@ -226,7 +217,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
         
         pass
 
-    def test(self):
+    def test__basic(self):
         linked_package = LocalPackage(rootdirectory=self.__linked_sourcedir,
                                       setups=[ExplicitDirectorySetup(), ExplicitCSetup(), CMakeSetup()])
 
@@ -250,7 +241,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
         self.failUnless(os.path.isfile(os.sep.join(self.__linked_builddir.abspath()+['exe'])))
         pass
 
-    def test_library_dependencies_with_readonly_prefixes(self):
+    def test__library_dependencies_with_readonly_prefixes(self):
         # boil package with library dependencies enabled.
         linked_package = LocalPackage(rootdirectory=self.__linked_sourcedir,
                                       setups=[LibraryDependenciesSetup(),
@@ -321,7 +312,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
     pass
 
 class ReadonlyPrefixesUtilityBuildTest(PersistentTestCase):
-    def test_copy_include_files_to_local_package(self):
+    def test__copy_include_files_to_local_package(self):
         fs = FileSystem(path=self.rootpath())
 
         if True:
@@ -507,8 +498,11 @@ class ReadonlyPrefixesUtilityBuildTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ReadonlyPrefixesBuildTest))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ReadonlyPrefixesUtilityBuildTest))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ReadonlyPrefixesBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

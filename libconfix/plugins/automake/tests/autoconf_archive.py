@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -29,20 +29,10 @@ from libconfix.testutils.persistent import PersistentTestCase
 import sys
 import unittest
 
-class AutoConfArchiveSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(AutoConfArchiveTest('test'))
-        pass
-    pass
-
 class AutoConfArchiveTest(PersistentTestCase):
 
     """ See if we set the aclocal path to the autoconf archive."""
     
-    def __init__(self, methodName):
-        PersistentTestCase.__init__(self, methodName)
-        pass
     def test(self):
         fs = FileSystem(path=self.rootpath())
         fs.rootdirectory().add(
@@ -65,7 +55,9 @@ class AutoConfArchiveTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(AutoConfArchiveTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutoConfArchiveSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

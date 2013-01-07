@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -36,16 +36,8 @@ import unittest
 import sys
 import os
 
-class LibraryDependenciesBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibraryDependenciesBuildTest('test'))
-        self.addTest(LibraryDependenciesBuildTest('test_implicit_with_explicit_libname'))
-        pass
-    pass
-
 class LibraryDependenciesBuildTest(PersistentTestCase):
-    def test(self):
+    def test__basic(self):
         dirstructure = DirectoryStructure(path=self.rootpath())
 
         # bootstrap&&configure&&build&&install packages in order
@@ -135,7 +127,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
         
         pass
 
-    def test_implicit_with_explicit_libname(self):
+    def test__implicit_with_explicit_libname(self):
         fs = FileSystem(path=self.rootpath())
 
         source = fs.rootdirectory().add(
@@ -212,8 +204,11 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
 
         self.failUnless(os.path.isfile(
             os.sep.join(itertools.chain(build.abspath(), ['exe', 'test_implicit_with_explicit_libname_exe_main']))))
+        pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(LibraryDependenciesBuildTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LibraryDependenciesBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

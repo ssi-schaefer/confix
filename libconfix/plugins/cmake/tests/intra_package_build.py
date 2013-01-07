@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -33,13 +33,6 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
 
-class IntraPackageBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(IntraPackageTest('test'))
-        pass
-    pass
-
 class IntraPackageTest(PersistentTestCase):
     def test(self):
         fs = FileSystem(path=self.rootpath())
@@ -62,8 +55,8 @@ class IntraPackageTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        # I doubt that this will hold under Windows :-) if it becomes
-        # an issue we will skip this check
+        # I doubt that this will hold on Windows :-) if it becomes an
+        # issue we will skip this check
         self.failUnless(build.find(['lo', 'liblo.a']))
         self.failUnless(build.find(['hi', 'libhi.a']))
         self.failUnless(build.find(['exe', 'exe']))
@@ -72,6 +65,8 @@ class IntraPackageTest(PersistentTestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(IntraPackageTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(IntraPackageBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

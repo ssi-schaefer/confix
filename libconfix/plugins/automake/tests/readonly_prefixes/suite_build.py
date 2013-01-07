@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
-import sys
-import unittest
-
 from libconfix.plugins.automake import bootstrap, configure, make
 from libconfix.core.filesys.directory import Directory
 from libconfix.core.filesys.file import File
@@ -30,13 +26,9 @@ from libconfix.core.utils import const
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.testutils.persistent import PersistentTestCase
 
-class ReadonlyPrefixesBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ReadonlyPrefixesBuildWithoutLibtool('test'))
-        self.addTest(ReadonlyPrefixesBuildWithLibtool('test'))
-        pass
-    pass
+import os
+import sys
+import unittest
 
 class ReadonlyPrefixesBuildBase(PersistentTestCase):
     def __init__(self, str):
@@ -204,9 +196,11 @@ class ReadonlyPrefixesBuildWithoutLibtool(ReadonlyPrefixesBuildBase):
     def use_libtool(self): return False
     pass
         
-
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ReadonlyPrefixesBuildWithLibtool))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(ReadonlyPrefixesBuildWithoutLibtool))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ReadonlyPrefixesBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

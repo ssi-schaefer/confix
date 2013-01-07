@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -30,19 +30,16 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import sys
 
-class ExplicitPackageBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExplicitPackageBuildTestWithLibtool('test'))
-        self.addTest(ExplicitPackageBuildTestWithoutLibtool('test'))
+class ExplicitPackageBuildTest(PersistentTestCase):
+    def test__with_libtool(self):
+        self.do_test(True)
         pass
-    pass
-
-class ExplicitPackageBuildTestBase(PersistentTestCase):
-    def use_libtool(self):
-        assert 0, 'abstract'
+    
+    def test__without_libtool(self):
+        self.do_test(False)
         pass
-    def test(self):
+    
+    def do_test(self, use_libtool):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -128,7 +125,7 @@ class ExplicitPackageBuildTestBase(PersistentTestCase):
                               '}']))
 
         package = LocalPackage(rootdirectory=source,
-                               setups=[ExplicitSetup(use_libtool=self.use_libtool())])
+                               setups=[ExplicitSetup(use_libtool=use_libtool)])
         package.boil(external_nodes=[])
         package.output()
         fs.sync()
@@ -148,14 +145,8 @@ class ExplicitPackageBuildTestBase(PersistentTestCase):
         pass
     pass
         
-class ExplicitPackageBuildTestWithoutLibtool(ExplicitPackageBuildTestBase):
-    def use_libtool(self): return False
-    pass
-
-class ExplicitPackageBuildTestWithLibtool(ExplicitPackageBuildTestBase):
-    def use_libtool(self): return True
-    pass
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExplicitPackageBuildTest)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExplicitPackageBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

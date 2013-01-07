@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -34,22 +34,12 @@ import unittest
 import sys
 import os
 
-class IDLBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(IDLBuildTest('test_localinstall_not_absolutely_necessary'))
-        self.addTest(IDLBuildTest('test_localinstall_necessary'))
-        self.addTest(IDLBuildTest('test_publicinstall_flat'))
-        self.addTest(IDLBuildTest('test_publicinstall_subdir'))
-        pass
-    pass
-
 class IDLBuildTest(PersistentTestCase):
 
     # we install IDL locally even if this is not absolutely
     # necessary. this makes it easier for real builders (those that
     # wrap IDL compilers) to set the include path.
-    def test_localinstall_not_absolutely_necessary(self):
+    def test__localinstall_not_absolutely_necessary(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -92,7 +82,7 @@ class IDLBuildTest(PersistentTestCase):
 
         pass
 
-    def test_localinstall_necessary(self):
+    def test__localinstall_necessary(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -139,7 +129,7 @@ class IDLBuildTest(PersistentTestCase):
 
         pass
 
-    def test_publicinstall_flat(self):
+    def test__publicinstall_flat(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -185,7 +175,7 @@ class IDLBuildTest(PersistentTestCase):
 
         pass
 
-    def test_publicinstall_subdir(self):
+    def test__publicinstall_subdir(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -237,6 +227,8 @@ class IDLBuildTest(PersistentTestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(IDLBuildTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(IDLBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

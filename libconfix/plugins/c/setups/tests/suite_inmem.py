@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -17,18 +17,12 @@
 
 import unittest
 
-from explicit.suite_inmem import ExplicitCSetupInMemorySuite
-from ignored_entries import IgnoredEntriesSuite
+import explicit.suite_inmem as explicit_inmem
+import ignored_entries
 
-class SetupsInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExplicitCSetupInMemorySuite())
-        self.addTest(IgnoredEntriesSuite())
-        pass
-    pass
-
-suite = SetupsInMemorySuite()
+suite = unittest.TestSuite()
+suite.addTest(explicit_inmem.suite)
+suite.addTest(ignored_entries.suite)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite)

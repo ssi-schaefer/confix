@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -33,13 +33,6 @@ from libconfix.core.utils import const
 
 import unittest
 import os
-
-class RepoInstallBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-# jjjj        self.addTest(RepoInstallTest('test'))
-        pass
-    pass
 
 class RepoInstallTest(PersistentTestCase):
     """
@@ -91,6 +84,9 @@ class RepoInstallTest(PersistentTestCase):
 
     pass
 
+# jjjj suite = unittest.defaultTestLoader.loadTestsFromTestCase(RepoInstallTest)
+suite = unittest.TestSuite()
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(RepoInstallBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

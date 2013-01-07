@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,15 +31,6 @@ from libconfix.testutils.persistent import PersistentTestCase
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest, os, sys, shutil
-
-class InterPackageBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(InterPackageBuildWithLibtool('test'))
-        self.addTest(InterPackageBuildWithoutLibtool('test'))
-        self.addTest(InstalledIncludeDirTest('test'))
-        pass
-    pass
 
 class InterPackageBuildBase(PersistentTestCase):
     def __init__(self, str):
@@ -314,7 +305,12 @@ class InstalledIncludeDirTest(PersistentTestCase):
             args=[])
         pass
     pass
+
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(InterPackageBuildWithLibtool))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(InterPackageBuildWithoutLibtool))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(InstalledIncludeDirTest))
         
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(InterPackageBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,13 +28,6 @@ from libconfix.core.utils import const
 from libconfix.testutils import dirhier
 
 import unittest
-
-class IgnoredEntriesSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(IgnoredEntries('test'))
-        pass
-    pass
 
 class IgnoreTestSetup(Setup):
     def setup(self, dirbuilder):
@@ -95,6 +88,8 @@ class IgnoredEntries(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(IgnoredEntries)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(IgnoredEntriesSuite())
+    unittest.TextTestRunner().run(suite)
     pass

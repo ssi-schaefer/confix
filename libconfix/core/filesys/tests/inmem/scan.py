@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2010 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -24,18 +24,8 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import os
 
-class ScanSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Test('new_file'))
-        self.addTest(Test('new_directory'))
-        self.addTest(Test('new_file_in_existing_directory'))
-        self.addTest(Test('removed_file'))
-        pass
-    pass
-
 class Test(PersistentTestCase):
-    def new_file(self):
+    def test__new_file(self):
         # use a filesystem instance to conveniently create the initial
         # directory.
         fs_orig = FileSystem(self.rootpath())
@@ -59,7 +49,7 @@ class Test(PersistentTestCase):
         self.failUnless(fs_dup.rootdirectory().get('file2'))
         pass
 
-    def new_directory(self):
+    def test__new_directory(self):
         fs_orig = FileSystem(self.rootpath())
         fs_orig.sync()
 
@@ -74,7 +64,7 @@ class Test(PersistentTestCase):
         self.failUnless(fs_dup.rootdirectory().get('dir'))
         pass
 
-    def new_file_in_existing_directory(self):
+    def test__new_file_in_existing_directory(self):
         fs_orig = FileSystem(self.rootpath())
         orig_dir = fs_orig.rootdirectory().add(
             name='dir',
@@ -92,7 +82,7 @@ class Test(PersistentTestCase):
         self.failUnless(fs_dup.rootdirectory().find(['dir', 'file']))
         pass
 
-    def removed_file(self):
+    def test__removed_file(self):
         # use a filesystem instance to conveniently create the initial
         # directory.
         fs = FileSystem(self.rootpath())
@@ -110,7 +100,9 @@ class Test(PersistentTestCase):
         
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(Test)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ScanSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

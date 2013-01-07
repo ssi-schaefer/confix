@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -38,20 +38,8 @@ import unittest
 import time
 import os
 
-class LocalInstallBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LocalInstallTest('test_basic'))
-        self.addTest(LocalInstallTest('test_explicit_no_public_visibility'))
-        self.addTest(LocalInstallTest('test_auto_no_public_visibility'))
-        self.addTest(LocalInstallTest('test_no_timestamp_clobber'))
-        self.addTest(LocalInstallTest('test_sourcefile_dependency'))
-        self.addTest(LocalInstallTest('test_parallel_build'))
-        pass
-    pass
-
 class LocalInstallTest(PersistentTestCase):
-    def test_basic(self):
+    def test__basic(self):
         source = Directory()
         source.add(
             name=const.CONFIX2_PKG,
@@ -150,7 +138,7 @@ class LocalInstallTest(PersistentTestCase):
 
         pass
 
-    def test_explicit_no_public_visibility(self):
+    def test__explicit_no_public_visibility(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -194,7 +182,7 @@ class LocalInstallTest(PersistentTestCase):
         
         pass
     
-    def test_auto_no_public_visibility(self):
+    def test__auto_no_public_visibility(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -244,7 +232,7 @@ class LocalInstallTest(PersistentTestCase):
     # a directory, so I use 200 for this test. finally it turned out
     # that the local-install rule's dependency on the local-install
     # directory's timestamp didn't work out right.
-    def test_no_timestamp_clobber(self):
+    def test__no_timestamp_clobber(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -296,7 +284,7 @@ class LocalInstallTest(PersistentTestCase):
         pass
 
     # if the sourcefile changes it must be locally installed again.
-    def test_sourcefile_dependency(self):
+    def test__sourcefile_dependency(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -343,7 +331,7 @@ class LocalInstallTest(PersistentTestCase):
 
         pass
         
-    def test_parallel_build(self):
+    def test__parallel_build(self):
         num_dirs = 50
 
         
@@ -404,6 +392,8 @@ class LocalInstallTest(PersistentTestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(LocalInstallTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(LocalInstallBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

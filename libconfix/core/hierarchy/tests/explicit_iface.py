@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -24,20 +24,12 @@ from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.setups.explicit_setup import ExplicitSetup
 
-class ExplicitInterfaceInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(Without_Confix2_dir('test'))
-        self.addTest(With_Confix2_dir('test'))
-        pass
-    pass
+class ExplicitInterfaceInMemoryTest(unittest.TestCase):
+    def test__without_confix2_dir(self):
 
-class Without_Confix2_dir(unittest.TestCase):
-
-    """ See if 'subdir' is built when we explicitly say that it
-    should. We do not add a Confix2.dir file to 'subdir'."""
+        # See if 'subdir' is built when we explicitly say that it
+        # should. We do not add a Confix2.dir file to 'subdir'.
     
-    def test(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -56,18 +48,17 @@ class Without_Confix2_dir(unittest.TestCase):
 
         self.failIf(package.rootbuilder().find_entry_builder(['subdir']) is None)
         pass
-    pass
 
-class With_Confix2_dir(unittest.TestCase):
+    def test__with_confix2_dir(self):
+        
+        # Explicitly adding 'subdir' as subdirectory to be built, we
+        # check that an eventual Confix2.dir file is recognized an
+        # executed.
 
-    """ Explicitly adding 'subdir' as subdirectory to be built, we
-    check that an eventual Confix2.dir file is recognized an executed.
-
-    This is done by adding a file to the subdirectory, and then adding
-    a file property to it from the subdir's Confix2.dir file.
-    """
+        # This is done by adding a file to the subdirectory, and then
+        # adding a file property to it from the subdir's Confix2.dir
+        # file.
     
-    def test(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -96,6 +87,8 @@ class With_Confix2_dir(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExplicitInterfaceInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExplicitInterfaceInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass

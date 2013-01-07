@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -31,14 +31,6 @@ import os
 import shutil
 import sys
 import unittest
-
-class SimpleBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(SimpleBuildWithLibtool('test'))
-        self.addTest(SimpleBuildWithoutLibtool('test'))
-        pass
-    pass
 
 class SimpleBuildBase(PersistentTestCase):
     def __init__(self, methodName):
@@ -118,7 +110,11 @@ class SimpleBuildWithoutLibtool(SimpleBuildBase):
     def use_libtool(self):
         return False
     pass
-    
+
+suite = unittest.TestSuite()
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(SimpleBuildWithLibtool))
+suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(SimpleBuildWithoutLibtool))
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(SimpleBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

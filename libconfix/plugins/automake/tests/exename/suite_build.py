@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -28,13 +28,6 @@ from libconfix.frontends.confix2.confix_setup import ConfixSetup
 import unittest
 import sys
 import os
-
-class ExecutableNameBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExplicitExecutableNameBuildTest('test'))
-        pass
-    pass
 
 class ExplicitExecutableNameBuildTest(PersistentTestCase):
     def test(self):
@@ -91,7 +84,9 @@ class ExplicitExecutableNameBuildTest(PersistentTestCase):
         
         pass
         
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExplicitExecutableNameBuildTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExecutableNameBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

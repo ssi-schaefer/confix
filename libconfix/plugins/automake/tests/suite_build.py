@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2009 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,46 +15,42 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from simple_build import SimpleBuildSuite
-from kde_hack import KDEHackTestSuiteBuild
-from autoconf_archive import AutoConfArchiveSuite
-from exename.suite_build import ExecutableNameBuildSuite
-from readonly_prefixes.suite_build import ReadonlyPrefixesBuildSuite
-from interix_link import InterixLinkSuite
-from inter_package_build import InterPackageBuildSuite
-from intra_package_build import IntraPackageBuildSuite
-from check.suite_build import CheckProgramBuildSuite
-from relocated_headers.suite_build import RelocatedHeadersBuildSuite
-from explicit_package_build import ExplicitPackageBuildSuite
+import simple_build
+import kde_hack
+import autoconf_archive
+import exename.suite_build as exename
+import readonly_prefixes.suite_build as readonly_prefixes
+import interix_link
+import inter_package_build
+import intra_package_build
+import check.suite_build as check_build
+import relocated_headers.suite_build as relocated_headers_build
+import explicit_package_build
 
-from libconfix.plugins.automake.c.tests.suite_build import AutomakeCBuildSuite
-from libconfix.plugins.automake.plainfile.tests.suite_build import AutomakePlainfileBuildSuite
-from libconfix.plugins.automake.tests.idl_build import AutomakeIDLBuildSuite
-from libconfix.plugins.automake.script.tests.suite_build import AutomakeScriptBuildSuite
+import libconfix.plugins.automake.c.tests.suite_build as automake_c_build
+import libconfix.plugins.automake.plainfile.tests.suite_build as plainfile_build
+import idl_build
+import libconfix.plugins.automake.script.tests.suite_build as script_build
 
 import unittest
 
-class AutomakeBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(SimpleBuildSuite())
-        self.addTest(KDEHackTestSuiteBuild())
-        self.addTest(AutoConfArchiveSuite())
-        self.addTest(ExecutableNameBuildSuite())
-        self.addTest(ReadonlyPrefixesBuildSuite())
-        self.addTest(InterixLinkSuite())
-        self.addTest(AutomakeCBuildSuite())
-        self.addTest(InterPackageBuildSuite())
-        self.addTest(IntraPackageBuildSuite())
-        self.addTest(CheckProgramBuildSuite())
-        self.addTest(RelocatedHeadersBuildSuite())
-        self.addTest(ExplicitPackageBuildSuite())
-        self.addTest(AutomakePlainfileBuildSuite())
-        self.addTest(AutomakeIDLBuildSuite())
-        self.addTest(AutomakeScriptBuildSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(simple_build.suite)
+suite.addTest(kde_hack.suite)
+suite.addTest(autoconf_archive.suite)
+suite.addTest(exename.suite)
+suite.addTest(readonly_prefixes.suite)
+suite.addTest(interix_link.suite)
+suite.addTest(automake_c_build.suite)
+suite.addTest(inter_package_build.suite)
+suite.addTest(intra_package_build.suite)
+suite.addTest(check_build.suite)
+suite.addTest(relocated_headers_build.suite)
+suite.addTest(explicit_package_build.suite)
+suite.addTest(plainfile_build.suite)
+suite.addTest(idl_build.suite)
+suite.addTest(script_build.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

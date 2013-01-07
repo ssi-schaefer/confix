@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,6 @@ from libconfix.core.filesys.overlay_directory import OverlayDirectory
 
 import unittest
 
-class OverlayErrorSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(OverlayErrorTest('test'))
-        pass
-    pass
-
 class OverlayErrorTest(unittest.TestCase):
     def test(self):
         fs_orig = FileSystem(path=[])
@@ -48,6 +41,8 @@ class OverlayErrorTest(unittest.TestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(OverlayErrorTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(OverlayErrorSuite())
+    unittest.TextTestRunner().run(suite)
     pass

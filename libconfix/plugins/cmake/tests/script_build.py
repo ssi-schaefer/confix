@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Joerg Faschingbauer
+# Copyright (C) 2009-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -30,15 +30,8 @@ import unittest
 import sys
 import os
 
-class ScriptBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ScriptBuildTest('test'))
-        pass
-    pass
-
 class ScriptBuildTest(PersistentTestCase):
-    def test(self):
+    def test__basic(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -86,6 +79,8 @@ class ScriptBuildTest(PersistentTestCase):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ScriptBuildTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ScriptBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,16 +27,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class ExecutableInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(ExecutableInMemoryTest('testExplicitName'))
-        self.addTest(ExecutableInMemoryTest('testImplicitName'))
-        pass
-    pass
-
 class ExecutableInMemoryTest(unittest.TestCase):
-    def testExplicitName(self):
+    def test__explicit_name(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -64,7 +56,7 @@ class ExecutableInMemoryTest(unittest.TestCase):
         self.failUnless(found_exe_builder.exename() == 'hansi')
         pass
 
-    def testImplicitName(self):
+    def test__implicit_name(self):
         fs = FileSystem(path=[])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -92,7 +84,9 @@ class ExecutableInMemoryTest(unittest.TestCase):
         self.failUnless(found_exe_builder.exename() == 'ExecutableInMemoryTest_main')
         pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExecutableInMemoryTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(ExecutableInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

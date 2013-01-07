@@ -1,4 +1,4 @@
-# Copyright (C) 2010 Joerg Faschingbauer
+# Copyright (C) 2010-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -39,15 +39,8 @@ from libconfix.core.utils import const
 
 import unittest
 
-class CustomCommandBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(CustomCommandBuildTest('test_quoting'))
-        pass
-    pass
-
 class CustomCommandBuildTest(PersistentTestCase):
-    def test_quoting(self):
+    def test__quoting(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -110,6 +103,8 @@ class CustomCommandBuildTest(PersistentTestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(CustomCommandBuildTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(CustomCommandBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass

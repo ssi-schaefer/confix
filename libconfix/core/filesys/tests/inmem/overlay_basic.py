@@ -1,4 +1,4 @@
-# Copyright (C) 2007 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,22 +27,63 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import os
 
-class OverlayBasicSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(OverlayBasicTest('test'))
-        self.addTest(OverlaySyncTest('test'))
-        self.addTest(OverlayAddFileTest('test'))
-        self.addTest(OverlayAddDirectoryTest('test'))
-        self.addTest(OverlaySyncTest('test'))
-        self.addTest(OverlayAbsPathTest('test'))
-        self.addTest(OverlayFileTruncateTest('test'))
-        self.addTest(OverlayFileAddLinesTest('test'))
-        pass
-    pass
+class OverlayBasicTest(PersistentTestCase):
+    """
+    Derived tests cover a handful of facets of overlaying - sync
+    issues, adding, etc.
 
-class OverlayBasicTest(unittest.TestCase):
-    def test(self):
+    They all use as a basis the following layout,
+
+    first                     self.first()
+    |-- first_file            self.first_first_file()
+    `-- subdir                self.first_subdir()
+        `-- first_file        self.first_subdir_first_file()
+    
+    second                    self.second()
+    |-- second_file           self.second_second_file()
+    `-- subdir                self.second_subdir()
+        `-- second_file       self.second_subdir_second_file()
+    """
+    def setUp(self):
+        super(OverlayBasicTest, self).setUp()
+        
+        self.__first = FileSystem(path=self.rootpath()+['first'])
+        self.__first_first_file = self.__first.rootdirectory().add(
+            name='first_file',
+            entry=File())
+        self.__first_subdir = self.__first.rootdirectory().add(
+            name='subdir',
+            entry=Directory())
+        self.__first_subdir_first_file = self.__first_subdir.add(
+            name='first_file',
+            entry=File())
+        
+        self.__second = FileSystem(path=self.rootpath()+['second'])
+        self.__second_second_file = self.__second.rootdirectory().add(
+            name='second_file',
+            entry=File())
+        self.__second_subdir = self.__second.rootdirectory().add(
+            name='subdir',
+            entry=Directory())
+        self.__second_subdir_second_file = self.__second_subdir.add(
+            name='second_file',
+            entry=File())
+        pass
+
+    def first(self): return self.__first
+    def first_first_file(self): return self.__first_first_file
+    def first_subdir(self): return self.__first_subdir
+    def first_subdir_first_file(self): return self.__first_subdir_first_file
+
+    def second(self): return self.__second
+    def second_second_file(self): return self.__second_second_file
+    def second_subdir(self): return self.__second_subdir
+    def second_subdir_second_file(self): return self.__second_subdir_second_file
+
+    def test__basic(self):
+
+        # (this one doesn't use anything from the base, it's just
+        # there)
 
         # The following tree contains two directories, original and
         # overlay, where overlay is supposed to be 'overlayed' over
@@ -130,66 +171,8 @@ class OverlayBasicTest(unittest.TestCase):
         self.failUnless(found_d20_0 is found_d20_1 is found_d20_2)
 
         pass
-    pass
 
-class OverlayTest(PersistentTestCase):
-
-    """
-    Derived tests cover a handful of facets of overlaying - sync
-    issues, adding, etc.
-
-    They all use as a basis the following layout,
-
-    first                     self.first()
-    |-- first_file            self.first_first_file()
-    `-- subdir                self.first_subdir()
-        `-- first_file        self.first_subdir_first_file()
-    
-    second                    self.second()
-    |-- second_file           self.second_second_file()
-    `-- subdir                self.second_subdir()
-        `-- second_file       self.second_subdir_second_file()
-    """
-    def setUp(self):
-        super(OverlayTest, self).setUp()
-        
-        self.__first = FileSystem(path=self.rootpath()+['first'])
-        self.__first_first_file = self.__first.rootdirectory().add(
-            name='first_file',
-            entry=File())
-        self.__first_subdir = self.__first.rootdirectory().add(
-            name='subdir',
-            entry=Directory())
-        self.__first_subdir_first_file = self.__first_subdir.add(
-            name='first_file',
-            entry=File())
-        
-        self.__second = FileSystem(path=self.rootpath()+['second'])
-        self.__second_second_file = self.__second.rootdirectory().add(
-            name='second_file',
-            entry=File())
-        self.__second_subdir = self.__second.rootdirectory().add(
-            name='subdir',
-            entry=Directory())
-        self.__second_subdir_second_file = self.__second_subdir.add(
-            name='second_file',
-            entry=File())
-        pass
-
-    def first(self): return self.__first
-    def first_first_file(self): return self.__first_first_file
-    def first_subdir(self): return self.__first_subdir
-    def first_subdir_first_file(self): return self.__first_subdir_first_file
-
-    def second(self): return self.__second
-    def second_second_file(self): return self.__second_second_file
-    def second_subdir(self): return self.__second_subdir
-    def second_subdir_second_file(self): return self.__second_subdir_second_file
-
-    pass
-
-class OverlaySyncTest(OverlayTest):
-    def test(self):
+    def test__sync_1(self):
 
         # all write access goes to first, and so does sync
 
@@ -205,10 +188,8 @@ class OverlaySyncTest(OverlayTest):
         self.failIf(os.path.exists(os.sep.join(self.second_subdir_second_file().abspath())))
 
         pass
-    pass
 
-class OverlayAddFileTest(OverlayTest):
-    def test(self):
+    def test__add_file(self):
 
         # adding a file to a unioned directory always goes to the
         # first, and not to the second.
@@ -227,10 +208,8 @@ class OverlayAddFileTest(OverlayTest):
         self.failIf(self.second().rootdirectory().get('added_file'))
 
         pass
-    pass
 
-class OverlayAddDirectoryTest(OverlayTest):
-    def test(self):
+    def test__add_directory(self):
         union = OverlayFileSystem(original=self.first(), overlay=self.second())
 
         # like file addition above, a directory addition must show up
@@ -256,10 +235,8 @@ class OverlayAddDirectoryTest(OverlayTest):
         self.failUnless(first_newdir.get('dir'))
         self.failUnless(first_newdir.get('file'))
         pass
-    pass
 
-class OverlaySyncTest(OverlayTest):
-    def test(self):
+    def test__sync_2(self):
         union = OverlayFileSystem(original=self.first(), overlay=self.second())
 
         # sync the union; first is synced, and second is not.
@@ -293,10 +270,8 @@ class OverlaySyncTest(OverlayTest):
         self.failIf(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newdir'])))
         self.failIf(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newdir', 'newfile'])))
         pass
-    pass
 
-class OverlayAbsPathTest(OverlayTest):
-    def test(self):
+    def test__abspath(self):
         union = OverlayFileSystem(original=self.first(), overlay=self.second())
 
         # the path of the union filesystem itself is the first.
@@ -335,10 +310,8 @@ class OverlayAbsPathTest(OverlayTest):
         # </entries of second>
 
         pass
-    pass
 
-class OverlayFileTruncateTest(OverlayTest):
-    def test(self):
+    def test__file_truncate(self):
         union = OverlayFileSystem(original=self.first(), overlay=self.second())
         first_file = union.rootdirectory().find(['first_file'])
         second_file = union.rootdirectory().find(['second_file'])
@@ -348,10 +321,8 @@ class OverlayFileTruncateTest(OverlayTest):
             self.fail()
         except OverlayFile.TruncateError: pass
         pass
-    pass
 
-class OverlayFileAddLinesTest(OverlayTest):
-    def test(self):
+    def test__file_add_lines(self):
         union = OverlayFileSystem(original=self.first(), overlay=self.second())
         first_file = union.rootdirectory().find(['first_file'])
         second_file = union.rootdirectory().find(['second_file'])
@@ -363,7 +334,9 @@ class OverlayFileAddLinesTest(OverlayTest):
         pass
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(OverlayBasicTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(OverlayBasicSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2012 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,20 +15,20 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import libconfix.core.utils.tests.suite_inmem
-from libconfix.core.filesys.tests.inmem.suite import Suite as FileSystemSuite
-import libconfix.core.digraph.tests.suite_inmem
-import libconfix.core.machinery.tests.suite_inmem
-import libconfix.core.hierarchy.tests.suite_inmem
+import libconfix.core.utils.tests.suite_inmem as utils_inmem
+import libconfix.core.filesys.tests.inmem.suite as filesys_inmem
+import libconfix.core.digraph.tests.suite_inmem as digraph_inmem
+import libconfix.core.machinery.tests.suite_inmem as machinery_inmem
+import libconfix.core.hierarchy.tests.suite_inmem as hierarchy_inmem
 
 import unittest
 
 suite = unittest.TestSuite()
-suite.addTest(libconfix.core.utils.tests.suite_inmem.suite)
-suite.addTest(FileSystemSuite())
-suite.addTest(libconfix.core.digraph.tests.suite_inmem.suite)
-suite.addTest(libconfix.core.machinery.tests.suite_inmem.suite)
-suite.addTest(libconfix.core.hierarchy.tests.suite_inmem.suite)
+suite.addTest(utils_inmem.suite)
+suite.addTest(filesys_inmem.suite)
+suite.addTest(digraph_inmem.suite)
+suite.addTest(machinery_inmem.suite)
+suite.addTest(hierarchy_inmem.suite)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite)

@@ -71,7 +71,7 @@ class CheckProgramBase(PersistentTestCase):
                               '    if (strcmp(name, "value"))',
                               '        return 1;',
                               '    return open("'+os.sep.join(self.build_.abspath()+['my-check-was-here'])+'",',
-                              '                O_CREAT|O_RDWR) >=0?0:1;',
+                              '                O_CREAT|O_RDWR, 0644) >=0?0:1;',
                               '}']))
         
         self.package_ = LocalPackage(rootdirectory=self.source_,

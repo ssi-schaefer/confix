@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -23,14 +23,6 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 
 import unittest
-
-class BasicSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(BasicTest('test'))
-        self.addTest(RelocatedHeaderRequiresRelocatedHeaderTest('test'))
-        pass
-    pass
 
 class BasicTest(unittest.TestCase):
 
@@ -70,7 +62,7 @@ class BasicTest(unittest.TestCase):
     #               \   /  \
     #                 b ---- c
 
-    def test(self):
+    def test__basic(self):
         fs = FileSystem(path=['dont\'t', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -203,9 +195,6 @@ class BasicTest(unittest.TestCase):
         self.failUnless(c_builder in package.digraph().successors(b_builder))
 
         pass
-    pass
-
-class RelocatedHeaderRequiresRelocatedHeaderTest(unittest.TestCase):
 
     #   package
     #   +-- include
@@ -221,7 +210,7 @@ class RelocatedHeaderRequiresRelocatedHeaderTest(unittest.TestCase):
     # src  --------------------------> include ---------------------------------> src
     #      [relocation of a.h and b.h]         [a.h requires b.h which is in src]
 
-    def test(self):
+    def test__relocated_header_requires_relocated_header(self):
         fs = FileSystem(path=['dont\'t', 'care'])
         fs.rootdirectory().add(
             name=const.CONFIX2_PKG,
@@ -282,7 +271,9 @@ class RelocatedHeaderRequiresRelocatedHeaderTest(unittest.TestCase):
 
     pass
 
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(BasicTest)
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(BasicSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 

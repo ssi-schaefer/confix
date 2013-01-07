@@ -23,19 +23,15 @@ import libconfix.plugins.cmake.tests.suite_inmem as cmake
 
 import unittest
 
-class PluginsInMemorySuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(c.suite)
-        self.addTest(plainfile.suite)
-        self.addTest(idl.suite)
-        self.addTest(automake.suite)
-        self.addTest(cmake.suite)
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(c.suite)
+suite.addTest(plainfile.suite)
+suite.addTest(idl.suite)
+suite.addTest(automake.suite)
+suite.addTest(cmake.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PluginsInMemorySuite())
+    unittest.TextTestRunner().run(suite)
     pass
 
 

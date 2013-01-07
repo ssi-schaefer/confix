@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -78,13 +78,8 @@ class IgnoredEntriesTest(unittest.TestCase):
         pass
     pass
 
-class IgnoredEntriesSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(IgnoredEntriesTest('test'))
-        pass
-    pass
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(IgnoredEntriesTest)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(IgnoredEntriesSuite())
+    unittest.TextTestRunner().run(suite)
     pass

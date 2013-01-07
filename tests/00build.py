@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2006 Salomon Automation
-# Copyright (C) 2006-2008 Joerg Faschingbauer
+# Copyright (C) 2006-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.tests.suite_build import LibConfixBuildSuite
+import libconfix.tests.suite_build
 
 import unittest
 
@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     suite = unittest.TestSuite()
 
-    suite.addTest(LibConfixBuildSuite())
+    suite.addTest(libconfix.tests.suite_build.suite)
 
     runner = unittest.TextTestRunner()
     runner.run(suite)

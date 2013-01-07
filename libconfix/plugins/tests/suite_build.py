@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2009 Joerg Faschingbauer
+# Copyright (C) 2007-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,23 +15,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from libconfix.plugins.automake.tests.suite_build import AutomakeBuildSuite
-from libconfix.plugins.make.tests.suite_build import MakeSuiteBuild
-from libconfix.plugins.cmake.tests.suite_build import CMakeBuildSuite
+import libconfix.plugins.automake.tests.suite_build as automake_build
+import libconfix.plugins.make.tests.suite_build as make_build
+import libconfix.plugins.cmake.tests.suite_build as cmake_build
+import libconfix.plugins.c.tests.suite_build as c_build
 
 import unittest
 
-class PluginsBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(AutomakeBuildSuite())
-        self.addTest(MakeSuiteBuild())
-        self.addTest(CMakeBuildSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(automake_build.suite)
+suite.addTest(make_build.suite)
+suite.addTest(cmake_build.suite)
+suite.addTest(c_build.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(PluginsBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
 
 

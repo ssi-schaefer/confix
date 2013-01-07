@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Joerg Faschingbauer
+# Copyright (C) 2008-2013 Joerg Faschingbauer
 
 # This library is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -15,19 +15,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from library_dependencies.suite_build import LibraryDependenciesBuildSuite
-from noinst_headers_build import NoInstallHeadersBuildSuite
+import library_dependencies.suite_build as library_dependencies_build
+import noinst_headers_build
 
 import unittest
 
-class AutomakeCBuildSuite(unittest.TestSuite):
-    def __init__(self):
-        unittest.TestSuite.__init__(self)
-        self.addTest(LibraryDependenciesBuildSuite())
-        self.addTest(NoInstallHeadersBuildSuite())
-        pass
-    pass
+suite = unittest.TestSuite()
+suite.addTest(library_dependencies_build.suite)
+suite.addTest(noinst_headers_build.suite)
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(AutomakeCBuildSuite())
+    unittest.TextTestRunner().run(suite)
     pass
