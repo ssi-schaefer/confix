@@ -33,7 +33,7 @@ import os
 import types
 
 class CClustererSetup(Setup):
-    def __init__(self, linkednamefinder=None):
+    def __init__(self, linkednamefinder=None, has_undefined_symbols=True):
         assert linkednamefinder is None or isinstance(linkednamefinder, NameFinder)
         Setup.__init__(self)
         if linkednamefinder is None:
@@ -41,21 +41,23 @@ class CClustererSetup(Setup):
         else:
             self.__namefinder = linkednamefinder
             pass
+        self.__has_undefined_symbols = has_undefined_symbols
         pass
 
     def setup(self, dirbuilder):
-        clusterer = CClusterer(namefinder=self.__namefinder)
+        clusterer = CClusterer(namefinder=self.__namefinder, has_undefined_symbols=self.__has_undefined_symbols)
         dirbuilder.add_builder(clusterer)
         dirbuilder.add_interface(CClustererInterfaceProxy(clusterer=clusterer))
         pass
     pass
 
 class CClusterer(Builder):
-    def __init__(self, namefinder):
+    def __init__(self, namefinder, has_undefined_symbols=True):
         Builder.__init__(self)
         self.__namefinder = namefinder
         self.__libname = None
         self.__libtool_version_info = None
+        self.__has_undefined_symbols = has_undefined_symbols
         pass
 
     def shortname(self):
@@ -81,6 +83,15 @@ class CClusterer(Builder):
         for builder in self.parentbuilder().iter_builders():
             if isinstance(builder, LibraryBuilder):
                 builder.set_version(version_tuple)
+                break
+            pass
+        pass
+
+    def set_has_undefined_symbols(self, has_undefined_symbols):
+        self.__has_undefined_symbols = has_undefined_symbols
+        for builder in self.parentbuilder().iter_builders():
+            if isinstance(builder, LibraryBuilder):
+                builder.set_has_undefined_symbols(has_undefined_symbols)
                 break
             pass
         pass
@@ -163,7 +174,8 @@ class CClusterer(Builder):
             LibraryBuilder(
                 basename=libname,
                 version=self.__libtool_version_info,
-                default_version=self.package().version()))
+                default_version=self.package().version(),
+                has_undefined_symbols=self.__has_undefined_symbols))
         for b in itertools.chain(nomain_builders, header_builders):
             library.add_member(b)
             pass
@@ -229,6 +241,13 @@ class CClustererInterfaceProxy(InterfaceProxy):
             pass
         self.__clusterer.set_libtool_version_info(version)
         pass
+
+    def HAS_UNDEFINED_SYMBOLS(self, has_undefined_symbols):
+        if type(has_undefined_symbols) is not types.BooleanType:
+            raise Error("HAS_UNDEFINED_SYMBOLS(): 'has_undefined_symbols' argument must be a boolean")
+        self.__clusterer.set_has_undefined_symbols(has_undefined_symbols)
+        pass
+
     pass
 
 class NameFinder:

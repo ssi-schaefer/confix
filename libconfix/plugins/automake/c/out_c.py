@@ -487,6 +487,9 @@ class LibraryOutputBuilder(LinkedOutputBuilder):
                 elif b.default_version() is not None:
                     automake_output_builder.makefile_am().add_compound_ldflags(automakelibname, '-release '+b.default_version())
                     pass
+                if b.has_undefined_symbols() is False:
+                    automake_output_builder.makefile_am().add_compound_ldflags(automakelibname, '-no-undefined')
+                    pass
                 pass
             else:
                 automake_output_builder.configure_ac().add_paragraph(

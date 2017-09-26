@@ -104,7 +104,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         self.__dirbuilder.add_builder(yacc)
         return yacc
 
-    def LIBRARY(self, members, basename=None, version=None):
+    def LIBRARY(self, members, basename=None, version=None, undefined_symbols=True):
         the_basename = basename
         if the_basename is None:
             the_basename=LongNameFinder().find_libname(
@@ -113,7 +113,8 @@ class ExplicitInterfaceProxy(InterfaceProxy):
             pass
         library = LibraryBuilder(basename=the_basename,
                                  version=version,
-                                 default_version=self.__dirbuilder.package().version())
+                                 default_version=self.__dirbuilder.package().version(),
+                                 has_undefined_symbols=undefined_symbols)
         for m in members:
             library.add_member(m)
             pass

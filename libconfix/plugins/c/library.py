@@ -25,7 +25,8 @@ class LibraryBuilder(LinkedBuilder):
     def __init__(self,
                  basename,
                  version,
-                 default_version):
+                 default_version,
+                 has_undefined_symbols):
 
         # library version. passed to libtool as "-version-info
         # <current>:<revision>:<age>", for example.
@@ -40,6 +41,7 @@ class LibraryBuilder(LinkedBuilder):
         self.__basename = basename
         self.__version = version
         self.__default_version = default_version
+        self.__has_undefined_symbols = has_undefined_symbols
 
         self.__buildinfo_added = False
         
@@ -82,10 +84,17 @@ class LibraryBuilder(LinkedBuilder):
         super(LibraryBuilder, self).force_enlarge()
         pass
 
+    def set_has_undefined_symbols(self, has_undefined_symbols):
+        self.__has_undefined_symbols = has_undefined_symbols
+        pass
+
     def version(self):
         return self.__version
 
     def default_version(self):
         return self.__default_version
+
+    def has_undefined_symbols(self):
+        return self.__has_undefined_symbols
 
     pass
