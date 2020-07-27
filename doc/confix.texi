@@ -992,9 +992,6 @@ prone. Automake implements a set of makefile targets for this,
 @code{dist-bzip2} creates a @file{.tar.bz2} distribution.
 
 @item
-@code{dist-shar} creates a shell archive distribution.
-
-@item
 @code{dist-zip} create a zip file (popular on Windows).
 
 @item

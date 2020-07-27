@@ -159,7 +159,7 @@ class AutomakeOutputTest(unittest.TestCase):
 
         self.failUnless('1.9' in rootdir_automake_builder.makefile_am().automake_options())
         self.failUnless('dist-bzip2' in rootdir_automake_builder.makefile_am().automake_options())
-        self.failUnless('dist-shar' in rootdir_automake_builder.makefile_am().automake_options())
+        self.failUnless('dist-shar' not in rootdir_automake_builder.makefile_am().automake_options())
         self.failUnless('dist-zip' in rootdir_automake_builder.makefile_am().automake_options())
         self.failUnless(const.CONFIX2_DIR in rootdir_automake_builder.makefile_am().extra_dist())
         self.failUnless(const.CONFIX2_PKG in rootdir_automake_builder.makefile_am().extra_dist())

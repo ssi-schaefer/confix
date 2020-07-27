@@ -175,7 +175,6 @@ class AutomakeBackendOutputBuilder(Builder):
 
         # enable dist'ing in the following formats
         self.makefile_am().add_automake_options('dist-bzip2')
-        self.makefile_am().add_automake_options('dist-shar')
         self.makefile_am().add_automake_options('dist-zip')
 
 
