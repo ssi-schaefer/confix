@@ -25,8 +25,8 @@ from libconfix.plugins.c.relocated_headers.setup import RelocatedHeadersSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
 
-def make_core_setups(linkednamefinder):
-    return [CClustererSetup(linkednamefinder=linkednamefinder),
+def make_core_setups(linkednamefinder, has_undefined_symbols):
+    return [CClustererSetup(linkednamefinder=linkednamefinder, has_undefined_symbols=has_undefined_symbols),
             CCreatorSetup(),
             CommonInterfaceSetup(),
             RelocatedHeadersSetup(),
@@ -34,8 +34,9 @@ def make_core_setups(linkednamefinder):
 
 class DefaultCSetup(CompositeSetup):
     def __init__(self,
-                 linkednamefinder=None):
-        setups = make_core_setups(linkednamefinder=linkednamefinder)
+                 linkednamefinder=None,
+                 has_undefined_symbols=True):
+        setups = make_core_setups(linkednamefinder=linkednamefinder, has_undefined_symbols=has_undefined_symbols)
         setups.append(ImplicitInterfaceSetup())
         CompositeSetup.__init__(
             self,
