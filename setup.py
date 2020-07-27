@@ -41,8 +41,8 @@ def recdir(dir, suffix, result):
     return result
 
 datafiles = []
-datafiles.extend(recdir('share/confix/autoconf-archive/m4src', '.m4', []))
-datafiles.extend(recdir('share/confix/autoconf-archive/htmldoc', '.html', []))
+#datafiles.extend(recdir('share/confix/autoconf-archive/m4src', '.m4', []))
+#datafiles.extend(recdir('share/confix/autoconf-archive/htmldoc', '.html', []))
 
 # scripts to put in the auxdir.
 datafiles.extend([('share/confix/kde-hack',
