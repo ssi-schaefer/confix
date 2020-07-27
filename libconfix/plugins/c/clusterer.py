@@ -33,7 +33,7 @@ import os
 import types
 
 class CClustererSetup(Setup):
-    def __init__(self, linkednamefinder=None, has_undefined_symbols=True):
+    def __init__(self, linkednamefinder=None, has_undefined_symbols=False):
         assert linkednamefinder is None or isinstance(linkednamefinder, NameFinder)
         Setup.__init__(self)
         if linkednamefinder is None:
@@ -52,7 +52,7 @@ class CClustererSetup(Setup):
     pass
 
 class CClusterer(Builder):
-    def __init__(self, namefinder, has_undefined_symbols=True):
+    def __init__(self, namefinder, has_undefined_symbols=False):
         Builder.__init__(self)
         self.__namefinder = namefinder
         self.__libname = None
