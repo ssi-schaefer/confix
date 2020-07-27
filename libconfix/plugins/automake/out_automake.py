@@ -170,7 +170,7 @@ class AutomakeBackendOutputBuilder(Builder):
 
 
         # our minimum required automake version is 1.9
-        self.makefile_am().add_automake_options('1.9')
+        # self.makefile_am().add_automake_options('1.9')
 
 
         # enable dist'ing in the following formats
