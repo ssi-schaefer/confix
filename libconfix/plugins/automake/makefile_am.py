@@ -473,7 +473,15 @@ class Makefile_am(object):
         
         # register automatic tests and set their environment
 
-        tests = self.dir_primary('check', 'PROGRAMS') + \
+        test_tmp = self.dir_primary('check', 'PROGRAMS')
+        count = 0
+        for prog in test_tmp:
+            prog += "$(EXEEXT)"
+            test_tmp[count] = prog
+            count += 1
+            pass
+
+        tests = test_tmp + \
                 self.dir_primary('check', 'SCRIPTS')
         if len(tests):
             lines.extend(makefile.List(name='TESTS', values=tests, mitigate=True).lines())
