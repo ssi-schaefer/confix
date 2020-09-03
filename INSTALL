@@ -1,0 +1,34 @@
+This file briefly describes how to install the Confix source
+distribution. Confix distribution is done using the Python Distutils
+package, so the following is just a short excerpt of the distutils
+documentation :-)
+
+Unpack the file; for example,
+
+    $ pwd
+    /home/jfasch
+    $ tar jxf Confix-2.0.0.tar.bz2
+
+Then make a call to Distutils to build and install the source.
+
+    $ cd Confix-2.0.0
+    $ pwd
+    /home/jfasch/Confix-2.0.0
+    $ python setup.py install --prefix=${HOME}/sandbox
+
+Then, provided you gave a non-default prefix, you should update your
+environment accordingly. For example, you could add the following
+lines to your ~/.bashrc :
+
+    PREFIX=${HOME}/sandbox
+    export PYTHONPATH=${PYTHONPATH}:${PREFIX}/lib/pythonA.B/site-packages
+    export PATH=${PATH}:${PREFIX}/bin
+
+Make sure A.B corresponds to the version of Python that you use, such
+as 2.4.
+
+That's it, you're ready to use Confix. Try out the installation by calling up
+the command line help :
+
+    $ confix2.py --help
+

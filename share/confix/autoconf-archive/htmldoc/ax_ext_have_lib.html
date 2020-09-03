@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_ext_have_lib
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_ext_have_lib.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_ext_have_lib
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_EXT_HAVE_LIB(&lt;directories&gt;, &lt;library&gt;,
+   &lt;function&gt;, &lt;extra libraries&gt;)</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    AX_EXT_HAVE_LIB is identical to AC_SEARCH_LIBS with the exception that will
+    add -L&lt;directory&gt; when looking, and use a different variable for each
+    directory.
+   </p>
+   <p>
+    Any required -L&lt;directory&gt; flags are added to LDFLAGS and located
+    libraies are added to LIBS
+   </p>
+   <p>
+    Some libraries are unlinkable without other extra libraries, which can be
+    specified in the 4th argument. The mysql client library needs -lz, for
+    example.
+   </p>
+   <p>
+    Example:
+   </p>
+   <pre>
+ AX_EXT_HAVE_LIB(/lib /usr/lib /usr/local/lib /usr/lib/mysql /usr/local/mysql/lib, mysqlclient, mysql_init, [-lz])
+</pre>
+   <p>
+    which finds the mysql client library if succeds system when it tries with
+    -L/usr/lib/mysql then it adds -lmysqlclient to LIBS and -L/usr/lib/mysql to
+    LDFLAGS.
+   </p>
+   <p>
+    The test itself is based on the autoconf 2.53 version of AC_SEARCH_LIBS.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   dps@simpson.demon.co.uk
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-07-29
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_EXT_HAVE_LIB],
+[
+new_ldflags=${LDFLAGS}
+new_libs=$LIBS
+AC_CHECK_LIB([$2], $3, new_libs="-l$2"; ext_lib_found="yes",  ext_lib_found="no")
+for dir in $1
+do
+if test $ext_lib_found = no
+then
+ext_haslib_cvdir=`echo $dir | $as_tr_sh`
+AC_CACHE_CHECK([for $2 library with -L$dir], [ext_cv${ext_haslib_cvdir}_haslib_$2],
+[ext_func_search_save_LIBS=$LIBS
+ext_func_save_ldflags=${LDFLAGS}
+LIBS="-l$2 $4 ${ext_func_search_save_LIBS}"
+LDFLAGS="-L$dir ${ext_func_save_ldflags}"
+AC_TRY_LINK_FUNC([$3], [eval "ext_cv${ext_haslib_cvdir}_haslib_$2"="yes"],
+[eval "ext_cv${ext_haslib_cvdir}_haslib_$2"="no"])
+LIBS=$ext_func_search_save_LIBS
+LDFLAGS=$ext_func_save_ldflags
+])
+if eval `echo 'test x${'ext_cv${ext_haslib_cvdir}_haslib_$2'}' = "xyes"`; then
+new_libs="-l$2 ${new_libs}"
+new_ldflags="-L${dir} ${new_ldflags}"
+ext_lib_found="yes"
+fi
+fi
+done
+LIBS=$new_libs
+LDFLAGS=$new_ldflags
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004
+   dps@simpson.demon.co.uk</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

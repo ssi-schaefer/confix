@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_check_curl
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_check_curl.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_check_curl
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CHECK_CURL(version, action-if, action-not)</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Defines CURL_LIBS, CURL_CFLAGS. See curl-config(1) man page.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Akos Maroy &lt;darkeye@tyrell.hu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-09-20
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CHECK_CURL], [
+  succeeded=no
+
+  if test -z "$CURL_CONFIG"; then
+    AC_PATH_PROG(CURL_CONFIG, curl-config, no)
+  fi
+
+  if test "$CURL_CONFIG" = "no" ; then
+    echo "*** The curl-config script could not be found. Make sure it is"
+    echo "*** in your path, and that curl is properly installed."
+    echo "*** Or see http://curl.haxx.se/"
+  else
+    dnl curl-config --version returns "libcurl &lt;version&gt;", thus cut the number
+    CURL_VERSION=`$CURL_CONFIG --version | cut -d" " -f2`
+    AC_MSG_CHECKING(for curl &gt;= $1)
+        VERSION_CHECK=`expr $CURL_VERSION \&gt;\= $1`
+        if test "$VERSION_CHECK" = "1" ; then
+            AC_MSG_RESULT(yes)
+            succeeded=yes
+
+            AC_MSG_CHECKING(CURL_CFLAGS)
+            CURL_CFLAGS=`$CURL_CONFIG --cflags`
+            AC_MSG_RESULT($CURL_CFLAGS)
+
+            AC_MSG_CHECKING(CURL_LIBS)
+            CURL_LIBS=`$CURL_CONFIG --libs`
+            AC_MSG_RESULT($CURL_LIBS)
+        else
+            CURL_CFLAGS=""
+            CURL_LIBS=""
+            ## If we have a custom action on failure, don't print errors, but
+            ## do set a variable so people can do so.
+            ifelse([$3], ,echo "can't find curl &gt;= $1",)
+        fi
+
+        AC_SUBST(CURL_CFLAGS)
+        AC_SUBST(CURL_LIBS)
+  fi
+
+  if test $succeeded = yes; then
+     ifelse([$2], , :, [$2])
+  else
+     ifelse([$3], , AC_MSG_ERROR([Library requirements (curl) not met.]), [$3])
+  fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Akos Maroy
+   &lt;darkeye@tyrell.hu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

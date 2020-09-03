@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_cxx_ldflags_std_lang
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_cxx_ldflags_std_lang.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_cxx_ldflags_std_lang
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CXX_LDFLAGS_STD_LANG(LD-FLAGS)</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Append to LD-FLAGS the set of link-time flags that should be passed to the
+    C++ compiler in order to enable use of C++ features as defined in the ANSI
+    C++ standard (eg. use of standard iostream classes in the `std' namespace,
+    etc.). Note that if you use GNU Libtool you may need to prefix each of
+    those switches with `-Xlinker' so that Libtool doesn't discard them (see
+    Libtool's manual and `AC_LIBTOOLIZE_LDFLAGS').
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Ludovic Court&egrave;s &lt;ludo@chbouib.org&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-09-07
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CXX_LDFLAGS_STD_LANG],
+  [AC_REQUIRE([AC_CXX_COMPILER_VENDOR])
+   case "$ac_cv_cxx_compiler_vendor" in
+     sgi)    $1="$$1 -LANG:std -exceptions";;
+     hp)     $1="$$1 -AA";;
+   esac])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Ludovic
+   Court&egrave;s &lt;ludo@chbouib.org&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

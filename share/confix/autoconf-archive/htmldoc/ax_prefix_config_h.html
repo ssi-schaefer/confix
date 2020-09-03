@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_prefix_config_h
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_prefix_config_h.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_prefix_config_h
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_PREFIX_CONFIG_H [(OUTPUT-HEADER [,PREFIX [,ORIG-HEADER]])]</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This is a new variant from ac_prefix_config_ this one will use a
+    lowercase-prefix if the config-define was starting with a lowercase-char,
+    e.g. "#define const", "#define restrict", or "#define off_t", (and this one
+    can live in another directory, e.g. testpkg/config.h therefore I decided to
+    move the output-header to be the first arg)
+   </p>
+   <p>
+    takes the usual config.h generated header file; looks for each of the
+    generated "#define SOMEDEF" lines, and prefixes the defined name (ie. makes
+    it "#define PREFIX_SOMEDEF". The result is written to the output
+    config.header file. The PREFIX is converted to uppercase for the
+    conversions.
+   </p>
+   <p>
+    Defaults:
+   </p>
+   <pre>
+  OUTPUT-HEADER = $PACKAGE-config.h
+  PREFIX = $PACKAGE
+  ORIG-HEADER, from AM_CONFIG_HEADER(config.h)
+</pre>
+   <p>
+    Your configure.ac script should contain both macros in this order, and
+    unlike the earlier variations of this prefix-macro it is okay to place the
+    AX_PREFIX_CONFIG_H call before the AC_OUTPUT invokation.
+   </p>
+   <p>
+    Example:
+   </p>
+   <pre>
+  AC_INIT(config.h.in)        # config.h.in as created by "autoheader"
+  AM_INIT_AUTOMAKE(testpkg, 0.1.1)    # makes #undef VERSION and PACKAGE
+  AM_CONFIG_HEADER(config.h)          # prep config.h from config.h.in
+  AX_PREFIX_CONFIG_H(mylib/_config.h) # prep mylib/_config.h from it..
+  AC_MEMORY_H                         # makes "#undef NEED_MEMORY_H"
+  AC_C_CONST_H                        # makes "#undef const"
+  AC_OUTPUT(Makefile)                 # creates the "config.h" now
+                                      # and also mylib/_config.h
+</pre>
+   <p>
+    if the argument to AX_PREFIX_CONFIG_H would have been omitted then the
+    default outputfile would have been called simply "testpkg-config.h", but
+    even under the name "mylib/_config.h" it contains prefix-defines like
+   </p>
+   <pre>
+  #ifndef TESTPKG_VERSION
+  #define TESTPKG_VERSION "0.1.1"
+  #endif
+  #ifndef TESTPKG_NEED_MEMORY_H
+  #define TESTPKG_NEED_MEMORY_H 1
+  #endif
+  #ifndef _testpkg_const
+  #define _testpkg_const _const
+  #endif
+</pre>
+   <p>
+    and this "mylib/_config.h" can be installed along with other header-files,
+    which is most convenient when creating a shared library (that has some
+    headers) where some functionality is dependent on the OS-features detected
+    at compile-time. No need to invent some "mylib-confdefs.h.in" manually. :-)
+   </p>
+   <p>
+    Note that some AC_DEFINEs that end up in the config.h file are actually
+    self-referential - e.g. AC_C_INLINE, AC_C_CONST, and the AC_TYPE_OFF_T say
+    that they "will define inline|const|off_t if the system does not do it by
+    itself". You might want to clean up about these - consider an extra
+    mylib/conf.h that reads something like:
+   </p>
+   <pre>
+   #include &lt;mylib/_config.h&gt;
+   #ifndef _testpkg_const
+   #define _testpkg_const const
+   #endif
+</pre>
+   <p>
+    and then start using _testpkg_const in the header files. That is also a
+    good thing to differentiate whether some library-user has starting to take
+    up with a different compiler, so perhaps it could read something like this:
+   </p>
+   <pre>
+  #ifdef _MSC_VER
+  #include &lt;mylib/_msvc.h&gt;
+  #else
+  #include &lt;mylib/_config.h&gt;
+  #endif
+  #ifndef _testpkg_const
+  #define _testpkg_const const
+  #endif
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Guido Draheim &lt;guidod@gmx.de&gt;, M&aring;rten Svantesson
+   &lt;msv@kth.se&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-06-08
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_PREFIX_CONFIG_H],[AC_REQUIRE([AC_CONFIG_HEADER])
+AC_CONFIG_COMMANDS([ifelse($1,,$PACKAGE-config.h,$1)],[dnl
+AS_VAR_PUSHDEF([_OUT],[ac_prefix_conf_OUT])dnl
+AS_VAR_PUSHDEF([_DEF],[ac_prefix_conf_DEF])dnl
+AS_VAR_PUSHDEF([_PKG],[ac_prefix_conf_PKG])dnl
+AS_VAR_PUSHDEF([_LOW],[ac_prefix_conf_LOW])dnl
+AS_VAR_PUSHDEF([_UPP],[ac_prefix_conf_UPP])dnl
+AS_VAR_PUSHDEF([_INP],[ac_prefix_conf_INP])dnl
+m4_pushdef([_script],[conftest.prefix])dnl
+m4_pushdef([_symbol],[m4_cr_Letters[]m4_cr_digits[]_])dnl
+_OUT=`printf '%s\n' ifelse($1, , $PACKAGE-config.h, $1)`
+_DEF=`printf '%s\n' _$_OUT | sed -e "y:m4_cr_letters:m4_cr_LETTERS[]:" -e "s/@&lt;:@^m4_cr_Letters@:&gt;@/_/g"`
+_PKG=`printf '%s\n' ifelse($2, , $PACKAGE, $2)`
+_LOW=`printf '%s\n' _$_PKG | sed -e "y:m4_cr_LETTERS-:m4_cr_letters[]_:"`
+_UPP=`printf '%s\n' $_PKG | sed -e "y:m4_cr_letters-:m4_cr_LETTERS[]_:"  -e "/^@&lt;:@m4_cr_digits@:&gt;@/s/^/_/"`
+_INP=`printf '%s\n' "ifelse($3,,,$3)" | sed -e 's/ *//'`
+if test ".$_INP" = "."; then
+   for ac_file in : $CONFIG_HEADERS; do test "_$ac_file" = _: &amp;&amp; continue
+     case "$ac_file" in
+        *.h) _INP=$ac_file ;;
+        *)
+     esac
+     test ".$_INP" != "." &amp;&amp; break
+   done
+fi
+if test ".$_INP" = "."; then
+   case "$_OUT" in
+      */*) _INP=`basename "$_OUT"`
+      ;;
+      *-*) _INP=`printf '%s\n' "$_OUT" | sed -e "s/@&lt;:@_symbol@:&gt;@*-//"`
+      ;;
+      *) _INP=config.h
+      ;;
+   esac
+fi
+if test -z "$_PKG" ; then
+   AC_MSG_ERROR([no prefix for _PREFIX_PKG_CONFIG_H])
+else
+  if test ! -f "$_INP" ; then if test -f "$srcdir/$_INP" ; then
+     _INP="$srcdir/$_INP"
+  fi fi
+  AC_MSG_NOTICE(creating $_OUT - prefix $_UPP for $_INP defines)
+  if test -f $_INP ; then
+    printf '%s\n' "s/@%:@undef  *\\(@&lt;:@m4_cr_LETTERS[]_@:&gt;@\\)/@%:@undef $_UPP""_\\1/" &gt; _script
+    printf '%s\n' "s/@%:@undef  *\\(@&lt;:@m4_cr_letters@:&gt;@\\)/@%:@undef $_LOW""_\\1/" &gt;&gt; _script
+    printf '%s\n' "s/@%:@def[]ine  *\\(@&lt;:@m4_cr_LETTERS[]_@:&gt;@@&lt;:@_symbol@:&gt;@*\\)\\(.*\\)/@%:@ifndef $_UPP""_\\1 \\" &gt;&gt; _script
+    printf '%s\n' "@%:@def[]ine $_UPP""_\\1 \\2 \\" &gt;&gt; _script
+    printf '%s\n' "@%:@endif/" &gt;&gt;_script
+    printf '%s\n' "s/@%:@def[]ine  *\\(@&lt;:@m4_cr_letters@:&gt;@@&lt;:@_symbol@:&gt;@*\\)\\(.*\\)/@%:@ifndef $_LOW""_\\1 \\" &gt;&gt; _script
+    printf '%s\n' "@%:@define $_LOW""_\\1 \\2 \\" &gt;&gt; _script
+    printf '%s\n' "@%:@endif/" &gt;&gt; _script
+    # now executing _script on _DEF input to create _OUT output file
+    printf '%s\n' "@%:@ifndef $_DEF"      &gt;$tmp/pconfig.h
+    printf '%s\n' "@%:@def[]ine $_DEF 1" &gt;&gt;$tmp/pconfig.h
+    printf '%s\n' ' ' &gt;&gt;$tmp/pconfig.h
+    printf '%s\n' /'*' $_OUT. Generated automatically at end of configure. '*'/ &gt;&gt;$tmp/pconfig.h
+
+    sed -f _script $_INP &gt;&gt;$tmp/pconfig.h
+    printf '%s\n' ' ' &gt;&gt;$tmp/pconfig.h
+    printf '%s\n' '/* once:' $_DEF '*/' &gt;&gt;$tmp/pconfig.h
+    printf '%s\n' "@%:@endif" &gt;&gt;$tmp/pconfig.h
+    if cmp -s $_OUT $tmp/pconfig.h 2&gt;/dev/null; then
+      AC_MSG_NOTICE([$_OUT is unchanged])
+    else
+      ac_dir=`AS_DIRNAME(["$_OUT"])`
+      AS_MKDIR_P(["$ac_dir"])
+      rm -f "$_OUT"
+      mv $tmp/pconfig.h "$_OUT"
+    fi
+    cp _script _configs.sed
+  else
+    AC_MSG_ERROR([input file $_INP does not exist - skip generating $_OUT])
+  fi
+  rm -f conftest.*
+fi
+m4_popdef([_symbol])dnl
+m4_popdef([_script])dnl
+AS_VAR_POPDEF([_INP])dnl
+AS_VAR_POPDEF([_UPP])dnl
+AS_VAR_POPDEF([_LOW])dnl
+AS_VAR_POPDEF([_PKG])dnl
+AS_VAR_POPDEF([_DEF])dnl
+AS_VAR_POPDEF([_OUT])dnl
+],[PACKAGE="$PACKAGE"])])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Guido Draheim
+   &lt;guidod@gmx.de&gt;</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2005 M&aring;rten
+   Svantesson &lt;msv@kth.se&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

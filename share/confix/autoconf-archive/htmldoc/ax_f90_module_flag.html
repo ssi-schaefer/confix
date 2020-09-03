@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_f90_module_flag
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_f90_module_flag.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_f90_module_flag
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_F90_MODULE_FLAG</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Find Fortran 90 modules inclusion flag. The module inclusion flag is stored
+    in the cached variable ax_f90_modflag. An error is triggered if the flag
+    cannot be found. Supported are the -I GNU compilers flag, the -M SUN
+    compilers flag, and the -p Absoft Pro Fortran compiler flag.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Luc Maisonobe &lt;luc@spaceroots.org&gt;, Julian C. Cummings
+   &lt;cummings@cacr.caltech.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2006-01-28
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_F90_MODULE_FLAG],[
+AC_CACHE_CHECK([fortran 90 modules inclusion flag],
+ax_f90_modflag,
+[AC_LANG_PUSH(Fortran)
+i=0
+while test \( -f tmpdir_$i \) -o \( -d tmpdir_$i \) ; do
+  i=`expr $i + 1`
+done
+mkdir tmpdir_$i
+cd tmpdir_$i
+AC_COMPILE_IFELSE([module conftest_module
+   contains
+   subroutine conftest_routine
+   write(*,'(a)') 'gotcha!'
+   end subroutine conftest_routine
+   end module conftest_module
+  ],[],[])
+cd ..
+ax_f90_modflag="not found"
+for ax_flag in "-I " "-M" "-p"; do
+  if test "$ax_f90_modflag" = "not found" ; then
+    ax_save_FCFLAGS="$FCFLAGS"
+    FCFLAGS="$ax_save_FCFLAGS ${ax_flag}tmpdir_$i"
+    AC_COMPILE_IFELSE([program conftest_program
+       use conftest_module
+       call conftest_routine
+       end program conftest_program
+      ],[ax_f90_modflag="$ax_flag"],[])
+    FCFLAGS="$ax_save_FCFLAGS"
+  fi
+done
+rm -fr tmpdir_$i
+if test "$ax_flag" = "not found" ; then
+  AC_MSG_ERROR([unable to find compiler flag for modules inclusion])
+fi
+AC_LANG_POP(Fortran)
+])])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Luc Maisonobe
+   &lt;luc@spaceroots.org&gt;</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Julian C. Cummings
+   &lt;cummings@cacr.caltech.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

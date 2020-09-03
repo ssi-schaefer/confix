@@ -1,0 +1,14 @@
+Confix is a build and maintenance tool for source code packages. It is
+built on top of the standard open source tool Automake
+(http://www.gnu.org/software/automake/). It relieves the package
+maintainer from the burden of having to write complex build
+instructions by hand. It inspects the package's source code, guesses
+what's to be done and writes the build instructions for the
+maintainer.
+
+In doing so, it adds value to Automake by automatically tracking
+inter-package dependencies, doing inter-package check propagation, and
+so on.
+
+Confix is distributed under the LGPL, see the file COPYING for
+details. Its homepage is located at http://confix.sourceforge.net.

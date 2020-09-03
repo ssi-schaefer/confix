@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_define_dir
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_define_dir.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_define_dir
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_DEFINE_DIR(VARNAME, DIR [, DESCRIPTION])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro sets VARNAME to the expansion of the DIR variable, taking care
+    of fixing up ${prefix} and such.
+   </p>
+   <p>
+    VARNAME is then offered as both an output variable and a C preprocessor
+    symbol.
+   </p>
+   <p>
+    Example:
+   </p>
+   <pre>
+   AC_DEFINE_DIR([DATADIR], [datadir], [Where data are placed to.])
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Stepan Kasal &lt;kasal@ucw.cz&gt;, Andreas Schwab &lt;schwab@suse.de&gt;,
+   Guido Draheim &lt;guidod@gmx.de&gt;, Alexandre Oliva
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-07-29
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_DEFINE_DIR], [
+  prefix_NONE=
+  exec_prefix_NONE=
+  test "x$prefix" = xNONE &amp;&amp; prefix_NONE=yes &amp;&amp; prefix=$ac_default_prefix
+  test "x$exec_prefix" = xNONE &amp;&amp; exec_prefix_NONE=yes &amp;&amp; exec_prefix=$prefix
+dnl In Autoconf 2.60, ${datadir} refers to ${datarootdir}, which in turn
+dnl refers to ${prefix}.  Thus we have to use `eval' twice.
+  eval ac_define_dir="\"[$]$2\""
+  eval ac_define_dir="\"$ac_define_dir\""
+  AC_SUBST($1, "$ac_define_dir")
+  AC_DEFINE_UNQUOTED($1, "$ac_define_dir", [$3])
+  test "$prefix_NONE" &amp;&amp; prefix=NONE
+  test "$exec_prefix_NONE" &amp;&amp; exec_prefix=NONE
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Stepan Kasal
+   &lt;kasal@ucw.cz&gt;</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Andreas Schwab
+   &lt;schwab@suse.de&gt;</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Guido Draheim
+   &lt;guidod@gmx.de&gt;</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Alexandre
+   Oliva</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

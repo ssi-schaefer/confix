@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_sys_largefile_sensitive
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_sys_largefile_sensitive.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_sys_largefile_sensitive
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_SYS_LARGEFILE_SENSITIVE</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    checker whether the current system is sensitive to -Ddefines making off_t
+    having different types/sizes. Automatically define a config.h symbol
+    LARGEFILE_SENSITIVE if that is the case, otherwise leave everything as is.
+   </p>
+   <p>
+    This macro builds on top of AC_SYS_LARGEFILE to detect whether special
+    options are neede to make the code use 64bit off_t - in many setups this
+    will also make the code use 64bit off_t immediatly.
+   </p>
+   <p>
+    The common use of a LARGEFILE_SENSITIVE config.h-define is to rename
+    exported functions, usually adding a 64 to the original function name. Such
+    renamings are only needed on systems being both (a) 32bit off_t by default
+    and (b) implementing large.file extensions (as for unix98).
+   </p>
+   <p>
+    a renaming section could look like this:
+   </p>
+   <pre>
+ #if defined LARGEFILE_SENSITIVE &amp;&amp; _FILE_OFFSET_BITS+0 == 64
+ #define zzip_open zzip_open64
+ #define zzip_seek zzip_seek64
+ #endif
+</pre>
+   <p>
+    for libraries, it is best to take advantage of the prefix-config.h macro,
+    otherwise you want to export a renamed LARGEFILE_SENSITIVE in an installed
+    header file. -&gt; see AX_PREFIX_CONFIG_H
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Guido Draheim &lt;guidod@gmx.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2003-02-02
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_SYS_LARGEFILE_SENSITIVE],[dnl
+AC_REQUIRE([AC_SYS_LARGEFILE])dnl
+# we know about some internals of ac_sys_largefile here...
+AC_MSG_CHECKING(whether system differentiates 64bit off_t by defines)
+ac_cv_sys_largefile_sensitive="no"
+if test ".$ac_cv_sys_file_offset_bits$ac_cv_sys_large_files" != ".nono"
+then ac_cv_sys_largefile_sensitive="yes"
+  AC_DEFINE(LARGEFILE_SENSITIVE, 1,
+  [whether the system defaults to 32bit off_t but can do 64bit when requested])
+fi
+AC_MSG_RESULT([$ac_cv_sys_largefile_sensitive])
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2003 Guido Draheim
+   &lt;guidod@gmx.de&gt;</span>
+   <p>
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the Free
+    Software Foundation; either version 2 of the License, or (at your option)
+    any later version.
+   </p>
+   <p>
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+    more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc., 59
+    Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   </p>
+   <p>
+    As a special exception, the respective Autoconf Macro's copyright owner
+    gives unlimited permission to copy, distribute and modify the configure
+    scripts that are the output of Autoconf when processing the Macro. You need
+    not follow the terms of the GNU General Public License when using or
+    distributing such scripts, even though portions of the text of the Macro
+    appear in them. The GNU General Public License (GPL) does govern all other
+    use of the material that constitutes the Autoconf Macro.
+   </p>
+   <p>
+    This special exception to the GPL applies to versions of the Autoconf Macro
+    released by the Autoconf Macro Archive. When you make and distribute a
+    modified version of the Autoconf Macro, you may extend this special
+    exception to the GPL to apply to your modified version as well.
+   </p>
+  </div>
+ </body>
+</html>

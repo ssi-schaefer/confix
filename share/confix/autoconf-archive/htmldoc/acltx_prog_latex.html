@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: acltx_prog_latex
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/acltx_prog_latex.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   acltx_prog_latex
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>ACLTX_PROG_LATEX([ACTION-IF-NOT-FOUND])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro find a latex application and set the variable latex to the name
+    of the application or to no if not found if ACTION-IF-NOT-FOUND is not
+    specified, configure fail when then application is not found.
+   </p>
+   <p>
+    It is possible to set manually the program to use using latex=...
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Boretti Mathieu &lt;boretti@eig.unige.ch&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2006-07-16
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([ACLTX_PROG_LATEX],[
+AC_ARG_VAR(latex,[specify default latex application])
+if test "$ac_cv_env_latex_set" = "set" ; then
+    AC_MSG_CHECKING([Checking for latex])
+    latex="$ac_cv_env_latex_value";
+    AC_MSG_RESULT([$latex (from parameter)])
+else
+    AC_CHECK_PROGS(latex,[latex elatex lambda],no)
+fi
+if test $latex = "no" ;
+then
+        ifelse($#,0,[AC_MSG_ERROR([Unable to find the latex application])],
+        $1)
+fi])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Boretti Mathieu
+   &lt;boretti@eig.unige.ch&gt;</span>
+   <p>
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or (at
+    your option) any later version.
+   </p>
+   <p>
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+    for more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library; if not, write to the Free Software Foundation,
+    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+   </p>
+  </div>
+ </body>
+</html>

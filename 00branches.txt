@@ -1,0 +1,117 @@
+This is our configuration management map. Be careful to only maintain
+it in the trunk: it reflects all branches, tags, and whatnot, and
+therefore it should be maintained outside of version control. At least
+theoretically; in practice, we need to put it somewhere -- and that's
+the trunk.
+
+The nomenclature of CM artifacts is taken from the book "Pragmatic
+Version Control Using Subversion" by Mike Mason, and it reads as
+follows.
+
+Release Branch            RB-<rel>
+
+Release                   REL-<rel>
+
+Bug fix branch            BUG-<track>
+
+Pre-bug fix               PRE-<track>
+
+Post-bug fix              POST-<track>
+
+Developer experiments     TRY-<developer>-<short-desc>
+
+
+
+
+
+                 + (subversion migration)
+                 |
+  REL-2.0.0pre13 +
+                 |
+                 131----+
+  REL-2.0.0pre14 134    |
+  REL-2.0.0pre15 139<---138
+                 |      v TRY-jfasch-kde-hack(merged,dead)
+                 |
+                 184----+
+  REL-2.0.0pre18 200<---198
+                 |      v devlopment/jfasch/library-dependencies(merged,dead)
+                 |
+                 200----+
+                 213<---212
+                 |      v TRY-jfasch-builder-init-state(merged,dead)
+                 |
+                 216----+
+  REL-2.0.0pre19 220    |
+  REL-2.0.0pre20 227    |
+                 247<---246
+                 |      v TRY-jfasch-nonlocal-headers(merged,dead)
+                 |
+                 247----+
+  REL-2.0.0pre24 257--- | -------------------------------------+
+                 260<---256                                    |
+                 |      v TRY-jfasch-relocated-headers(merged,dead)
+                 |                                          277+REL-2.0.0pre24.1
+                 284<------------------------------------------+280
+                 |                                             v TRY-jfasch-bug-1713807(merged,dead)
+                 |
+                 286---------------------------+
+                 |                             289 REL-2.0.0
+                 |                             305 REL-2.0.1
+                 |                             308 REL-2.0.2
+                 311<--------------------------310
+                 |                             |
+                 |                             v RB-2.0
+                 |
+                 313-----------------------+
+                 336<----------------------+333 REL-2.1.0pre1
+                 |                         v TRY-jfasch-initialbuilders-refactoring(merged,dead)
+                 |
+                 336-------------------------------------------+
+                 345 REL-2.1.0pre2                             |
+                 349---------------------------+               |
+                 |                             352 REL-2.1.0   |
+                 |                             |               |
+                 354----+                      |               v TRY-visual-studio
+                 359<---+                      |
+                 |      v TRY-condlocalinstall(merged,dead)
+                 |                             |
+                 360<--------------------------359
+                 |                             |
+                 378<--------------------------375
+                 385-------------------------- | ---------+
+                 428<------------------------- | ---------+ 427
+                 |                             |          v TRY-filesys-overlay(merged,dead)
+                 |                             |
+                 438-------------------------- | ---------+
+                 |  <--------------------------447        v TRY-relocated-c(unmaintained,dead)
+                 |                             |
+                 497-------------------------- | ---------+
+                 640---------+                 |          |
+                 |           641 REL-2.2.0     |          |
+                 653<------- | --------------- | ---------+ 649
+                 |           v RB-2.2          |          |
+                 |                             |          v TRY-jfasch-automake-plugin(dead)
+   (ongoing cmake|                             |
+    development) |                             |
+                 |                             v RB-2.1
+                 867------------+
+                 |              |
+                 |              872 REL-2.3.0
+                 |              889 REL-2.3.1
+                 |              894 REL-2.3.2
+                 |              |
+                 |              900 REL-2.3.6
+                 |              |
+       	       	 |     	       	947 REL-2.3.8
+                 |              |     
+                 | <------------+ 949  	
+                 |              |
+                 |              v RB-2.3
+		 |
+		 |
+		 |
+		 |
+		 |
+		 v
+		 

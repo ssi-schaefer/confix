@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_java_options
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_java_options.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_java_options
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_JAVA_OPTIONS</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    AC_JAVA_OPTIONS adds configure command line options used for Java m4
+    macros. This Macro is optional.
+   </p>
+   <p>
+    Note: This is part of the set of autoconf M4 macros for Java programs. It
+    is VERY IMPORTANT that you download the whole set, some macros depend on
+    other. Unfortunately, the autoconf archive does not support the concept of
+    set of macros, so I had to break it for submission. The general
+    documentation, as well as the sample configure.in, is included in the
+    AC_PROG_JAVA macro.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Devin Weaver &lt;ktohg@tritarget.com&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2000-07-19
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_JAVA_OPTIONS],[
+AC_ARG_WITH(java-prefix,
+                        [  --with-java-prefix=PFX  prefix where Java runtime is installed (optional)])
+AC_ARG_WITH(javac-flags,
+                        [  --with-javac-flags=FLAGS flags to pass to the Java compiler (optional)])
+AC_ARG_WITH(java-flags,
+                        [  --with-java-flags=FLAGS flags to pass to the Java VM (optional)])
+JAVAPREFIX=$with_java_prefix
+JAVACFLAGS=$with_javac_flags
+JAVAFLAGS=$with_java_flags
+AC_SUBST(JAVAPREFIX)dnl
+AC_SUBST(JAVACFLAGS)dnl
+AC_SUBST(JAVAFLAGS)dnl
+AC_SUBST(JAVA)dnl
+AC_SUBST(JAVAC)dnl
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2000 Devin Weaver
+   &lt;ktohg@tritarget.com&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

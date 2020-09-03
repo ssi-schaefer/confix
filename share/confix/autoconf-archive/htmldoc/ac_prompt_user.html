@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_prompt_user
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_prompt_user.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_prompt_user
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_PROMPT_USER(VARIABLENAME,QUESTION,[DEFAULT])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Asks a QUESTION and puts the results in VARIABLENAME with an optional
+    DEFAULT value if the user merely hits return. Also calls
+    AC_DEFINE_UNQUOTED() on the VARIABLENAME for VARIABLENAMEs that should be
+    entered into the config.h file as well.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Wes Hardaker &lt;wjhardaker@ucdavis.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2000-09-20
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_PROMPT_USER],
+[
+MSG_CHECK=`echo "$2" | tail -1`
+AC_CACHE_CHECK($MSG_CHECK, ac_cv_user_prompt_$1,
+[echo "" &gt;&amp;AC_FD_MSG
+AC_PROMPT_USER_NO_DEFINE($1,[$2],$3)
+eval ac_cv_user_prompt_$1=\$$1
+echo $ac_n "setting $MSG_CHECK to...  $ac_c" &gt;&amp;AC_FD_MSG
+])
+if test "$ac_cv_user_prompt_$1" != "none"; then
+  if test "$4" != ""; then
+    AC_DEFINE_UNQUOTED($1,"$ac_cv_user_prompt_$1")
+  else
+    AC_DEFINE_UNQUOTED($1,$ac_cv_user_prompt_$1)
+  fi
+fi
+]) dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2000 Wes Hardaker
+   &lt;wjhardaker@ucdavis.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

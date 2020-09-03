@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: vl_decl_wchar_max
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/vl_decl_wchar_max.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   vl_decl_wchar_max
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>VL_DECL_WCHAR_MAX</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Checks whether the system headers define WCHAR_MAX or not. If it is already
+    defined, does nothing. Otherwise checks the size and signedness of
+    `wchar_t', and defines WCHAR_MAX to the maximum value that can be stored in
+    a variable of type `wchar_t'.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Ville Laurikari &lt;vl@iki.fi&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-04-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([VL_DECL_WCHAR_MAX], [
+  AC_CACHE_CHECK([whether WCHAR_MAX is defined], vl_cv_decl_wchar_max, [
+    AC_TRY_COMPILE([
+#ifdef HAVE_WCHAR_H
+#include &lt;wchar.h&gt;
+#endif
+],[WCHAR_MAX],[vl_cv_decl_wchar_max="yes"],[vl_cv_decl_wchar_max="no"])])
+  if test $vl_cv_decl_wchar_max = "no"; then
+    VL_CHECK_SIGN([wchar_t],
+      [ wc_signed="yes"
+        AC_DEFINE(WCHAR_T_SIGNED, 1, [Define if wchar_t is signed]) ],
+      [ wc_signed="no"
+        AC_DEFINE(WCHAR_T_UNSIGNED, 1, [Define if wchar_t is unsigned])], [
+#ifdef HAVE_WCHAR_H
+#include &lt;wchar.h&gt;
+#endif
+])
+    if test "$wc_signed" = "yes"; then
+      AC_DEFINE(WCHAR_MAX, [(1L &lt;&lt; (sizeof(wchar_t) * 8 - 1) - 1)], [
+Define to the maximum value of wchar_t if not already defined elsewhere])
+    elif test "$wc_signed" = "no"; then
+      AC_DEFINE(WCHAR_MAX, [(1L &lt;&lt; (sizeof(wchar_t) * 8) - 1)])
+    fi
+  fi
+])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 Ville Laurikari
+   &lt;vl@iki.fi&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

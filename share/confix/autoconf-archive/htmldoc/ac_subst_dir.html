@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_subst_dir
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_subst_dir.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_subst_dir
+  </h1>
+  <h2>
+   Obsolete Macro
+  </h2>
+  <p class="indent">
+   The macro AC_DEFINE_DIR provides this functionality directly now.
+  </p>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_SUBST_DIR(VARNAME, [DIR])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro substitutes (with AC_SUBST) VARNAME with the expansion of itself
+    or the DIR variable if specified, taking care of fixing up ${prefix} and
+    such.
+   </p>
+   <p>
+    Side effect: VARNAME is replaced with the expansion.
+   </p>
+   <p>
+    AC_SUBST_DIR bases on Alexandre Oliva's AC_DEFINE_DIR macro.
+   </p>
+   <p>
+    Examples:
+   </p>
+   <pre>
+   AC_SUBST_DIR(DATADIR)
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Stepan Kasal &lt;kasal@ucw.cz&gt;, Mathias Hasselmann
+   &lt;mathias.hasselmann@gmx.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-07-29
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_SUBST_DIR], [
+        ifelse($2,,,$1="[$]$2")
+        $1=`(
+            test "x$prefix" = xNONE &amp;&amp; prefix="$ac_default_prefix"
+            test "x$exec_prefix" = xNONE &amp;&amp; exec_prefix="${prefix}"
+            eval $1=\""[$]$1"\"
+            eval echo \""[$]$1"\"
+        )`
+        AC_SUBST($1)
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Stepan Kasal
+   &lt;kasal@ucw.cz&gt;</span><br>
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Mathias Hasselmann
+   &lt;mathias.hasselmann@gmx.de&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

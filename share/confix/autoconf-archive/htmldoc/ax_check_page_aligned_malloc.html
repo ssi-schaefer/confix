@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_check_page_aligned_malloc
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ax_check_page_aligned_malloc.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_check_page_aligned_malloc
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_CHECK_PAGE_ALIGNED_MALLOC</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Some operating systems (generally, BSD Unix variants) lack a posix_memalign
+    function, a memalign function, and a working (meaning, the memory can be
+    freed) valloc function. To make up for it, the malloc function promises to
+    return page-aligned addresses if more than one page's worth of memory is
+    allocated. AX_CHECK_PAGE_ALIGNED_MALLOC checks for this condition and
+    defines HAVE_PAGE_ALIGNED_MALLOC if the condition holds.
+   </p>
+   <p>
+    As an aside, note that valloc'd memory cannot safely be freed on all
+    operating systems. (Again, some flavors of BSD are the troublemakers.) It's
+    best to avoid using valloc in favor of posix_memalign, memalign, or an
+    aligned malloc as detected by AX_CHECK_PAGE_ALIGNED_MALLOC.
+   </p>
+   <p>
+    Caveat: AX_CHECK_PAGE_ALIGNED_MALLOC takes a probabalistic approach. If 100
+    calls to malloc all return page-aligned addresses, it assumes that all
+    calls will behave likewise. It is therefore possible -- albeit extremely
+    unlikely -- that AX_CHECK_PAGE_ALIGNED_MALLOC can return a false positive.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Scott Pakin &lt;pakin@uiuc.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-22
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_CHECK_PAGE_ALIGNED_MALLOC],
+[AC_CACHE_CHECK([if large mallocs guarantee page-alignment],
+  [ax_cv_func_malloc_aligned],
+  [AC_TRY_RUN([
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#if HAVE_UNISTD_H
+# include &lt;unistd.h&gt;
+#endif
+
+int main()
+{
+  int pagesize = getpagesize();
+  int i;
+
+  for (i=0; i&lt;100; i++)
+    if ((unsigned long)malloc(pagesize+1) &amp; (pagesize-1))
+      exit (1);
+  exit (0);
+}
+              ],
+     [ax_cv_func_malloc_aligned=yes],
+     [ax_cv_func_malloc_aligned=no],
+     [ax_cv_func_malloc_aligned=no])
+  ])
+if test "$ax_cv_func_malloc_aligned" = yes ; then
+  AC_DEFINE([HAVE_PAGE_ALIGNED_MALLOC], [1],
+    [Define if `malloc'ing more than one page always returns a page-aligned address.])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Scott Pakin
+   &lt;pakin@uiuc.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

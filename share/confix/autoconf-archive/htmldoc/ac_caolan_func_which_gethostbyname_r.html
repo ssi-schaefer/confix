@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_caolan_func_which_gethostbyname_r
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_caolan_func_which_gethostbyname_r.m4">
+      Download M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_caolan_func_which_gethostbyname_r
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_caolan_FUNC_WHICH_GETHOSTBYNAME_R</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Provides a test to determine the correct way to call gethostbyname_r:
+   </p>
+   <pre>
+ - defines HAVE_FUNC_GETHOSTBYNAME_R_6 if it needs 6 arguments (e.g linux)
+ - defines HAVE_FUNC_GETHOSTBYNAME_R_5 if it needs 5 arguments (e.g. solaris)
+ - defines HAVE_FUNC_GETHOSTBYNAME_R_3 if it needs 3 arguments (e.g. osf/1)
+</pre>
+   <p>
+    If used in conjunction in gethostname.c the api demonstrated in test.c can
+    be used regardless of which gethostbyname_r exists. These example files
+    found at &lt;http://www.csn.ul.ie/~caolan/publink/gethostbyname_r&gt;.
+   </p>
+   <p>
+    Based on David Arnold's autoconf suggestion in the threads faq.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Caolan McNamara &lt;caolan@skynet.ie&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2003-10-29
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_caolan_FUNC_WHICH_GETHOSTBYNAME_R],
+[AC_CACHE_CHECK(for which type of gethostbyname_r, ac_cv_func_which_gethostname_r, [
+AC_CHECK_FUNC(gethostbyname_r, [
+        AC_TRY_COMPILE([
+#               include &lt;netdb.h&gt;
+        ],      [
+
+        char *name;
+        struct hostent *he;
+        struct hostent_data data;
+        (void) gethostbyname_r(name, he, &amp;data);
+
+                ],ac_cv_func_which_gethostname_r=three,
+                        [
+dnl                     ac_cv_func_which_gethostname_r=no
+  AC_TRY_COMPILE([
+#   include &lt;netdb.h&gt;
+  ], [
+        char *name;
+        struct hostent *he, *res;
+        char buffer[2048];
+        int buflen = 2048;
+        int h_errnop;
+        (void) gethostbyname_r(name, he, buffer, buflen, &amp;res, &amp;h_errnop)
+  ],ac_cv_func_which_gethostname_r=six,
+
+  [
+dnl  ac_cv_func_which_gethostname_r=no
+  AC_TRY_COMPILE([
+#   include &lt;netdb.h&gt;
+  ], [
+                        char *name;
+                        struct hostent *he;
+                        char buffer[2048];
+                        int buflen = 2048;
+                        int h_errnop;
+                        (void) gethostbyname_r(name, he, buffer, buflen, &amp;h_errnop)
+  ],ac_cv_func_which_gethostname_r=five,ac_cv_func_which_gethostname_r=no)
+
+  ]
+
+  )
+                        ]
+                )]
+        ,ac_cv_func_which_gethostname_r=no)])
+
+if test $ac_cv_func_which_gethostname_r = six; then
+  AC_DEFINE(HAVE_FUNC_GETHOSTBYNAME_R_6)
+elif test $ac_cv_func_which_gethostname_r = five; then
+  AC_DEFINE(HAVE_FUNC_GETHOSTBYNAME_R_5)
+elif test $ac_cv_func_which_gethostname_r = three; then
+  AC_DEFINE(HAVE_FUNC_GETHOSTBYNAME_R_3)
+
+fi
+
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2003 Caolan McNamara
+   &lt;caolan@skynet.ie&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

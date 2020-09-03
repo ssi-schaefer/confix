@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_jni_include_dir
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_jni_include_dir.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_jni_include_dir
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_JNI_INCLUDE_DIR</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    AC_JNI_INCLUDE_DIR finds include directories needed for compiling programs
+    using the JNI interface.
+   </p>
+   <p>
+    JNI include directories are usually in the java distribution This is
+    deduced from the value of JAVAC. When this macro completes, a list of
+    directories is left in the variable JNI_INCLUDE_DIRS.
+   </p>
+   <p>
+    Example usage follows:
+   </p>
+   <pre>
+    AC_JNI_INCLUDE_DIR
+
+    for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS
+    do
+            CPPFLAGS="$CPPFLAGS -I$JNI_INCLUDE_DIR"
+    done
+</pre>
+   <p>
+    If you want to force a specific compiler:
+   </p>
+   <p>
+    - at the configure.in level, set JAVAC=yourcompiler before calling
+    AC_JNI_INCLUDE_DIR
+   </p>
+   <p>
+    - at the configure level, setenv JAVAC
+   </p>
+   <p>
+    Note: This macro can work with the autoconf M4 macros for Java programs.
+    This particular macro is not part of the original set of macros.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Don Anderson &lt;dda@sleepycat.com&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2006-05-27
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_JNI_INCLUDE_DIR],[
+
+JNI_INCLUDE_DIRS=""
+
+test "x$JAVAC" = x &amp;&amp; AC_MSG_ERROR(['\$JAVAC' undefined])
+AC_PATH_PROG(_ACJNI_JAVAC, $JAVAC, no)
+test "x$_ACJNI_JAVAC" = xno &amp;&amp; AC_MSG_ERROR([$JAVAC could not be found in path])
+
+_ACJNI_FOLLOW_SYMLINKS("$_ACJNI_JAVAC")
+_JTOPDIR=`echo "$_ACJNI_FOLLOWED" | sed -e 's://*:/:g' -e 's:/[[^/]]*$::'`
+case "$host_os" in
+        darwin*)        _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[[^/]]*$::'`
+                        _JINC="$_JTOPDIR/Headers";;
+        *)              _JINC="$_JTOPDIR/include";;
+esac
+if test -f "$_JINC/jni.h"; then
+        JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $_JINC"
+else
+        _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[[^/]]*$::'`
+        if test -f "$_JTOPDIR/include/jni.h"; then
+                JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $_JTOPDIR/include"
+        else
+                AC_MSG_ERROR([cannot find java include files])
+        fi
+fi
+
+# get the likely subdirectories for system specific java includes
+case "$host_os" in
+bsdi*)          _JNI_INC_SUBDIRS="bsdos";;
+linux*)         _JNI_INC_SUBDIRS="linux genunix";;
+osf*)           _JNI_INC_SUBDIRS="alpha";;
+solaris*)       _JNI_INC_SUBDIRS="solaris";;
+mingw*)                 _JNI_INC_SUBDIRS="win32";;
+cygwin*)                _JNI_INC_SUBDIRS="win32";;
+*)              _JNI_INC_SUBDIRS="genunix";;
+esac
+
+# add any subdirectories that are present
+for JINCSUBDIR in $_JNI_INC_SUBDIRS
+do
+        if test -d "$_JTOPDIR/include/$JINCSUBDIR"; then
+                JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $_JTOPDIR/include/$JINCSUBDIR"
+        fi
+done
+])
+
+# _ACJNI_FOLLOW_SYMLINKS &lt;path&gt;
+# Follows symbolic links on &lt;path&gt;,
+# finally setting variable _ACJNI_FOLLOWED
+# --------------------
+AC_DEFUN([_ACJNI_FOLLOW_SYMLINKS],[
+# find the include directory relative to the javac executable
+_cur="$1"
+while ls -ld "$_cur" 2&gt;/dev/null | grep " -&gt; " &gt;/dev/null; do
+        AC_MSG_CHECKING(symlink for $_cur)
+        _slink=`ls -ld "$_cur" | sed 's/.* -&gt; //'`
+        case "$_slink" in
+        /*) _cur="$_slink";;
+        # 'X' avoids triggering unwanted echo options.
+        *) _cur=`echo "X$_cur" | sed -e 's/^X//' -e 's:[[^/]]*$::'`"$_slink";;
+        esac
+        AC_MSG_RESULT($_cur)
+done
+_ACJNI_FOLLOWED="$_cur"
+])# _ACJNI
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Don Anderson
+   &lt;dda@sleepycat.com&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

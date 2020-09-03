@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: acltx_packages
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/acltx_packages.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   acltx_packages
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>ACLTX_PACKAGES(PACKAGESNAMES,CLASSNAME,VARIABLETOSET[,ACTION-IF-FOUND[,ACTION-IF-NOT-FOUND]])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This package search for the first suitable package in PACKAGESNAMES (comma
+    separated list) with class CLASSNAME and set VARIABLETOSET the package
+    found or to no
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Boretti Mathieu &lt;boretti@eig.unige.ch&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2006-08-20
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+define(_ACLTX_PACKAGE_INTERNE,[
+        ifelse($#,0,[],$#,1,[],$#,2,[],$#,3,[
+                ACLTX_PACKAGE($3,$2,$1)
+        ],[
+                ACLTX_PACKAGE($3,$2,$1)
+                if test "$$1" = "yes";
+                then
+                        $1=$3 ; export $1 ;
+                else
+                        _ACLTX_PACKAGE_INTERNE($1,$2,m4_shift(m4_shift(m4_shift($@))))
+                fi;
+        ])
+])
+
+AC_DEFUN([ACLTX_PACKAGES],[
+        _ACLTX_PACKAGE_INTERNE($3,$2,$1)
+        AC_SUBST($3)
+ifelse($#,3,[],$#,4,[
+    if test "[$]$3" != "no" ;
+    then
+        $4
+    fi
+],$#,5,[
+    ifelse($4,[],[
+        if test "[$]$3" = "no" ;
+        then
+            $5
+        fi
+    ],[
+        if test "[$]$3" != "no" ;
+        then
+            $4
+        else
+            $5
+        fi
+    ])
+])
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2006 Boretti Mathieu
+   &lt;boretti@eig.unige.ch&gt;</span>
+   <p>
+    This library is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation; either version 2.1 of the License, or (at
+    your option) any later version.
+   </p>
+   <p>
+    This library is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+    for more details.
+   </p>
+   <p>
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library; if not, write to the Free Software Foundation,
+    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+   </p>
+  </div>
+ </body>
+</html>

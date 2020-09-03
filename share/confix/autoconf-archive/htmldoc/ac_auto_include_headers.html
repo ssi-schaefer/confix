@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_auto_include_headers
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_auto_include_headers.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_auto_include_headers
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_AUTO_INCLUDE_HEADERS (HEADER-FILE, INCLUDE-FILE ...)</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Given a HEADER-FILE and a space-separated list of INCLUDE-FILEs,
+    AC_AUTO_INCLUDE_HEADERS will append to HEADER-FILE a conditional #include
+    for each INCLUDE-FILE. For instance, the following macro call:
+   </p>
+   <pre>
+   AC_AUTO_INCLUDE_HEADERS([config-inc.h], [sys/foobar.h])
+</pre>
+   <p>
+    will append the following text to config-inc.h:
+   </p>
+   <pre>
+   #ifdef HAVE_SYS_FOOBAR_H
+   # include &lt;sys/foobar.h&gt;
+   #endif
+</pre>
+   <p>
+    AC_AUTO_INCLUDE_HEADERS makes it easy to auto-generate a single header file
+    that can then be #include'd by multiple files in a project. Because the
+    #ifdef's are appended to HEADER-FILE, it's also convenient to include
+    additional text in that file. For instance:
+   </p>
+   <pre>
+   cat &lt;&lt;\CIH_EOF &gt; config-inc.h
+   /* This file was generated automatically by configure. */
+
+   #ifndef _CONFIG_INC_H_
+   #define _CONFIG_INC_H_
+
+   #include &lt;stdio.h&gt;
+
+   CIH_EOF
+   AC_AUTO_INCLUDE_HEADERS([config-inc.h], [arpa/inet.h dlfcn.h errno.h])
+   echo "#endif" &gt;&gt; config-inc.h
+</pre>
+   <p>
+    Here's an easy way to get a complete list of header files from config.h:
+   </p>
+   <pre>
+   cat config.h | perl -ane '/ HAVE_\S+_H / &amp;&amp; do {$_=$F[$#F-1]; s/^HAVE_//; s/_H/.h/; s|_|/|g; tr/A-Z/a-z/; print "$_ "}'
+</pre>
+   <p>
+    You can then manually edit the resulting list.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Scott Pakin &lt;pakin@uiuc.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-03-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_AUTO_INCLUDE_HEADERS],
+[touch $1
+for ac_auto_include_file in $2; do
+  ac_auto_include_have=`echo $ac_auto_include_file | sed 'y%./*abcdefghijklmnopqrstuvwxyz%__PABCDEFGHIJKLMNOPQRSTUVWXYZ%;s%[^_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]%_%g'`
+  echo "#ifdef HAVE_$ac_auto_include_have" &gt;&gt; $1
+  echo "# include &lt;$ac_auto_include_file&gt;" &gt;&gt; $1
+  echo "#endif" &gt;&gt; $1
+  echo "" &gt;&gt; $1
+done])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 Scott Pakin
+   &lt;pakin@uiuc.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

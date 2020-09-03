@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_func_snprintf
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_func_snprintf.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_func_snprintf
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_FUNC_SNPRINTF</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Checks for a fully C99 compliant snprintf, in particular checks whether it
+    does bounds checking and returns the correct string length; does the same
+    check for vsnprintf. If no working snprintf or vsnprintf is found, request
+    a replacement and warn the user about it. Note: the mentioned replacement
+    is freely available and may be used in any project regardless of it's
+    licence (just like the autoconf special exemption).
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   R&uuml;diger Kuhlmann &lt;info@ruediger-kuhlmann.de&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-09-26
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_FUNC_SNPRINTF],
+[AC_CHECK_FUNCS(snprintf vsnprintf)
+AC_MSG_CHECKING(for working snprintf)
+AC_CACHE_VAL(ac_cv_have_working_snprintf,
+[AC_TRY_RUN(
+[#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    char bufs[5] = { 'x', 'x', 'x', '\0', '\0' };
+    char bufd[5] = { 'x', 'x', 'x', '\0', '\0' };
+    int i;
+    i = snprintf (bufs, 2, "%s", "111");
+    if (strcmp (bufs, "1")) exit (1);
+    if (i != 3) exit (1);
+    i = snprintf (bufd, 2, "%d", 111);
+    if (strcmp (bufd, "1")) exit (1);
+    if (i != 3) exit (1);
+    exit(0);
+}], ac_cv_have_working_snprintf=yes, ac_cv_have_working_snprintf=no, ac_cv_have_working_snprintf=cross)])
+AC_MSG_RESULT([$ac_cv_have_working_snprintf])
+AC_MSG_CHECKING(for working vsnprintf)
+AC_CACHE_VAL(ac_cv_have_working_vsnprintf,
+[AC_TRY_RUN(
+[#include &lt;stdio.h&gt;
+#include &lt;stdarg.h&gt;
+
+int my_vsnprintf (char *buf, const char *tmpl, ...)
+{
+    int i;
+    va_list args;
+    va_start (args, tmpl);
+    i = vsnprintf (buf, 2, tmpl, args);
+    va_end (args);
+    return i;
+}
+
+int main(void)
+{
+    char bufs[5] = { 'x', 'x', 'x', '\0', '\0' };
+    char bufd[5] = { 'x', 'x', 'x', '\0', '\0' };
+    int i;
+    i = my_vsnprintf (bufs, "%s", "111");
+    if (strcmp (bufs, "1")) exit (1);
+    if (i != 3) exit (1);
+    i = my_vsnprintf (bufd, "%d", 111);
+    if (strcmp (bufd, "1")) exit (1);
+    if (i != 3) exit (1);
+    exit(0);
+}], ac_cv_have_working_vsnprintf=yes, ac_cv_have_working_vsnprintf=no, ac_cv_have_working_vsnprintf=cross)])
+AC_MSG_RESULT([$ac_cv_have_working_vsnprintf])
+if test x$ac_cv_have_working_snprintf$ac_cv_have_working_vsnprintf != "xyesyes"; then
+  AC_LIBOBJ(snprintf)
+  AC_MSG_WARN([Replacing missing/broken (v)snprintf() with version from http://www.ijs.si/software/snprintf/.])
+  AC_DEFINE(PREFER_PORTABLE_SNPRINTF, 1, "enable replacement (v)snprintf if system (v)snprintf is broken")
+fi])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 R&uuml;diger
+   Kuhlmann &lt;info@ruediger-kuhlmann.de&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

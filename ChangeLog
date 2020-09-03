@@ -1,0 +1,1327 @@
+2009-05-13    <joerg.faschingbauer@aon.at>
+
+	* Performance bugfix (local_package.py). Was quadratic with number
+	  of directories.
+	* Various minor performance tuning (using generators more now).
+
+2008-01-24 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Renamed libconfix.frontends.confix to
+	  libconfix.frontends.confix2.
+
+2008-01-15 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Merged from
+	  https://confix.svn.sourceforge.net/svnroot/confix/confix/branches/RB-2.1,
+	  rev 447:
+	  * InstalledNode.short_description() was left abstract; fixed.
+	  * add test libconfix/core/filesys/tests/scan.py
+	  * small restructuring in plugins.c.linked (deep vs flat linking)
+	* index.html
+	  * converted to validated XHTML (hooray)
+	  * content fixed to give potential users a chance to understand
+	    what I mean
+
+2007-11-26 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Fixed bug "[ 1834223 ] Missing test for duplicate
+	  PROVIDE_SYMBOL"
+
+2007-11-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* confix2.py --overlayroot
+	  Makes it possible to "overlay" the package with a separate tree
+	  that contains the Confix2.{pkg,dir} files.
+	* Largely eliminated the --use-libtool parameter, by scanning the
+	  generated configure.ac file for AC_PROG_LIBTOOL. --use-libtool
+	  is still necessary for the damn ConfixSetup default. Thus
+	  consider "[ 1834227 ] ExplicitCSetup and use_libtool" fixed.
+	* test cleanup in the outside 'tests' directory: removed 
+	  tests/make and tests/plainfile
+
+2007-10-23 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Fixed bug "[ 1817734 ] Relocated headers leave require objects
+	  at source module"
+
+2007-10-22 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* removed libconfix/testutils/find.py
+
+2007-10-21 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Fixed bug "[ 1654643 ] URGENCY_ERROR require need not be
+	  resolved immediately"
+
+2007-09-27 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* merged from RB-branches/2.1 (last changed rev. 375 there)
+	  * add test libconfix/core/filesys/tests/scan.py
+	  * InstalledNode.short_description() was left abstract; fixed.
+
+2007-09-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* BuildInfo_CIncludePath_NativeLocal does not carry any
+	  autoconfisms anymore.
+
+2007-09-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* merged from branches/RB-2.1 (last changed rev. 351 there):
+	  * resurrected CALL_MAKE_AND_RESCAN_SYNC() (by popular demand)
+
+2007-09-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Conditional local install.
+	
+	  Before, every header file was copied into the directory
+	  $(top_builddir)/confix_include to make it visible to the build
+	  of fellow modules in the package. This was mainly done to easily
+	  cope with header files that wanted to be visible in a
+	  subdirectory, for example as #include <subdir/file.h>. The
+	  include path of a module that used this file then only had to be
+	  augmented with -I$(top_builddir)/confix_include for any header
+	  file that was locally used.
+
+	  Anyway, this was done even for header files that didn't want to
+	  be visible in a subdirectory, but only as #include <file.h>. For
+	  these, it is sufficient to point the include path of a using
+	  module into $(top_srcdir)/<path to the directory containing the
+	  file.h>.
+
+	  The goal of this change is to do the confix_include dance
+	  only if absolutely necessary; i.e. if there is no way to point a
+	  user's include path to a source directory (we could even point
+	  it to a parent directory if applicable).
+
+	  Tests are in libconfix/plugins/c/tests/cond_localinstall.
+
+	* Moved more tests from their original location in the global
+	  tests directory to the place where they belong - to the
+	  neigborhood of the code they test.
+
+2007-07-13 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* fixed "[ 1732685 ] Funny error with
+	  LibraryDependenciesFinderSetup", thereby refactoring a lot of
+	  the Confix2.dir interface stuff.
+	* Release 2.1.0pre1
+
+2007-06-23 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Merged from RB-2.0
+	  * Fixed bug when setting environment variables for make, in the
+	    config file.
+	  * Fixed
+	    https://sourceforge.net/tracker/index.php?func=detail&aid=1741989&group_id=68975&atid=523019,
+	    "[ 1741989 ] Explicit interface: EXECUTABLE with implicit
+	    exename".
+	  * fixed "[ 1708975 ] Configure without --prefix"
+
+2007-05-28 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Explicit interface rudimentarily implemented.
+	* Merged from TRY-jfasch-bug-1713807:
+	  * fixed "[ 1713807 ] Full graph computed even for unused installed packages"
+	* Release 2.0.0
+
+2007-03-14 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* libconfix.plugins.c.pkg_config: basic pkg-config support;
+	  currently only supports finding an external library using
+	  pkg-config. in the future, it's supposed to generate pkg-config
+	  files for confix-generated libraries.
+
+2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* (Merged from TRY-jfasch-relocated-headers)
+	  * new RELOCATE_HEADER() function
+	  * "build" test suite for libconfix
+
+2007-03-05 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* (argh) added libconfix.plugins.c.relocated_headers to setup.py
+	* Release 2.0.0pre24	
+
+2007-03-01 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* core.machinery.builder.Builder: new method force_enlarge() which
+	  can be used to easily request another enlarge round. (people
+	  used to add an artificial provide object for that purpose.)
+	* plugins.c: removed GraphInstaller and DefaultInstaller. the
+	  responsibility of the latter was moved back into
+	  h.HeaderBuilder; the former has no replacement.
+	* started to move tests from the toplevel 'tests' directory into
+	  subdirectories (named 'tests') of the source to be tested.
+	* Release 2.0.0pre23
+ 
+2007-02-11 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* plugins.make.iface: new method CALL_MAKE_AND_RESCAN_SYNC()
+	* plugins.c.compiled, plugins.c.linked: use
+	  $(readonly_prefixes_incpath) and $(readonly_prefixes_libpath)
+	  instead of the respective @readonly_prefixes_...@
+	  AC_SUBSTitutions
+	* Release 2.0.0pre22
+
+2007-02-07 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Bug fix: "[ 1654643 ] URGENCY_ERROR require need not be resolved
+	  immediately"
+
+2007-01-25 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Bug fix in plugins.make.caller: ambiguous provide objects
+	  generated.
+	* Release 2.0.0pre21
+
+2007-01-22 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* fix "[ 1639330 ] 'CALL_MAKE_AND_RESCAN' is not defined", plus
+	  associated test.
+	* Release 2.0.0pre20
+	
+2007-01-17 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* fix "[ 1620287 ] Cycle error: message output bug"
+
+2007-01-17 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Add tests (inmem and build) for explicit executable names
+	* setup.py: try to put all modules into the distribution packages
+	  (maybe someone will invent recursive_packages one day)
+	* Release 2.0.0pre19
+
+2007-01-07 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* Eliminate the bogus DirectoryBuilder.configurator
+	  story. Builder.initialize() is now responsible for executing the
+	  user's interface calls. Configuration of the directory is now
+	  done by the package's LocalPackage.initial_builders() return
+	  value.
+	  
+2007-01-04 Joerg Faschingbauer <joerg.faschingbauer@aon.at>
+
+	* libconfix.plugins.c.library_dependencies: generate library
+	  dependencies for executables that are not linked by libtool
+	  (<exename>_DEPENDENCIES).
+	* Internal changes
+	  * Replace the odd BuilderSet with an ordinary standard Python
+	    set.
+	  * Builders IDs do not anymore have to be globally (well, inside
+	    the package) unique, but only within a directory. Renamed
+	    Builder.unique_id() to Builder.locally_unique_id(),
+	    therefore. Require an implementation to implement it, though,
+	    to make people aware.
+	  * libconfix.plugins.c.base: evaluate the C comment interface
+	    calls (you know, "// CONFIX:BLAH()" stuff) in
+	    Builder.configure(), rather than in the ctor.
+	  * libconfix.plugins.c.clusterer: support for C files that get
+	    their "MAIN" property *after* the clusterer has seen them the
+	    first time.
+	  * lots of new tests.
+	* Release 2.0.0pre18
+
+2006-11-30 Robert Lechner <rlechne@salomon.at>
+
+	* bug fixes
+	* Release 2.0.0pre17
+
+2006-10-25 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* IDL: install files with modules that are not properly terminated
+	  flat, into $(includedir)
+	* Release 2.0.0pre16
+ 
+2006-10-24 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Moved everything from core to machinery.core
+
+2006-10-24 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Re-enabled KDE-Hack (y'know, "fast creating dir/Makefile")
+	* Release 2.0.0pre15
+
+2006-10-23 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/plugins/idl/builder.py: argh. renamed IDLBuilder to
+	  Builder, but forgot to ...
+	* autoconf-archive/ac_jni_include_dir: += interix
+	* Release 2.0.0pre14
+
+2006-10-23 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Removed 'parentbuilder' and 'package' from Builder ctor (and all
+	  derived)
+	* Rudimentary 'debug' facility (a plugin localized in
+	  frontends.confix, for the time being)
+	* Release 2.0.0pre13
+
+2006-10-20 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libtool linking now works correctly (pass only directly referenced
+	  libraries as commandline arguments)
+	* new plugin: make (simple codegenerator wrapper)
+	* moved CompositeSetup from plugins.c to core.setup
+	* Release 2.0.0pre12
+
+2006-10-19 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Confix2.dir: new method RESCAN_CURRENT_DIRECTORY()
+	* Release 2.0.0pre11
+
+2006-10-19 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Put Confix2.pkg in EXTRA_DIST
+	* Release 2.0.0pre10
+
+2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* core.automake.file_installer: $< is not portable make. replace
+	  it with a more obscure construct.
+	* Performance fixes
+	  * Marshal MD5 sums together with configure.ac and acinclude.m4
+	    related build info.
+	  * plugins.c: do not repeatedly search for the main
+	    function. checking once is enough.
+
+2006-10-18 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* core.automake.autoconf_archive: search for archive works when
+	  performed outside of confix's world.
+	* serious fix: configfile's CONFIGURE/ENV settings wreak havoc on
+	  configure call at worst (Interix); the bug goes unnoticed most
+	  of the time.
+	* Better error message for provide conflicts.
+	* Release 2.0.0pre9
+
+2006-10-17 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugins.c.clusterer: libtool library version is parsed from
+	  package name by default
+	* plugins.c.iface: PROVIDE_H() auto-recognizes glob characters,
+	  thus making faster matches by default
+	* Release 2.0.0pre8
+
+2006-10-16 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugins.c.linked: add full graph to te linker commandline,
+	  regardless of libtool usage (see the comment there).
+	* 2.0.0pre7
+
+2006-10-16 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugins.c.clusterer: explicit LIBNAME()
+	* 2.0.0pre6
+
+2006-0{6,7,8,9,10}-* Joerg Faschingbauer <jfasch@salomon.at>
+
+	* ongoing rewrite ...
+
+2006-06-21 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* merged from 1.5 (merge-release-1_5-2006-06-21 there):
+          * Apply KDE hack if user wants it. KDE use to patch their
+            configure script to replace ~1 Billion parallel sed instances
+            with one singe perl call.
+          * bulk install: depending on .confix's USE_BULK_INSTALL, offer the
+            option --enable-bulk-install, and make use of that feature. that is
+            * populate the aux-dir with the helper program
+              bulk-install.py. files will be installed using this program,
+              instead of automake's (slow) install-sh and friends.
+            * generate .bulk-install-{local,public} files in every directory
+              where something is installed
+            * generate conditional Makefile.am code - bulk-install and regular
+              automake install - switchable with --enable-bulk-install
+            * to accomplish all this, install code had to be slightly modified:
+              make everyone install files through the new FileInstaller class
+          * AC_CONFIG_AUX_DIR([confix-admin])
+          * do not scan the whole package with --make and
+            --configure. rather, read only the top-level Makefile.py to
+            retrieve the package name and version
+          * Add dump-repofile.py program, plus a few changes here and there
+            to make its output prettier.
+	* merged from 1.4 (merge-release-1_4-2006-06-21 there):
+          * CONFIGURE_IN(): new parameter propagate_mode (=LOCAL inhibits
+            propagation)
+          * libconfix/makefile_py.py: FEATURE_MACRO no longer supported.
+          * buildable_exe.py: add library dependencies. people need it
+            badly, but this can only be a wild hack: if we are using
+            libtool, we cannot be sure what kind of libraries we will be
+            linking against. see the comment in the source for a more
+            thorough explanation.
+          * buildable_clusterer_c: make library and executable names shorter
+            (albeit unique across the package)
+          * Access readonly_prefixes_* through their make macros
+            $(readonly_prefixes_*), rather than through the associated
+            substitution @readonly_prefixes_*@ (this makes Dops happy).
+          * autoconf-archive (ac_pkg_mico.m4) 
+            * add explicit MICO_URGENCY value "off"; else --without-mico
+              mico-setup.sh is found and evaluated. (bloody code
+              that).
+            * search mico-setup.sh in ${PATH} as well.
+          * pkg_buildable.py: put kdevelop hints at the end of the
+            conditional SUBDIRS section (patch by Robert Gruber).
+          * libconfix/helper_pickle.py: on interix, use pickle instead of
+            cPickle because the latter segfaults.
+	
+2006-04-05 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* ongoing rewrite: implment and make sure (write tons of tests :-)
+	  that buildinfo is communicated correctly. on the way to writing
+	  real output.
+ 
+2006-03-26 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* scripts/find_path.py: new program to discover paths to unwanted
+	  modules in the graph
+	* ongoing rewrite:
+	  * eliminate CompositeBuilder in favor of DirectoryBuilder
+          * introduce EntryBuilder as base of DirectoryBuilder and
+	    FileBuilder
+	  * make FILE_PROPERT{Y,IES} work for a directory's Makefile.py
+
+2006-02-06 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Merged from release_1_4-branch (merge-release-1_4-2006-02-06
+	  there).
+          * buildable_exe.py: add library dependencies. people need it
+            badly, but this can only be a wild hack: if we are using
+            libtool, we cannot be sure what kind of libraries we will be
+            linking against. see the comment in the source for a more
+            thorough explanation.
+
+2006-02-06 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Replaced dirty old dependency graph (libconfix.depgraph) with a
+	  shiny new one in libconfix.digraph.digraph, accompanied with a
+	  growing set of graph tools in the same module.
+	* Ongoing modularization: moving the monolithic pieces (pun
+	  intended) to libconfix.core.
+
+2006-01-30 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/helper_pickle.py: on interix, use pickle instead of
+	  cPickle because the latter segfaults.
+
+2006-01-25 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Ongoing modularization: moved a lot of stuff into
+	  libconfix.plugins
+	* writedot.py up and running again.
+
+2005-12-20 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Ongoing modularization
+	  * Moved default Builder creators out of the library, into the main
+	    program, confix.py.
+	  * Moved libconfix.plugin_idl to libconfix.plugins.idl.*
+	* libconfix.readonly_prefixes: generate several other directory
+	  lists which can be useful.
+	* libconfix.plugins.mico: beginnings of Mico IDL plugin.
+
+2005-12-09 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Refactored buildinfo handling alot. buildinfo is now maintained
+	  in an indexed way - no more linear searching, no ugly
+	  gather_content(), reap_content() anymore (pooh).
+
+2005-12-09 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.4.0
+
+2005-12-07 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Make repeated adds of equal require objects have no effect -
+	  they are collapsed into one single object, no matter how often
+	  they are added.
+	* To make this possible, refactored handling of dependency
+	  information (provide and require objects) quite a bit.
+	* Release 1.4.pre11
+
+2005-12-06 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/modbuild.py (BuildableModule.gather_configure_in): do
+	  not drop configure.in paragraphs of the module itself.
+	* Release 1.4.pre10
+
+2005-12-05 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/buildable_mgr.py: removed debug output (which I forgot
+	  accidentally)
+	* Release 1.4.pre9
+
+2005-12-04 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/buildable_lex.py: argh; forgot about
+	  create_from_file()
+	* Release 1.4.pre8
+
+2005-12-02 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Require a minimum automake version of 1.9, by adding "1.9" to
+	  AUTOMAKE_OPTIONS
+	
+2005-12-02 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Several small fixes related to helper_configure_in
+	* Release 1.4.pre7
+
+2005-12-02 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/modbuild.py (BuildableModule.gather_build_info): do
+	  not gather dependency info from self.
+	* Release 1.4.pre6
+
+2005-12-01 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/buildable_library.py: remove _DEPENDENCIES since this
+	  is completely wrong for libraries.
+	* libconfix/plugin_idl.py: provide file internally only if install
+	  path is not null (or else we have a duplicate provide object).
+	* buildable_library.py: removed check if pipe.close() went
+	  ok. rationale: if something went wrong, there is a good chance
+	  that parsing of the output fails anyway.
+	* Release 1.4.pre5
+
+2005-11-28 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Add "lines" parameter to BuildableCreator specializations, to
+	  relieve creators from actually having to read  the file.
+	* Release 1.4.pre4
+
+2005-11-25 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Made eliminating internal require objects 100 times faster
+	  through indexing.
+	* Removed Salomon plugins
+	* Release 1.4.pre3
+
+2005-11-22 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Merged from release-1_3-branch (merge-release-1_3-2005-11-22
+	  there); here's an outline of the changes
+	  * plugin_salomon_bmw_assembly: bug fix: explicitly specified
+	    'wanted_components' not working; ALL_AVAILABLE was done in
+	    every case
+	  * plugin_salomon_pdl: searching the prefixes for .rc files to
+	    copy: break after having found one. (was
+	    http://salxis.salomon.at/cgi-bin/bugzilla/show_bug.cgi?id=6084)
+	  * plugin_salomon_pdl: do not add
+	    readonly_prefixes.datapath_subst (which expands to the
+	    cascaded datadirs, but without -I added - argh)
+	  * plugin_salomon_pdl: call $(PDL) rather than straight pdl
+	  * add --readonly-prefixes commandline option
+	  
+2005-11-22 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.4.pre2
+	* Marshalling revisited (one more time): per-class version
+	  numbers; somehow lost these over time.
+
+2005-11-14 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Marshalling revisited: the dictionary is still controlled by
+	  {s,g}et_marshalling_data(), but it is not recursive
+	  anymore. rather, attributes are stored flat just like it is with
+	  pickling when you don't do anything special. this saves even
+	  more space in the repo files; also, it is possible to check for
+	  attribute conflicts (see marshalling.merge_attributes()).
+
+2005-11-11 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.4.pre1
+	* removed class MarshallingData; use a plain dictionary instead
+	  (this decreases size of repo files drastically)
+	* Tightened error output a bit
+	* speed up repository reading by a factor of two using cPickle
+	  instead of pickle
+	
+2005-11-10 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Repository files are now pickled dictionaries which contain a
+	  version number and a package which was pickled into a string.
+
+2005-11-06 Joerg Faschingbauer <jfasch@salomon.at>
+	
+	* Made everything Marshallable (modulo a few I may have forgotten
+	  due to the lack of types @#$%^)
+	  * BuildInformation hierarchy
+	  * ModuleBase, InstalledModule
+	  * Package, InstalledPackage
+	* Eliminated AC_Check. Instead added paragraph.py: Paragraph,
+	  ParagraphSet, OrderedParagraphSet.
+	* Eliminated acincludeparts likewise.
+
+2005-11-01 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Versioned Marshalling added, through the classes Marshallable
+	  and MarshallingData in marshalling.py.
+	* Require and Provide hierarchies made Marshallable.	  
+
+2005-10-31 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* (merged from optional-modules-branch2, rendered that dead thereby)
+	* Conceptual changes
+	  * Replaced the over-intelligent content.Content base class with
+	    buildinfo.BuildInformation which is more to the point.
+	    Instead of pushing the Content objects into their consumers, let
+	    the consumers (the Buildable instances) actively fetch their
+	    BuildInformation objects.
+	  * Redesigned the persistent build information to be less vulnerable
+	    to changes. For example, we only persist library base names (no
+	    'lib', no '.a'), and so on. we defer more responsibility to the
+	    consumer to calculate his information from what he gets.
+	* The following got largely rewritten to accomodate with these
+	  changes
+	  * plugin_salomon_owilrc.py
+	  * plugin_idl.py
+	  * plugin_salomon_idl.py
+	* Punctual changes (not necessarily exhaustive)
+	  * error.py: introduce new class SystemError to carry the
+	    traceback. configfile.py and makefile_py.py are happy to use this and to better report errors.
+	  * pkg_buildable.py, modbuild.py, and virtually all buildables: let
+	    BuildableModule (and its Buildable* members) gather the build
+	    information actively, rather than having BuildablePackage do it.
+	  * buildable_library.py, to replace buildable_ltlibrary.py and
+	    buildable_archive.py (which have been removed/disabled).
+	    * one library class for all kinds of libraries (static, shared -
+	      heading for libtool convenience libraries once time is right).
+	    * separate build information for native-local, native-installed,
+	      external libraries.
+	  * check_extlib.py, check_optmod.py, content_c_incpath.py,
+	    content_extlib.py: finally got around to remove that bloody cruft.
+	  * buildable_h.py, modbase.py: performance improvement: singletons
+	    BuildInfo_CIncludePath_NativeLocal and
+	    BuildInfo_CIncludePath_NativeInstalled
+	  * configure_in.py: support for automake conditionals
+	  * pkg_buildable.py: conditional SUBDIR builds
+	  * buildable.py, buildable_c_base.py, buildable_iface.py: bug fix in
+	    the "buildable" interface: distinguish between locally added and
+	    propagated CONFIGURE_IN() and ACINCLUDE_M4() pieces.
+	  * buildable_clusterer_c.py: remove BMW libname hack
+
+2005-08-24 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* pkg_buildable.py: add readonly-prefixes check generally, not
+	  only in the buildable_c... area.
+	* readonly_prefixes.py: AC_SUBST @readonly_prefixes@
+	* plugin_salomon_owilrc.py: works, though possibly a bit
+	  slow. what's missing is a clusterer for rc files.
+	* plugin_salomon_pdl.py: emit BuildableOwilUnstrippedFieldRC
+	  objects instead of BuildablePlainFile objects
+	* plugin_owilrc.py: disabled (to be removed)
+	
+2005-08-23 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* depindex.py: rather than assert'ing, throw a descriptive Error
+	  if duplicate Provide objects are seen.
+	* depgraph.py: accumulate these errors into one big Error which is
+	  thrown at the end
+
+2005-08-16 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_salomon_bmw_assembly.py: add 'beleg' to required
+	  components
+	* makefile_am.py: add install-local hook target, in addition to
+	  the already-supported all-local and clean-local.
+
+2005-08-10 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_idl.py: add "urgency" parameter
+	* plugin_salomon_idl.py: make use of it (i.e. pass URGENCY_ERROR)
+
+2005-08-07 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_salomon_mkcompver.py: several fixes to get he component
+	  version right.
+	* plugin_cvsinfo.py: utilities to extract information from 'cvs
+	  status' (to be used in plugin_salomon_mkcompver.py).
+
+2005-08-07 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* helper_automake.format_rule(): bug fix: accommodate for
+	  prerequisites parameter that has None value (which ought to work
+	  as the function signature suggests)
+
+2005-07-08 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_salomon_pdl.py: install .sql files into
+	  $(prefix)/data/sql
+	* Release 1.3.pre58
+
+2005-07-08 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/buildable_clusterer_c.py: apply a hack to shorten
+	  library names for BMW components. (This hack is not supposed to
+	  stay forever, however.)
+	* Make the "confix_include" post-build step less noisy
+
+2005-07-06 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/plugin_salomon_pdl.py:
+	  * BuildablePDSCreator
+	  * add the generated "lock file" (the "witness", as it is called
+	    in the section "26.8 Handling Tools that Produce Many Outputs"
+	    of the automake manual) to EXTRA_DIST
+
+2005-07-06 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/makefile_am.py: $(CONFIX_BACKSLASH_MITIGATOR) woes,
+	  again. Do not add it to, for example, "confixrepodir =
+	  $(datadir)/confix/repo" - automake will eat
+	  $(CONFIX_BACKSLASH_MITIGATOR), but not the space in
+	  between. (Argh!)
+	* Release 1.3.pre57
+
+2005-07-05 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Silenced performance debug output; introduced a trace level
+	  'performance'
+
+2005-07-05 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Do not insist in ~/.confix, especially not when only --version
+	  is wanted :-)
+	* Release 1.3.pre56
+
+2005-07-05 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Performance fixes
+          * Dependency resolving
+            Actually, this was done in quadratic runtime (argh). When
+            calculating the successors of a node, we matched all Require objects
+            against all Provide objects of all other modules. This is ok when
+            the Repo contains a relatively small number of Provide objects. If
+            it contains many thousands of both Require and Provide objects, the
+            performance decrease is painful.
+            * Introduced a common base class, Provide_String, for every Provide
+              class whose matches are done using the same string comparisons
+              (exact, prefix, glob). All of these actually have been copied from
+              the same original, Provide_CInclude. (Removed lots of duplicate
+              code: pure fun.)
+              Drawback: repo incompatibility
+            * With this it was easily possible to write a centralized mapping
+              (depindex.py) which can find Require/Provide edges in logarithmic
+              time with a simple dictionary lookup, at least for the 'exact'
+              Provide_String objects. We still have to search linearly through
+              the others (glob, prefix), but fortunately these are only a few in
+              most cases.
+          * Distributing build information
+            The common case is that redundant build information goes into a
+            module when the module is scanned. For example, if the module
+            contains 10 header files, 10 identical
+            BuildInfo_CIncludePath_NativeLocal are added to the module. When the
+            time comes to distibute that build information, the same information
+            is distributed 10 times, and the receiver (BuildableCBase, most
+            likely) will take only the first, and ignore the last 9. Again, this
+            is ok for a small Repo, but a headache for heavily populated ones.
+            * Introduced a ModuleContent method, will_that_say_the_same(), to
+              ask objects for redundancies, and call that in ModuleBase (which
+              is the one that maintains ModuleContent objects).
+            * Implemented the method in the most heavily used classes:
+              BuildInfo_CIncludePath_NativeLocal,
+              BuildInfo_CIncludePath_NativeInstalled, and
+              BuildInfo_PDLIncludePath_Native (which are also the most popular
+              candidates for redundancies).
+            * Disabled BuildablePlainFile's (ModuleContent_PlainFile_Base)
+              distributing of build information since it is meaningless, bogus,
+              and too high volume in some cases.
+
+2005-07-04 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* makefile_am.py: using format_make_macro() in every possible
+	  place
+	* Release 1.3.pre54 (inofficially; i.e. not committed an thus not
+	  visible to anyone)
+	
+2005-07-03 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* configfile.py:
+	  - complain if file does not exist, rather than ignoring it
+	    (argh)
+	  - complain if requested profile does not exist, rather than
+	    returning the default configuration (argh)
+	* Release 1.3.pre53
+ 
+2005-06-29 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* makefile_am.py, helper_automake.py: starting with AM_CPPFLAGS,
+	  begin to avoid trailing backslashes which are followed by an
+	  empty line. at least the HP-UX make implementation has severe
+	  problems with these.
+	* Release 1.3.pre52
+
+2005-06-27 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* readonly_prefixes.py, plugin_salomon_pdl.py: cascade datadir
+	  just like includedir
+	* plugin_salomon_bmw_assembly.py: bugfix: I want a statically
+	  typed language
+	* Release 1.3.pre51
+
+2005-06-14 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_salomon_bmw_assembly.py: BMW components need not be fully
+	  implemented (one need not write all of the '<compname>_[sbg]'
+	  directories).
+
+2005-06-13 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_salomon_pdl.py: add -I$(datadir) to pdl commandline
+	  because .pdr's are installed there.
+
+2005-04-20 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre49
+
+2005-04-15 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* buildable_ltlibrary.py: removed check if pipe.close() went
+	  ok. rationale: if something went wrong, there is a good chance
+	  that parsing of the output fails anyway.
+
+2005-04-11 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre48
+	* helper_automake.py: format_rule(): accept a command as list of
+	  strings, and apply line wrapping on it.
+	* plugin_salomon_pdl.py: make use of the above change
+
+2005-03-16 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre47
+	* plugin_plainfile.py:
+	  - add a generic BuildablePlainFileCreator class
+	  - remove the "datadir: command not found" shell error in the
+	    generated configure script
+
+2005-03-08 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* bug fix: parallel build triggers race condition when creating
+	  the confix_include directory
+
+2005-03-03 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre46
+	* buildable_c_base.py: bug fix: add readonly_prefixes.check if
+	  installed native header has been seen.
+	* plugin_salomon_mkcompver.py: bug fix: import a few things which
+	  I didn't
+
+2005-03-02 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre45
+	* plugin_salomon_mkcompver.py: generate COMPVERS structure
+	  instance in .component_release2.c.in. Maintain acCompVersion and
+	  acCompName for backward compatibility.
+	
+2005-03-01 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre44
+
+2005-02-28 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* buildable_lex.py, buildable_yacc.py: bug fix: pass
+	  search_for_main (=False) to base class ctor
+
+2005-02-25 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre43
+	* buildable_c_base.py, buildable_h.py, buildinfo.py,
+	  buildinfo_common.py, content_c.py, content_c_incpath.py,
+	  makefile_py.py, plugin_salomon_buildcfg.py,
+	  readonly_prefixes.py:
+	  separate native and external modules' include and library path
+	  handling.
+	  - native modules do not contribute any path information at
+	    all. rather, they only contribute information about their
+	    presence, and the receiver (the entity that is being built)
+	    decides what to do. for example, the presence of a local
+	    library in the dependency list triggers
+	    -I$(top_builddir)/confix/include onto the commandline. or, the
+	    presence of an installed library triggers -I$(includedir) and
+	    the readonly-prefixes stuff onto the commandline.
+	  - external modules did not change much except that they got an
+	    extra token
+	  - REVERSE_C_INCLUDE_PATH was deprecated (but still left there
+	    because installed repo files may still contain outdated
+	    information)
+	* makefile_py.py: EXTERNAL_LIBRARY2(): add incpath=[] parameter
+	* plugin_salomon_buildcfg.py: add urgency parameter to
+	  Require_BuildCfg ctor.
+	* plugin_salomon_mkbuild.py: 
+	  - perform .in substitution in conjunction with wx-toolsbox modules
+	  - Require_BuildCfg URGENTly
+	  - handle _SOURCES correctly: add .in to EXTRA_DIST, and add .c to
+	    _SOURCES
+	* plugin_salomon_mkcompver.py
+	  - handle _SOURCES correctly: add .in to EXTRA_DIST, and add .c to
+	    _SOURCES
+ 	* plugin_salomon_pdl.py: add self.srcdir_ to include path, or else
+	  it won't work because all-local is only done after the
+	  submodules (and therefore the PDL files aren't visible in
+	  $(top_builddir)/confix_include at submodule build time).
+	
+2005-02-23 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* buildable_iface.py: BUG FIX: CONFIGURE_IN(), ACINCLUDE_M4():
+	  'id' parameter can be None. Leave it out completely for the
+	  content name.
+
+2005-02-22 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre42
+	* plugin_salomon_pdl.py: a complete rewrite of the old
+	  plugin_pdl.py. Can create submodules (which made many of the
+	  changes below necessary, directly or indirectly), and has a
+	  modular architecture to better manage various PDL drivers.
+	* most buildables (including those of various plugins), plus the
+	  coordinating modbuild.py:
+	  - eliminate the Buildable*.scan() method. Scan in the ctor
+	    instead where one passes a 'lines' parameter (a list of source
+	    code lines)
+	  - eliminate the hackerish is_shallow flag of the various
+	    Buildable ctors, and simply pass an empty 'lines' parameter
+	    instead.
+	  - buildable_c_base.py: no need anymore for
+	    BuildableCBase.set_has_main(). Use a ctor flag instead,
+	    'search_for_main'.
+	* buildable_clusterer_c.py: allow Buildable objects of any kind to
+	  be seen, not only BuildableSingle.
+	* makefile_py.py:
+	  - PACKAGE(), MODULE()
+	  - use the execfile() function instead of the exec statement.
+	* modbase.py:
+	  - take care of the same physical Require object being added
+	    repeatedly.
+	* pkg_buildable.py, modbuild.py, modbase.py, modinst.py: avoid
+	  exec'ing the toplevel makefile.py twice. this was only to get
+	  the package name, which in turn was only to give the toplevel
+	  module a name. now every module has a package-local name (the
+	  toplevel module's name is simply []), and the globally unique
+	  name is composed dynamically from the package name (which every
+	  module has a backreference to) and the local name.
+	
+2005-02-21 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_salomon_mkbuild.py, plugin_salomon_mkcompver.py: the
+	  generated buildable must have the *.c.in as filename. *.c is
+	  only an intermediate stage and must not show up in the _SOURCES
+	  variable (or else it will lead to packaging errors - make
+	  distcheck will complain)
+
+2005-02-17 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* modbuild.py: 
+	  - rename self.ignore_files_ to self.ignore_direntries_
+	  - respect self.ignore_direntries_ before recursing into
+	    subdirectories
+
+2005-02-15 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre41
+	* check_native.py: break after finding a dependency library in the
+	  -L path.
+
+2005-02-14 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre40: intermediate release
+	* helper_automake.py: commands can optionally be None
+	* pkg_buildable.py: relax toplevel build restrictions: permit
+	  toplevel build if the toplevel module does not depend on any
+	  other (sub)module.
+	* require_callable.py: "urgency" parameter, just as in all the
+	  other classes which are derived from Require
+	* makefile_py.py: REQUIRE_CALLABLE(), PROVIDE_CALLABLE()
+
+2005-02-11 Joerg Faschingbauer <jfasch@salomon.at>
+
+ 	* Release 1.3.pre39
+	* depgraph.py: re-introduce detection of conflicts between provide
+	  objects that belong to different modules (accidentally removed
+	  that in 1.3.pre38)
+	* writedot.py: ignore modules that don't participate in the
+	  depgraph
+
+2005-02-09 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* configure.py, make.py: write environment only if trace 'env' is
+	  on.
+	* buildinfo_common.py, plugin_pdl.py: on the way to distribute
+	  build information in a more fine-grained way.
+
+2005-02-07 Joerg Faschingbauer <jfasch@salomon.at>
+
+       * Release 1.3.pre38
+	* helper.py: add function clone_value() to recursively clone list
+	  and dictionary values
+	* depgraph.py, modbase.py, modbuild.py, modinst.py,
+	  pkg_buildable.py, repo.py, repo_automake.py, repo_composite.py,
+	  repo_compound.py, repo_local.py, todo.py: Eliminate the need for
+	  repo/package/module priorities completely. The fact that we
+	  maintain package descriptions instead of module descriptions
+	  makes this possible: arrange everything into
+	  CompositePackageRepository instance and do the ex-priority logic
+	  there.
+
+2005-02-04 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre37
+	* depgraph.py, modbase.py, modbuild.py, modinst.py,
+	  pkg_buildable.py, repo.py, repo_automake.py, repo_compound.py,
+	  todo.py: do not sort by priorities the dependency line of a
+	  module anymore. leave it untouched. rather, eliminate duplicate
+	  packages of lower priority *before* toposorting.
+	
+2005-02-03 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* configure_in.py: call AC_CANONICAL_TARGET as part of the
+	  boilerplate stuff
+
+2005-02-02 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre36
+	* libconfix/plugin_pdl.py: wrap long lines
+
+2005-01-27 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* libconfix/makefile_py.py, buildable_iface.py, ac_lines.py,
+	  acinclude.py: permit passing no id, and calculate id as md5 hash
+	  then. make this visible to the user through ACINCLUDE_M4() and
+	  CONFIGURE_IN() in the respective interface files.
+	* scripts/writedot.py: accept a list of repo files on the cmdline
+	  instead of a repo directory.
+
+2005-01-25 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre35
+	* plugin_pdl.py: call $(PDL) (as set by AC_CHECK_PROG), rather
+	  than straight pdl
+
+2005-01-24 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_idl.py: add IDL file to EXTRA_DIST
+	* Re-introduce _DEPENDENCIES (were disabled in favor of
+	  readonly-prefixes) 	
+	* Wrap _LIBADD, _LDADD, _DEPENDENCIES, _SOURCES lines like all the
+	  others
+
+2005-01-24 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre34
+	* Another fix in plugin_salomon_bmw_assembly
+
+2005-01-22 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre33
+	* Bugfix in plugin_salomon_bmw_assembly: required components not
+	  initialized
+
+2005-01-19 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre32
+	* List of package repositories now (almost) fully working:
+
+2005-01-14 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Reading a list of package repositories, rather than only the one
+	  in $(prefix). Configurable over commandline and config file.
+	* Linking installed libraries using -l<name>, rather than
+	  specifying absolute pathname.
+
+2005-01-14 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre31
+	* Fixed another bug: removal of empty library now works (well,
+	  hopefully)
+
+2005-01-13 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre30
+	* Wrap Makefile.am lines if they get too long
+	* Introduce helper functions helper_automake.format_rule() and
+	  helper_automake.format_list()
+	* Fixed
+	  https://sourceforge.net/tracker/?func=detail&aid=826807&group_id=68975&atid=523019
+	  ([ 826807 ] Empty library built when directory contains only
+	  headers)
+	* Fixed several bugs which were introduced by the bulk changes in
+	  1.3.pre29
+
+2005-01-11 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Release 1.3.pre29
+	* Add kdevelop hints for AC_SUBST'ed SUBDIRS in toplevel
+	  Makefile.am
+
+2005-01-10 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* Writing package description files instead of module description
+	  files, thereby keeping the information as to what module belongs
+	  to what package.
+	* New repository location $(datadir)/confix/repo (which is
+	  $(prefix)/share/confix/repo most of the time).
+	* The toplevel module can have code, as long as there are no
+	  submodules.
+	* Deprecate the toplevel Makefile.py macros NAME() and VERSION()
+	  in favor of PACKAGE_NAME() and PACKAGE_VERSION(). (The future
+	  may bring us LIBRARY_NAME() and LIBRARY_VERSION(), and
+	  PACKAGE_*() is more clear a distinction.)
+	* Writing error messages to stderr instead of stdout.
+
+2004-12-17 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* plugin_salomon_buildcfg.py: 
+	  - renamed from plugin_buildcfg.py
+	  - complete rewrite of the Ali-file-parser
+	* plugin_salomon_mkbuild.py:
+	  - renamed from plugin_mkbuild.py
+	  - write a pseudo-handwritten file, .application_release2.c.in,
+	    and instantiate .application_release2.c from it using
+	    AC_CONFIG_FILES
+	  - receive the acApplVersion value as build information from
+	    plugin_salomon_buildcfg
+	* plugin_salomon_mkcompver.py:
+	  - renamed from plugin_mkcompver.py
+	  - write a pseudo-handwritten file, .component_release2.c.in,
+	    and instantiate .component_release2.c from it using
+	    AC_CONFIG_FILES
+
+2004-12-16  Michael Haubenwallner <michael.haubenwallner@salomon.at>
+
+	* general:
+	  - do an os.dir.isdir() before all dircache.listdir()'s, because
+		dircache.listdir() in python-2.4 (already used by cygwin)
+		raises an exception if the dir does not exist rather than
+		just returning an empty list.
+		See http://www.python.org/2.4/NEWS.html and search for 'dircache'.
+
+2004-12-13  Joerg Faschingbauer <jfasch@salomon.at>
+
+	* configure_in.py, package.py
+	  - do not write configure.in in Package directly, but rather use
+	    a dedicated object for this.
+
+2004-12-12 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* modbuild.py, pseudo_registry.py, const.py:
+	  - (beginning of) a framework for pseudo-handwritten files - ones
+	    that we write for the user as if he had written them by
+	    hand. (Makefile.am, configure.in and acinclude.m4 are
+	    classically pseudo-handwritten, but I didn't go this far yet.)
+	* plugin_salomon_bmw_assembly.py:
+	  - make use of that pseudo-handwritten framework, instead of
+	    generating initcomp-files through configure/make. (the right
+	    thing IMHO.)
+	  - honor environment variables to switch off components
+	    selectively
+	* modinst.py, repo.py, helper_pickle.py:
+	  - helper functions to dump/load objects, instead of using the
+	    pickle module directly
+ 	
+2004-12-03 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* call configure script with its absolute path.
+	* report configure exit status != 0
+	* pass os.getcwd() around because we chdir() there 
+	  anyway
+
+2004-12-02 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* helper.py: 
+	  - read/write lists of lines from/to files more 
+	    uniformly. 
+	  - add function to write lines only if file content would
+	    change. this is to avoid writing files unnecessarily - 
+	    they might be dependencies in the build.
+	* modbuild.py, package.py:
+	  - apply write-on-demand to our stock generated files
+	    configure.in, Makefile.am, acinclude.m4
+	* modbuild.py:
+	  - add "further_output_files" which can be registered by 
+	    buildables as "pseudo handwritten files", and which 
+	    are written-on-demand by the moule
+
+2004-12-02  Michael Haubenwallner <michael.haubenwallner@salomon.at>
+
+    * libconfix/modbuild.py:
+      - added function set_am_dir_dirname(), to initialize or override
+        the automake-variable '$(<dirtype>dir)' used to install files.
+      - mark the target '<targetfile>-clean' phony.
+    * libconfix/plugin_plainfile.py:
+      - now the values for am_primary, am_dir, am_dir_dirname and the
+        distributed build_info_id are overrideable, defaulting to
+        'DATA', 'data', '$(datadir)' and PLAINFILE.
+    * libconfix/plugin_owilrc:
+      - added to support salomon's owil-rc files, using plugin_plainfile
+        with am_dir='owilrc', am_dir_dirname='$(datadir)/owil/rc'.
+        am_dir_dirname is overrideable by the initial-parameter am_dirname.
+        Activate it by adding BuildableOwilRcCreator() with filename-regex
+        to the 'BUILDABLECREATORS' in your profile definition.
+      - use the default when am_dirname is set to None.
+
+2004-12-01 Joerg Faschingbauer <jfasch@salomon.at>
+
+	* 1.3.pre28
+	* libconfix/plugin_salomon_bmw_assembly.py: add components that
+	  are absolutely required, together with all sorts of insane
+	  sanity checks
+	
+2004-11-30  Michael Haubenwallner <michael.haubenwallner@salomon.at>
+
+    * libconfix/plugin_rpcx.py:
+      - added RPC-Support (Remote Procedure Calls, used by NFS).
+    * libconfix/buildable_mgr.py:
+      - use the BuildableRPCXCreator() from plugin_rpcx to handle
+        files ending with '.x', assumed to be rpc-definition files.
+
+2004-11-25  Michael Haubenwallner <michael.haubenwallner@salomon.at>
+
+    * libconfix/debug.py:
+      - when trace-level 'all' is set, always return true from has_trace().
+
+2004-11-23  Michael Haubenwallner <michael.haubenwallner@salomon.at>
+
+    * libconfix/buildable_h.py:
+      - header files never can contain a main().
+
+2003-06-04  Joerg Faschingbauer  <jfasch@salomon.at>
+
+        * module iface: CONFIGURE_IN(), EXTERNAL_LIBRARY2()
+
+2003-05-20  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* buildable iface (C): execute all "// CONFIX:" lines of one
+	  source file together in one context
+
+	* doc: the above feature, and the "symbolic" provide and require
+	  stuff
+
+2003-05-16  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* Package: use new-style AC_INIT, AM_INIT_AUTOMAKE, and add call
+	  to AC_CONFIG_SRCDIR
+
+2003-05-15  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* added require/provide pair for symbols. manifests itself user
+	  visibly as REQUIRE_SYMBOL() in the buildable and module
+	  interfaces.
+
+        * added REQUIRE_H() and REQUIRE_SYMBOL() to buildable interface,
+	  and REQUIRE_SYMBOL() to the module interface.
+
+	* extended EXTERNAL_LIBRARY() by parameters 'provide_symbols' and
+	  'require_symbols'.
+	
+
+2003-05-05  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* dependency resolver speedup (by roughly 70% (!)), by applying
+          random hacks as follows
+
+	* implement a cache of nodes that resolve a require object.
+
+	* fix of bug "[ 668591 ] repo files contain requires that are
+	  resolved internally"
+
+	  do not list locally resolved include files in the module
+	  description. For example, if a file includes "anotherfile.h",
+	  and this file is member of the module's directory, then
+	  "anotherfile.h" is not considered required by that module.
+ 
+2003-04-30  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* do not set ARG_PACKAGEVERSION because then the VERSION() in the
+	  package iface file is ignored.
+
+2003-04-25  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* Changes in configure.in: split module "switch" variable in
+	  "used" and "built" (was necessary because "switch" was confused
+	  by the EXTERNAL_LIBRARY "enabled" parameter).
+
+2003-04-22  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* Optional modules: unified modules maintained by confix and
+	  external modules/libraries (mostly regarding the commandline
+	  parameters to configure). Obsoleted the "name" parameter of
+	  EXTERNAL_LIBRARY() thereby.
+
+	* Differentiate between macros that are passed on the commandline
+	  to every compilation, and macros that have to be explicitly
+	  pulled in by pulling in config.h.
+
+	* Feature macros: implicit (by module name), explicit (was feature
+	  request "[ 719605 ] Explicit feature macro")
+	
+	* New trace levels 'preresolve', 'postresolve', along with
+	  indented output
+	
+2003-04-07    <leif@ambient.2y.net>
+
+	* Support for multiple configuration files.
+
+2003-03-25  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* Module interface: MAKEFILE_AM() (pass lines through to the
+	  generated Makefile.am)
+
+2003-03-24  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* depgraph.py: decoupled module objects from successor- and other
+	  dependency graph related information. maintain explicit node
+	  objects.
+
+	* when there is a dependency from one node to another, record
+	  *all* require objects that led to it, not just the first
+	
+2003-03-20  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* require.py, modbase.py, and associated files: as require objects
+	  are added to a module, they are collapsed with equivalent
+	  require objects. this way dependency resolution is sped up a lot
+	  (by a factor of two with my constellation of installed repo
+	  files).
+
+2003-03-13  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* Integrated a proprietary code generator (PDL) which outputs C
+	  and header files. For one, this was done in order to use Confix
+	  in my company. For another (the main reason, but don't tell my
+	  employer), I did it to improve Confix in the direction of easier
+	  integration of code generators as loadable modules, and I made a
+	  lot of progress.
+	  
+	* Dynamic properties (Buildable): content doesn't need to know the
+	  types of the buildables it contributes to.
+
+	* BuildableFactory: to create instances of BuildableSingle, a
+	  factory method is used. A step towards loadability. (Clustering
+	  is still hacky.)
+
+	* 'macros' parameter to EXTERNAL_LIBRARY() (and implemented it
+	  meaningfully in BuildableModule)
+	
+2003-03-11  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* C/C++ guessing: main() recognition improved (#error main)
+
+2002-12-17  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* confix.texi: Sections about 3rd party libraries, list of module
+	interface functions
+
+2002-12-16  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* modbuild.py, et al: new Makefile.py interface
+
+2002-12-10  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* almost all files: replaced WXModuleName with a list of strings
+	* package.py, package_iface.py: package Makefile.py interface
+
+2002-12-04  Joerg Faschingbauer  <jfasch@salomon.at>
+
+	* modbuild, buildable_*: added support for automake's test suite
+

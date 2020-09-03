@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_func_posix_memalign
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ax_func_posix_memalign.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_func_posix_memalign
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_FUNC_POSIX_MEMALIGN</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Some versions of posix_memalign (notably glibc 2.2.5) incorrectly apply
+    their power-of-two check to the size argument, not the alignment argument.
+    AX_FUNC_POSIX_MEMALIGN defines HAVE_POSIX_MEMALIGN if the power-of-two
+    check is correctly applied to the alignment argument.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Scott Pakin &lt;pakin@uiuc.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-22
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_FUNC_POSIX_MEMALIGN],
+[AC_CACHE_CHECK([for working posix_memalign],
+  [ax_cv_func_posix_memalign_works],
+  [AC_TRY_RUN([
+#include &lt;stdlib.h&gt;
+
+int
+main ()
+{
+  void *buffer;
+
+  /* Some versions of glibc incorrectly perform the alignment check on
+   * the size word. */
+  exit (posix_memalign (&amp;buffer, sizeof(void *), 123) != 0);
+}
+    ],
+    [ax_cv_func_posix_memalign_works=yes],
+    [ax_cv_func_posix_memalign_works=no],
+    [ax_cv_func_posix_memalign_works=no])])
+if test "$ax_cv_func_posix_memalign_works" = "yes" ; then
+  AC_DEFINE([HAVE_POSIX_MEMALIGN], [1],
+    [Define to 1 if `posix_memalign' works.])
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Scott Pakin
+   &lt;pakin@uiuc.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

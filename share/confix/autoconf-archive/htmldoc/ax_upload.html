@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_upload
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_upload.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_upload
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_UPLOAD([command])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Adds support for uploading dist files. %%s in the command will be
+    substituted with the name of the file. e.g:
+   </p>
+   <pre>
+   AX_UPLOAD([ncftpput -v upload.sourceforge.net /incoming %%s])
+</pre>
+   <p>
+    To add upload support for other custom dists add upload-&lt;TYPE&gt; to
+    UPLOAD_BIN or UPLOAD_SRC, where &lt;TYPE&gt; is the type of dist that is
+    being uploaded and add a mapping from &lt;TYPE&gt; to the dist file name in
+    the format '{&lt;TYPE&gt;=&gt;&lt;FILENAME&gt;}' to UPLOAD_TARGETS. For
+    example:
+   </p>
+   <pre>
+   UPLOAD_BIN += upload-foobar
+   UPLOAD_TARGETS += {foobar=&gt;@PACKAGE@-@VERSION@.fb}
+</pre>
+   <p>
+    You can then upload of the src distribution files by running:
+   </p>
+   <pre>
+   make upload-src
+</pre>
+   <p>
+    all the binaru distribution files by running:
+   </p>
+   <pre>
+   make upload-bin
+</pre>
+   <p>
+    or both by running:
+   </p>
+   <pre>
+   make upload
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Tom Howard &lt;tomhoward@users.sf.net&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-14
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_UPLOAD],
+[
+AC_MSG_NOTICE([adding upload support])
+AM_CONDITIONAL(USING_AX_UPLOAD, [true])
+AC_MSG_NOTICE([setting upload command... \`$1\`])
+AX_ADD_AM_MACRO([[
+UPLOAD_BIN =
+UPLOAD_SRC = upload-gzip upload-bzip2 upload-zip
+UPLOAD_TARGETS = \\
+{gzip=&gt;$PACKAGE-$VERSION.tar.gz} \\
+{bzip2=&gt;$PACKAGE-$VERSION.tar.bz2} \\
+{zip=&gt;$PACKAGE-$VERSION.zip}
+
+\$(UPLOAD_BIN) \$(UPLOAD_SRC):
+        @TYPE=\`echo ${AX_DOLLAR}@ | \$(SED) -e \'s/upload-//\'\`; \\
+        DIST=\"dist-\$\${TYPE}\"; \\
+        \$(MAKE) \$(AM_MAKEFLAGS) \$\${DIST}; \\
+        list=\'\$(UPLOAD_TARGETS)\'; \\
+        pattern=\`echo \"^{\$\${TYPE}=&gt;\"\`; \\
+        for dist in \$\$list; do \\
+                echo \$\$dist | \$(EGREP) \"^{\$\${TYPE}=&gt;\" &gt; /dev/null 2&gt;&amp;1; \\
+                if test \"\$\$?\" -eq \"0\"; then \\
+                        TARGET=\`echo \"\$\$dist\" | \$(AWK) -v pattern=\$\$pattern \'{ sub( pattern, \"\"); sub( /}\$\$/, \"\" ); print; }\'\`; \\
+                        UPLOAD_COMMAND=\`printf \"$1\" \$\$TARGET \`; \\
+                        echo \"Uploading \$\$TARGET ...\"; \\
+                        \$\$UPLOAD_COMMAND; \\
+                fi \\
+        done
+
+upload-src: \$(UPLOAD_SRC)
+
+upload-bin: \$(UPLOAD_BIN)
+
+upload upload-all all-upload: upload-src upload-bin
+]])
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Tom Howard
+   &lt;tomhoward@users.sf.net&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

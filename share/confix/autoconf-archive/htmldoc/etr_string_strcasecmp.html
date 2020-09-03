@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: etr_string_strcasecmp
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/etr_string_strcasecmp.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   etr_string_strcasecmp
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>ETR_STRING_STRCASECMP</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    This macro tries to find strcasecmp() in string.h.
+   </p>
+   <p>
+    Use this macro in conjunction with ETR_STRINGS_STRCASECMP in your
+    configure.in like so:
+   </p>
+   <pre>
+    ETR_STRING_STRCASECMP
+    if test x"$ac_cv_string_strcasecmp" = "xno" ; then
+        ETR_STRINGS_STRCASECMP
+    fi
+</pre>
+   <p>
+    This will cause either HAVE_STRING_STRCASECMP or HAVE_STRINGS_STRCASECMP to
+    be defined in config.h, which will tell your code what header to include to
+    get strcasecmp()'s prototype.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Warren Young &lt;warren@etr-usa.com&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2001-05-25
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([ETR_STRING_STRCASECMP],
+[
+AC_CACHE_CHECK([for strcasecmp() in string.h], ac_cv_string_strcasecmp, [
+        AC_TRY_LINK(
+                [ #include &lt;string.h&gt; ],
+                [ strcasecmp("foo", "bar"); ],
+                ac_cv_string_strcasecmp=yes,
+                ac_cv_string_strcasecmp=no)
+])
+
+        if test x"$ac_cv_string_strcasecmp" = "xyes"
+        then
+                AC_DEFINE(HAVE_STRING_STRCASECMP, 1,
+                        [ Define if your system has strcasecmp() in string.h ])
+        fi
+]) dnl ETR_STRING_STRCASECMP
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2001 Warren Young
+   &lt;warren@etr-usa.com&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

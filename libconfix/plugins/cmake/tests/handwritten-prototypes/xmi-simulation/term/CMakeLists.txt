@@ -1,0 +1,16 @@
+ADD_CUSTOM_COMMAND(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/term-c.c ${CMAKE_CURRENT_BINARY_DIR}/term-c.h
+    COMMAND touch ${CMAKE_CURRENT_BINARY_DIR}/term-c.c ${CMAKE_CURRENT_BINARY_DIR}/term-c.h
+    VERBATIM
+)
+
+ADD_LIBRARY(
+    term
+    ${CMAKE_CURRENT_BINARY_DIR}/term-c.c
+    ${CMAKE_CURRENT_BINARY_DIR}/term-c.h
+)
+
+TARGET_LINK_LIBRARIES(
+    term
+    shared
+)

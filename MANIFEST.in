@@ -1,0 +1,15 @@
+recursive-include libconfix *.py
+include scripts/*.py
+include ChangeLog*
+include relnotes/*.txt
+
+recursive-include share *
+
+recursive-include tests *
+
+include README
+include INSTALL
+include LICENSE
+include COPYING
+include ChangeLog
+include HACKING

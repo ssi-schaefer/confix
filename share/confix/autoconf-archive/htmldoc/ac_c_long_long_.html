@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_c_long_long_
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_c_long_long_.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_c_long_long_
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_C_LONG_LONG</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Provides a test for the existance of the long long int type and defines
+    HAVE_LONG_LONG if it is found.
+   </p>
+   <p>
+    change: add a comment for the ac_define &lt;guidod&gt;
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Caolan McNamara &lt;caolan@skynet.ie&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2001-05-03
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_C_LONG_LONG_],
+[AC_CACHE_CHECK(for long long int, ac_cv_c_long_long,
+[if test "$GCC" = yes; then
+  ac_cv_c_long_long=yes
+  else
+        AC_TRY_COMPILE(,[long long int i;],
+   ac_cv_c_long_long=yes,
+   ac_cv_c_long_long=no)
+   fi])
+   if test $ac_cv_c_long_long = yes; then
+     AC_DEFINE(HAVE_LONG_LONG, 1, [compiler understands long long])
+   fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2001 Caolan McNamara
+   &lt;caolan@skynet.ie&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

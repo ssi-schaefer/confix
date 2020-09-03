@@ -1,0 +1,141 @@
+VersionControl
+==============
+
+* The Subversion repository is
+  https://svn.sourceforge.net/svnroot/confix/confix
+
+* The structure and nomenclature is roughly taken from the book
+  "Pragmatic Version Control Using Subversion" by Mike Mason.
+
+  +
+  |
+  |-- confix
+  |   |-- branches
+  |   |   `-- RB-2.0
+  |   |-- tags
+  |   |   |-- REL-2.0.0
+  |   |   |-- REL-2.0.1
+  |   |   `-- REL-2.1.0
+  |   `---trunk
+  `-- vendor
+      `-- autoconf-archive
+        
+* Release Management
+
+  The file 00branches.txt is our planning and documentation tool for
+  release management. Best to edit with Emacs M-x picture-mode.
+
+Test Suite
+==========
+
+There's an extensive test suite which is distributed all over the
+source code. Nearly every directory that contains code has a 'tests'
+subdirectory which contains regression tests and suites. Every 'tests'
+directory's suite is part of the suite of the 'tests' directory of the
+next higher level source directory. There is still a large amount of
+tests around in the toplevel 'tests' directory and its subdirectories,
+but it is intended to move all those the the 'tests' directories near
+the source.
+
+A primary design criterion of confix's internals is to be able to test
+in memory as much as possible, and not having to worry much about file
+system cleanup and such. Hence, the great majority of tests is written
+this way. For the rest, though, we have to take care of all those
+nasty issues. So, we have two entry points into the test suite,
+
+* tests/00inmem.py
+
+  A test suite that covers all tests that can run in memory. It is
+  easy to run this suite as there are no dependencies on the autotools
+  and such. In fact, this should be done frequently during
+  development.
+
+* tests/00build.py
+
+  A test suite that covers all tests that run the autotools and other
+  external tools such as a compiler. These tests should also be run as
+  often as possible. They are expected to take much longer than the
+  in-memory tests, however, so you won't possibly bother to run them
+  after every single change. They must of course be run before commit.
+
+Write a test for every single feature
+-------------------------------------
+
+Most of the tests can be written in a fire-and-forget way (you don't
+need to clean up memory), and in fact it is quite easy to write
+tests. So, no feature should ever be implemented without writing a
+test first. Yes, Test Driven Development really works, and it gives a
+real good feeling as no feature won't break any other feature if tests
+are written consequently.
+
+Source Code Roadmap
+===================
+
+The source is basically made up of three parts:
+
+* plugins
+
+  Everything that can actually be productively done with confix is
+  coded as a plugin. The core only coordinates plugins; it has
+  absolutely no real value itself (a symptom particular to be observed
+  with real-world manager humans).
+
+  The C plugin, libconfix.plugins.c, is the mother of all plugins, and
+  a good example for plugin writers.
+
+* core
+
+  As stated, the core only coordinates. At the heart of the core (sic)
+  there is a directed graph implementation, libconfix.core.digraph. It
+  is used by the core machinery, libconfix.core.machinery (a
+  misnomer), which defines the plugin interface, and implements the
+  procedure that boils a package until it can be built. Various other
+  submodules aid in doing so.
+
+  The goal is to keep the core as small as possible. In fact, although
+  libconfix.core.automake is currently part of the core, one may think
+  of it as just another backend build tool. (There's still a bit to be
+  done to make the code reflect this understanding, of course.)
+
+* frontends
+
+  confix2.py is only a small script which is the entry point to
+  libconfix.frontends.confix, the module that implements what the
+  common user uses to write on the commandline.
+
+  Notice that the plural - frontends - suggests that there is more
+  than one frontend. While this is not the case, one may think of
+  it. At least, the test cases are full of such situations - they
+  surely do not use the command line to setup a build.
+
+Have a look at http://confix.sourceforge.net/epydoc/index.html for a
+growing amount of text that grows linear with the amount of docstrings
+added.
+
+Distributions
+=============
+
+Making distribution packages
+----------------------------
+
+Source distributions are generally the only kinds of releases made.
+
+$ python setup.py sdist --force-manifest --formats=bztar,gztar
+
+Other formats are unusual (who needs .zip?), but are nevertheless
+supported by distutils.
+
+$ python setup.py sdist --help-formats
+
+Uploading packages
+------------------
+
+https://frs.sourceforge.net/webupload
+
+Creating file releases
+----------------------
+
+On the project page, http://sourceforge.net/projects/confix, navigate
+a bit to find the "File Releases" section (logging in helps a
+lot). Once you have found it, follow the instructions and make your
+release.

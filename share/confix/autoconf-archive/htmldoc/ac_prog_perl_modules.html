@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_prog_perl_modules
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href=
+      "http://autoconf-archive.cryp.to/ac_prog_perl_modules.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_prog_perl_modules
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_PROG_PERL_MODULES([MODULES], [ACTION-IF-TRUE],
+   [ACTION-IF-FALSE])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Checks to see if the the given perl modules are available. If true the
+    shell commands in ACTION-IF-TRUE are executed. If not the shell commands in
+    ACTION-IF-FALSE are run. Note if $PERL is not set (for example by calling
+    AC_CHECK_PROG, or AC_PATH_PROG), AC_CHECK_PROG(PERL, perl, perl) will be
+    run.
+   </p>
+   <p>
+    Example:
+   </p>
+   <pre>
+  AC_CHECK_PERL_MODULES(Text::Wrap Net::LDAP, ,
+                        AC_MSG_WARN(Need some Perl modules)
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Dean Povey &lt;povey@wedgetail.com&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-09-25
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_PROG_PERL_MODULES],[dnl
+ac_perl_modules="$1"
+# Make sure we have perl
+if test -z "$PERL"; then
+AC_CHECK_PROG(PERL,perl,perl)
+fi
+
+if test "x$PERL" != x; then
+  ac_perl_modules_failed=0
+  for ac_perl_module in $ac_perl_modules; do
+    AC_MSG_CHECKING(for perl module $ac_perl_module)
+
+    # Would be nice to log result here, but can't rely on autoconf internals
+    $PERL "-M$ac_perl_module" -e exit &gt; /dev/null 2&gt;&amp;1
+    if test $? -ne 0; then
+      AC_MSG_RESULT(no);
+      ac_perl_modules_failed=1
+   else
+      AC_MSG_RESULT(ok);
+    fi
+  done
+
+  # Run optional shell commands
+  if test "$ac_perl_modules_failed" = 0; then
+    :
+    $2
+  else
+    :
+    $3
+  fi
+else
+  AC_MSG_WARN(could not find perl)
+fi])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 Dean Povey
+   &lt;povey@wedgetail.com&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

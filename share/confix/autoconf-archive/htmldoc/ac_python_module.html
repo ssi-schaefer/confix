@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_python_module
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_python_module.m4">Download M4
+      Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_python_module
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_PYTHON_MODULE(modname[, fatal])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Checks for Python module.
+   </p>
+   <p>
+    If fatal is non-empty then absence of a module will trigger an error.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Andrew Collier &lt;colliera@nu.ac.za&gt;.
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2004-07-14
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_PYTHON_MODULE],[
+        AC_MSG_CHECKING(python module: $1)
+        python -c "import $1" 2&gt;/dev/null
+        if test $? -eq 0;
+        then
+                AC_MSG_RESULT(yes)
+                eval AS_TR_CPP(HAVE_PYMOD_$1)=yes
+        else
+                AC_MSG_RESULT(no)
+                eval AS_TR_CPP(HAVE_PYMOD_$1)=no
+                #
+                if test -n "$2"
+                then
+                        AC_MSG_ERROR(failed to find required module $1)
+                        exit 1
+                fi
+        fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2004 Andrew Collier
+   &lt;colliera@nu.ac.za&gt;.</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

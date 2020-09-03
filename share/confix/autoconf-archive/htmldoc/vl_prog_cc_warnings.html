@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: vl_prog_cc_warnings
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/vl_prog_cc_warnings.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   vl_prog_cc_warnings
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>VL_PROG_CC_WARNINGS([ANSI])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Enables a reasonable set of warnings for the C compiler. Optionally, if the
+    first argument is nonempty, turns on flags which enforce and/or enable
+    proper ANSI C if such are known with the compiler used.
+   </p>
+   <p>
+    Currently this macro knows about GCC, Solaris C compiler, Digital Unix C
+    compiler, C for AIX Compiler, HP-UX C compiler, IRIX C compiler, NEC SX-5
+    (Super-UX 10) C compiler, and Cray J90 (Unicos 10.0.0.8) C compiler.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Ville Laurikari &lt;vl@iki.fi&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2002-04-04
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([VL_PROG_CC_WARNINGS], [
+  ansi=$1
+  if test -z "$ansi"; then
+    msg="for C compiler warning flags"
+  else
+    msg="for C compiler warning and ANSI conformance flags"
+  fi
+  AC_CACHE_CHECK($msg, vl_cv_prog_cc_warnings, [
+    if test -n "$CC"; then
+      cat &gt; conftest.c &lt;&lt;EOF
+int main(int argc, char **argv) { return 0; }
+EOF
+
+      dnl GCC
+      if test "$GCC" = "yes"; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="-Wall"
+        else
+          vl_cv_prog_cc_warnings="-Wall -ansi -pedantic"
+        fi
+
+      dnl Most compilers print some kind of a version string with some command
+      dnl line options (often "-V").  The version string should be checked
+      dnl before doing a test compilation run with compiler-specific flags.
+      dnl This is because some compilers (like the Cray compiler) only
+      dnl produce a warning message for unknown flags instead of returning
+      dnl an error, resulting in a false positive.  Also, compilers may do
+      dnl erratic things when invoked with flags meant for a different
+      dnl compiler.
+
+      dnl Solaris C compiler
+      elif $CC -V 2&gt;&amp;1 | grep -i "WorkShop" &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           $CC -c -v -Xc conftest.c &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           test -f conftest.o; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="-v"
+        else
+          vl_cv_prog_cc_warnings="-v -Xc"
+        fi
+
+      dnl Digital Unix C compiler
+      elif $CC -V 2&gt;&amp;1 | grep -i "Digital UNIX Compiler" &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           $CC -c -verbose -w0 -warnprotos -std1 conftest.c &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           test -f conftest.o; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="-verbose -w0 -warnprotos"
+        else
+          vl_cv_prog_cc_warnings="-verbose -w0 -warnprotos -std1"
+        fi
+
+      dnl C for AIX Compiler
+      elif $CC 2&gt;&amp;1 | grep -i "C for AIX Compiler" &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           $CC -c -qlanglvl=ansi -qinfo=all conftest.c &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           test -f conftest.o; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="-qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd"
+        else
+          vl_cv_prog_cc_warnings="-qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd -qlanglvl=ansi"
+        fi
+
+      dnl IRIX C compiler
+      elif $CC -version 2&gt;&amp;1 | grep -i "MIPSpro Compilers" &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           $CC -c -fullwarn -ansi -ansiE conftest.c &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           test -f conftest.o; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="-fullwarn"
+        else
+          vl_cv_prog_cc_warnings="-fullwarn -ansi -ansiE"
+        fi
+
+      dnl HP-UX C compiler
+      elif what $CC 2&gt;&amp;1 | grep -i "HP C Compiler" &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           $CC -c -Aa +w1 conftest.c &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           test -f conftest.o; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="+w1"
+        else
+          vl_cv_prog_cc_warnings="+w1 -Aa"
+        fi
+
+      dnl The NEC SX-5 (Super-UX 10) C compiler
+      elif $CC -V 2&gt;&amp;1 | grep "/SX" &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           $CC -c -pvctl[,]fullmsg -Xc conftest.c &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           test -f conftest.o; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="-pvctl[,]fullmsg"
+        else
+          vl_cv_prog_cc_warnings="-pvctl[,]fullmsg -Xc"
+        fi
+
+      dnl The Cray C compiler (Unicos)
+      elif $CC -V 2&gt;&amp;1 | grep -i "Cray" &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           $CC -c -h msglevel 2 conftest.c &gt; /dev/null 2&gt;&amp;1 &amp;&amp;
+           test -f conftest.o; then
+        if test -z "$ansi"; then
+          vl_cv_prog_cc_warnings="-h msglevel 2"
+        else
+          vl_cv_prog_cc_warnings="-h msglevel 2 -h conform"
+        fi
+
+      fi
+      rm -f conftest.*
+    fi
+    if test -n "$vl_cv_prog_cc_warnings"; then
+      CFLAGS="$CFLAGS $vl_cv_prog_cc_warnings"
+    else
+      vl_cv_prog_cc_warnings="unknown"
+    fi
+  ])
+])dnl
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2002 Ville Laurikari
+   &lt;vl@iki.fi&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

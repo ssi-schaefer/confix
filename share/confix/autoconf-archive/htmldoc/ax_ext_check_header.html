@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ax_ext_check_header
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ax_ext_check_header.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ax_ext_check_header
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AX_EXT_CHECK_HEADER(&lt;header&gt;, &lt;paths&gt;).</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Check for &lt;header&gt; with -I&lt;path&gt; for each path in &lt;paths&gt;
+    if need be. The first sucecssful path is chosen (eg if you say
+    AX_EXT_CHECK_HEADER(foo.h, bar baz qux) and -Ibaz works then -Iqux will not
+    be tested.
+   </p>
+   <p>
+    Any -I flags that locate a header are added to CFLAGS and CPPFLAGS. AS with
+    AC_CHECK_HEADERS it causes HAVE_&lt;header&gt;_H to be defined as 1.
+   </p>
+   <p>
+    Example:
+   </p>
+   <pre>
+ AX_EXT_HAVE_HEADER(openssl/rsa.h, /usr/local/include /usr/local/ssl/include /usr/local/openssl/include)
+</pre>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Duncan Simpson &lt;dps@simpson.demon.co.uk&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2005-01-21
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AX_EXT_HAVE_HEADER],
+[AC_LANG_PUSH(C)
+ AC_CHECK_HEADER($1, [$3 got="yes"], [$4 got="no"], $5)
+ hdr=`echo $1 | $as_tr_sh`
+ for dir in $2; do
+  if test "x${got}" = "xno"; then
+   ext_hashdr_cvdir=`echo $dir | $as_tr_sh`
+   AC_CACHE_CHECK([for $1 library with -I$dir],
+    [ext_cv${ext_hashdr_cvdir}_hashdr_${hdr}],
+    [ext_have_hdr_save_cflags=${CFLAGS}
+     CFLAGS="${CFLAGS} -I${dir}"
+     AC_COMPILE_IFELSE(
+      [AC_LANG_PROGRAM([#inc[]lude &lt;$1&gt;])],
+       [got="yes"; eval "ext_cv${ext_hashdr_cvdir}_hashdr_${hdr}"="yes"],
+       [got="no"; eval "ext_cv${ext_hashdr_cvdir}_hashdr_${hdr}"="no"])
+      CFLAGS=$ext_have_hdr_save_cflags])
+     if eval `echo 'test x${'ext_cv${ext_hashdr_cvdir}_hashdr_${hdr}'}' = "xyes"`; then
+      CFLAGS="${CFLAGS} -I${dir}"
+      CPPFLAGS="${CPPFLAGS} -I${dir}"
+      got="yes";
+      hdr=`echo $1 | $as_tr_cpp`
+      AC_DEFINE_UNQUOTED(HAVE_${hdr}, 1,
+       [Define this if you have the $1 header])
+  fi; fi; done
+AC_LANG_POP])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2005 Duncan Simpson
+   &lt;dps@simpson.demon.co.uk&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>

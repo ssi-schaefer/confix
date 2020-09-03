@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <title>
+   Autoconf Macro: ac_check_struct_for
+  </title>
+  <link rel="stylesheet" type="text/css" href="ac-archive.css">
+ </head>
+ <body>
+  <table summary="web navigation" style="width:100%;">
+   <tbody>
+    <tr>
+     <td style="width:50%;" align="center">
+      <a href="http://autoconf-archive.cryp.to/ac_check_struct_for.m4">Download
+      M4 Source</a>
+     </td>
+     <td style="width:50%;" align="center">
+      <a href="macros-by-category.html">Macro Index Page</a>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <hr>
+  <h1>
+   ac_check_struct_for
+  </h1>
+  <h2>
+   Synopsis
+  </h2>
+  <p class="indent" style="white-space:nowrap;">
+   <code>AC_CHECK_STRUCT_FOR(INCLUDES,STRUCT,MEMBER,DEFINE,[no])</code>
+  </p>
+  <h2>
+   Description
+  </h2>
+  <div class="indent">
+   <p>
+    Checks STRUCT for MEMBER and defines DEFINE if found.
+   </p>
+  </div>
+  <h2>
+   Author
+  </h2>
+  <p class="indent">
+   Wes Hardaker &lt;wjhardaker@ucdavis.edu&gt;
+  </p>
+  <h2>
+   Last Modified
+  </h2>
+  <p class="indent">
+   2000-09-19
+  </p>
+  <h2>
+   M4 Source Code
+  </h2>
+  <div class="indent">
+   <pre class="m4source">
+AC_DEFUN([AC_CHECK_STRUCT_FOR],[
+ac_safe_struct=`echo "$2" | sed 'y%./+-%__p_%'`
+ac_safe_member=`echo "$3" | sed 'y%./+-%__p_%'`
+ac_safe_all="ac_cv_struct_${ac_safe_struct}_has_${ac_safe_member}"
+changequote(, )dnl
+  ac_uc_define=STRUCT_`echo "${ac_safe_struct}_HAS_${ac_safe_member}" | sed 'y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%'`
+changequote([, ])dnl
+
+AC_MSG_CHECKING([for $2.$3])
+AC_CACHE_VAL($ac_safe_all,
+[
+if test "x$4" = "x"; then
+  defineit="= 0"
+elif test "x$4" = "xno"; then
+  defineit=""
+else
+  defineit="$4"
+fi
+AC_TRY_COMPILE([
+$1
+],[
+struct $2 testit;
+testit.$3 $defineit;
+], eval "${ac_safe_all}=yes", eval "${ac_safe_all}=no" )
+])
+
+if eval "test \"x$`echo ${ac_safe_all}`\" = \"xyes\""; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE_UNQUOTED($ac_uc_define)
+else
+  AC_MSG_RESULT(no)
+fi
+])
+</pre>
+  </div>
+  <h2>
+   License
+  </h2>
+  <div class="indent">
+   <span style="white-space:nowrap;">Copyright &copy; 2000 Wes Hardaker
+   &lt;wjhardaker@ucdavis.edu&gt;</span>
+   <p>
+    Copying and distribution of this file, with or without modification, are
+    permitted in any medium without royalty provided the copyright notice and
+    this notice are preserved.
+   </p>
+  </div>
+ </body>
+</html>
