@@ -17,10 +17,10 @@
 # USA
 
 # Confix version
-CONFIX_VERSION = '2.3.8'
+CONFIX_VERSION = '2.4.0'
 
 # version of persistent data, the repo.
-REPO_VERSION = '2.3.0'
+REPO_VERSION = '2.4.0'
 
 # the default name of interface files
 CONFIX2_DIR = 'Confix2.dir'
