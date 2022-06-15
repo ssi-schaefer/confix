@@ -18,13 +18,13 @@
 from . import simple_build
 from . import kde_hack
 from . import autoconf_archive
-from . import exename.suite_build as exename
-from . import readonly_prefixes.suite_build as readonly_prefixes
+from .exename import suite_build as exename
+from .readonly_prefixes import suite_build as readonly_prefixes
 from . import interix_link
 from . import inter_package_build
 from . import intra_package_build
-from . import check.suite_build as check_build
-from . import relocated_headers.suite_build as relocated_headers_build
+from .check import suite_build as check_build
+from .relocated_headers import suite_build as relocated_headers_build
 from . import explicit_package_build
 
 import libconfix.plugins.automake.c.tests.suite_build as automake_c_build

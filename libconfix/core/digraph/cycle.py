@@ -17,8 +17,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-class CycleError:
+class CycleError(Exception):
     def __init__(self, nodelist, edgelist=None):
+        super(self)
         self.nodelist_ = nodelist
         self.edgelist_ = edgelist
         pass

@@ -103,10 +103,10 @@ class TopoVisitor:
             assert self.colormap_[node] == TopoVisitor.GRAY
             self.colormap_[node] = TopoVisitor.BLACK
 
-class CycleError:
+class CycleError(Exception):
 
     def __init__(self, path):
-
+        super(self)
         self.path_ = path
 
     def path(self): return self.path_

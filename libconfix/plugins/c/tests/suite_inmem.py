@@ -19,7 +19,7 @@ from . import provide_require
 from . import requires
 from . import relate
 from . import library
-from . import regressions.suite_inmem
+from .regressions import suite_inmem
 from . import header_visibility_inmem
 from . import confix2_dir
 from . import misc
@@ -27,7 +27,7 @@ from . import setup_cxx
 from . import setup_exe
 from . import setup_lexyacc
 from . import setup_library
-from . import clusterer.suite_inmem
+from .clusterer import suite_inmem
 from . import ignored_entries
 from . import library_versions
 from . import inter_package_inmem

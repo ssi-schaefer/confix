@@ -16,7 +16,7 @@
 # USA
 
 from . import external_library
-from . import library_dependencies.suite_inmem
+from .library_dependencies import suite_inmem
 from . import library
 from . import header_install_inmem
 

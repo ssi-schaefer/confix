@@ -23,7 +23,6 @@ from libconfix.core.utils import debug
 from libconfix.core.utils import const
 
 import itertools
-import pickle
 import os
 import re
 import types

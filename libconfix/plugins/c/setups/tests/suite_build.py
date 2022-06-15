@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from . import explicit.suite_build
+from .explicit import suite_build
 
 import unittest
 

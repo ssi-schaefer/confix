@@ -23,13 +23,13 @@ from . import iface
 from . import file_installer_suite
 from . import c
 from . import exe
-from . import exename.suite_inmem
-from . import readonly_prefixes.suite_inmem
+from .exename import suite_inmem
+from .readonly_prefixes import suite_inmem
 from . import libtool
 from . import buildinfo
 from . import ac_config_srcdir_suite
 from . import inter_package_inmem
-from . import check.suite_inmem
+from .check import suite_inmem
 
 import libconfix.plugins.automake.pkg_config.tests.suite_inmem
 import libconfix.plugins.automake.c.tests.suite_inmem
