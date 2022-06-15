@@ -46,7 +46,7 @@ class ExplicitInterfaceInMemoryTest(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(['subdir']) is None)
+        self.assertFalse(package.rootbuilder().find_entry_builder(['subdir']) is None)
         pass
 
     def test__with_confix2_dir(self):
@@ -82,8 +82,8 @@ class ExplicitInterfaceInMemoryTest(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(['subdir']) is None)
-        self.failUnlessEqual(dummy_property_receiver_file.get_property('the_property'), 'the_value')
+        self.assertFalse(package.rootbuilder().find_entry_builder(['subdir']) is None)
+        self.assertEqual(dummy_property_receiver_file.get_property('the_property'), 'the_value')
         pass
     pass
 

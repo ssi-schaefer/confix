@@ -72,8 +72,8 @@ class BuildInformationTest(unittest.TestCase):
         receiver_package.output()
 
         modfile = receiver.find(['confix-admin', 'cmake', 'Modules', 'TestModule.cmake'])
-        self.failUnless(modfile)
-        self.failUnlessEqual(modfile.lines()[0], 'The-TestModule-Content')
+        self.assertTrue(modfile)
+        self.assertEqual(modfile.lines()[0], 'The-TestModule-Content')
         
         pass
     pass

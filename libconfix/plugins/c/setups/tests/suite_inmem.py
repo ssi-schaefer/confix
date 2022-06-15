@@ -17,8 +17,8 @@
 
 import unittest
 
-import explicit.suite_inmem as explicit_inmem
-import ignored_entries
+from . import explicit.suite_inmem as explicit_inmem
+from . import ignored_entries
 
 suite = unittest.TestSuite()
 suite.addTest(explicit_inmem.suite)

@@ -52,13 +52,13 @@ class Interfaces(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visibility(), ['xxx'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
+        self.assertEqual(file_h_builder.visibility(), ['xxx'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
         pass
 
     def test_auto_fileiface_only(self):
@@ -79,13 +79,13 @@ class Interfaces(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visibility(), ['xxx'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
+        self.assertEqual(file_h_builder.visibility(), ['xxx'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
         pass
 
     def test_auto_fileiface_fileproperty_conflict(self):
@@ -106,8 +106,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -129,8 +129,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -153,8 +153,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -252,10 +252,10 @@ class Interfaces(unittest.TestCase):
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
         
-        self.failUnlessEqual(file_h_builder.visibility(), ['xxx'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
+        self.assertEqual(file_h_builder.visibility(), ['xxx'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
         pass
 
     def test_explicit_fileproperty_conflict(self):
@@ -276,8 +276,8 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -299,7 +299,7 @@ class Interfaces(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
+        except Error as e:
             return
         self.fail()
         pass
@@ -326,13 +326,13 @@ class Namespace(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
         
-        self.failUnlessEqual(file_h_builder.visibility(), ['A'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['A'])
+        self.assertEqual(file_h_builder.visibility(), ['A'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['A'])
         pass
 
     def testNested(self):
@@ -356,13 +356,13 @@ class Namespace(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visibility(), ['A', 'B'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['A', 'B'])
+        self.assertEqual(file_h_builder.visibility(), ['A', 'B'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['A', 'B'])
         pass
 
     def testGlobal(self):
@@ -383,12 +383,12 @@ class Namespace(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visibility(), [])
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], [])
+        self.assertEqual(file_h_builder.visibility(), [])
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], [])
         pass
 
     def testAmbiguousFlat(self):
@@ -412,8 +412,8 @@ class Namespace(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
             return
         self.fail()
         pass
@@ -442,8 +442,8 @@ class Namespace(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
             return
         self.fail()
         pass
@@ -464,13 +464,13 @@ class Namespace(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visibility(), ['xxx'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
+        self.assertEqual(file_h_builder.visibility(), ['xxx'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['xxx'])
         pass
 
     def test_bad_namespace_and_no_idea_where_to_install(self):
@@ -492,8 +492,8 @@ class Namespace(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.BadNamespace))
             pass
         pass
 
@@ -546,13 +546,13 @@ class InstallPriorities(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnlessEqual(file_h_builder.visibility(), ['install','from','dir','iface'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['install','from','dir','iface'])
+        self.assertEqual(file_h_builder.visibility(), ['install','from','dir','iface'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['install','from','dir','iface'])
         pass
     pass
 
@@ -574,10 +574,10 @@ class HeaderInstallPath(unittest.TestCase):
         package.boil(external_nodes=[])
         package.output()
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failUnlessEqual(file_h_builder.visibility(), ['a', 'b'])
-        self.failUnless(file_h_builder.public())
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnlessEqual(file_h_builder.package_visibility_action()[1], ['a', 'b'])
+        self.assertEqual(file_h_builder.visibility(), ['a', 'b'])
+        self.assertTrue(file_h_builder.public())
+        self.assertEqual(file_h_builder.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertEqual(file_h_builder.package_visibility_action()[1], ['a', 'b'])
         pass
 
     def test_ambig1(self):
@@ -601,8 +601,8 @@ class HeaderInstallPath(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return
         self.fail()
         pass
@@ -628,8 +628,8 @@ class HeaderInstallPath(unittest.TestCase):
         try:
             package.boil(external_nodes=[])
             package.output()
-        except Error, e:
-            self.failUnless(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
+        except Error as e:
+            self.assertTrue(e.contains_error_of_type(libconfix.plugins.c.h.AmbiguousVisibility))
             return 
         self.fail()
         pass
@@ -689,29 +689,29 @@ class IntelligentConditionalLocalInstall(unittest.TestCase):
         package.output()
 
         user_c_builder = package.rootbuilder().find_entry_builder(['user', 'user.c'])
-        self.failIf(user_c_builder is None)
+        self.assertFalse(user_c_builder is None)
 
         hi_pos = lo_pos = None
-        for i in xrange(len(user_c_builder.native_local_include_dirs())):
+        for i in range(len(user_c_builder.native_local_include_dirs())):
             if user_c_builder.native_local_include_dirs()[i] == ['hi']:
-                self.failUnless(hi_pos is None)
+                self.assertTrue(hi_pos is None)
                 hi_pos = i
                 continue
             if user_c_builder.native_local_include_dirs()[i] == ['lo']:
-                self.failUnless(lo_pos is None)
+                self.assertTrue(lo_pos is None)
                 lo_pos = i
                 continue
             pass
 
-        self.failIf(hi_pos is None)
-        self.failIf(lo_pos is None)
-        self.failIf(hi_pos > lo_pos)
+        self.assertFalse(hi_pos is None)
+        self.assertFalse(lo_pos is None)
+        self.assertFalse(hi_pos > lo_pos)
 
         lo_h = package.rootbuilder().find_entry_builder(['lo', 'lo.h'])
-        self.failUnlessEqual(lo_h.visibility(), [])
-        self.failUnless(lo_h.public())
-        self.failUnlessEqual(lo_h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
-        self.failUnlessEqual(lo_h.package_visibility_action()[1], ['lo'])
+        self.assertEqual(lo_h.visibility(), [])
+        self.assertTrue(lo_h.public())
+        self.assertEqual(lo_h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
+        self.assertEqual(lo_h.package_visibility_action()[1], ['lo'])
         
         pass
 
@@ -748,13 +748,13 @@ class IntelligentConditionalLocalInstall(unittest.TestCase):
         package.output()
 
         file_h_builder = package.rootbuilder().find_entry_builder(['file.h'])
-        self.failIf(file_h_builder is None)
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
+        self.assertFalse(file_h_builder is None)
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
 
-        self.failUnless(file_h_builder.visibility(), ['x', 'y'])
-        self.failUnless(file_h_builder.public())
-        self.failUnless(file_h_builder.package_visibility_action()[0] is HeaderBuilder.LOCALVISIBILITY_INSTALL)
-        self.failUnless(file_h_builder.package_visibility_action()[1] == ['x', 'y'])
+        self.assertTrue(file_h_builder.visibility(), ['x', 'y'])
+        self.assertTrue(file_h_builder.public())
+        self.assertTrue(file_h_builder.package_visibility_action()[0] is HeaderBuilder.LOCALVISIBILITY_INSTALL)
+        self.assertTrue(file_h_builder.package_visibility_action()[1] == ['x', 'y'])
         pass
 
     pass
@@ -783,11 +783,11 @@ class NoPublicInstall(unittest.TestCase):
         # no explicit local visibility is given, so the namespace
         # recognizer sees no namespace - and the file can locally be
         # included directly.
-        self.failUnlessEqual(h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
-        self.failUnlessEqual(h.package_visibility_action()[1], [])
+        self.assertEqual(h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
+        self.assertEqual(h.package_visibility_action()[1], [])
 
         # public visibility is explicitly not wanted.
-        self.failIf(h.public())
+        self.assertFalse(h.public())
         pass
     
     def test_auto_no_public_visibility(self):
@@ -818,13 +818,13 @@ class NoPublicInstall(unittest.TestCase):
         # no explicit local visibility is given, so the namespace
         # recognizer sees no namespace - and the file can locally be
         # included directly.
-        self.failUnlessEqual(header_h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
-        self.failUnlessEqual(header_h.package_visibility_action()[1], [])
-        self.failUnlessEqual(regexa_h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
-        self.failUnlessEqual(regexa_h.package_visibility_action()[1], [])
+        self.assertEqual(header_h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
+        self.assertEqual(header_h.package_visibility_action()[1], [])
+        self.assertEqual(regexa_h.package_visibility_action()[0], HeaderBuilder.LOCALVISIBILITY_DIRECT_INCLUDE)
+        self.assertEqual(regexa_h.package_visibility_action()[1], [])
         # public visibility is explicitly not wanted.
-        self.failIf(header_h.public())
-        self.failIf(regexa_h.public())
+        self.assertFalse(header_h.public())
+        self.assertFalse(regexa_h.public())
         pass
     
     pass

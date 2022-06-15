@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import makefile
-import helper
+from . import makefile
+from . import helper
 
 from libconfix.core.utils import const
 from libconfix.core.utils.error import Error
@@ -34,11 +34,11 @@ class Makefile_am(object):
         def dirname(self):
             return self.dirname_
         def families(self):
-            return self.__family_files.keys()
+            return list(self.__family_files.keys())
         def files(self, family):
             return self.__family_files.get(family)
         def add(self, family, files):
-            assert type(files) in (types.ListType, types.TupleType)
+            assert type(files) in (list, tuple)
             ffiles = self.__family_files.setdefault(family, [])
             ffiles.extend(files)
             pass
@@ -236,7 +236,7 @@ class Makefile_am(object):
     def add_includepath(self, d):
         dirs = d.split()
         for dir in dirs:
-            if not self.__have_includedir.has_key(dir):
+            if dir not in self.__have_includedir:
                 self.__includepath.append(dir)
                 self.__have_includedir[dir] = 1
                 pass
@@ -247,7 +247,7 @@ class Makefile_am(object):
         return self.__cmdlinemacros
     def add_cmdlinemacro(self, m, value=None):
 
-        if self.__cmdlinemacros.has_key(m):
+        if m in self.__cmdlinemacros:
             if self.__cmdlinemacros[m] != value:
                 raise Error("Conflicting definitions of macro "+m+": "+\
                             str(self.__cmdlinemacros[m])+" and "+str(value))
@@ -257,7 +257,7 @@ class Makefile_am(object):
     def install_directories(self):
         return self.__install_directories
     def define_install_directory(self, symbolicname, dirname):
-        assert not self.__install_directories.has_key(symbolicname), symbolicname+' already defined'
+        assert symbolicname not in self.__install_directories, symbolicname+' already defined'
         self.__install_directories[symbolicname] = Makefile_am.DirectoryDefinition(dirname=dirname)
         pass
     def add_to_install_directory(self, symbolicname, family, files):
@@ -279,7 +279,7 @@ class Makefile_am(object):
 
         # create variable if not yet defined
 
-        if not self.__dir_primary.has_key(key):
+        if key not in self.__dir_primary:
             self.__dir_primary[key] = []
             pass
 
@@ -299,7 +299,7 @@ class Makefile_am(object):
 
         key = '_'.join([dir, primary])
 
-        if not self.__dir_primary.has_key(key):
+        if key not in self.__dir_primary:
             return []
 
         return self.__dir_primary[key]
@@ -347,8 +347,8 @@ class Makefile_am(object):
 
     def tests_environment(self): return self.__tests_environment        
     def add_tests_environment(self, name, value):
-        assert type(name) is types.StringType
-        assert type(value) is types.StringType
+        assert type(name) is bytes
+        assert type(value) is bytes
         self.__tests_environment[name] = value
         pass
 
@@ -420,7 +420,7 @@ class Makefile_am(object):
         # macros.
 
         am_cppflags = makefile.List(name='AM_CPPFLAGS', values=self.__includepath, mitigate=True)
-        for m in self.__cmdlinemacros.iterkeys():
+        for m in self.__cmdlinemacros.keys():
             macro = '-D' + m
             if self.__cmdlinemacros[m] is not None:
                 macro = macro + '=' + self.__cmdlinemacros[m]
@@ -431,7 +431,7 @@ class Makefile_am(object):
  
         # primaries
 
-        for dp in self.__dir_primary.iterkeys():
+        for dp in self.__dir_primary.keys():
             assert len(self.__dir_primary[dp])
             lines.extend(makefile.List(name=dp, values=self.__dir_primary[dp], mitigate=False).lines())
             pass
@@ -444,7 +444,7 @@ class Makefile_am(object):
         lines.extend(self.__compound_dependencies.lines())
 
         # install directories
-        for symbolicname, dirdef in self.__install_directories.iteritems():
+        for symbolicname, dirdef in self.__install_directories.items():
             if symbolicname != '':
                 lines.extend(makefile.List(name=symbolicname+'dir',
                                            values=[dirdef.dirname()],
@@ -488,7 +488,7 @@ class Makefile_am(object):
             if len(self.__tests_environment):
                 lines.extend(makefile.List(name='TESTS_ENVIRONMENT',
                                            values=[k+'='+self.__tests_environment[k] \
-                                                   for k in self.__tests_environment.iterkeys()],
+                                                   for k in self.__tests_environment.keys()],
                                            mitigate=True)
                              .lines())
                 pass
@@ -525,7 +525,7 @@ class CompoundList:
             pass
         pass
     def add(self, member):
-        assert type(member) is types.StringType, str(member)
+        assert type(member) is bytes, str(member)
         if self.have_ is not None:
             if member in self.have_:
                 raise Error('Duplicate addition of "'+member+'"')
@@ -555,7 +555,7 @@ class CompoundListManager:
             pass
         try:
             compound_list.add(member)
-        except Error, e:
+        except Error as e:
             raise Error('Cannot add member "'+member+'" to "'+compound_name+'_'+self.extension_+'"', [e])
         pass
     def list(self, compound_name):
@@ -568,7 +568,7 @@ class CompoundListManager:
         pass
     def lines(self):
         ret = []
-        for compound_name, list in self.compounds_.iteritems():
+        for compound_name, list in self.compounds_.items():
             assert len(list.list()) > 0
             ret.extend(makefile.List(name=compound_name+'_'+self.extension_,
                                      values=list.list(),

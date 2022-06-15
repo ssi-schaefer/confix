@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from out_plainfile import AutomakePlainfileOutputBuilder
+from .out_plainfile import AutomakePlainfileOutputBuilder
 
 from libconfix.core.machinery.setup import Setup
 

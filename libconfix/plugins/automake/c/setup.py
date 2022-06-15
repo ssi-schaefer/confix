@@ -15,9 +15,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from out_c import COutputSetup
-from external_library import ExternalLibrarySetup
-from interix import InterixSetup
+from .out_c import COutputSetup
+from .external_library import ExternalLibrarySetup
+from .interix import InterixSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
 

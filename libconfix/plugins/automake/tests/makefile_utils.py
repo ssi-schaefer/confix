@@ -46,26 +46,26 @@ class MakefileUtilsTest(unittest.TestCase):
 
         elements = makefile.parse_makefile(lines=lines)
 
-        self.failIf(makefile.find_list(name='list1', elements=elements).values() != \
+        self.assertFalse(list(makefile.find_list(name='list1', elements=elements).values()) != \
                     ['list1value1', 'list1value2', 'list1value3'])
-        self.failIf(makefile.find_list(name='list2', elements=elements).values() != \
+        self.assertFalse(list(makefile.find_list(name='list2', elements=elements).values()) != \
                     ['list2value1'])
 
         rule = makefile.find_rule(targets=['target'], elements=elements)
-        self.failIf(rule.prerequisites() != ['prereq1', 'prereq2'])
-        self.failIf(rule.commands() != ['command1', 'command2'])
+        self.assertFalse(rule.prerequisites() != ['prereq1', 'prereq2'])
+        self.assertFalse(rule.commands() != ['command1', 'command2'])
 
         rule = makefile.find_rule(targets=['target1', 'target2'], elements=elements)
-        self.failIf(rule.prerequisites() != [])
-        self.failIf(rule.commands() != ['command3', 'command4'])
+        self.assertFalse(rule.prerequisites() != [])
+        self.assertFalse(rule.commands() != ['command3', 'command4'])
 
         rule = makefile.find_rule(targets=['target3', 'target4'], elements=elements)
-        self.failIf(rule.prerequisites() != [])
-        self.failIf(rule.commands() != [])
+        self.assertFalse(rule.prerequisites() != [])
+        self.assertFalse(rule.commands() != [])
 
         rule = makefile.find_rule(targets=['target5', 'target6'], elements=elements)
-        self.failIf(rule.prerequisites() != ['prereq1', 'prereq2'])
-        self.failIf(rule.commands() != [])
+        self.assertFalse(rule.prerequisites() != ['prereq1', 'prereq2'])
+        self.assertFalse(rule.commands() != [])
         pass
 
     def test__rules_ok2(self):
@@ -92,35 +92,35 @@ class MakefileUtilsTest(unittest.TestCase):
              '\tcommand3',
              ])
         rule = makefile.find_rule(targets=['target1'], elements=elements)
-        self.failIf(rule.prerequisites() != ['prereq1', 'prereq2'])
-        self.failIf(rule.commands() != ['command1', 'command2'])
+        self.assertFalse(rule.prerequisites() != ['prereq1', 'prereq2'])
+        self.assertFalse(rule.commands() != ['command1', 'command2'])
 
         list = makefile.find_list(name='list1', elements=elements)
-        self.failIf(list.values() != ['value1', 'value2'])
+        self.assertFalse(list(list.values()) != ['value1', 'value2'])
 
         list = makefile.find_list(name='list2', elements=elements)
-        self.failIf(list.values() != ['value3', 'value4', 'value5'])
+        self.assertFalse(list(list.values()) != ['value3', 'value4', 'value5'])
 
         list = makefile.find_list(name='list3', elements=elements)
-        self.failIf(list.values() != [])
+        self.assertFalse(list(list.values()) != [])
 
         rule = makefile.find_rule(targets=['target2', 'target3'], elements=elements)
-        self.failIf(rule.prerequisites() != ['prereq3', 'prereq4'])
-        self.failIf(rule.commands() != [])
+        self.assertFalse(rule.prerequisites() != ['prereq3', 'prereq4'])
+        self.assertFalse(rule.commands() != [])
 
         rule = makefile.find_rule(targets=['target4', 'target5'], elements=elements)
-        self.failIf(rule.prerequisites() != ['prereq3', 'prereq4'])
-        self.failIf(rule.commands() != ['command3'])
+        self.assertFalse(rule.prerequisites() != ['prereq3', 'prereq4'])
+        self.assertFalse(rule.commands() != ['command3'])
         pass
         
     def test__rules_error(self):
-        self.failUnlessRaises(Error,
+        self.assertRaises(Error,
                               makefile.parse_makefile,
                               lines=['xxx'])
-        self.failUnlessRaises(Error,
+        self.assertRaises(Error,
                               makefile.parse_makefile,
                               lines=['xxx yyy zzz'])
-        self.failUnlessRaises(Error,
+        self.assertRaises(Error,
                               makefile.parse_makefile,
                               lines=['xxx: yyy',
                                      'zzz'])
@@ -131,8 +131,8 @@ class MakefileUtilsTest(unittest.TestCase):
                              commands=[['cmd1', 'cmd2'], ['cmd3']])
         elements = makefile.parse_makefile(lines=rule.lines())
         found_rule = makefile.find_rule(targets=['target'], elements=elements)
-        self.failIf(found_rule is None)
-        self.failUnlessEqual(found_rule.commands(), ['cmd1 cmd2', 'cmd3'])
+        self.assertFalse(found_rule is None)
+        self.assertEqual(found_rule.commands(), ['cmd1 cmd2', 'cmd3'])
         pass
 
     def test__include(self):
@@ -142,8 +142,8 @@ class MakefileUtilsTest(unittest.TestCase):
             pass
 
         elements = makefile.parse_makefile(lines=lines)
-        self.failUnless(isinstance(elements[0], makefile.Include))
-        self.failUnlessEqual(elements[0].file(), 'blah')
+        self.assertTrue(isinstance(elements[0], makefile.Include))
+        self.assertEqual(elements[0].file(), 'blah')
         pass
     pass
 

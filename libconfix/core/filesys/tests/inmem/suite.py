@@ -16,10 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import basic
-import property
-import scan
-import overlay
+from . import basic
+from . import property
+from . import scan
+from . import overlay
 
 import unittest
 

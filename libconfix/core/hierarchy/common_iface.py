@@ -70,7 +70,7 @@ class DirectoryBuilderInterfaceProxy(InterfaceProxy):
         pass
 
     def SET_FILE_PROPERTIES(self, filename, properties):
-        if type(properties) is not types.DictionaryType:
+        if type(properties) is not dict:
             raise Error('SET_FILE_PROPERTIES(): properties parameter must be a dictionary')
         file = self.__dirbuilder.directory().find([filename])
         if file is None:
@@ -78,10 +78,10 @@ class DirectoryBuilderInterfaceProxy(InterfaceProxy):
                         'file "'+filename+'" not found in directory "'+\
                         os.sep.join(self.__dirbuilder.directory().relpath())+'"')
         errors = []
-        for name, value in properties.iteritems():
+        for name, value in properties.items():
             try:
                 file.set_property(name, value)
-            except Error, e:
+            except Error as e:
                 errors.append(e)
                 pass
             pass
@@ -97,7 +97,7 @@ class DirectoryBuilderInterfaceProxy(InterfaceProxy):
                         os.sep.join(self.__dirbuilder.directory().relpath())+'"')
         try:
             file.set_property(name, value)
-        except Error, e:
+        except Error as e:
             raise Error('SET_FILE_PROPERTY('+filename+'): could not set property "'+name+'"', [e])
         pass
     pass

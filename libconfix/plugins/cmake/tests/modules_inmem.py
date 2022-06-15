@@ -35,11 +35,11 @@ class ModulesInMemoryTest(unittest.TestCase):
 
         mod1 = modules_dir_builder.directory().get('mod1.cmake')
         mod2 = modules_dir_builder.directory().get('mod2.cmake')
-        self.failIfEqual(mod1, None)
-        self.failIfEqual(mod2, None)
+        self.assertNotEqual(mod1, None)
+        self.assertNotEqual(mod2, None)
 
-        self.failUnlessEqual(mod1.lines(), ['mod1'])        
-        self.failUnlessEqual(mod2.lines(), ['mod2'])        
+        self.assertEqual(mod1.lines(), ['mod1'])        
+        self.assertEqual(mod2.lines(), ['mod2'])        
         pass
     
     def test__good_duplicate(self):
@@ -48,8 +48,8 @@ class ModulesInMemoryTest(unittest.TestCase):
         modules_dir_builder.add_module_file(name='mod1.cmake', lines=['mod1'])
 
         mod1 = modules_dir_builder.directory().get('mod1.cmake')
-        self.failIfEqual(mod1, None)
-        self.failUnlessEqual(mod1.lines(), ['mod1'])        
+        self.assertNotEqual(mod1, None)
+        self.assertEqual(mod1.lines(), ['mod1'])        
         pass
 
     def test__live(self):
@@ -78,8 +78,8 @@ class ModulesInMemoryTest(unittest.TestCase):
         package.output()
 
         modulefile = fs.rootdirectory().find(['confix-admin', 'cmake', 'Modules', 'TestModule.cmake'])
-        self.failIf(modulefile is None)
-        self.failIf(modulefile.lines()[0] != 'my content')
+        self.assertFalse(modulefile is None)
+        self.assertFalse(modulefile.lines()[0] != 'my content')
 
         pass
 

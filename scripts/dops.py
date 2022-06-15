@@ -19,6 +19,6 @@ for filename in sys.argv[1:]:
     pass
     
 for headerfile in all_my_headers:
-    print headerfile
+    print(headerfile)
     pass
 

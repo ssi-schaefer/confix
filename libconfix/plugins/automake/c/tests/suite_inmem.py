@@ -15,10 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import external_library
-import library_dependencies.suite_inmem
-import library
-import header_install_inmem
+from . import external_library
+from . import library_dependencies.suite_inmem
+from . import library
+from . import header_install_inmem
 
 import unittest
 

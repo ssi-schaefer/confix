@@ -74,37 +74,37 @@ class BuildInfoTest(unittest.TestCase):
         hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
         hi_c_builder = package.rootbuilder().find_entry_builder(['hi', 'hi_c.c'])
         hi_cc_builder = package.rootbuilder().find_entry_builder(['hi', 'hi_cc.cc'])
-        self.failIf(hidir_builder is None)
-        self.failIf(hi_c_builder is None)
-        self.failIf(hi_cc_builder is None)
+        self.assertFalse(hidir_builder is None)
+        self.assertFalse(hi_c_builder is None)
+        self.assertFalse(hi_cc_builder is None)
 
         # command line macros go to every c like builder (C and C++)
-        self.failUnless(hi_c_builder.cmdlinemacros()['macro_key'] == 'macro_value')
-        self.failUnless(hi_c_builder.cmdlinemacros()['macro'] == None)
-        self.failUnless(hi_cc_builder.cmdlinemacros()['macro_key'] == 'macro_value')
-        self.failUnless(hi_cc_builder.cmdlinemacros()['macro'] == None)
+        self.assertTrue(hi_c_builder.cmdlinemacros()['macro_key'] == 'macro_value')
+        self.assertTrue(hi_c_builder.cmdlinemacros()['macro'] == None)
+        self.assertTrue(hi_cc_builder.cmdlinemacros()['macro_key'] == 'macro_value')
+        self.assertTrue(hi_cc_builder.cmdlinemacros()['macro'] == None)
         # cflags go to both C and C++
-        self.failUnless('some_cflag' in hi_c_builder.cflags())
-        self.failUnless('some_other_cflag' in hi_c_builder.cflags())
-        self.failUnless('some_cflag' in hi_cc_builder.cflags())
-        self.failUnless('some_other_cflag' in hi_cc_builder.cflags())
+        self.assertTrue('some_cflag' in hi_c_builder.cflags())
+        self.assertTrue('some_other_cflag' in hi_c_builder.cflags())
+        self.assertTrue('some_cflag' in hi_cc_builder.cflags())
+        self.assertTrue('some_other_cflag' in hi_cc_builder.cflags())
         # cxxflags go to C++ only
-        self.failUnless('some_cxxflag' in hi_cc_builder.cxxflags())
-        self.failUnless('some_other_cxxflag' in hi_cc_builder.cxxflags())
-        self.failIf('some_cxxflag' in hi_c_builder.cflags())
-        self.failIf('some_other_cxxflag' in hi_c_builder.cflags())
+        self.assertTrue('some_cxxflag' in hi_cc_builder.cxxflags())
+        self.assertTrue('some_other_cxxflag' in hi_cc_builder.cxxflags())
+        self.assertFalse('some_cxxflag' in hi_c_builder.cflags())
+        self.assertFalse('some_other_cxxflag' in hi_c_builder.cflags())
 
         # see if the builders let the info flow into their surrounding
         # Makefile.am.
         hi_dir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hi_dir_output_builder is None)
+        self.assertFalse(hi_dir_output_builder is None)
         
-        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros()['macro_key'] == 'macro_value')
-        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros()['macro'] == None)
-        self.failUnless('some_cflag' in hi_dir_output_builder.makefile_am().am_cflags())
-        self.failUnless('some_other_cflag' in hi_dir_output_builder.makefile_am().am_cflags())
-        self.failUnless('some_cxxflag' in hi_dir_output_builder.makefile_am().am_cxxflags())
-        self.failUnless('some_other_cxxflag' in hi_dir_output_builder.makefile_am().am_cxxflags())
+        self.assertTrue(hi_dir_output_builder.makefile_am().cmdlinemacros()['macro_key'] == 'macro_value')
+        self.assertTrue(hi_dir_output_builder.makefile_am().cmdlinemacros()['macro'] == None)
+        self.assertTrue('some_cflag' in hi_dir_output_builder.makefile_am().am_cflags())
+        self.assertTrue('some_other_cflag' in hi_dir_output_builder.makefile_am().am_cflags())
+        self.assertTrue('some_cxxflag' in hi_dir_output_builder.makefile_am().am_cxxflags())
+        self.assertTrue('some_other_cxxflag' in hi_dir_output_builder.makefile_am().am_cxxflags())
         pass
     pass
 
@@ -173,36 +173,36 @@ class BuildInfoTest(unittest.TestCase):
         package.output()
 
         hi_dirbuilder = package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hi_dirbuilder is None)
+        self.assertFalse(hi_dirbuilder is None)
         hi_dir_output_builder = find_automake_output_builder(hi_dirbuilder)
-        self.failIf(hi_dir_output_builder is None)
+        self.assertFalse(hi_dir_output_builder is None)
 
         # see if lo's build information (cflags, cxxflags,
         # cmdlinemacros) made it into hi's build.
 
-        self.failUnless('cflags_token' in hi_dir_output_builder.makefile_am().am_cflags())
-        self.failUnless('cxxflags_token' in hi_dir_output_builder.makefile_am().am_cxxflags())
-        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros().has_key('key'))
-        self.failUnless(hi_dir_output_builder.makefile_am().cmdlinemacros()['key'] == 'value')
+        self.assertTrue('cflags_token' in hi_dir_output_builder.makefile_am().am_cflags())
+        self.assertTrue('cxxflags_token' in hi_dir_output_builder.makefile_am().am_cxxflags())
+        self.assertTrue('key' in hi_dir_output_builder.makefile_am().cmdlinemacros())
+        self.assertTrue(hi_dir_output_builder.makefile_am().cmdlinemacros()['key'] == 'value')
         
         # hi's build should not contain duplicates of either of lo's
         # build information.
 
         unique_cflags = set()
         for f in hi_dir_output_builder.makefile_am().am_cflags():
-            self.failIf(f in unique_cflags)
+            self.assertFalse(f in unique_cflags)
             unique_cflags.add(f)
             pass
 
         unique_cxxflags = set()
         for f in hi_dir_output_builder.makefile_am().am_cxxflags():
-            self.failIf(f in unique_cxxflags)
+            self.assertFalse(f in unique_cxxflags)
             unique_cxxflags.add(f)
             pass
 
         cmdlinemacros = {}
-        for macro, value in hi_dir_output_builder.makefile_am().cmdlinemacros().iteritems():
-            self.failIf(macro in cmdlinemacros)
+        for macro, value in hi_dir_output_builder.makefile_am().cmdlinemacros().items():
+            self.assertFalse(macro in cmdlinemacros)
             cmdlinemacros[macro] = value
             pass
         

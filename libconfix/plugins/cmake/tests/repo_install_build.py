@@ -86,7 +86,7 @@ class RepoInstallTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failUnless(install.find(AutomakePackageRepository.REPO_FULL_PATH+['Repo-Install.repo']))
+        self.assertTrue(install.find(AutomakePackageRepository.REPO_FULL_PATH+['Repo-Install.repo']))
         pass
 
     pass

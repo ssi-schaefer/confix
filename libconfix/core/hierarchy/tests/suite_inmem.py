@@ -15,11 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import dirsetup
-import explicit_iface
-import ignored_entries
-import pseudo_handwritten
-import common_iface_suite
+from . import dirsetup
+from . import explicit_iface
+from . import ignored_entries
+from . import pseudo_handwritten
+from . import common_iface_suite
 
 import unittest
 

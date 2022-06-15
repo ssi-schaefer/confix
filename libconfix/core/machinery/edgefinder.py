@@ -16,9 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dependency_utils import ProvideMap
-from require import Require
-from resolve_error import NotResolved
+from .dependency_utils import ProvideMap
+from .require import Require
+from .resolve_error import NotResolved
 
 from libconfix.core.utils import debug
 from libconfix.core.digraph import digraph
@@ -46,7 +46,7 @@ class EdgeFinder(digraph.EdgeFinder):
             for p in n.provides():
                 try:
                     self.__providemap.add(p, n)
-                except Error, e:
+                except Error as e:
                     errors.append(Error('"'+str(p)+'" of node '+str(n), [e]))
                     pass
                 pass
@@ -74,14 +74,14 @@ class EdgeFinder(digraph.EdgeFinder):
             
             successor = found_nodes[0]
             assert successor is not node, 'self-cycle detected'
-            if not successors.has_key(successor):
+            if successor not in successors:
                 successors[successor] = set()
                 pass
             successors[successor].add(r)
             pass
 
         edges = []
-        for succ, requires in successors.iteritems():
+        for succ, requires in successors.items():
             edges.append(digraph.Edge(tail=node, head=succ, annotations=requires))
             pass
 

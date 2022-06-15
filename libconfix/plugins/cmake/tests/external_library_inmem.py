@@ -70,10 +70,10 @@ class ExternalLibraryTest(unittest.TestCase):
         package.output()
 
         linked_cmake_output_builder = find_cmake_output_builder(package.rootbuilder().find_entry_builder(['linked']))
-        self.failUnless('my-cflag1' in linked_cmake_output_builder.local_cmakelists().get_definitions())
-        self.failUnless('my-cflag2' in linked_cmake_output_builder.local_cmakelists().get_definitions())
-        self.failUnless('my-cxxflag1' in linked_cmake_output_builder.local_cmakelists().get_definitions())
-        self.failUnless('my-cxxflag2' in linked_cmake_output_builder.local_cmakelists().get_definitions())
+        self.assertTrue('my-cflag1' in linked_cmake_output_builder.local_cmakelists().get_definitions())
+        self.assertTrue('my-cflag2' in linked_cmake_output_builder.local_cmakelists().get_definitions())
+        self.assertTrue('my-cxxflag1' in linked_cmake_output_builder.local_cmakelists().get_definitions())
+        self.assertTrue('my-cxxflag2' in linked_cmake_output_builder.local_cmakelists().get_definitions())
         pass
     pass
 

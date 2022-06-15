@@ -16,9 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from repo import Marshallable
-from repo import MarshalledVersionUnknownError
-from repo import update_marshalling_data
+from .repo import Marshallable
+from .repo import MarshalledVersionUnknownError
+from .repo import update_marshalling_data
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import debug
@@ -59,9 +59,9 @@ class Require(Marshallable):
         self.__string = string
         self.__found_in = set()
 
-        if type(found_in) is types.StringType:
+        if type(found_in) is bytes:
             self.__found_in.add(found_in)
-        elif type(found_in) in [types.ListType, types.TupleType] and len(found_in):
+        elif type(found_in) in [list, tuple] and len(found_in):
             self.__found_in = set(found_in)
             pass            
         pass
@@ -127,7 +127,7 @@ class Require_Symbol(Require):
                  symbol,
                  found_in,
                  urgency=Require.URGENCY_DEFAULT):
-        assert type(found_in) in [types.ListType, types.TupleType]
+        assert type(found_in) in [list, tuple]
         Require.__init__(
             self,
             string=symbol,

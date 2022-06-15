@@ -138,7 +138,7 @@ class BuildInfo_CommandlineMacros_AM(BuildInformation):
     def __str__(self): return self.unique_key()
     def unique_key(self):
         ret = self.__class__.__name__ + ':'
-        for k, v in self.__macros.iteritems():
+        for k, v in self.__macros.items():
             ret += k
             if v is not None:
                 ret += v
@@ -248,17 +248,17 @@ class EXTERNAL_LIBRARY(InterfaceProxy):
                          libpath=[],
                          libs=[]):
 
-        if type(incpath) is not types.ListType:
+        if type(incpath) is not list:
             raise Error("EXTERNAL_LIBRARY(): 'incpath' argument must be a list")
-        if type(cflags) is not types.ListType:
+        if type(cflags) is not list:
             raise Error("EXTERNAL_LIBRARY(): 'cflags' argument must be a list")
-        if type(cxxflags) is not types.ListType:
+        if type(cxxflags) is not list:
             raise Error("EXTERNAL_LIBRARY(): 'cxxflags' argument must be a list")
-        if type(cmdlinemacros) is not types.DictionaryType:
+        if type(cmdlinemacros) is not dict:
             raise Error("EXTERNAL_LIBRARY(): 'cmdlinemacros' argument must be a dictionary")
-        if type(libpath) is not types.ListType:
+        if type(libpath) is not list:
             raise Error("EXTERNAL_LIBRARY(): 'libpath' argument must be a list")
-        if type(libs) is not types.ListType:
+        if type(libs) is not list:
             raise Error("EXTERNAL_LIBRARY(): 'libs' argument must be a list")
                          
         self.__dirbuilder.add_builder(ExternalLibraryBuilder(incpath=incpath,

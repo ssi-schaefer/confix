@@ -16,11 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from c import CBuilder
-from cxx import CXXBuilder
-from h import HeaderBuilder
-from lex import LexBuilder
-from yacc import YaccBuilder
+from .c import CBuilder
+from .cxx import CXXBuilder
+from .h import HeaderBuilder
+from .lex import LexBuilder
+from .yacc import YaccBuilder
 
 from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.machinery.builder import Builder

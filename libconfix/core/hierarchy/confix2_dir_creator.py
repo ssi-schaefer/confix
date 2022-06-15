@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from confix2_dir import Confix2_dir
+from .confix2_dir import Confix2_dir
 
 from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.machinery.builder import Builder

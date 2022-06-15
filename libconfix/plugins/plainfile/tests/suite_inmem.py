@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from package import make_package
+from .package import make_package
 
 from libconfix.plugins.plainfile.builder import PlainFileBuilder
 from libconfix.plugins.plainfile.setup import PlainFileInterfaceSetup
@@ -39,10 +39,10 @@ class PlainFileTest(unittest.TestCase):
         
         plainfile_data = package.rootbuilder().find_entry_builder(['plainfile_data'])
         plainfile_prefix = package.rootbuilder().find_entry_builder(['plainfile_prefix'])
-        self.failIf(plainfile_data is None)
-        self.failIf(plainfile_prefix is None)
-        self.failUnless(isinstance(plainfile_data, PlainFileBuilder))
-        self.failUnless(isinstance(plainfile_prefix, PlainFileBuilder))
+        self.assertFalse(plainfile_data is None)
+        self.assertFalse(plainfile_prefix is None)
+        self.assertTrue(isinstance(plainfile_data, PlainFileBuilder))
+        self.assertTrue(isinstance(plainfile_prefix, PlainFileBuilder))
         pass
 
     def test__creator_with_params(self):
@@ -75,13 +75,13 @@ class PlainFileTest(unittest.TestCase):
 
         databuilder = package.rootbuilder().find_entry_builder(['file.data'])
         prefixbuilder = package.rootbuilder().find_entry_builder(['file.prefix'])
-        self.failIf(databuilder is None)
-        self.failIf(prefixbuilder is None)
+        self.assertFalse(databuilder is None)
+        self.assertFalse(prefixbuilder is None)
 
-        self.failUnless(databuilder.datadir() == ['the', 'data', 'dir'])
-        self.failUnless(databuilder.prefixdir() is None)
-        self.failUnless(prefixbuilder.prefixdir() == ['the', 'prefix', 'dir'])
-        self.failUnless(prefixbuilder.datadir() is None)
+        self.assertTrue(databuilder.datadir() == ['the', 'data', 'dir'])
+        self.assertTrue(databuilder.prefixdir() is None)
+        self.assertTrue(prefixbuilder.prefixdir() == ['the', 'prefix', 'dir'])
+        self.assertTrue(prefixbuilder.datadir() is None)
         pass
     pass
 

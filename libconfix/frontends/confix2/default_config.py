@@ -18,7 +18,7 @@
 
 import os
 
-from config import Configuration
+from .config import Configuration
 
 class DefaultConfiguration(Configuration):
     def __init__(self):

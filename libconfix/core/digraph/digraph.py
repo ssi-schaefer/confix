@@ -158,10 +158,10 @@ class EdgeSet(object):
 
     def __iter__(self):
         ret = set()
-        for edgeset in self.__by_tail.itervalues():
+        for edgeset in self.__by_tail.values():
             ret.update(edgeset)
             pass
-        for edgeset in self.__by_head.itervalues():
+        for edgeset in self.__by_head.values():
             ret.update(edgeset)
             pass
         return ret.__iter__()

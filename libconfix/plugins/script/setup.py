@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from builder import ScriptBuilder
+from .builder import ScriptBuilder
 
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.machinery.interface import InterfaceProxy
@@ -35,7 +35,7 @@ class ADD_SCRIPT(InterfaceProxy):
         pass
 
     def ADD_SCRIPT(self, filename, what=ScriptBuilder.BIN):
-        if type(filename) is not types.StringType:
+        if type(filename) is not bytes:
             raise Error('ADD_SCRIPT(): filename must be a string')
         if not what in (ScriptBuilder.BIN, ScriptBuilder.CHECK):
             raise Error('ADD_SCRIPT('+filename+', ...): "what" parameter must be one of SCRIPT_BIN and SCRIPT_CHECK') 

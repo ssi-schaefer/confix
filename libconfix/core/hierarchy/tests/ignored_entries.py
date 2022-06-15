@@ -80,9 +80,9 @@ class IgnoredEntries(unittest.TestCase):
                     IgnoreTestSetup()])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored1.ignoretest']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored2.ignoretest']))
-        self.failUnless(package.rootbuilder().find_entry_builder(path=['not-ignored.ignoretest']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['ignored1.ignoretest']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['ignored2.ignoretest']))
+        self.assertTrue(package.rootbuilder().find_entry_builder(path=['not-ignored.ignoretest']))
 
         pass
 

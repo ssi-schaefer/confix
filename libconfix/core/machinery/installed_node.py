@@ -16,18 +16,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from repo import Marshallable, update_marshalling_data
-from node import Node
+from .repo import Marshallable, update_marshalling_data
+from .node import Node
 
 import types
 
 class InstalledNode(Node):
     def get_marshalling_data(self):
         assert self.__package is not None
-        assert type(self.__name) is types.ListType
-        assert type(self.__provides) is types.ListType
-        assert type(self.__requires) is types.ListType
-        assert type(self.__buildinfos) is types.ListType
+        assert type(self.__name) is list
+        assert type(self.__provides) is list
+        assert type(self.__requires) is list
+        assert type(self.__buildinfos) is list
         return update_marshalling_data(
             marshalling_data=Node.get_marshalling_data(self),
             generating_class=InstalledNode,
@@ -49,9 +49,9 @@ class InstalledNode(Node):
         self.__provides = data[Marshallable.ATTRIBUTES]['provides']
         self.__requires = data[Marshallable.ATTRIBUTES]['requires']
         self.__buildinfos = data[Marshallable.ATTRIBUTES]['buildinfos']
-        assert type(self.__provides) is types.ListType
-        assert type(self.__requires) is types.ListType
-        assert type(self.__buildinfos) is types.ListType
+        assert type(self.__provides) is list
+        assert type(self.__requires) is list
+        assert type(self.__buildinfos) is list
         Node.set_marshalling_data(self, data)
 
         self.__type_cache = {}
@@ -59,7 +59,7 @@ class InstalledNode(Node):
         pass
     
     def __init__(self, name, provides, requires, buildinfos):
-        assert type(name) is types.ListType
+        assert type(name) is list
         self.__package = None
         self.__name = name
         self.__provides = provides

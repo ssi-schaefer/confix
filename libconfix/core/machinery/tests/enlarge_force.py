@@ -46,7 +46,7 @@ class EnlargeForceTest(unittest.TestCase):
         
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[NullSetup()])
         package.rootbuilder().add_builder(EnlargeForceDummy())
-        self.failUnlessRaises(LocalPackage.InfiniteLoopError, package.boil, external_nodes=[])
+        self.assertRaises(LocalPackage.InfiniteLoopError, package.boil, external_nodes=[])
         pass
         
     pass

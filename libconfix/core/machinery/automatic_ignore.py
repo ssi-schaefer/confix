@@ -15,10 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from builder import Builder
-from entrybuilder import EntryBuilder
-from setup import Setup
-from interface import InterfaceProxy
+from .builder import Builder
+from .entrybuilder import EntryBuilder
+from .setup import Setup
+from .interface import InterfaceProxy
 
 class IgnoreSetup(Setup):
     def setup(self, dirbuilder):

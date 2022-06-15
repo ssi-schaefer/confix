@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from out_cmake import find_cmake_output_builder
+from .out_cmake import find_cmake_output_builder
 
 from libconfix.plugins.idl.builder import IDLBuilder
 

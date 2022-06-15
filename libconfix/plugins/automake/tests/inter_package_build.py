@@ -133,7 +133,7 @@ class InterPackageBuildBase(PersistentTestCase):
 
             # once I suspected the error to be of that root.
             lo_dir_output_builder = find_automake_output_builder(self.lo_package_.rootbuilder())
-            self.failUnless('confixrepo' in lo_dir_output_builder.makefile_am().install_directories())
+            self.assertTrue('confixrepo' in lo_dir_output_builder.makefile_am().install_directories())
 
             bootstrap.bootstrap(
                 packageroot=self.lo_sourcedir_,
@@ -177,8 +177,8 @@ class InterPackageBuildBase(PersistentTestCase):
                 builddir=self.hi_builddir_,
                 args=['install'])
             
-        except Error, e:
-            sys.stderr.write(`e`+'\n')
+        except Error as e:
+            sys.stderr.write(repr(e)+'\n')
             raise
 
         pass

@@ -22,8 +22,8 @@ import os
 
 from libconfix.core.digraph.cycle import CycleError
 
-from error import Error
-import external_cmd
+from .error import Error
+from . import external_cmd
 
 def find_confix_root(argv0):
     dir = os.path.dirname(argv0)
@@ -77,7 +77,7 @@ def format_cycle_error(error):
         pass
     return lines
 
-    for i in xrange(len(path)-1):
+    for i in range(len(path)-1):
 
         # from the successors of #i along the circle path, get the one
         # which is the next on the path. print the edge.
@@ -112,7 +112,7 @@ def normalize_lines(lines):
     lines.
     """
     ret = None
-    for i in xrange(len(lines)):
+    for i in range(len(lines)):
         if lines[i].find('\n') >= 0:
             if ret is None: ret = lines[:i]
             ret.extend(lines[i].split('\n'))
@@ -141,7 +141,7 @@ def write_lines_to_file(filename, lines):
         for l in lines:
             file.write(l+'\n')
         file.close()
-    except Exception, e:
+    except Exception as e:
         raise Error("Could not write "+filename+":", [e])
 
 def lines_of_file(filename):
@@ -151,7 +151,7 @@ def lines_of_file(filename):
 
     try:
         file = open(filename, 'r')
-    except IOError, e:
+    except IOError as e:
         raise Error('Could not open file \'' + filename + '\' for reading', [e])
 
     lines = [l.rstrip('\n') for l in file]
@@ -173,7 +173,7 @@ def write_lines_to_file_if_changed(filename, lines):
     if os.path.exists(filename):
         try:
             file = open(filename, 'r')
-        except IOError, e:
+        except IOError as e:
             raise Error('Could not open file \'' + filename + '\' for reading', [e])
         for l in file:
             m_file.update(l)
@@ -207,11 +207,11 @@ def copy_file_if_changed(sourcename, targetname, mode):
 def copy_file(sourcename, targetname, mode):
     try:
         sourcefile = open(sourcename, 'r')
-    except IOError, e:
+    except IOError as e:
         raise Error('Could not open file \'' + sourcename + '\' for reading', [e])
     try:
         targetfile = open(targetname, 'w')
-    except IOError, e:
+    except IOError as e:
         raise Error('Could not open file \'' + targetname + '\' for writing', [e])
     for l in sourcefile:
         targetfile.write(l)
@@ -224,7 +224,7 @@ def md5_of_file(filename):
     finger = hashlib.md5()
     try:
         file = open(filename, 'r')
-    except IOError, e:
+    except IOError as e:
         raise Error('Could not open file \'' + filename + '\' for reading', [e])
     for l in file:
         finger.update(l)
@@ -237,9 +237,9 @@ def read_boolean(b):
     return real boolean values 0 and 1, or raise an exception. """
 
     if b is None: return False
-    if type(b) in [types.IntType, types.BooleanType]:
+    if type(b) in [int, bool]:
         return b
-    if type(b) is types.StringType:
+    if type(b) is bytes:
         b = b.lower()
         if b == 'yes' or b == 'y' or b == 'true' or b == 't' or b == '1':
             return True
@@ -257,7 +257,7 @@ def intersect_lists(l1, l2):
         dict[el] = 1
     ret = []
     for el in l2:
-        if dict.has_key(el): ret.append(el)
+        if el in dict: ret.append(el)
 
     return ret
 
@@ -266,22 +266,22 @@ def normalize_filename(fn):
 
 def clone_value(v):
 
-    if type(v) is types.ListType or type(v) is types.TupleType:
+    if type(v) is list or type(v) is tuple:
         ret = []
         for e in v:
             ret.append(clone_value(e))
         return ret
 
-    if type(v) is types.DictionaryType:
+    if type(v) is dict:
         ret = {}
-        for k in v.iterkeys():
+        for k in v.keys():
             ret[k] = clone_value(v[k])
         return ret
 
     return v
 
 def make_path(str_or_list):
-    if isinstance(str_or_list, types.StringType):
+    if isinstance(str_or_list, bytes):
         if len(str_or_list) == 0:
             return []
         else:

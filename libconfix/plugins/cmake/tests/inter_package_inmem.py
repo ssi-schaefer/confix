@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import inter_package
+from . import inter_package
 
 from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 from libconfix.plugins.cmake.setup import CMakeSetup
@@ -69,17 +69,17 @@ class InterPackageTest(unittest.TestCase):
         # includes. we need only one path, pointing to the installed
         # include directory.
         include_directories = output_builder.local_cmakelists().get_include_directories()
-        self.failUnlessEqual(len(include_directories), 2)
-        self.failUnlessEqual(include_directories[1], '${CMAKE_INSTALL_PREFIX}/include')
+        self.assertEqual(len(include_directories), 2)
+        self.assertEqual(include_directories[1], '${CMAKE_INSTALL_PREFIX}/include')
 
         # boring with the library path as well.
         link_directories = output_builder.local_cmakelists().get_link_directories()
-        self.failUnlessEqual(len(link_directories), 1)
-        self.failUnlessEqual(link_directories[0], '${CMAKE_INSTALL_PREFIX}/lib')
+        self.assertEqual(len(link_directories), 1)
+        self.assertEqual(link_directories[0], '${CMAKE_INSTALL_PREFIX}/lib')
 
         # more fun with the libraries.
         exe_target_link_libraries = output_builder.local_cmakelists().get_target_link_libraries('exe')
-        self.failUnlessEqual(exe_target_link_libraries, ['mid', 'lo'])
+        self.assertEqual(exe_target_link_libraries, ['mid', 'lo'])
         
         pass
 

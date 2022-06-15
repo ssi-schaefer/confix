@@ -83,22 +83,22 @@ class CompositeConfigTest(unittest.TestCase):
         config.add(ConfigFile(file=confixfile).get_profile('the_profile'))
         config.add(DefaultConfiguration())
 
-        self.failUnlessEqual(config.packageroot(), '/package/root') # cmdline
-        self.failUnlessEqual(config.overlayroot(), '/overlay/root') # cmdline
-        self.failUnlessEqual(config.packagename(), 'packagename') # cmdline
-        self.failUnlessEqual(config.packageversion(), 'packageversion') # cmdline
-        self.failUnlessEqual(config.prefix(), '/the/prefix') # cmdline overriding profile
-        self.failUnlessEqual(config.readonly_prefixes(), ['/one/readonly/prefix', '/two/readonly/prefixes']) # cmdline overriding profile
-        self.failUnlessEqual(config.buildroot(), '/build/root') # cmdline
-        self.failUnless(config.builddir() is None) # not set at all
-        self.failUnless(config.short_libnames() is True) # profile
-        self.failUnless(config.use_libtool() is True) # profile
-        self.failUnless(config.use_bulk_install() is True) # profile
-        self.failUnless(config.use_kde_hack() is False) # default
-        self.failUnless(config.print_timings() is True) # profile
-        self.failUnlessEqual(config.message_prefix(), 'some-message-prefix')
-        self.failUnlessEqual(config.advanced(), False) # profile
-        self.failUnlessEqual(config.configure_env()['CFLAGS'], '-some-cflags')
+        self.assertEqual(config.packageroot(), '/package/root') # cmdline
+        self.assertEqual(config.overlayroot(), '/overlay/root') # cmdline
+        self.assertEqual(config.packagename(), 'packagename') # cmdline
+        self.assertEqual(config.packageversion(), 'packageversion') # cmdline
+        self.assertEqual(config.prefix(), '/the/prefix') # cmdline overriding profile
+        self.assertEqual(config.readonly_prefixes(), ['/one/readonly/prefix', '/two/readonly/prefixes']) # cmdline overriding profile
+        self.assertEqual(config.buildroot(), '/build/root') # cmdline
+        self.assertTrue(config.builddir() is None) # not set at all
+        self.assertTrue(config.short_libnames() is True) # profile
+        self.assertTrue(config.use_libtool() is True) # profile
+        self.assertTrue(config.use_bulk_install() is True) # profile
+        self.assertTrue(config.use_kde_hack() is False) # default
+        self.assertTrue(config.print_timings() is True) # profile
+        self.assertEqual(config.message_prefix(), 'some-message-prefix')
+        self.assertEqual(config.advanced(), False) # profile
+        self.assertEqual(config.configure_env()['CFLAGS'], '-some-cflags')
         pass
     pass
 

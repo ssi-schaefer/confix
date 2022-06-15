@@ -20,14 +20,14 @@ from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.utils import const
 import libconfix.core.utils.helper
 
-from base import CBaseBuilder
-from buildinfo import \
+from .base import CBaseBuilder
+from .buildinfo import \
      BuildInfo_CIncludePath_NativeLocal, \
      BuildInfo_CIncludePath_NativeInstalled, \
      BuildInfo_CommandlineMacros, \
      BuildInfo_CFLAGS
 
-import helper
+from . import helper
 
 class CompiledCBuilder(CBaseBuilder):
 
@@ -131,7 +131,7 @@ class CompiledCBuilder(CBaseBuilder):
                 self.__buildinfo_includepath_native_installed = True
                 pass
             for bi in n.iter_buildinfos_type(BuildInfo_CommandlineMacros):
-                for (k, v) in bi.macros().iteritems():
+                for (k, v) in bi.macros().items():
                     self.__insert_cmdlinemacro(k, v)
                     pass
                 pass
@@ -171,7 +171,7 @@ class CompiledCBuilder(CBaseBuilder):
         pass
 
     def __insert_cmdlinemacro(self, key, value):
-        if self.__cmdlinemacros.has_key(key):
+        if key in self.__cmdlinemacros:
             existing_value = self.__cmdlinemacros[key]
             if existing_value != value:
                 raise Error(os.sep.join(self.file().relpath())+': '

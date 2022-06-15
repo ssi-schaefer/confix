@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from check import CheckProgramBase
+from .check import CheckProgramBase
 
 from libconfix.plugins.automake import bootstrap, configure, make
 
@@ -42,7 +42,7 @@ class CheckProgramBuildBase(CheckProgramBase):
             args=['check'])
 
         # as a side effect, the test program creates a file for us.
-        self.failUnless(os.path.isfile(os.sep.join(self.build_.abspath()+['my-check-was-here'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.build_.abspath()+['my-check-was-here'])))
         pass
     pass
 

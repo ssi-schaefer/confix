@@ -65,8 +65,8 @@ class SimpleBuildBase(PersistentTestCase):
             self.package_.boil(external_nodes=[])
             self.package_.output()
             self.fs_.sync()
-        except Error, e:
-            sys.stderr.write(`e`+'\n')
+        except Error as e:
+            sys.stderr.write(repr(e)+'\n')
             raise
         pass
 
@@ -86,11 +86,11 @@ class SimpleBuildBase(PersistentTestCase):
             make.make(
                 builddir=self.buildrootpath_,
                 args=[])
-        except Error, e:
-            sys.stderr.write(`e`+'\n')
+        except Error as e:
+            sys.stderr.write(repr(e)+'\n')
             raise
 
-        self.failUnless(os.path.isfile(os.sep.join(self.buildrootpath_+['file.o'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.buildrootpath_+['file.o'])))
         pass
 
     pass

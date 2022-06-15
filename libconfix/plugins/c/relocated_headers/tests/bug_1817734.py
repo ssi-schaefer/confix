@@ -60,13 +60,13 @@ class Bug_1817734_Test(unittest.TestCase):
         include_builder = package.rootbuilder().find_entry_builder(path=['include'])
         source_builder = package.rootbuilder().find_entry_builder(path=['source'])
 
-        self.failIf(include_builder is None)
-        self.failIf(source_builder is None)
+        self.assertFalse(include_builder is None)
+        self.assertFalse(source_builder is None)
 
         # the include directory must not require anything - the only
         # builder was relocated to the source directory.
         for r in include_builder.requires():
-            self.failIf(isinstance(r, Require_CInclude), r)
+            self.assertFalse(isinstance(r, Require_CInclude), r)
             pass
 
         # whereas the source directory must require the header that

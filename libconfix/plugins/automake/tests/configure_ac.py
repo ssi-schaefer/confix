@@ -45,30 +45,30 @@ class ConfigureACTest(unittest.TestCase):
         for l in cf_ac.lines():
             match = ConfigureACTest.re_AC_INIT.search(l)
             if match is not None:
-                self.failUnless(match.group(1) == 'package')
-                self.failUnless(match.group(2) == '1.2.3')
+                self.assertTrue(match.group(1) == 'package')
+                self.assertTrue(match.group(2) == '1.2.3')
                 continue
 
             match = ConfigureACTest.re_AC_CONFIG_AUXDIR.search(l)
             if match is not None:
-                self.failUnless(match.group(1) == 'auxdir')
+                self.assertTrue(match.group(1) == 'auxdir')
                 continue
 
             match = ConfigureACTest.re_AC_CONFIG_SRCDIR.search(l)
             if match is not None:
-                self.failUnless(match.group(1) == 'some-unique-file')
+                self.assertTrue(match.group(1) == 'some-unique-file')
                 continue
 
             match = ConfigureACTest.re_AC_PREREQ.search(l)
             if match is not None:
-                self.failUnless(match.group(1) == '2.53')
+                self.assertTrue(match.group(1) == '2.53')
                 continue
             
             match = ConfigureACTest.re_AC_CONFIG_FILES.search(l)
             if match is not None:
                 list = set(ConfigureACTest.re_white.split(match.group(1)))
-                self.failUnless('this-subdir/Makefile' in list)
-                self.failUnless('that-subdir/Makefile' in list)
+                self.assertTrue('this-subdir/Makefile' in list)
+                self.assertTrue('that-subdir/Makefile' in list)
                 continue
             pass
         

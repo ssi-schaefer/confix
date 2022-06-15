@@ -57,7 +57,7 @@ class ScanTest(unittest.TestCase):
         inc4 = None
         inc5 = None
         for r in builder.dependency_info().requires():
-            self.assert_(isinstance(r, Require_CInclude))
+            self.assertTrue(isinstance(r, Require_CInclude))
             if r.filename() == 'inc1':
                 inc1 = r
                 continue

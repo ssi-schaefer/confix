@@ -48,8 +48,8 @@ class PseudoHandwritten(unittest.TestCase):
         package1.boil(external_nodes=[])
         package1.output()
 
-        self.failUnless(fs.rootdirectory().get(pseudo_handwritten.PseudoHandWrittenFileManager.PSEUDO_HANDWRITTEN_LIST_FILENAME))
-        self.failUnless(fs.rootdirectory().get('file1').lines() == ['line1'])
+        self.assertTrue(fs.rootdirectory().get(pseudo_handwritten.PseudoHandWrittenFileManager.PSEUDO_HANDWRITTEN_LIST_FILENAME))
+        self.assertTrue(fs.rootdirectory().get('file1').lines() == ['line1'])
 
         package1 = None
 
@@ -61,15 +61,15 @@ class PseudoHandwritten(unittest.TestCase):
         package2.boil(external_nodes=[])
         package2.output()
 
-        self.failUnless(fs.rootdirectory().get(pseudo_handwritten.PseudoHandWrittenFileManager.PSEUDO_HANDWRITTEN_LIST_FILENAME))
+        self.assertTrue(fs.rootdirectory().get(pseudo_handwritten.PseudoHandWrittenFileManager.PSEUDO_HANDWRITTEN_LIST_FILENAME))
 
         # note that we ought to remove the file, but we can only
         # truncate it.
 
         #self.failIf(fs.rootdirectory().get('file1'))
-        self.failUnless(len(fs.rootdirectory().get('file1').lines()) == 0)
+        self.assertTrue(len(fs.rootdirectory().get('file1').lines()) == 0)
 
-        self.failUnless(fs.rootdirectory().get('file2').lines() == ['line2'])
+        self.assertTrue(fs.rootdirectory().get('file2').lines() == ['line2'])
 
         package2 = None
 
@@ -82,7 +82,7 @@ class PseudoHandwritten(unittest.TestCase):
 
         #self.failIf(fs.rootdirectory().get(pseudo_handwritten.PseudoHandWrittenFileManager.PSEUDO_HANDWRITTEN_LIST_FILENAME))
 
-        self.failUnless(len(helper_pickle.load_object_from_lines(
+        self.assertTrue(len(helper_pickle.load_object_from_lines(
             fs.rootdirectory().get(
                 pseudo_handwritten.PseudoHandWrittenFileManager.PSEUDO_HANDWRITTEN_LIST_FILENAME).lines())) == 0)
         pass

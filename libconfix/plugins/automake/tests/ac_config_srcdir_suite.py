@@ -39,10 +39,10 @@ class AC_CONFIG_SRCDIR_Test(unittest.TestCase):
         package.output()
 
         rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_automake_builder is None)
+        self.assertFalse(rootdir_automake_builder is None)
 
-        self.failIf(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() is None)
-        self.failUnless(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() in ('Confix2.dir', 'Confix2.pkg'))
+        self.assertFalse(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() is None)
+        self.assertTrue(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() in ('Confix2.dir', 'Confix2.pkg'))
 
         pass
         
@@ -63,10 +63,10 @@ class AC_CONFIG_SRCDIR_Test(unittest.TestCase):
         package.output()
 
         rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_automake_builder is None)
+        self.assertFalse(rootdir_automake_builder is None)
 
-        self.failIf(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() is None)
-        self.failUnless(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() == 'file.h')
+        self.assertFalse(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() is None)
+        self.assertTrue(rootdir_automake_builder.configure_ac().unique_file_in_srcdir() == 'file.h')
 
         pass
     pass

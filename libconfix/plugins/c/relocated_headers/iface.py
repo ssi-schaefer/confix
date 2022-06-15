@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from master import Master
+from .master import Master
 
 from libconfix.core.utils.error import Error
 from libconfix.core.machinery.interface import InterfaceProxy

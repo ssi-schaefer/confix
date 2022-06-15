@@ -80,11 +80,11 @@ class LexYaccSetupTest(unittest.TestCase):
                 continue
             pass
 
-        self.failIf(clex is None)
-        self.failIf(cxxlex is None)
-        self.failIf(cyacc is None)
-        self.failIf(cxxyacc is None)
-        self.failIf(lib is None)
+        self.assertFalse(clex is None)
+        self.assertFalse(cxxlex is None)
+        self.assertFalse(cyacc is None)
+        self.assertFalse(cxxyacc is None)
+        self.assertFalse(lib is None)
         pass
     pass
 

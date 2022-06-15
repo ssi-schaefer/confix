@@ -26,7 +26,7 @@ from libconfix.core.utils import const
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.testutils.persistent import PersistentTestCase
 
-from check import CheckProgramBase
+from .check import CheckProgramBase
 
 import os
 import sys
@@ -52,7 +52,7 @@ class Test(PersistentTestCase):
         _build_and_check(source=source, build=build)
 
         # as a side effect, the test program creates a file for us.
-        self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
+        self.assertTrue(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
         pass
     
     def test__implicit_without_libtool(self):
@@ -74,7 +74,7 @@ class Test(PersistentTestCase):
         _build_and_check(source=source, build=build)
 
         # as a side effect, the test program creates a file for us.
-        self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
+        self.assertTrue(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
         pass
     
     def test__explicit_with_libtool(self):
@@ -99,7 +99,7 @@ class Test(PersistentTestCase):
         _build_and_check(source=source, build=build)
 
         # as a side effect, the test program creates a file for us.
-        self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
+        self.assertTrue(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
         pass
     
     def test__explicit_without_libtool(self):
@@ -124,7 +124,7 @@ class Test(PersistentTestCase):
         _build_and_check(source=source, build=build)
 
         # as a side effect, the test program creates a file for us.
-        self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
+        self.assertTrue(os.path.isfile(os.sep.join(build.abspath()+['my-check-was-here'])))
         pass
 
     pass

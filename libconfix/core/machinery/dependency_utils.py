@@ -15,9 +15,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from repo import Unmarshallable
-from require import Require
-from provide import Provide
+from .repo import Unmarshallable
+from .require import Require
+from .provide import Provide
 
 from libconfix.core.utils.error import Error
 
@@ -31,7 +31,7 @@ class DependencySet(Unmarshallable):
     def __len__(self): return self.size()
     def size(self):
         n = 0
-        for k, v in self.__per_class_index.iteritems():
+        for k, v in self.__per_class_index.items():
             n += len(v)
             pass
         return n
@@ -69,8 +69,8 @@ class DependencySet(Unmarshallable):
 
     def __iter__(self): return self.__iter_values()        
     def __iter_values(self):
-        for klass, klass_dict in self.__per_class_index.iteritems():
-            for v in klass_dict.itervalues():
+        for klass, klass_dict in self.__per_class_index.items():
+            for v in klass_dict.values():
                 yield v
                 pass
             pass

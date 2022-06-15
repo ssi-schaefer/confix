@@ -26,7 +26,7 @@ _message_prefix = ''
 
 def _get_indent():
     ret = ''
-    for i in xrange(_indentation):
+    for i in range(_indentation):
         ret = ret + ' '
     return ret
 
@@ -44,7 +44,7 @@ def set_message_prefix(prefix):
     pass
 
 def has_trace(level):
-    return _levels.has_key(level) or _levels.has_key('all')
+    return level in _levels or 'all' in _levels
 
 def indent():
     global _indentation
@@ -61,11 +61,11 @@ def debug(msg):
 
 def trace(levels, msg):
     do_output = 0
-    if _levels.has_key('all'):
+    if 'all' in _levels:
         do_output = 1
     else:
         for l in levels:
-            if _levels.has_key(l):
+            if l in _levels:
                 do_output = 1
                 break
 

@@ -46,7 +46,7 @@ class Test(PersistentTestCase):
         
         # we have synced the fs_orig, so a scan should see file1
         fs_dup = scan.scan_filesystem(self.rootpath())
-        self.failUnless(fs_dup.rootdirectory().get('file1'))
+        self.assertTrue(fs_dup.rootdirectory().get('file1'))
 
         # now add a file to the directory, via fs_orig
         fs_orig.rootdirectory().add(
@@ -56,7 +56,7 @@ class Test(PersistentTestCase):
 
         # rescan the fs_dup's rootdirectory. the file must be seen.
         scan.rescan_dir(fs_dup.rootdirectory())
-        self.failUnless(fs_dup.rootdirectory().get('file2'))
+        self.assertTrue(fs_dup.rootdirectory().get('file2'))
         pass
 
     def test__new_directory(self):
@@ -71,7 +71,7 @@ class Test(PersistentTestCase):
         fs_orig.sync()
 
         scan.rescan_dir(fs_dup.rootdirectory())
-        self.failUnless(fs_dup.rootdirectory().get('dir'))
+        self.assertTrue(fs_dup.rootdirectory().get('dir'))
         pass
 
     def test__new_file_in_existing_directory(self):
@@ -89,7 +89,7 @@ class Test(PersistentTestCase):
         fs_orig.sync()
 
         scan.rescan_dir(fs_dup.rootdirectory())
-        self.failUnless(fs_dup.rootdirectory().find(['dir', 'file']))
+        self.assertTrue(fs_dup.rootdirectory().find(['dir', 'file']))
         pass
 
     def removed_file(self):
@@ -105,7 +105,7 @@ class Test(PersistentTestCase):
 
         # rescan the fs's rootdirectory. the file must have gone.
         scan.rescan_dir(fs.rootdirectory())
-        self.failIf(fs.rootdirectory().get('file'))
+        self.assertFalse(fs.rootdirectory().get('file'))
         pass
         
     pass

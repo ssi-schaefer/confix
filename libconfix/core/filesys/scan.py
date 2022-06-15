@@ -20,9 +20,9 @@ import sys, os
 
 from libconfix.core.utils.error import Error
 
-from filesys import FileSystem
-from directory import Directory, DirectoryState
-from file import File, FileState
+from .filesys import FileSystem
+from .directory import Directory, DirectoryState
+from .file import File, FileState
 
 def scan_filesystem(path):
     assert type(path) is list
@@ -103,17 +103,17 @@ def rescan_dir(dir):
     pass
 
 def print_filesys(fs, indent):
-    print ' '*indent + os.sep.join(fs.path())
+    print(' '*indent + os.sep.join(fs.path()))
     print_dir_contents(fs.rootdirectory(), indent+2)
     pass
 
 def print_dir_contents(dir, indent):
     for name, entry in dir.entries():
         if isinstance(entry, Directory):
-            print ' '*indent + name + '/'
+            print(' '*indent + name + '/')
             print_dir_contents(entry, indent+2)
         elif isinstance(entry, File):
-            print ' '*indent + name
+            print(' '*indent + name)
             pass
         pass
     pass

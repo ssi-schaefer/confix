@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import intra_package
+from . import intra_package
 
 from libconfix.plugins.cmake.setup import CMakeSetup
 from libconfix.plugins.cmake import commands
@@ -57,9 +57,9 @@ class IntraPackageTest(PersistentTestCase):
 
         # I doubt that this will hold on Windows :-) if it becomes an
         # issue we will skip this check
-        self.failUnless(build.find(['lo', 'liblo.a']))
-        self.failUnless(build.find(['hi', 'libhi.a']))
-        self.failUnless(build.find(['exe', 'exe']))
+        self.assertTrue(build.find(['lo', 'liblo.a']))
+        self.assertTrue(build.find(['hi', 'libhi.a']))
+        self.assertTrue(build.find(['exe', 'exe']))
 
         pass
 

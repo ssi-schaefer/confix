@@ -16,12 +16,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from base import CBaseBuilder
-from compiled import CompiledCBuilder
-from executable import ExecutableBuilder
-from h import HeaderBuilder
-from library import LibraryBuilder
-import helper
+from .base import CBaseBuilder
+from .compiled import CompiledCBuilder
+from .executable import ExecutableBuilder
+from .h import HeaderBuilder
+from .library import LibraryBuilder
+from . import helper
 
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.builder import Builder
@@ -225,25 +225,25 @@ class CClustererInterfaceProxy(InterfaceProxy):
         pass
 
     def LIBNAME(self, name):
-        if type(name) is not types.StringType:
+        if type(name) is not bytes:
             raise Error("LIBNAME(): 'name' argument must be a string")
         self.__clusterer.set_libname(name)
         pass
 
     def LIBRARY_VERSION(self, version):
-        if type(version) not in [types.ListType, types.TupleType]:
+        if type(version) not in [list, tuple]:
             raise Error("LIBRARY_VERSION(): 'version' argument must be a tuple")
         if len(version) != 3:
             raise Error("LIBRARY_VERSION(): 'version' argument must be a tuple of 3 integers")
-        for i in xrange(len(version)):
-            if type(version[i]) is not types.IntType:
+        for i in range(len(version)):
+            if type(version[i]) is not int:
                 raise Error("LIBRARY_VERSION(): part "+str(i)+" of version is not an integer")
             pass
         self.__clusterer.set_libtool_version_info(version)
         pass
 
     def HAS_UNDEFINED_SYMBOLS(self, has_undefined_symbols):
-        if type(has_undefined_symbols) is not types.BooleanType:
+        if type(has_undefined_symbols) is not bool:
             raise Error("HAS_UNDEFINED_SYMBOLS(): 'has_undefined_symbols' argument must be a boolean")
         self.__clusterer.set_has_undefined_symbols(has_undefined_symbols)
         pass

@@ -21,8 +21,8 @@ from optparse import OptionParser
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import const
 
-from cmdline_config import CommandlineConfiguration
-import todo
+from .cmdline_config import CommandlineConfiguration
+from . import todo
 
 def parse(args):
 

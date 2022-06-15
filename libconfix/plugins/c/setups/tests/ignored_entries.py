@@ -67,13 +67,13 @@ class IgnoredEntriesTest(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=None)
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(path=['h.h']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['c.c']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['cc.cc']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['lex.l']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['llex.ll']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['yacc.y']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['yyacc.yy']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['h.h']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['c.c']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['cc.cc']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['lex.l']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['llex.ll']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['yacc.y']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['yyacc.yy']))
             
         pass
     pass

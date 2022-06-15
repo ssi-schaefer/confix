@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from compiled import CompiledCBuilder
-from buildinfo import BuildInfo_CXXFLAGS
+from .compiled import CompiledCBuilder
+from .buildinfo import BuildInfo_CXXFLAGS
 
 class CXXBuilder(CompiledCBuilder):
     def __init__(self, file):

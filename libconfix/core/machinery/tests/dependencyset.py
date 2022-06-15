@@ -34,9 +34,9 @@ class DependencySetTest(unittest.TestCase):
 
         found_a = found_b = found_c = None
         elements_of_s = [e for e in s]
-        self.failUnless(a in elements_of_s)
-        self.failUnless(b in elements_of_s)
-        self.failUnless(c in elements_of_s)
+        self.assertTrue(a in elements_of_s)
+        self.assertTrue(b in elements_of_s)
+        self.assertTrue(c in elements_of_s)
         pass
     pass
 

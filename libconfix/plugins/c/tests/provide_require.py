@@ -34,22 +34,22 @@ class Provide_CInclude_and_Require_CInclude(unittest.TestCase):
     def testBasic(self):
         r = Require_CInclude(filename='file.h', found_in=[], urgency=Require.URGENCY_DEFAULT)
         p = Provide_CInclude(filename='file.h')
-        self.failUnless(p.resolve(r))
+        self.assertTrue(p.resolve(r))
 
         p = Provide_CInclude(filename='file1.h')
-        self.failIf(p.resolve(r))
+        self.assertFalse(p.resolve(r))
 
         p = Provide_CInclude(filename='file*', match=Provide_CInclude.GLOB_MATCH)
-        self.failUnless(p.resolve(r))
+        self.assertTrue(p.resolve(r))
 
         p = Provide_CInclude(filename='file*', match=Provide_CInclude.AUTO_MATCH)
-        self.failUnless(p.resolve(r))
+        self.assertTrue(p.resolve(r))
         p = Provide_CInclude(filename='file[a]', match=Provide_CInclude.AUTO_MATCH)
-        self.failIf(p.resolve(r))
+        self.assertFalse(p.resolve(r))
         p = Provide_CInclude(filename='file.[hc]', match=Provide_CInclude.AUTO_MATCH)
-        self.failUnless(p.resolve(r))
+        self.assertTrue(p.resolve(r))
         p = Provide_CInclude(filename='file.?', match=Provide_CInclude.AUTO_MATCH)
-        self.failUnless(p.resolve(r))
+        self.assertTrue(p.resolve(r))
         
         pass
 
@@ -72,25 +72,25 @@ class Provide_CInclude_and_Require_CInclude(unittest.TestCase):
 
         found = 0
         for p in package.rootbuilder().provides():
-            self.failUnless(isinstance(p, Provide_CInclude))
+            self.assertTrue(isinstance(p, Provide_CInclude))
             if p.string() == 'file*':
-                self.failUnless(p.match() == Provide_CInclude.GLOB_MATCH)
+                self.assertTrue(p.match() == Provide_CInclude.GLOB_MATCH)
                 found += 1
                 continue
             if p.string() == 'file':
-                self.failUnless(p.match() == Provide_CInclude.EXACT_MATCH)
+                self.assertTrue(p.match() == Provide_CInclude.EXACT_MATCH)
                 found += 1
                 continue
             if p.string() == 'file?':
-                self.failUnless(p.match() == Provide_CInclude.GLOB_MATCH)
+                self.assertTrue(p.match() == Provide_CInclude.GLOB_MATCH)
                 found += 1
                 continue
             if p.string() == 'fileblah':
-                self.failUnless(p.match() == Provide_CInclude.EXACT_MATCH)
+                self.assertTrue(p.match() == Provide_CInclude.EXACT_MATCH)
                 found += 1
                 continue
             pass
-        self.failUnlessEqual(found, 4)
+        self.assertEqual(found, 4)
         pass
 
     pass

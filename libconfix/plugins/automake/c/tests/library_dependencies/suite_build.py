@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dirstructure import DirectoryStructure
+from .dirstructure import DirectoryStructure
 
 from libconfix.plugins.automake import bootstrap, configure, make, makefile
 
@@ -111,19 +111,19 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
         second_library = fs.rootdirectory().find(dirstructure.second_install().relpath(self.rootpath())+['lib', 'libSecondPackage.a'])
         third_library = fs.rootdirectory().find(dirstructure.third_build().relpath(self.rootpath())+['library', 'libThirdPackage_library.a'])
         third_exe_Makefile = fs.rootdirectory().find(dirstructure.third_build().relpath(self.rootpath())+['exe', 'Makefile'])
-        self.failIf(first_library is None)
-        self.failIf(second_library is None)
-        self.failIf(third_library is None)
-        self.failIf(third_exe_Makefile is None)
+        self.assertFalse(first_library is None)
+        self.assertFalse(second_library is None)
+        self.assertFalse(third_library is None)
+        self.assertFalse(third_exe_Makefile is None)
 
         elements = makefile.parse_makefile(third_exe_Makefile.lines())
         deps = makefile.find_list(name='ThirdPackage_exe_exe_DEPENDENCIES',
                                   elements=elements)
-        self.failIf(deps is None)
+        self.assertFalse(deps is None)
 
-        self.failUnless(os.sep.join(first_library.abspath()) in deps)
-        self.failUnless(os.sep.join(second_library.abspath()) in deps)
-        self.failUnless('$(top_builddir)/library/libThirdPackage_library.a' in deps)
+        self.assertTrue(os.sep.join(first_library.abspath()) in deps)
+        self.assertTrue(os.sep.join(second_library.abspath()) in deps)
+        self.assertTrue('$(top_builddir)/library/libThirdPackage_library.a' in deps)
         
         pass
 
@@ -183,7 +183,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
         elements = makefile.parse_makefile(exe_Makefile_am.lines())
         deps = makefile.find_list(name='test_implicit_with_explicit_libname_exe_main_DEPENDENCIES',
                                   elements=elements)
-        self.failUnless('$(top_builddir)/library/libmy-library.a' in deps)
+        self.assertTrue('$(top_builddir)/library/libmy-library.a' in deps)
 
         fs.sync()
 
@@ -202,7 +202,7 @@ class LibraryDependenciesBuildTest(PersistentTestCase):
             builddir=build.abspath(),
             args=[])
 
-        self.failUnless(os.path.isfile(
+        self.assertTrue(os.path.isfile(
             os.sep.join(itertools.chain(build.abspath(), ['exe', 'test_implicit_with_explicit_libname_exe_main']))))
         pass
     pass

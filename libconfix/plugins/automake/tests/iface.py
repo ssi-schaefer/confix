@@ -46,7 +46,7 @@ class InterfaceTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
-        self.failUnless(token in rootdir_automake_builder.makefile_am().lines())
+        self.assertTrue(token in rootdir_automake_builder.makefile_am().lines())
         pass
 
     def test__ADD_EXTRA_DIST(self):
@@ -67,7 +67,7 @@ class InterfaceTest(unittest.TestCase):
         package.boil(external_nodes=[])
 
         rootdir_automake_builder = find_automake_output_builder(package.rootbuilder())
-        self.failUnless('file' in rootdir_automake_builder.makefile_am().extra_dist())
+        self.assertTrue('file' in rootdir_automake_builder.makefile_am().extra_dist())
         pass
         
     def test__CONFIGURE_AC_ACINCLUDE_M4_local(self):
@@ -95,8 +95,8 @@ class InterfaceTest(unittest.TestCase):
 
         configure_ac = fs.rootdirectory().find(['configure.ac'])
         acinclude_m4 = fs.rootdirectory().find(['acinclude.m4'])
-        self.failIf(configure_ac is None)
-        self.failIf(acinclude_m4 is None)
+        self.assertFalse(configure_ac is None)
+        self.assertFalse(acinclude_m4 is None)
 
         for line in configure_ac.lines():
             if line == 'the_token_for_configure_ac':
@@ -154,8 +154,8 @@ class InterfaceTest(unittest.TestCase):
 
         configure_ac = fs.rootdirectory().find(['configure.ac'])
         acinclude_m4 = fs.rootdirectory().find(['acinclude.m4'])
-        self.failIf(configure_ac is None)
-        self.failIf(acinclude_m4 is None)
+        self.assertFalse(configure_ac is None)
+        self.assertFalse(acinclude_m4 is None)
 
         for line in configure_ac.lines():
             if line == 'the_token_for_configure_ac':
@@ -209,8 +209,8 @@ class InterfaceTest(unittest.TestCase):
 
         configure_ac = fs.rootdirectory().find(['configure.ac'])
         acinclude_m4 = fs.rootdirectory().find(['acinclude.m4'])
-        self.failIf(configure_ac is None)
-        self.failIf(acinclude_m4 is None)
+        self.assertFalse(configure_ac is None)
+        self.assertFalse(acinclude_m4 is None)
 
         for line in configure_ac.lines():
             if line == 'the_token_for_configure_ac':

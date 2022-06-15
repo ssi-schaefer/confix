@@ -54,9 +54,9 @@ class InterPackageInMemoryTest(unittest.TestCase):
         package.output()
 
         rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_output_builder is None)
+        self.assertFalse(rootdir_output_builder is None)
 
-        self.failUnless('confixrepo' in rootdir_output_builder.makefile_am().install_directories())
+        self.assertTrue('confixrepo' in rootdir_output_builder.makefile_am().install_directories())
 
         pass
 

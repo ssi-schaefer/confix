@@ -53,7 +53,7 @@ class Confix2_dir(FileBuilder):
 
         try:
             InterfaceExecutor(iface_pieces=ifaces).execute_file(file=self.file())
-        except Error, e:
+        except Error as e:
             raise Error('Could not execute file "'+\
                         os.sep.join(self.file().relpath(self.package().rootdirectory()))+'"', [e])
         pass

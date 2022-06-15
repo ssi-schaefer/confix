@@ -38,9 +38,9 @@ class InterfaceExecutor:
     def __init__(self, iface_pieces):
         self.__context = {}
         for piece in iface_pieces:
-            for n, v in piece.get_globals().iteritems():
-                assert type(n) is types.StringType
-                assert not self.__context.has_key(n), n
+            for n, v in piece.get_globals().items():
+                assert type(n) is bytes
+                assert n not in self.__context, n
                 self.__context[n] = v
                 pass
             pass
@@ -63,28 +63,28 @@ class InterfaceExecutor:
                 dir_to_change_to = os.path.dirname(os.sep.join(file.abspath()))
                 os.chdir(dir_to_change_to)
                 
-                execfile(file.name(), self.__context)
+                exec(compile(open(file.name(), "rb").read(), file.name(), 'exec'), self.__context)
 
                 os.chdir(dir_to_change_back_to)
                 return
             else:
-                exec '\n'.join(file.lines()) in self.__context
+                exec('\n'.join(file.lines()), self.__context)
                 return
             pass
-        except Exception, e:
+        except Exception as e:
             if chdirbackto is not None:
                 os.chdir(chdirbackto)
                 pass
-            raise Error('Error executing '+'/'.join(file.abspath()), [NativeError(e, sys.exc_traceback)])
+            raise Error('Error executing '+'/'.join(file.abspath()), [NativeError(e, sys.exc_info()[2])])
         pass
 
     def execute_pieces(self, pieces):
         for p in pieces:
             try:
-                exec '\n'.join(p.lines()) in self.__context
-            except Exception, e:
+                exec('\n'.join(p.lines()), self.__context)
+            except Exception as e:
                 raise Error('Error in code piece starting at line '+str(p.start_lineno())+' ('+p.lines()[0]+')',
-                            [NativeError(e, sys.exc_traceback)])
+                            [NativeError(e, sys.exc_info()[2])])
             pass
         pass
     pass
@@ -95,7 +95,7 @@ class InterfaceProxy:
         pass
 
     def add_global(self, key, value):
-        if self.__globals.has_key(key):
+        if key in self.__globals:
             raise Error('"'+key+'" is already set')
         self.__globals[key] = value
         pass

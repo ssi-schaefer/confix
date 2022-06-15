@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dirbuilder import DirectoryBuilder
+from .dirbuilder import DirectoryBuilder
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.utils.error import Error
 

@@ -47,7 +47,7 @@ class CTest(unittest.TestCase):
         package.output()
 
         conf_ac = fs.rootdirectory().find(['configure.ac'])
-        self.failIf(conf_ac is None)
+        self.assertFalse(conf_ac is None)
         found_AC_PROG_CC = False
         for l in conf_ac.lines():
             if l == 'AC_PROG_CC':
@@ -55,7 +55,7 @@ class CTest(unittest.TestCase):
                 continue
             pass
 
-        self.failUnless(found_AC_PROG_CC)
+        self.assertTrue(found_AC_PROG_CC)
         pass
     pass
 

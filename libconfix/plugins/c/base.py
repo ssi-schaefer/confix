@@ -16,9 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dependency import Require_CInclude
-from common_iface import REQUIRE_H, PROVIDE_H
-import helper
+from .dependency import Require_CInclude
+from .common_iface import REQUIRE_H, PROVIDE_H
+from . import helper
 
 from libconfix.core.machinery.interface import CodePiece
 from libconfix.core.machinery.interface import InterfaceExecutor
@@ -103,7 +103,7 @@ class CBaseBuilder(FileBuilder):
 
         try:
             InterfaceExecutor(iface_pieces=self.iface_pieces()).execute_pieces(pieces=codepieces)
-        except Error, e:
+        except Error as e:
             raise Error('Could not execute Confix code in '+\
                         '/'.join(self.file().relpath(self.package().rootdirectory())), [e])
 

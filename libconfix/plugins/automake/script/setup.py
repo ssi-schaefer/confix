@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from out_script import AutomakeScriptOutputBuilder
+from .out_script import AutomakeScriptOutputBuilder
 
 from libconfix.core.machinery.setup import Setup
 

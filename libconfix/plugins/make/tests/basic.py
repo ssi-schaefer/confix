@@ -48,7 +48,7 @@ class MakeTest(PersistentTestCase):
 
         package.boil(external_nodes=[])
 
-        self.failUnless(fs.rootdirectory().find(['the_file']))
+        self.assertTrue(fs.rootdirectory().find(['the_file']))
         pass
 
     def test__CALL_MAKE_AND_RESCAN_SYNC(self):
@@ -83,7 +83,7 @@ class MakeTest(PersistentTestCase):
 
         package.boil(external_nodes=[])
 
-        self.failUnless(makefile.get_property('saw_the_file_created_by_make') is True)
+        self.assertTrue(makefile.get_property('saw_the_file_created_by_make') is True)
         pass
     pass        
 

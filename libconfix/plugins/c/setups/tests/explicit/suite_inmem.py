@@ -15,11 +15,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import library
-import executable
-import relocated_header_inmem
-import complete_package_inmem
-import check_inmem
+from . import library
+from . import executable
+from . import relocated_header_inmem
+from . import complete_package_inmem
+from . import check_inmem
 
 import unittest
 

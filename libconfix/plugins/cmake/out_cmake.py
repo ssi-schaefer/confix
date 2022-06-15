@@ -15,14 +15,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import cmake_consts
-from cmakelists import CMakeLists
-from custom_command_bullshit import CustomCommandHelper
-from aux_dir_builders import ModulesDirectoryBuilder
-from aux_dir_builders import ScriptsDirectoryBuilder
-from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
-from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
-from buildinfo import BuildInfo_CMakeModule
+from . import cmake_consts
+from .cmakelists import CMakeLists
+from .custom_command_bullshit import CustomCommandHelper
+from .aux_dir_builders import ModulesDirectoryBuilder
+from .aux_dir_builders import ScriptsDirectoryBuilder
+from .buildinfo import BuildInfo_Toplevel_CMakeLists_Include
+from .buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
+from .buildinfo import BuildInfo_CMakeModule
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.repo import AutomakePackageRepository
@@ -226,7 +226,7 @@ class CMakeBackendOutputBuilder(Builder):
             graph = DirectedGraph(nodes=local_nodes, edges=edges)
             chain = toposort(graph, local_nodes)
             if len(chain) > 0:
-                for i in xrange(len(chain)-1):
+                for i in range(len(chain)-1):
                     self.local_cmakelists().add_dependencies(chain[i+1], [chain[i]])
                     pass
                 pass

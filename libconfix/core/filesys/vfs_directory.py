@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from vfs_entry import VFSEntry
+from .vfs_entry import VFSEntry
 
 from libconfix.core.utils.error import Error
 
@@ -45,7 +45,7 @@ class VFSDirectory(VFSEntry):
         Return list of all the entries of a directory, as [(name,
         entry)].
         """
-        return self.__entry_by_name.iteritems()
+        return iter(self.__entry_by_name.items())
 
     def entryname(self, entry):
         """
@@ -66,7 +66,7 @@ class VFSDirectory(VFSEntry):
         """
         assert isinstance(entry, VFSEntry)
         assert entry.filesystem() is None or entry.filesystem() is self.filesystem()
-        if self.__entry_by_name.has_key(name):
+        if name in self.__entry_by_name:
             raise self.AlreadyMounted(name=name, dir=self)
         self.__entry_by_name[name] = entry
         self.__name_by_entry[entry] = name
@@ -98,7 +98,7 @@ class VFSDirectory(VFSEntry):
         Set my and my children's filesystem.
         """
         super(VFSDirectory, self).set_filesystem(filesystem)
-        for name, entry in self.__entry_by_name.iteritems():
+        for name, entry in self.__entry_by_name.items():
             entry.set_filesystem(filesystem)
             pass
         pass

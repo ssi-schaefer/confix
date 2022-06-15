@@ -42,13 +42,13 @@ class DebugBuilder(Builder):
         super(DebugBuilder, self).enlarge()
         if not self.parentbuilder() is self.package().rootbuilder():
             return
-        print 'ENLARGE ROUND #'+str(self.__round)
+        print('ENLARGE ROUND #'+str(self.__round))
         self.__round += 1
         self.__output_builders(directory_builder=self.parentbuilder(), indent=0)
         pass
 
     def __output_builders(self, directory_builder, indent):
-        print ' '*indent + directory_builder.shortname()
+        print(' '*indent + directory_builder.shortname())
 
         recursive_builders = []
         leaf_builders = []
@@ -62,7 +62,7 @@ class DebugBuilder(Builder):
             pass
 
         for b in leaf_builders:
-            print ' '*(indent+2)+b.shortname()
+            print(' '*(indent+2)+b.shortname())
             pass
         for b in recursive_builders:
             self.__output_builders(directory_builder=b, indent=indent+2)

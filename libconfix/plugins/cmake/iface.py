@@ -15,14 +15,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from out_cmake import find_cmake_output_builder
-from external_library import ExternalLibraryBuilder
-from buildinfo import BuildInfo_Toplevel_CMakeLists_Include
-from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
-from buildinfo import BuildInfo_CommandlineMacros_CMake
-from buildinfo import BuildInfo_CMakeModule
-from buildinfo import BuildInfo_IncludePath_External_CMake
-from pkg_config import PkgConfigLibraryBuilder
+from .out_cmake import find_cmake_output_builder
+from .external_library import ExternalLibraryBuilder
+from .buildinfo import BuildInfo_Toplevel_CMakeLists_Include
+from .buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
+from .buildinfo import BuildInfo_CommandlineMacros_CMake
+from .buildinfo import BuildInfo_CMakeModule
+from .buildinfo import BuildInfo_IncludePath_External_CMake
+from .pkg_config import PkgConfigLibraryBuilder
 
 from libconfix.core.machinery.setup import Setup
 from libconfix.core.machinery.interface import InterfaceProxy
@@ -231,7 +231,7 @@ class CMakeInterfaceProxy(InterfaceProxy):
         if type(flags) not in (tuple, list):
             raise Error('CMAKE_CMDLINE_MACROS(): "flags" parameter must be int, list or tuple')
         if self.CMAKE_BUILDINFO_LOCAL in flags:
-            for macro, value in macros.iteritems():
+            for macro, value in macros.items():
                 if value is None:
                     definition = '-D%s' % macro
                 else:

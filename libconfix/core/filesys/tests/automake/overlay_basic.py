@@ -119,10 +119,10 @@ class OverlayBasicTest(PersistentTestCase):
 
         # should have checked such thing elsewhwere, but it won't hurt
         # repeating.
-        self.failUnless(source_fs.rootdirectory().find([const.CONFIX2_PKG]) is None)
-        self.failUnless(source_fs.rootdirectory().find([const.CONFIX2_DIR]) is None)
-        self.failUnless(source_fs.rootdirectory().find(['exe', const.CONFIX2_DIR]) is None)
-        self.failUnless(source_fs.rootdirectory().find(['library', const.CONFIX2_DIR]) is None)
+        self.assertTrue(source_fs.rootdirectory().find([const.CONFIX2_PKG]) is None)
+        self.assertTrue(source_fs.rootdirectory().find([const.CONFIX2_DIR]) is None)
+        self.assertTrue(source_fs.rootdirectory().find(['exe', const.CONFIX2_DIR]) is None)
+        self.assertTrue(source_fs.rootdirectory().find(['library', const.CONFIX2_DIR]) is None)
 
         overlay_fs.sync()
 
@@ -136,7 +136,7 @@ class OverlayBasicTest(PersistentTestCase):
         make.make(builddir=build,
                   args=['install'])
 
-        self.failUnless(os.path.exists(os.sep.join(install+['bin', 'the_exe'])))
+        self.assertTrue(os.path.exists(os.sep.join(install+['bin', 'the_exe'])))
 
         make.make(builddir=build,
                   args=['dist'])

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from config import Configuration
+from .config import Configuration
 
 class CommandlineConfiguration(Configuration):
     def __init__(self,

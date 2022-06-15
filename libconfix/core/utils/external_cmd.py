@@ -16,15 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from error import Error
-import debug
+from .error import Error
+from . import debug
 
 import os
 import types
 import time
 
 def exec_program(program, dir, args=None, env=None, path=None, print_cmdline=False):
-    assert type(dir) in [types.ListType, types.TupleType], dir
+    assert type(dir) in [list, tuple], dir
 
     if os.path.isabs(program):
         the_program = program
@@ -59,7 +59,7 @@ def exec_program(program, dir, args=None, env=None, path=None, print_cmdline=Fal
         if rv != 0:
             raise Error("spawnve("+the_program+") returned non-null ("+str(rv)+")")
         pass
-    except Exception, e:
+    except Exception as e:
         os.chdir(chdirbackto)
         raise Error("Could not execute '"+the_program+' '+' '.join(the_args)+"' in directory '"+os.sep.join(dir)+"'", [e])
     os.chdir(chdirbackto)

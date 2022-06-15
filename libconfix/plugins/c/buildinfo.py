@@ -82,7 +82,7 @@ singleton_buildinfo_cincludepath_nativeinstalled = BuildInfo_CIncludePath_Native
 class BuildInfo_CLibrary_NativeLocal(BuildInformation):
     def __init__(self, dir, basename):
         BuildInformation.__init__(self)
-        assert type(dir) is types.ListType
+        assert type(dir) is list
         self.__dir = dir
         self.__basename = basename
         self.__unique_key = self.__class__.__name__ + ':' + '.'.join(self.__dir) + ':' + self.__basename
@@ -149,7 +149,7 @@ class BuildInfo_CommandlineMacros(BuildInformation):
         pass
     def unique_key(self):
         ret = self.__class__.__name__ + ':'
-        for k, v in self.__macros.iteritems():
+        for k, v in self.__macros.items():
             ret += k
             if v is not None:
                 ret += v

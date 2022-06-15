@@ -17,8 +17,8 @@
 
 from libconfix.core.machinery.setup import CompositeSetup
 
-from common_iface_setup import CommonInterfaceSetup
-from explicit_iface_setup import ExplicitInterfaceSetup
+from .common_iface_setup import CommonInterfaceSetup
+from .explicit_iface_setup import ExplicitInterfaceSetup
 
 class ExplicitCSetup(CompositeSetup):
     def __init__(self):

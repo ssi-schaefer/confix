@@ -52,9 +52,9 @@ class LibraryBase(unittest.TestCase):
         self.package_.output()
 
         self.lodir_builder_ = self.package_.rootbuilder().find_entry_builder(['lo'])
-        self.failIf(self.lodir_builder_ is None)
+        self.assertFalse(self.lodir_builder_ is None)
         self.lodir_output_builder_ = find_automake_output_builder(self.lodir_builder_)
-        self.failIf(self.lodir_output_builder_ is None)
+        self.assertFalse(self.lodir_output_builder_ is None)
         
         self.lolib_builder_ = None
         for b in self.lodir_builder_.iter_builders():
@@ -74,18 +74,18 @@ class LibraryBase(unittest.TestCase):
         
     def test_library_alone(self):
         mf_am = self.lodir_output_builder_.makefile_am()
-        self.failIfEqual(mf_am, None)
+        self.assertNotEqual(mf_am, None)
 
         # we ought to be building a library here
-        self.failUnlessEqual(self.lolib_builder_.basename(), 'blah_lo')
-        self.failUnless(self.libname() in mf_am.dir_primary(dir='lib', primary=self.primary()))
+        self.assertEqual(self.lolib_builder_.basename(), 'blah_lo')
+        self.assertTrue(self.libname() in mf_am.dir_primary(dir='lib', primary=self.primary()))
 
         # lo.{h,c} are the sources
 
         sources = mf_am.compound_sources(self.amlibname())
-        self.failIf(sources is None)
-        self.failUnless('lo.h' in sources)
-        self.failUnless('lo.c' in sources)
+        self.assertFalse(sources is None)
+        self.assertTrue('lo.h' in sources)
+        self.assertTrue('lo.c' in sources)
         
         pass
     
@@ -99,8 +99,8 @@ class LibtoolLibrary(LibraryBase):
 
     def test_version(self):
         flags = self.lodir_output_builder_.makefile_am().compound_ldflags(self.amlibname())
-        self.failIf(flags is None)
-        self.failUnless('-version-info 1:2:3' in flags)
+        self.assertFalse(flags is None)
+        self.assertTrue('-version-info 1:2:3' in flags)
         pass
     pass
 
@@ -112,14 +112,14 @@ class ArchiveLibrary(LibraryBase):
 
     def test_AC_PROG_RANLIB(self):
         conf_ac = self.fs_.rootdirectory().find(['configure.ac'])
-        self.failIf(conf_ac is None)
+        self.assertFalse(conf_ac is None)
         found_AC_PROG_RANLIB = False
         for l in conf_ac.lines():
             if l == 'AC_PROG_RANLIB':
                 found_AC_PROG_RANLIB = True
                 continue
             pass
-        self.failUnless(found_AC_PROG_RANLIB)
+        self.assertTrue(found_AC_PROG_RANLIB)
         pass
     pass
 
@@ -164,11 +164,11 @@ class LIBADD(unittest.TestCase):
         package.output()
 
         hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidir_builder is None)
+        self.assertFalse(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hidir_output_builder is None)
+        self.assertFalse(hidir_output_builder is None)
 
-        self.failUnless('-lLIBADD_lo' in hidir_output_builder.makefile_am().compound_libadd('libLIBADD_hi_la'))
+        self.assertTrue('-lLIBADD_lo' in hidir_output_builder.makefile_am().compound_libadd('libLIBADD_hi_la'))
         pass
 
     def test_no_libtool(self):
@@ -178,11 +178,11 @@ class LIBADD(unittest.TestCase):
         package.output()
 
         hidir_builder = package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidir_builder is None)
+        self.assertFalse(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hidir_output_builder is None)
+        self.assertFalse(hidir_output_builder is None)
         
-        self.failUnless(hidir_output_builder.makefile_am().compound_libadd('libLIBADD_hi_a') is None)
+        self.assertTrue(hidir_output_builder.makefile_am().compound_libadd('libLIBADD_hi_a') is None)
         pass
 
     pass

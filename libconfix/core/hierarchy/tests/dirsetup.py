@@ -41,10 +41,10 @@ class BasicDirectorySetup(unittest.TestCase):
         self.assertEqual(package.rootbuilder().directory().find(['a', 'a']), subsubdir)
         
         subdir_builder = package.rootbuilder().find_entry_builder(['a'])
-        self.failIf(subdir_builder is None)
+        self.assertFalse(subdir_builder is None)
         
         subsubdir_builder = package.rootbuilder().find_entry_builder(['a','a'])
-        self.failIf(subsubdir_builder is None)
+        self.assertFalse(subsubdir_builder is None)
 
         self.assertEqual(subdir_builder.directory(), subdir)
         self.assertEqual(subsubdir_builder.directory(), subsubdir)

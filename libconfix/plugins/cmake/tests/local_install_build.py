@@ -134,7 +134,7 @@ class LocalInstallTest(PersistentTestCase):
 
         # I doubt that this will hold under Windows :-) if it becomes
         # an issue we will skip this check
-        self.failUnless(build.find(['exe', 'exe']))
+        self.assertTrue(build.find(['exe', 'exe']))
 
         pass
 
@@ -178,7 +178,7 @@ class LocalInstallTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failIf(install.find(['include', 'header.h']))
+        self.assertFalse(install.find(['include', 'header.h']))
         
         pass
     
@@ -222,7 +222,7 @@ class LocalInstallTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failIf(install.find(['include', 'header.h']))
+        self.assertFalse(install.find(['include', 'header.h']))
         pass
 
     # provided that the sourcefile does not change, local install must
@@ -251,7 +251,7 @@ class LocalInstallTest(PersistentTestCase):
                 "for f in xrange(200):",
                 "    H(filename='%s.h' % str(f), install=['subdir'])",
                 ]))
-        for f in xrange(200):
+        for f in range(200):
             source.add(
                 name='%s.h' % str(f),
                 entry=File())
@@ -268,7 +268,7 @@ class LocalInstallTest(PersistentTestCase):
 
         commands.make(builddir=build.abspath(), args=[])
         mtimes = {}
-        for f in xrange(200):
+        for f in range(200):
             mtime = os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', '%s.h' % str(f)])).st_mtime
             mtimes[f] = mtime
             pass
@@ -277,9 +277,9 @@ class LocalInstallTest(PersistentTestCase):
         time.sleep(1)
 
         commands.make(builddir=build.abspath(), args=[])
-        for f in xrange(200):
+        for f in range(200):
             mtime = os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', '%s.h' % str(f)])).st_mtime
-            self.failIf(mtime != mtimes[f], f)
+            self.assertFalse(mtime != mtimes[f], f)
             pass
         pass
 
@@ -327,7 +327,7 @@ class LocalInstallTest(PersistentTestCase):
 
         commands.make(builddir=build.abspath(), args=[])
 
-        self.failUnless(os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', 'h.h'])).st_mtime > before_mtime)
+        self.assertTrue(os.stat(os.sep.join(build.abspath()+['confix-include', 'subdir', 'h.h'])).st_mtime > before_mtime)
 
         pass
         
@@ -349,9 +349,9 @@ class LocalInstallTest(PersistentTestCase):
                               "PACKAGE_VERSION('1.2.3')"]))
         source.add(
             name=const.CONFIX2_DIR,
-            entry=File(lines=['DIRECTORY(["dir_'+str(i)+'"])' for i in xrange(50)]+['DIRECTORY(["user"])']))
+            entry=File(lines=['DIRECTORY(["dir_'+str(i)+'"])' for i in range(50)]+['DIRECTORY(["user"])']))
 
-        for i in xrange(num_dirs):
+        for i in range(num_dirs):
             dir_i = source.add(
                 name='dir_'+str(i),
                 entry=Directory())
@@ -376,7 +376,7 @@ class LocalInstallTest(PersistentTestCase):
             entry=File(lines=["LIBRARY(members=[C(filename='user.c')])"]))
         user.add(
             name='user.c',
-            entry=File(lines=['#include <prefix/subdir_'+str(i)+'/file_'+str(i)+'.h>' for i in xrange(num_dirs)]))
+            entry=File(lines=['#include <prefix/subdir_'+str(i)+'/file_'+str(i)+'.h>' for i in range(num_dirs)]))
             
         package = LocalPackage(rootdirectory=source,
                                setups=[Boilerplate(), C(), CMake(library_dependencies=False)])

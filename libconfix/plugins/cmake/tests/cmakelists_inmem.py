@@ -24,19 +24,19 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.add_find_call('xxx')
         cmakelists.add_find_call('xxx')
-        self.failUnlessEqual(len(cmakelists.get_find_calls()), 1)
+        self.assertEqual(len(cmakelists.get_find_calls()), 1)
 
         cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.add_find_call('xxx')
         cmakelists.add_find_call(['xxx'])
-        self.failUnlessEqual(len(cmakelists.get_find_calls()), 1)
+        self.assertEqual(len(cmakelists.get_find_calls()), 1)
         pass
 
     def find_call_list(self):
         cmakelists = CMakeLists(custom_command_helper=None)
         cmakelists.add_find_call(['0', '1'])
-        self.failUnlessEqual(cmakelists.get_find_calls()[0], '0')
-        self.failUnlessEqual(cmakelists.get_find_calls()[1], '1')
+        self.assertEqual(cmakelists.get_find_calls()[0], '0')
+        self.assertEqual(cmakelists.get_find_calls()[1], '1')
         pass
     
     def collapse_multiple_include(self):
@@ -44,9 +44,9 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         cmakelists.add_include('xxx')
         cmakelists.add_include('xxx')
         cmakelists.add_include('yyy')
-        self.failUnlessEqual(len(cmakelists.get_includes()), 2)
-        self.failUnlessEqual(cmakelists.get_includes()[0], 'xxx')
-        self.failUnlessEqual(cmakelists.get_includes()[1], 'yyy')
+        self.assertEqual(len(cmakelists.get_includes()), 2)
+        self.assertEqual(cmakelists.get_includes()[0], 'xxx')
+        self.assertEqual(cmakelists.get_includes()[1], 'yyy')
         pass
     
     def target_link_libraries_tightened_after_set(self):
@@ -54,7 +54,7 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         cmakelists.target_link_libraries('target', ['a', 'b'])
         cmakelists.tighten_target_link_library(target='target', basename='a', tightened='tight_a')
         cmakelists.tighten_target_link_library(target='target', basename='b', tightened='tight_b')
-        self.failUnlessEqual(cmakelists.get_target_link_libraries('target'),
+        self.assertEqual(cmakelists.get_target_link_libraries('target'),
                              ['tight_a', 'tight_b'])
         pass
 
@@ -63,7 +63,7 @@ class CMakeListsInMemoryTest(unittest.TestCase):
         cmakelists.tighten_target_link_library(target='target', basename='a', tightened='tight_a')
         cmakelists.tighten_target_link_library(target='target', basename='b', tightened='tight_b')
         cmakelists.target_link_libraries('target', ['a', 'b'])
-        self.failUnlessEqual(cmakelists.get_target_link_libraries('target'),
+        self.assertEqual(cmakelists.get_target_link_libraries('target'),
                              ['tight_a', 'tight_b'])
         pass
 

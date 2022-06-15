@@ -19,7 +19,7 @@ from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.frontends.confix2.confix_setup import ConfixSetup
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
-from source import source_tree
+from .source import source_tree
 
 import unittest
 
@@ -38,13 +38,13 @@ class PathsInMemoryTest(unittest.TestCase):
         hi_pkg.output()
 
         hi_pkg_rootdir_output_builder = find_automake_output_builder(hi_pkg.rootbuilder())
-        self.failIf(hi_pkg_rootdir_output_builder is None)
+        self.assertFalse(hi_pkg_rootdir_output_builder is None)
         makefile_am = hi_pkg_rootdir_output_builder.makefile_am()
-        self.failUnless('$(readonly_prefixes_incpath)' in makefile_am.includepath())
-        print 
+        self.assertTrue('$(readonly_prefixes_incpath)' in makefile_am.includepath())
+        print() 
         hi_ldadd = makefile_am.compound_ldadd(self.__class__.__name__+'-hi_main')
-        self.failIf(hi_ldadd is None)
-        self.failUnless('$(readonly_prefixes_libpath)' in hi_ldadd)
+        self.assertFalse(hi_ldadd is None)
+        self.assertTrue('$(readonly_prefixes_libpath)' in hi_ldadd)
         pass
     pass        
 

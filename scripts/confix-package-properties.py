@@ -54,8 +54,8 @@ fs = scan.scan_filesystem(packageroot)
 package = LocalPackage(rootdirectory=fs.rootdirectory(), setups=[])
 
 if options.packagename:
-    print package.name()
+    print(package.name())
     pass
 if options.packageversion:
-    print package.version()
+    print(package.version())
     pass

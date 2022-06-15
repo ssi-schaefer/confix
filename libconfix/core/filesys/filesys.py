@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from directory import Directory
+from .directory import Directory
 
 import os
 
@@ -73,7 +73,7 @@ class FileSystem(object):
             else:
                 try:
                     os.makedirs(path)
-                except OSError, e:
+                except OSError as e:
                     raise Error('Could not create directory "'+path+'"', [e])
                 pass
             pass

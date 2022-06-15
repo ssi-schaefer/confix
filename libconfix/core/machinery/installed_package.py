@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from repo import Marshallable, update_marshalling_data
-from package import Package
+from .repo import Marshallable, update_marshalling_data
+from .package import Package
 
 import types
 
@@ -55,8 +55,8 @@ class InstalledPackage(Package):
             pass
 
         # <paranoia>
-        assert type(name) is types.StringType
-        assert type(version) is types.StringType
+        assert type(name) is bytes
+        assert type(version) is bytes
         # </paranoia>
         pass
     def name(self):

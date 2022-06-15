@@ -15,15 +15,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import dependencyset
-import depinfo
-import enlarge_force
-import iface
-import provide
-import relate
-import resolve
-import urgency_error
-import local_package
+from . import dependencyset
+from . import depinfo
+from . import enlarge_force
+from . import iface
+from . import provide
+from . import relate
+from . import resolve
+from . import urgency_error
+from . import local_package
 
 import unittest
 

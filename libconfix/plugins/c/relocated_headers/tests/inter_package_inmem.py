@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import inter_package
+from . import inter_package
 
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.frontends.confix2.confix_setup import ConfixSetup

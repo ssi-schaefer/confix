@@ -30,19 +30,19 @@ class NodesReachedFromIncludingEntry(unittest.TestCase):
         digraph = DirectedGraph(nodes=[n1, n2, n3],
                                 edges=[Edge(n1, n2),
                                        Edge(n1, n3)])
-        self.failUnlessEqual(set([n1, n2, n3]),
+        self.assertEqual(set([n1, n2, n3]),
                              set(algorithm.nodes_reached_from_including_entry(digraph, entrypoints=[n1])))
 
         digraph = DirectedGraph(nodes=[n1, n2, n3],
                                 edges=[Edge(n1, n2),
                                        Edge(n2, n3)])
-        self.failUnlessEqual(set([n1, n2, n3]),
+        self.assertEqual(set([n1, n2, n3]),
                              set(algorithm.nodes_reached_from_including_entry(digraph, entrypoints=[n1])))
 
         digraph = DirectedGraph(nodes=[n1, n2, n3],
                                 edges=[Edge(n1, n2),
                                        Edge(n2, n3)])
-        self.failUnlessEqual(set([n2, n3]),
+        self.assertEqual(set([n2, n3]),
                              set(algorithm.nodes_reached_from_including_entry(digraph, entrypoints=[n2])))
         pass
     pass
@@ -60,9 +60,9 @@ class SubtractNodes(unittest.TestCase):
                                        Edge(n3, n4),
                                        Edge(n1, n4)])
         subtracted_digraph = algorithm.subtract_nodes(digraph=digraph, nodes=[n2, n3])
-        self.failUnlessEqual(set([n1, n4]),
+        self.assertEqual(set([n1, n4]),
                              set(subtracted_digraph.nodes()))
-        self.failUnless(subtracted_digraph.find_edge(n1, n4))
+        self.assertTrue(subtracted_digraph.find_edge(n1, n4))
         pass
     pass
 
@@ -82,13 +82,13 @@ class CombineGraphs(unittest.TestCase):
                                                     edges=[Edge(n3, n4)]),
                                       DirectedGraph(nodes=[n1, n2],
                                                     edges=[Edge(n1, n2)])])
-        self.failUnlessEqual(set([n1, n2, n3, n4]),
+        self.assertEqual(set([n1, n2, n3, n4]),
                              set(g.nodes()))
 
-        self.failUnless(g.find_edge(n1, n2))
-        self.failUnless(g.find_edge(n1, n3))
-        self.failUnless(g.find_edge(n2, n3))
-        self.failUnless(g.find_edge(n3, n4))
+        self.assertTrue(g.find_edge(n1, n2))
+        self.assertTrue(g.find_edge(n1, n3))
+        self.assertTrue(g.find_edge(n2, n3))
+        self.assertTrue(g.find_edge(n3, n4))
         pass
     pass
 

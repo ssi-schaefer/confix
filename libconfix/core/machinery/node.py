@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from repo import Marshallable
+from .repo import Marshallable
 
 class Node(Marshallable):
     def get_marshalling_data(self):

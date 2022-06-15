@@ -53,9 +53,9 @@ class LibraryTest(unittest.TestCase):
         lo_builder = package.rootbuilder().find_entry_builder(['lo'])
         lo_h_builder = package.rootbuilder().find_entry_builder(['lo', 'lo.h'])
         lo_c_builder = package.rootbuilder().find_entry_builder(['lo', 'lo.c'])
-        self.failIf(lo_builder is None)
-        self.failIf(lo_h_builder is None)
-        self.failIf(lo_c_builder is None)
+        self.assertFalse(lo_builder is None)
+        self.assertFalse(lo_h_builder is None)
+        self.assertFalse(lo_c_builder is None)
 
         lo_lib_builder = None
         for b in lo_builder.iter_builders():
@@ -69,8 +69,8 @@ class LibraryTest(unittest.TestCase):
             self.fail()
             pass
 
-        self.failUnless(lo_h_builder in lo_lib_builder.members())
-        self.failUnless(lo_c_builder in lo_lib_builder.members())
+        self.assertTrue(lo_h_builder in lo_lib_builder.members())
+        self.assertTrue(lo_c_builder in lo_lib_builder.members())
         pass
 
     pass

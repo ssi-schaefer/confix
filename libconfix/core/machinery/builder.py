@@ -16,14 +16,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dependency_utils import DependencyInformation
-from provide import Provide
-from provide import Provide_Symbol
-from provide import Provide_Callable
-from require import Require
-from require import Require_Symbol
-from require import Require_Callable
-from interface import InterfaceProxy
+from .dependency_utils import DependencyInformation
+from .provide import Provide
+from .provide import Provide_Symbol
+from .provide import Provide_Callable
+from .require import Require
+from .require import Require_Symbol
+from .require import Require_Callable
+from .interface import InterfaceProxy
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils.paragraph import Paragraph

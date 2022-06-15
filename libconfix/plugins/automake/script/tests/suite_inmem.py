@@ -46,7 +46,7 @@ class ScriptInMemoryTest(unittest.TestCase):
         package.output()
 
         script = package.rootbuilder().find_entry_builder(['script'])
-        self.failIf(script is None)
+        self.assertFalse(script is None)
         pass
     pass
 

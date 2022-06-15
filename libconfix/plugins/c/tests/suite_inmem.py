@@ -15,23 +15,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import provide_require
-import requires
-import relate
-import library
-import regressions.suite_inmem
-import header_visibility_inmem
-import confix2_dir
-import misc
-import setup_cxx
-import setup_exe
-import setup_lexyacc
-import setup_library
-import clusterer.suite_inmem
-import ignored_entries
-import library_versions
-import inter_package_inmem
-import buildinfo_inmem
+from . import provide_require
+from . import requires
+from . import relate
+from . import library
+from . import regressions.suite_inmem
+from . import header_visibility_inmem
+from . import confix2_dir
+from . import misc
+from . import setup_cxx
+from . import setup_exe
+from . import setup_lexyacc
+from . import setup_library
+from . import clusterer.suite_inmem
+from . import ignored_entries
+from . import library_versions
+from . import inter_package_inmem
+from . import buildinfo_inmem
 
 import libconfix.plugins.c.setups.tests.suite_inmem
 import libconfix.plugins.c.relocated_headers.tests.suite_inmem

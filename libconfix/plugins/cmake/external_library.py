@@ -15,12 +15,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from buildinfo import BuildInfo_IncludePath_External_CMake
-from buildinfo import BuildInfo_LibraryPath_External_CMake
-from buildinfo import BuildInfo_Library_External_CMake
-from buildinfo import BuildInfo_CommandlineMacros_CMake
-from buildinfo import BuildInfo_CFLAGS_CMake
-from buildinfo import BuildInfo_CXXFLAGS_CMake
+from .buildinfo import BuildInfo_IncludePath_External_CMake
+from .buildinfo import BuildInfo_LibraryPath_External_CMake
+from .buildinfo import BuildInfo_Library_External_CMake
+from .buildinfo import BuildInfo_CommandlineMacros_CMake
+from .buildinfo import BuildInfo_CFLAGS_CMake
+from .buildinfo import BuildInfo_CXXFLAGS_CMake
 
 from libconfix.core.machinery.builder import Builder
 

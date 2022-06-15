@@ -18,7 +18,7 @@
 
 from libconfix.core.utils.error import Error, NativeError
 
-from profile_config import ProfileConfiguration
+from .profile_config import ProfileConfiguration
 
 import sys, os
 
@@ -34,18 +34,18 @@ class ConfigFile:
             if file.is_persistent():
                 chdirbackto = os.getcwd()
                 os.chdir(os.sep.join(file.parent().abspath()))
-                execfile(file.name(), self.context_)
+                exec(compile(open(file.name(), "rb").read(), file.name(), 'exec'), self.context_)
                 os.chdir(chdirbackto)
                 return
             else:
-                exec '\n'.join(file.lines()) in self.context_
+                exec('\n'.join(file.lines()), self.context_)
                 return
             pass
-        except Exception, e:
+        except Exception as e:
             if chdirbackto is not None:
                 os.chdir(chdirbackto)
                 pass
-            raise Error('Error in '+'/'.join(file.abspath()), [NativeError(e, sys.exc_traceback)])
+            raise Error('Error in '+'/'.join(file.abspath()), [NativeError(e, sys.exc_info()[2])])
 
         pass
 

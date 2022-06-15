@@ -55,8 +55,8 @@ class ExplicitLibraryVersionTest(unittest.TestCase):
             self.fail()
             pass
 
-        self.failUnlessEqual(lib_builder.version(), (6,6,6))
-        self.failUnlessEqual(lib_builder.default_version(), "1.2.3")
+        self.assertEqual(lib_builder.version(), (6,6,6))
+        self.assertEqual(lib_builder.default_version(), "1.2.3")
         pass
     pass
 
@@ -89,18 +89,18 @@ class DefaultLibraryVersionTest(unittest.TestCase):
 
     def testExactPackageVersion(self):
         library_builder = self.make_package_and_return_library_builder('1.2.3')
-        self.failUnless(library_builder.version() is None)
-        self.failUnlessEqual(library_builder.default_version(), '1.2.3')
+        self.assertTrue(library_builder.version() is None)
+        self.assertEqual(library_builder.default_version(), '1.2.3')
         pass
     def testPostfixedPackageVersion(self):
         library_builder = self.make_package_and_return_library_builder('2.0.0pre7')
-        self.failUnless(library_builder.version() is None)
-        self.failUnlessEqual(library_builder.default_version(), '2.0.0pre7')
+        self.assertTrue(library_builder.version() is None)
+        self.assertEqual(library_builder.default_version(), '2.0.0pre7')
         pass
     def testUnparseablePackageVersion(self):
         library_builder = self.make_package_and_return_library_builder('unparseable')
-        self.failUnless(library_builder.version() is None)
-        self.failUnlessEqual(library_builder.default_version(), 'unparseable')
+        self.assertTrue(library_builder.version() is None)
+        self.assertEqual(library_builder.default_version(), 'unparseable')
         pass
     pass
 

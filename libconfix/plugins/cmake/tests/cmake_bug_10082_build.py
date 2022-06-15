@@ -97,7 +97,7 @@ class CMakeBug10082BuildTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        self.failUnlessEqual(build.get('generated').lines(), ['I was here', 'I was here'])
+        self.assertEqual(build.get('generated').lines(), ['I was here', 'I was here'])
         
         pass
 
@@ -154,7 +154,7 @@ class CMakeBug10082BuildTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        self.failUnlessEqual(build.get('generated').lines(), ['I was here', 'I was here'])
+        self.assertEqual(build.get('generated').lines(), ['I was here', 'I was here'])
         
         pass
 
@@ -201,7 +201,7 @@ class CMakeBug10082BuildTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        self.failUnlessEqual(build.get('generated').lines(), ['I was here'])
+        self.assertEqual(build.get('generated').lines(), ['I was here'])
         pass
 
     def test__workaround_library_and_custom_target(self):
@@ -251,7 +251,7 @@ class CMakeBug10082BuildTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        self.failUnlessEqual(build.get('generated').lines(), ['I was here'])
+        self.assertEqual(build.get('generated').lines(), ['I was here'])
         pass
 
     pass

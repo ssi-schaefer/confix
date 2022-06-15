@@ -72,16 +72,16 @@ class IntraPackageBuildBase(PersistentTestCase):
                 prefix='/dev/null'.split(os.sep),
                 readonly_prefixes=[])
             make.make(builddir=self.buildrootpath_, args=[])
-        except Error, e:
-            sys.stderr.write(`e`+'\n')
+        except Error as e:
+            sys.stderr.write(repr(e)+'\n')
             raise
         
-        self.failUnless(os.path.isfile(os.sep.join(self.buildrootpath_+['lo', 'lo.o'])))
-        self.failUnless(os.path.isfile(os.sep.join(self.buildrootpath_+['hi1', 'hi1.o'])))
-        self.failUnless(os.path.isfile(os.sep.join(self.buildrootpath_+['hi2', 'hi2.o'])))
-        self.failUnless(os.path.isfile(os.sep.join(self.buildrootpath_+['highest', 'highest.o'])))
-        self.failUnless(os.path.isfile(os.sep.join(self.buildrootpath_+['exe', 'main.o'])))
-        self.failUnless(os.path.isfile(os.sep.join(self.buildrootpath_+['exe', 'intrapackagebuildtest_exe_main'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.buildrootpath_+['lo', 'lo.o'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.buildrootpath_+['hi1', 'hi1.o'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.buildrootpath_+['hi2', 'hi2.o'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.buildrootpath_+['highest', 'highest.o'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.buildrootpath_+['exe', 'main.o'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.buildrootpath_+['exe', 'intrapackagebuildtest_exe_main'])))
         pass
 
     pass

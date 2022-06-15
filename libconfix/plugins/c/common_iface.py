@@ -16,11 +16,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dependency import \
+from .dependency import \
      Provide_CInclude, \
      Require_CInclude
 
-from buildinfo import \
+from .buildinfo import \
     BuildInfo_CFLAGS, \
     BuildInfo_CXXFLAGS, \
     BuildInfo_CommandlineMacros
@@ -43,7 +43,7 @@ class REQUIRE_H(InterfaceProxy):
     def REQUIRE_H(self, filename, urgency=Require.URGENCY_IGNORE):
         if not filename:
             raise Error("REQUIRE_H(): need a non-null 'filename' parameter")
-        if type(filename) is not types.StringType:
+        if type(filename) is not bytes:
             raise Error("REQUIRE_H(): 'filename' parameter must be a string")
         if len(filename)==0:
             raise Error("REQUIRE_H(): need a non-zero 'filename' parameter")

@@ -77,24 +77,24 @@ class FileInstallerTest(unittest.TestCase):
         # global directory ($(includedir)) (note that the symbolic
         # name of $(includedir) is hardwired to '').
         dirdefinition_global = makefile_am.install_directories().get('')
-        self.failIf(dirdefinition_global is None)
+        self.assertFalse(dirdefinition_global is None)
         global_headers = dirdefinition_global.files('HEADERS')
-        self.failIf(global_headers is None)
+        self.assertFalse(global_headers is None)
 
-        self.failUnless('public_header_global_1.h' in global_headers)
-        self.failUnless('public_header_global_2.h' in global_headers)
-        self.failUnless('public_header_duplicate.h' in global_headers)
+        self.assertTrue('public_header_global_1.h' in global_headers)
+        self.assertTrue('public_header_global_2.h' in global_headers)
+        self.assertTrue('public_header_duplicate.h' in global_headers)
 
         # $(includedir)/x/y. its symbolic name is computed by
         # FileInstaller as publicheader_xy.
         
         dirdefinition_x_y = makefile_am.install_directories().get('publicheader_xy')
-        self.failIf(dirdefinition_x_y is None)
+        self.assertFalse(dirdefinition_x_y is None)
         x_y_headers = dirdefinition_x_y.files('HEADERS')
-        self.failIf(x_y_headers is None)
+        self.assertFalse(x_y_headers is None)
 
-        self.failUnless('public_header_x_y.h' in x_y_headers)
-        self.failUnless('public_header_duplicate.h' in x_y_headers)
+        self.assertTrue('public_header_x_y.h' in x_y_headers)
+        self.assertTrue('public_header_duplicate.h' in x_y_headers)
 
         # TODO: rest of the installed types: private headers, data,
         # prefix, tunnel. currently, we only insert them to have the
@@ -108,23 +108,23 @@ class FileInstallerTest(unittest.TestCase):
 
         file_installer.add_public_header(filename='a.h', dir=[])
         file_installer.add_public_header(filename='b.h', dir=[])
-        self.failUnless(file_installer.is_public_header_in_dir(filename='a.h', dir=[]))
-        self.failUnless(file_installer.is_public_header_in_dir(filename='b.h', dir=[]))
+        self.assertTrue(file_installer.is_public_header_in_dir(filename='a.h', dir=[]))
+        self.assertTrue(file_installer.is_public_header_in_dir(filename='b.h', dir=[]))
 
         file_installer.add_public_header(filename='c.h', dir=['x', 'y'])
         file_installer.add_public_header(filename='d.h', dir=['x', 'y'])
-        self.failUnless(file_installer.is_public_header_in_dir(filename='c.h', dir=['x', 'y']))
-        self.failUnless(file_installer.is_public_header_in_dir(filename='d.h', dir=['x', 'y']))
+        self.assertTrue(file_installer.is_public_header_in_dir(filename='c.h', dir=['x', 'y']))
+        self.assertTrue(file_installer.is_public_header_in_dir(filename='d.h', dir=['x', 'y']))
 
         file_installer.add_private_header(filename='e.h', dir=[])
         file_installer.add_private_header(filename='f.h', dir=[])
-        self.failUnless(file_installer.is_private_header_in_dir(filename='e.h', dir=[]))
-        self.failUnless(file_installer.is_private_header_in_dir(filename='f.h', dir=[]))
+        self.assertTrue(file_installer.is_private_header_in_dir(filename='e.h', dir=[]))
+        self.assertTrue(file_installer.is_private_header_in_dir(filename='f.h', dir=[]))
 
         file_installer.add_private_header(filename='g.h', dir=['x', 'y'])
         file_installer.add_private_header(filename='h.h', dir=['x', 'y'])
-        self.failUnless(file_installer.is_private_header_in_dir(filename='g.h', dir=['x', 'y']))
-        self.failUnless(file_installer.is_private_header_in_dir(filename='h.h', dir=['x', 'y']))
+        self.assertTrue(file_installer.is_private_header_in_dir(filename='g.h', dir=['x', 'y']))
+        self.assertTrue(file_installer.is_private_header_in_dir(filename='h.h', dir=['x', 'y']))
 
         # TODO: rest of the installed types: data, prefix, tunnel
         

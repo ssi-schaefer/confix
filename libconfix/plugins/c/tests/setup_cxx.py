@@ -71,8 +71,8 @@ class BasicCXXSetup(unittest.TestCase):
         lib_dirbuilder = package.rootbuilder().find_entry_builder(['lib'])
         exe_dirbuilder = package.rootbuilder().find_entry_builder(['exe'])
 
-        self.failIf(lib_dirbuilder is None)
-        self.failIf(exe_dirbuilder is None)
+        self.assertFalse(lib_dirbuilder is None)
+        self.assertFalse(exe_dirbuilder is None)
 
         for b in lib_dirbuilder.iter_builders():
             if isinstance(b, LibraryBuilder):
@@ -86,8 +86,8 @@ class BasicCXXSetup(unittest.TestCase):
                         found_lib_cc = True
                         continue
                     pass
-                self.failUnless(found_lib_h)
-                self.failUnless(found_lib_cc)
+                self.assertTrue(found_lib_h)
+                self.assertTrue(found_lib_cc)
                 break
             pass
         else:
@@ -96,8 +96,8 @@ class BasicCXXSetup(unittest.TestCase):
 
         for b in exe_dirbuilder.iter_builders():
             if isinstance(b, ExecutableBuilder):
-                self.failUnless(isinstance(b.center(), CXXBuilder) and b.center().file().name() == 'main.cc')
-                self.failUnlessEqual(len(b.members()), 1)
+                self.assertTrue(isinstance(b.center(), CXXBuilder) and b.center().file().name() == 'main.cc')
+                self.assertEqual(len(b.members()), 1)
                 break
             pass
         else:

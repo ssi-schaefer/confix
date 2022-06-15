@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from entrybuilder import EntryBuilder
+from .entrybuilder import EntryBuilder
 
 from libconfix.core.utils.error import Error
 from libconfix.core.machinery.interface import InterfaceProxy
@@ -47,9 +47,9 @@ class FileBuilderInterfaceProxy(InterfaceProxy):
     def SET_FILE_PROPERTIES(self, properties):
         if properties is None:
             raise Error("SET_FILE_PROPERTIES(): 'properties' parameter cannot be None")
-        if not type(properties) is types.DictionaryType:
+        if not type(properties) is dict:
             raise Error("SET_FILE_PROPERTIES(): 'properties' parameter must be a dictionary")
-        for name, value in properties.iteritems():
+        for name, value in properties.items():
             self.__builder.file().set_property(name=name, value=value)
             # we have modified a property, which at least *might* have
             # influence on the graph
@@ -58,7 +58,7 @@ class FileBuilderInterfaceProxy(InterfaceProxy):
         pass
 
     def SET_FILE_PROPERTY(self, name, value):
-        if type(name) is not types.StringType:
+        if type(name) is not bytes:
             raise Error("SET_FILE_PROPERTY(): 'name' must be a string")
         self.__builder.file().set_property(name, value)
         # we have modified a property, which at least *might* have

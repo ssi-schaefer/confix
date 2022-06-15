@@ -33,8 +33,8 @@ class BasicTest(PersistentTestCase):
         fs.rootdirectory().add(name='subdir', entry=subdir)
 
         file = fs.rootdirectory().find(['subdir', 'file'])
-        self.failIfEqual(file, None)
-        self.failUnless(isinstance(file, File))
+        self.assertNotEqual(file, None)
+        self.assertTrue(isinstance(file, File))
 
         self.assertEqual(subdir.abspath(), ['a', 'b', 'subdir'])
         self.assertEqual(subdir.relpath(fs.rootdirectory()), ['subdir'])
@@ -49,52 +49,52 @@ class BasicTest(PersistentTestCase):
         subsubdir = subdir.add(name='subsubdir', entry=Directory())
         file = subsubdir.add(name='file', entry=File())
 
-        self.failUnless(subsubdir.relpath(fs.rootdirectory()) == ['subdir', 'subsubdir'])
-        self.failUnless(file.relpath(subdir) == ['subsubdir', 'file'])
+        self.assertTrue(subsubdir.relpath(fs.rootdirectory()) == ['subdir', 'subsubdir'])
+        self.assertTrue(file.relpath(subdir) == ['subsubdir', 'file'])
         pass
         
     def test__sync_mem2sync(self):
         fs = FileSystem(path=self.rootpath())
-        subdir = Directory(mode=0700)
+        subdir = Directory(mode=0o700)
         fs.rootdirectory().add(name='subdir', entry=subdir)
-        file = File(mode=0755)
+        file = File(mode=0o755)
         subdir.add(name='file', entry=file)
 
-        self.failUnlessEqual(fs.rootdirectory().state(), DirectoryState.INMEMORY)
-        self.failUnlessEqual(subdir.state(), DirectoryState.INMEMORY)
-        self.failUnlessEqual(file.state(), FileState.NEW)
+        self.assertEqual(fs.rootdirectory().state(), DirectoryState.INMEMORY)
+        self.assertEqual(subdir.state(), DirectoryState.INMEMORY)
+        self.assertEqual(file.state(), FileState.NEW)
         
         fs.sync()
 
-        self.failUnlessEqual(fs.rootdirectory().state(), DirectoryState.SYNC)
-        self.failUnlessEqual(subdir.state(), DirectoryState.SYNC)
-        self.failUnlessEqual(file.state(), FileState.SYNC_INMEM)
+        self.assertEqual(fs.rootdirectory().state(), DirectoryState.SYNC)
+        self.assertEqual(subdir.state(), DirectoryState.SYNC)
+        self.assertEqual(file.state(), FileState.SYNC_INMEM)
 
-        self.failUnless(os.path.isdir(os.sep.join(self.rootpath())))
-        self.failUnless(os.path.isdir(os.sep.join(self.rootpath()+['subdir'])))
-        self.failUnless(os.path.isfile(os.sep.join(self.rootpath()+['subdir', 'file'])))
+        self.assertTrue(os.path.isdir(os.sep.join(self.rootpath())))
+        self.assertTrue(os.path.isdir(os.sep.join(self.rootpath()+['subdir'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.rootpath()+['subdir', 'file'])))
 
-        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath()+['subdir'])).st_mode), 0700)
-        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath()+['subdir', 'file'])).st_mode), 0755)
+        self.assertEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath()+['subdir'])).st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE(os.stat(os.sep.join(self.rootpath()+['subdir', 'file'])).st_mode), 0o755)
         pass
 
     def test__sync_dirty2sync(self):
         fs = FileSystem(path=self.rootpath())
-        subdir = Directory(mode=0700)
+        subdir = Directory(mode=0o700)
         fs.rootdirectory().add(name='subdir', entry=subdir)
-        file = File(mode=0755)
+        file = File(mode=0o755)
         subdir.add(name='file', entry=file)
 
         fs.sync()
 
         newfile = File()
         subdir.add(name='newfile', entry=newfile)
-        self.failUnlessEqual(newfile.state(), FileState.NEW)
+        self.assertEqual(newfile.state(), FileState.NEW)
 
         fs.sync()
 
-        self.failUnlessEqual(newfile.state(), FileState.SYNC_INMEM)
-        self.failUnless(os.path.isfile(os.sep.join(self.rootpath()+['subdir', 'newfile'])))
+        self.assertEqual(newfile.state(), FileState.SYNC_INMEM)
+        self.assertTrue(os.path.isfile(os.sep.join(self.rootpath()+['subdir', 'newfile'])))
 
         pass
 
@@ -110,10 +110,10 @@ class BasicTest(PersistentTestCase):
         fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
         lines = file.lines()
-        self.failUnlessEqual(lines[0], 'line 0')
-        self.failUnlessEqual(lines[1], 'line 1')
-        self.failUnlessEqual(lines[2], 'line 2')
-        self.failUnlessEqual(lines[3], 'line 3')
+        self.assertEqual(lines[0], 'line 0')
+        self.assertEqual(lines[1], 'line 1')
+        self.assertEqual(lines[2], 'line 2')
+        self.assertEqual(lines[3], 'line 3')
         file.add_lines(['line 4'])
         fs.sync()
 
@@ -127,12 +127,12 @@ class BasicTest(PersistentTestCase):
         fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
         lines = file.lines()
-        self.failUnlessEqual(lines[0], 'line 0')
-        self.failUnlessEqual(lines[1], 'line 1')
-        self.failUnlessEqual(lines[2], 'line 2')
-        self.failUnlessEqual(lines[3], 'line 3')
-        self.failUnlessEqual(lines[4], 'line 4')
-        self.failUnlessEqual(lines[5], 'line 5')
+        self.assertEqual(lines[0], 'line 0')
+        self.assertEqual(lines[1], 'line 1')
+        self.assertEqual(lines[2], 'line 2')
+        self.assertEqual(lines[3], 'line 3')
+        self.assertEqual(lines[4], 'line 4')
+        self.assertEqual(lines[5], 'line 5')
         pass
 
     def test__sync_file_clear_on_sync_false(self):
@@ -140,7 +140,7 @@ class BasicTest(PersistentTestCase):
         file = File(lines=['line'])
         fs.rootdirectory().add(name='file', entry=file)
         fs.sync()
-        self.failIf(file.raw_lines() is None)
+        self.assertFalse(file.raw_lines() is None)
         pass
         
     def test__sync_file_clear_on_sync_true(self):
@@ -148,7 +148,7 @@ class BasicTest(PersistentTestCase):
         file = File(lines=['line'])
         fs.rootdirectory().add(name='file', entry=file)
         fs.sync()
-        self.failUnless(file.raw_lines() is None)
+        self.assertTrue(file.raw_lines() is None)
         pass
 
     def test__sync_file_truncate_persistent(self):
@@ -165,7 +165,7 @@ class BasicTest(PersistentTestCase):
 
         fs = scan_filesystem(path=self.rootpath())
         file = fs.rootdirectory().find(['file'])
-        self.failUnless(file.lines() == [])
+        self.assertTrue(file.lines() == [])
         pass
 
     def test__virtual_file(self):
@@ -181,10 +181,10 @@ class BasicTest(PersistentTestCase):
         
         fs.sync()
 
-        self.failIf(os.path.exists(os.sep.join(file.abspath())))
-        self.failUnless(file.state() == FileState.VIRTUAL)
-        self.failIf(file.raw_lines() is None)
-        self.failUnless(file.lines() == ['some token', 'some other token'])
+        self.assertFalse(os.path.exists(os.sep.join(file.abspath())))
+        self.assertTrue(file.state() == FileState.VIRTUAL)
+        self.assertFalse(file.raw_lines() is None)
+        self.assertTrue(file.lines() == ['some token', 'some other token'])
         pass
 
     def test__sync_root_more_than_one_deep(self):
@@ -195,18 +195,18 @@ class BasicTest(PersistentTestCase):
 
         fs = FileSystem(path=self.rootpath())
         fs.sync()
-        self.failUnless(os.path.isdir(os.sep.join(self.rootpath())))
+        self.assertTrue(os.path.isdir(os.sep.join(self.rootpath())))
         pass
 
     def test__explicit_mode(self):
         fs = FileSystem(path=self.rootpath())
         file_with_0755 = fs.rootdirectory().add(
             name='file_with_0755',
-            entry=File(mode=0755))
+            entry=File(mode=0o755))
         fs.sync()
 
-        self.failUnless(os.path.isfile(os.sep.join(file_with_0755.abspath())))
-        self.failUnlessEqual(stat.S_IMODE(os.stat(os.sep.join(file_with_0755.abspath())).st_mode), 0755)
+        self.assertTrue(os.path.isfile(os.sep.join(file_with_0755.abspath())))
+        self.assertEqual(stat.S_IMODE(os.stat(os.sep.join(file_with_0755.abspath())).st_mode), 0o755)
         pass
     pass
 

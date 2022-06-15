@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from check import CheckProgramBase
+from .check import CheckProgramBase
 
 from libconfix.plugins.automake.out_automake import find_automake_output_builder
 
@@ -30,11 +30,11 @@ class CheckProgramInMemory(CheckProgramBase):
 
     def test(self):
         automake_output_builder = find_automake_output_builder(self.package_.rootbuilder())
-        self.failUnless(automake_output_builder)
+        self.assertTrue(automake_output_builder)
         
-        self.failUnless('the-test-program' in automake_output_builder.makefile_am().check_programs())
-        self.failUnlessEqual(len(automake_output_builder.makefile_am().tests_environment()), 1)
-        self.failUnlessEqual(automake_output_builder.makefile_am().tests_environment()['name'], 'value')
+        self.assertTrue('the-test-program' in automake_output_builder.makefile_am().check_programs())
+        self.assertEqual(len(automake_output_builder.makefile_am().tests_environment()), 1)
+        self.assertEqual(automake_output_builder.makefile_am().tests_environment()['name'], 'value')
         pass
     pass
 

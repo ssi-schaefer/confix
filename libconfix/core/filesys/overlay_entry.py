@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from vfs_entry import VFSEntry
+from .vfs_entry import VFSEntry
 
 class OverlayEntry(VFSEntry):
     def __init__(self, original, overlay):

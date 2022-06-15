@@ -11,7 +11,7 @@ for filename in sys.argv[1:]:
     for m in package.modules():
         for p in m.provides():
             if isinstance(p, Provide_CInclude):
-                print str(m)+': '+str(p)
+                print(str(m)+': '+str(p))
                 pass
             pass
         pass

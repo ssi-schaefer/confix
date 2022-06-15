@@ -78,8 +78,8 @@ class AutomakePlainfileBuildTest(PersistentTestCase):
         package.output()
 
         automake_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failUnless('plainfile_data' in automake_output_builder.makefile_am().extra_dist())
-        self.failUnless('plainfile_prefix' in automake_output_builder.makefile_am().extra_dist())
+        self.assertTrue('plainfile_data' in automake_output_builder.makefile_am().extra_dist())
+        self.assertTrue('plainfile_prefix' in automake_output_builder.makefile_am().extra_dist())
         
         fs.sync()
 
@@ -95,9 +95,9 @@ class AutomakePlainfileBuildTest(PersistentTestCase):
             readonly_prefixes=[])
         make.make(builddir=build.abspath(), args=['install'])
         
-        self.failUnless(os.path.isfile(os.sep.join(
+        self.assertTrue(os.path.isfile(os.sep.join(
             install.abspath() + ['share', 'subdir', 'data', 'plainfile_data'])))
-        self.failUnless(os.path.isfile(os.sep.join(
+        self.assertTrue(os.path.isfile(os.sep.join(
             install.abspath() + ['subdir', 'prefix', 'plainfile_prefix'])))
 
         pass

@@ -83,12 +83,12 @@ class ExecutableSetupTest(unittest.TestCase):
                     continue
                 pass
             pass
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
-        self.failUnless(isinstance(file_c_builder, CBuilder))
-        self.failUnless(library_builder is None)
-        self.failUnless(isinstance(main_builder, ExecutableBuilder))
-        self.failUnless(isinstance(main2_builder, ExecutableBuilder))
-        self.failUnlessEqual(main2_builder.exename(), 'main2')
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
+        self.assertTrue(isinstance(file_c_builder, CBuilder))
+        self.assertTrue(library_builder is None)
+        self.assertTrue(isinstance(main_builder, ExecutableBuilder))
+        self.assertTrue(isinstance(main2_builder, ExecutableBuilder))
+        self.assertEqual(main2_builder.exename(), 'main2')
 
         pass
 

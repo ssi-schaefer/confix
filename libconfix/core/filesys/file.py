@@ -18,9 +18,9 @@
 
 import os
 
-from vfs_file import VFSFile
-from entry import Entry
-from filesys import FileSystem
+from .vfs_file import VFSFile
+from .entry import Entry
+from .filesys import FileSystem
 
 from libconfix.core.utils.error import Error, NativeError
 import libconfix.core.utils.helper
@@ -88,14 +88,14 @@ class File(VFSFile, Entry):
                 libconfix.core.utils.helper.write_lines_to_file_if_changed(
                     filename=filename,
                     lines=self.__lines)
-            except Error, err:
+            except Error as err:
                 raise Error('Could not write file '+filename, [err])
             if self.mode() is not None:
                 try:
                     os.chmod(filename, self.mode())
-                except OSError, err:
+                except OSError as err:
                     raise Error('Could not change mode of file '+filename,
-                                [NativeError(err, sys.exc_traceback)])
+                                [NativeError(err, sys.exc_info()[2])])
                 pass
 
             if FileSystem.CLEAR_ON_SYNC in self.filesystem().flags():
@@ -122,7 +122,7 @@ class File(VFSFile, Entry):
                 libconfix.core.utils.helper.write_lines_to_file(
                     filename=filename,
                     lines=self.__lines)
-            except Error, err:
+            except Error as err:
                 raise Error('Could not write file '+filename, [err])
             if FileSystem.CLEAR_ON_SYNC in self.filesystem().flags():
                 self.__lines = None

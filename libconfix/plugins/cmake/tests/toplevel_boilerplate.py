@@ -44,19 +44,19 @@ class ToplevelBoilerplateTest(unittest.TestCase):
         pass
     
     def test__basics(self):
-        self.failUnlessEqual(self.__cmakelists.get_project(), 'package-name')
-        self.failUnlessEqual(self.__cmakelists.get_set('VERSION'), '1.2.3')
-        self.failUnlessEqual(self.__cmakelists.get_cmake_minimum_required('VERSION'), '2.6')
+        self.assertEqual(self.__cmakelists.get_project(), 'package-name')
+        self.assertEqual(self.__cmakelists.get_set('VERSION'), '1.2.3')
+        self.assertEqual(self.__cmakelists.get_cmake_minimum_required('VERSION'), '2.6')
         pass
 
     def test__cpack(self):
-        self.failUnless('CPack' in self.__cmakelists.get_includes())
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_PACKAGE_FILE_NAME'), '"${PROJECT_NAME}-${VERSION}"')
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_SOURCE_IGNORE_FILES'), "${CPACK_SOURCE_IGNORE_FILES};~\$")
+        self.assertTrue('CPack' in self.__cmakelists.get_includes())
+        self.assertEqual(self.__cmakelists.get_set('CPACK_SOURCE_PACKAGE_FILE_NAME'), '"${PROJECT_NAME}-${VERSION}"')
+        self.assertEqual(self.__cmakelists.get_set('CPACK_SOURCE_IGNORE_FILES'), "${CPACK_SOURCE_IGNORE_FILES};~\$")
 
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MAJOR'), '1')
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MINOR'), '2')
-        self.failUnlessEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_PATCH'), '3')
+        self.assertEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MAJOR'), '1')
+        self.assertEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_MINOR'), '2')
+        self.assertEqual(self.__cmakelists.get_set('CPACK_PACKAGE_VERSION_PATCH'), '3')
         pass
 
     def test__rpath(self):
@@ -65,19 +65,19 @@ class ToplevelBoilerplateTest(unittest.TestCase):
         # be the way that we know from automake/libtool.
 
         # use, i.e. don't skip the full RPATH for the build tree
-        self.failUnlessEqual(self.__cmakelists.get_set('CMAKE_SKIP_BUILD_RPATH'), 'FALSE')
+        self.assertEqual(self.__cmakelists.get_set('CMAKE_SKIP_BUILD_RPATH'), 'FALSE')
 
         # when building, don't use the install RPATH already (but
         # later on when installing)
-        self.failUnlessEqual(self.__cmakelists.get_set('CMAKE_BUILD_WITH_INSTALL_RPATH'), 'FALSE')
+        self.assertEqual(self.__cmakelists.get_set('CMAKE_BUILD_WITH_INSTALL_RPATH'), 'FALSE')
 
         # the RPATH to be used when installing
-        self.failUnlessEqual(self.__cmakelists.get_set('CMAKE_INSTALL_RPATH'), "${CMAKE_INSTALL_PREFIX}/lib")
+        self.assertEqual(self.__cmakelists.get_set('CMAKE_INSTALL_RPATH'), "${CMAKE_INSTALL_PREFIX}/lib")
 
         # add the automatically determined parts of the RPATH which
         # point to directories outside the build tree to the install
         # RPATH
-        self.failUnlessEqual(self.__cmakelists.get_set('CMAKE_INSTALL_RPATH_USE_LINK_PATH'), 'TRUE')
+        self.assertEqual(self.__cmakelists.get_set('CMAKE_INSTALL_RPATH_USE_LINK_PATH'), 'TRUE')
         pass
     
     pass

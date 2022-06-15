@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import inter_package
+from . import inter_package
 
 from libconfix.plugins.cmake import commands
 
@@ -124,7 +124,7 @@ class InterPackageTest(PersistentTestCase):
 
         # call the program and see if everything's fine.
         pipe = subprocess.Popen([os.sep.join(install.abspath()+['bin', 'exe'])], stdout=subprocess.PIPE)
-        self.failUnlessEqual(pipe.stdout.next(), 'main was here\n')
+        self.assertEqual(next(pipe.stdout), 'main was here\n')
             
         pass
     pass

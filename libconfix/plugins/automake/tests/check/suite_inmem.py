@@ -47,11 +47,11 @@ class CheckProgramInMemory(unittest.TestCase):
         package.output()
 
         rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_output_builder is None)
+        self.assertFalse(rootdir_output_builder is None)
         
-        self.failUnless('CheckProgramTest__check_proggy' in rootdir_output_builder.makefile_am().check_programs())
-        self.failUnlessEqual(len(rootdir_output_builder.makefile_am().tests_environment()), 1)
-        self.failUnlessEqual(rootdir_output_builder.makefile_am().tests_environment()['name'], 'value')
+        self.assertTrue('CheckProgramTest__check_proggy' in rootdir_output_builder.makefile_am().check_programs())
+        self.assertEqual(len(rootdir_output_builder.makefile_am().tests_environment()), 1)
+        self.assertEqual(rootdir_output_builder.makefile_am().tests_environment()['name'], 'value')
         pass
 
     def test__with_explicit_setup(self):
@@ -76,11 +76,11 @@ class CheckProgramInMemory(unittest.TestCase):
         package.output()
 
         rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_output_builder is None)
+        self.assertFalse(rootdir_output_builder is None)
         
-        self.failUnless('the-test-program' in rootdir_output_builder.makefile_am().check_programs())
-        self.failUnlessEqual(len(rootdir_output_builder.makefile_am().tests_environment()), 1)
-        self.failUnlessEqual(rootdir_output_builder.makefile_am().tests_environment()['name'], 'value')
+        self.assertTrue('the-test-program' in rootdir_output_builder.makefile_am().check_programs())
+        self.assertEqual(len(rootdir_output_builder.makefile_am().tests_environment()), 1)
+        self.assertEqual(rootdir_output_builder.makefile_am().tests_environment()['name'], 'value')
     
     pass
 

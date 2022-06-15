@@ -43,9 +43,9 @@ class BuildInformationTest(unittest.TestCase):
                 bi3 = bi
                 pass
             pass
-        self.failUnless(bi1)
-        self.failUnless(bi2)
-        self.failUnless(bi3)
+        self.assertTrue(bi1)
+        self.assertTrue(bi2)
+        self.assertTrue(bi3)
         pass
     pass
 

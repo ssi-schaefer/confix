@@ -46,12 +46,12 @@ class LibraryInMemoryTest(unittest.TestCase):
         found_lib_builder = None
         for b in package.rootbuilder().iter_builders():
             if type(b) is LibraryBuilder:
-                self.failUnless(found_lib_builder is None)
+                self.assertTrue(found_lib_builder is None)
                 found_lib_builder = b
                 continue
             pass
-        self.failIf(found_lib_builder is None)
-        self.failUnless(found_lib_builder.basename() == 'hansi')
+        self.assertFalse(found_lib_builder is None)
+        self.assertTrue(found_lib_builder.basename() == 'hansi')
         pass
 
     def test__long_mangled_name(self):
@@ -71,12 +71,12 @@ class LibraryInMemoryTest(unittest.TestCase):
         found_lib_builder = None
         for b in package.rootbuilder().iter_builders():
             if type(b) is LibraryBuilder:
-                self.failUnless(found_lib_builder is None)
+                self.assertTrue(found_lib_builder is None)
                 found_lib_builder = b
                 continue
             pass
-        self.failIf(found_lib_builder is None)
-        self.failUnless(found_lib_builder.basename() == 'LibraryInMemoryTest')
+        self.assertFalse(found_lib_builder is None)
+        self.assertTrue(found_lib_builder.basename() == 'LibraryInMemoryTest')
         pass
 
     def test__members(self):
@@ -111,37 +111,37 @@ class LibraryInMemoryTest(unittest.TestCase):
         found_lib_builder = None
         for b in package.rootbuilder().iter_builders():
             if type(b) is LibraryBuilder:
-                self.failUnless(found_lib_builder is None)
+                self.assertTrue(found_lib_builder is None)
                 found_lib_builder = b
                 continue
             pass
-        self.failIf(found_lib_builder is None)
+        self.assertFalse(found_lib_builder is None)
 
         # see if the library contains what we asked it for.
         found_h1 = found_h2 = found_c1 = found_c2 = None
         for b in found_lib_builder.members():
             if isinstance(b, HeaderBuilder) and b.file().name() == 'member1.h':
-                self.failUnless(found_h1 is None)
+                self.assertTrue(found_h1 is None)
                 found_h1 = b
                 continue
             if isinstance(b, HeaderBuilder) and b.file().name() == 'member2.h':
-                self.failUnless(found_h2 is None)
+                self.assertTrue(found_h2 is None)
                 found_h2 = b
                 continue
             if isinstance(b, CBuilder) and b.file().name() == 'member1.c':
-                self.failUnless(found_c1 is None)
+                self.assertTrue(found_c1 is None)
                 found_c1 = b
                 continue
             if isinstance(b, CBuilder) and b.file().name() == 'member2.c':
-                self.failUnless(found_c2 is None)
+                self.assertTrue(found_c2 is None)
                 found_c2 = b
                 continue
             pass
 
-        self.failIf(found_h1 is None)
-        self.failIf(found_h2 is None)
-        self.failIf(found_c1 is None)
-        self.failIf(found_c2 is None)
+        self.assertFalse(found_h1 is None)
+        self.assertFalse(found_h2 is None)
+        self.assertFalse(found_c1 is None)
+        self.assertFalse(found_c2 is None)
 
         # we created the library's member builders using the C and H
         # 'macros' which should have added them to the containing
@@ -149,27 +149,27 @@ class LibraryInMemoryTest(unittest.TestCase):
         found_h1 = found_h2 = found_c1 = found_c2 = None
         for b in package.rootbuilder().iter_builders():
             if isinstance(b, HeaderBuilder) and b.file().name() == 'member1.h':
-                self.failUnless(found_h1 is None)
+                self.assertTrue(found_h1 is None)
                 found_h1 = b
                 continue
             if isinstance(b, HeaderBuilder) and b.file().name() == 'member2.h':
-                self.failUnless(found_h2 is None)
+                self.assertTrue(found_h2 is None)
                 found_h2 = b
                 continue
             if isinstance(b, CBuilder) and b.file().name() == 'member1.c':
-                self.failUnless(found_c1 is None)
+                self.assertTrue(found_c1 is None)
                 found_c1 = b
                 continue
             if isinstance(b, CBuilder) and b.file().name() == 'member2.c':
-                self.failUnless(found_c2 is None)
+                self.assertTrue(found_c2 is None)
                 found_c2 = b
                 continue
             pass
 
-        self.failIf(found_h1 is None)
-        self.failIf(found_h2 is None)
-        self.failIf(found_c1 is None)
-        self.failIf(found_c2 is None)
+        self.assertFalse(found_h1 is None)
+        self.assertFalse(found_h2 is None)
+        self.assertFalse(found_c1 is None)
+        self.assertFalse(found_c2 is None)
         
         pass
 

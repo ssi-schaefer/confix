@@ -222,12 +222,12 @@ class ExternalLibraryTest(PersistentTestCase):
         # (testing the 'cmdlinemacros' parameter of
         # CMAKE_EXTERNAL_LIBRARY()).
         pipe = subprocess.Popen([os.sep.join(user_builddir.abspath()+['bin', 'inline-string'])], stdout=subprocess.PIPE)
-        self.failUnlessEqual(pipe.stdout.next(), 'my-propagated-cmdline-macro\n')
+        self.assertEqual(next(pipe.stdout), 'my-propagated-cmdline-macro\n')
 
         # 'linked-string' prints the string that is defined in the
         # 'external-library' package.
         pipe = subprocess.Popen([os.sep.join(user_builddir.abspath()+['bin', 'linked-string'])], stdout=subprocess.PIPE)
-        self.failUnlessEqual(pipe.stdout.next(), 'my-external-library-linked-string\n')
+        self.assertEqual(next(pipe.stdout), 'my-external-library-linked-string\n')
 
         pass
 

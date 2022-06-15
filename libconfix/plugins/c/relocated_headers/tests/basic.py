@@ -173,26 +173,26 @@ class BasicTest(unittest.TestCase):
         c_builder = package.rootbuilder().find_entry_builder(['c'])
         exe_builder = package.rootbuilder().find_entry_builder(['exe'])
 
-        self.failIf(include_builder is None)
-        self.failIf(a_builder is None)
-        self.failIf(b_builder is None)
-        self.failIf(c_builder is None)
-        self.failIf(exe_builder is None)
+        self.assertFalse(include_builder is None)
+        self.assertFalse(a_builder is None)
+        self.assertFalse(b_builder is None)
+        self.assertFalse(c_builder is None)
+        self.assertFalse(exe_builder is None)
 
         # verify dependency graph
 
         # these two are crucial because they come from the relocated
         # headers a_interface.h and b_interface.h, respectively.
-        self.failUnless(a_builder in package.digraph().successors(exe_builder))
-        self.failUnless(b_builder in package.digraph().successors(exe_builder))
+        self.assertTrue(a_builder in package.digraph().successors(exe_builder))
+        self.assertTrue(b_builder in package.digraph().successors(exe_builder))
 
         # a and b depend on include ...
-        self.failUnless(include_builder in package.digraph().successors(a_builder))
-        self.failUnless(include_builder in package.digraph().successors(b_builder))
+        self.assertTrue(include_builder in package.digraph().successors(a_builder))
+        self.assertTrue(include_builder in package.digraph().successors(b_builder))
 
         # ... and on c, of course.
-        self.failUnless(c_builder in package.digraph().successors(a_builder))
-        self.failUnless(c_builder in package.digraph().successors(b_builder))
+        self.assertTrue(c_builder in package.digraph().successors(a_builder))
+        self.assertTrue(c_builder in package.digraph().successors(b_builder))
 
         pass
 

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import helper
+from . import helper
 
 class Paragraph:
 
@@ -62,7 +62,7 @@ class ParagraphSet:
 
     def lines(self):
         ret = []
-        for p in self.__dict.itervalues():
+        for p in self.__dict.values():
             ret.extend(['',
                         '# '+p.fingerprint()])
             ret.extend(p.lines())
@@ -85,7 +85,7 @@ class OrderedParagraphSet:
 
     def update(self, other):
         assert isinstance(other, OrderedParagraphSet)
-        for other_order, other_set in other.sets_per_order_.iteritems():
+        for other_order, other_set in other.sets_per_order_.items():
             my_set = self.__sets_per_order.get(other_order)
             if my_set:
                 my_set.update(other_set)
@@ -104,7 +104,7 @@ class OrderedParagraphSet:
 
     def lines(self):
         ret = []
-        orders = self.__sets_per_order.keys()[:]
+        orders = list(self.__sets_per_order.keys())[:]
         orders.sort()
         for o in orders:
             ret.extend(['',

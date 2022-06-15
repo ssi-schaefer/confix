@@ -15,21 +15,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import makefile_utils
-import makefile_am
-import configure_ac
-import output
-import iface
-import file_installer_suite
-import c
-import exe
-import exename.suite_inmem
-import readonly_prefixes.suite_inmem
-import libtool
-import buildinfo
-import ac_config_srcdir_suite
-import inter_package_inmem
-import check.suite_inmem
+from . import makefile_utils
+from . import makefile_am
+from . import configure_ac
+from . import output
+from . import iface
+from . import file_installer_suite
+from . import c
+from . import exe
+from . import exename.suite_inmem
+from . import readonly_prefixes.suite_inmem
+from . import libtool
+from . import buildinfo
+from . import ac_config_srcdir_suite
+from . import inter_package_inmem
+from . import check.suite_inmem
 
 import libconfix.plugins.automake.pkg_config.tests.suite_inmem
 import libconfix.plugins.automake.c.tests.suite_inmem

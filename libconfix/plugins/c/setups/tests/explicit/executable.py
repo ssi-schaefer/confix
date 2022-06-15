@@ -48,12 +48,12 @@ class ExecutableInMemoryTest(unittest.TestCase):
         found_exe_builder = None
         for b in package.rootbuilder().iter_builders():
             if isinstance(b, ExecutableBuilder):
-                self.failUnless(found_exe_builder is None)
+                self.assertTrue(found_exe_builder is None)
                 found_exe_builder = b
                 continue
             pass
-        self.failIf(found_exe_builder is None)
-        self.failUnless(found_exe_builder.exename() == 'hansi')
+        self.assertFalse(found_exe_builder is None)
+        self.assertTrue(found_exe_builder.exename() == 'hansi')
         pass
 
     def test__implicit_name(self):
@@ -76,12 +76,12 @@ class ExecutableInMemoryTest(unittest.TestCase):
         found_exe_builder = None
         for b in package.rootbuilder().iter_builders():
             if isinstance(b, ExecutableBuilder):
-                self.failUnless(found_exe_builder is None)
+                self.assertTrue(found_exe_builder is None)
                 found_exe_builder = b
                 continue
             pass
-        self.failIf(found_exe_builder is None)
-        self.failUnless(found_exe_builder.exename() == 'ExecutableInMemoryTest_main')
+        self.assertFalse(found_exe_builder is None)
+        self.assertTrue(found_exe_builder.exename() == 'ExecutableInMemoryTest_main')
         pass
 
 suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExecutableInMemoryTest)

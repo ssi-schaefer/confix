@@ -57,9 +57,9 @@ class PlainfileBuildTest(PersistentTestCase):
                        args=['-DCMAKE_INSTALL_PREFIX='+'/'.join(install.abspath())])
         commands.make(builddir=build.abspath(), args=['install'])
         
-        self.failUnless(os.path.isfile(os.sep.join(
+        self.assertTrue(os.path.isfile(os.sep.join(
             self.rootpath()+['install', 'share', 'subdir', 'data', 'plainfile_data'])))
-        self.failUnless(os.path.isfile(os.sep.join(
+        self.assertTrue(os.path.isfile(os.sep.join(
             self.rootpath()+['install', 'subdir', 'prefix', 'plainfile_prefix'])))
 
         pass

@@ -15,20 +15,20 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from intra_package_build import IntraPackageBuildSuite
-from local_install_build import LocalInstallBuildSuite
-from public_install_build import PublicInstallBuildSuite
-from inter_package_build import InterPackageBuildSuite
-from library_dependencies_build import LibraryDependenciesBuildSuite
-from readonly_prefixes_build import ReadonlyPrefixesBuildSuite
-from external_library_build import ExternalLibraryBuildSuite
-from plainfile_build import PlainfileBuildSuite
-from idl_build import IDLBuildSuite
-from script_build import ScriptBuildSuite
-from repo_install_build import RepoInstallBuildSuite
-from generator_build import GeneratorBuildSuite
-from cmake_bug_10082_build import CMakeBug10082BuildSuite
-from custom_command_build import CustomCommandBuildSuite
+from .intra_package_build import IntraPackageBuildSuite
+from .local_install_build import LocalInstallBuildSuite
+from .public_install_build import PublicInstallBuildSuite
+from .inter_package_build import InterPackageBuildSuite
+from .library_dependencies_build import LibraryDependenciesBuildSuite
+from .readonly_prefixes_build import ReadonlyPrefixesBuildSuite
+from .external_library_build import ExternalLibraryBuildSuite
+from .plainfile_build import PlainfileBuildSuite
+from .idl_build import IDLBuildSuite
+from .script_build import ScriptBuildSuite
+from .repo_install_build import RepoInstallBuildSuite
+from .generator_build import GeneratorBuildSuite
+from .cmake_bug_10082_build import CMakeBug10082BuildSuite
+from .custom_command_build import CustomCommandBuildSuite
 
 import unittest
 

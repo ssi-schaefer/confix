@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import basic
-import generated_package
+from . import basic
+from . import generated_package
 
 import unittest
 

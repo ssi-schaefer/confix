@@ -24,20 +24,20 @@ for filename in sys.argv[1:]:
     repo = PackageFileRepository(file_object)
 
     for package in repo.iter_packages():
-        print 'Package: '+package.name()+' '+package.version()
+        print('Package: '+package.name()+' '+package.version())
         for m in package.nodes():
-            print '  Module: '+str(m)
-            print '    Provides: '
+            print('  Module: '+str(m))
+            print('    Provides: ')
             for p in m.provides():
-                print '      '+str(p)
+                print('      '+str(p))
                 pass
-            print '    Requires: '
+            print('    Requires: ')
             for r in m.requires():
-                print '      '+str(r)
+                print('      '+str(r))
                 pass
-            print '    Buildinfos: '
+            print('    Buildinfos: ')
             for b in m.iter_buildinfos():
-                print '      '+str(b)
+                print('      '+str(b))
                 pass
             pass
         pass

@@ -31,8 +31,8 @@ from libconfix.core.utils import const
 
 from libconfix.plugins.c.setups.default_setup import DefaultCSetup
 
-from confix_setup import ConfixSetup
-from debug import DebugSetup
+from .confix_setup import ConfixSetup
+from .debug import DebugSetup
 
 import os
 import sys
@@ -105,7 +105,7 @@ def READ_REPO():
     unique_prefixes = []
     for prefix in prefixes:
         dir = os.path.expanduser(os.path.expandvars(prefix))
-        if not have.has_key(dir):
+        if dir not in have:
             have[dir] = 1
             unique_prefixes.append(dir)
             pass
@@ -155,7 +155,7 @@ def BOIL():
     try:
         #profile.runctx('package.boil(external_nodes=external_nodes)', {'package':package, 'external_nodes':external_nodes} ,{})
         package.boil(external_nodes=external_nodes)
-    except CycleError, e:
+    except CycleError as e:
         for l in helper.format_cycle_error(e):
             sys.stderr.write(l+'\n')
             pass
@@ -229,12 +229,12 @@ def BUILDDIR():
     global DONE_BUILDDIR
     if DONE_BUILDDIR: return 0
 
-    if ARGS.has_key(const.ARG_BUILDDIR): return 0
+    if const.ARG_BUILDDIR in ARGS: return 0
 
     if PACKAGE(): return -1
     SETTINGS()
 
-    if not ARGS.has_key(const.ARG_BUILDROOT):
+    if const.ARG_BUILDROOT not in ARGS:
         raise Error("Cannot determine build directory because root of "
                     "package compilation tree (aka BUILDROOT) "
                     "not specified")
@@ -262,7 +262,7 @@ def CONFIGURE():
 
     try:
         builddir = deduce_builddir()
-    except Error, e:
+    except Error as e:
         raise Error('Cannot call configure: build directory unknown', [e])
     
     if CONFIG.advanced() and not os.path.exists(builddir):
@@ -288,7 +288,7 @@ def CONFIGURE():
                             args=CONFIG.configure_args(),
                             env=configure_env)
         pass
-    except Error, e:
+    except Error as e:
         raise Error("Error calling configure:", [e])
 
     debug.message('done configure ('+str(time.time()-before)+' seconds)')
@@ -311,7 +311,7 @@ def MAKE():
 
     try:
         builddir = deduce_builddir()
-    except Error, e:
+    except Error as e:
         raise Error('Cannot call make: build directory unknown', [e])
 
     debug.message('make ...')
@@ -321,7 +321,7 @@ def MAKE():
         make.make(builddir=builddir.split(os.sep),
                   args=CONFIG.make_args(),
                   env=make_env)
-    except Error, e:
+    except Error as e:
         raise Error("Error calling make:", [e])
 
     debug.message('done make ('+str(time.time()-before)+' seconds)')

@@ -99,16 +99,16 @@ class AutomakeTestScriptTest(PersistentTestCase):
 
         # verify that the script was executed.
         scan.rescan_dir(build)
-        self.failUnless(build.find(['I-was-here']))
+        self.assertTrue(build.find(['I-was-here']))
 
         scan.rescan_dir(install)
 
         # verify that the script hasn't been installed.
-        self.failIf(install.find(['bin', 'I-was-here']))
+        self.assertFalse(install.find(['bin', 'I-was-here']))
 
         # for completeness (and paranoia), check if scripts are
         # installed at all.
-        self.failUnless(install.find(['bin', 'install-dummy']))
+        self.assertTrue(install.find(['bin', 'install-dummy']))
         
         pass
     pass

@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import cmake_consts
-from custom_command_bullshit import CustomCommandHelper
+from . import cmake_consts
+from .custom_command_bullshit import CustomCommandHelper
 
 from libconfix.core.utils import helper
 from libconfix.core.utils.error import Error
@@ -231,7 +231,7 @@ class CMakeLists:
         return self.__definitions
     
     def add_subdirectory(self, directoryname):
-        assert type(directoryname) is types.StringType
+        assert type(directoryname) is bytes
         self.__subdirectories.append(_path(directoryname))
         pass
     def get_subdirectories(self):
@@ -247,7 +247,7 @@ class CMakeLists:
         """
         Iterate over the names of the library targets I have.
         """
-        return self.__libraries.iterkeys()
+        return iter(self.__libraries.keys())
     
     def add_executable(self, exename, members):
         assert exename not in self.__executables
@@ -259,7 +259,7 @@ class CMakeLists:
         """
         Iterate over the names of the executable targets I have.
         """
-        return self.__executables.iterkeys()
+        return iter(self.__executables.keys())
 
     def target_link_libraries(self, target, basenames):
         assert target not in self.__target_link_libraries
@@ -285,7 +285,7 @@ class CMakeLists:
         link_libraries = self.__target_link_libraries.get(target)
         if link_libraries is None:
             return
-        for i in xrange(len(link_libraries)):
+        for i in range(len(link_libraries)):
             if link_libraries[i] == basename:
                 link_libraries[i] = tightened
                 break
@@ -388,12 +388,12 @@ class CMakeLists:
             pass
 
         # CMAKE_MINIMUM_REQUIRED()
-        for (name, value) in self.__cmake_minimum_required.iteritems():
+        for (name, value) in self.__cmake_minimum_required.items():
             lines.append('CMAKE_MINIMUM_REQUIRED('+name+' '+value+')')
             pass
 
         # SET()
-        for (name, value) in self.__sets.iteritems():
+        for (name, value) in self.__sets.items():
             lines.append('SET('+name+' '+value+')')
             pass
 
@@ -446,7 +446,7 @@ class CMakeLists:
             pass
 
         # ADD_LIBRARY()
-        for (basename, members) in self.__libraries.iteritems():
+        for (basename, members) in self.__libraries.items():
             lines.append('ADD_LIBRARY(')
             lines.append('    '+basename)
             for m in members:
@@ -456,7 +456,7 @@ class CMakeLists:
             pass
 
         # ADD_EXECUTABLE()
-        for (exename, members) in self.__executables.iteritems():
+        for (exename, members) in self.__executables.items():
             lines.append('ADD_EXECUTABLE(')
             lines.append('    '+exename)
             for m in members:
@@ -466,7 +466,7 @@ class CMakeLists:
             pass
 
         # TARGET_LINK_LIBRARIES()
-        for (target, libraries) in self.__target_link_libraries.iteritems():
+        for (target, libraries) in self.__target_link_libraries.items():
             lines.append('TARGET_LINK_LIBRARIES(')
             lines.append('    '+target)
             for library in libraries:

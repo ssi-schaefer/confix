@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from linked import LinkedBuilder
-from buildinfo import BuildInfo_CLibrary_NativeLocal
+from .linked import LinkedBuilder
+from .buildinfo import BuildInfo_CLibrary_NativeLocal
 
 import types
 
@@ -30,11 +30,11 @@ class LibraryBuilder(LinkedBuilder):
 
         # library version. passed to libtool as "-version-info
         # <current>:<revision>:<age>", for example.
-        assert version is None or type(version) in [types.ListType, types.TupleType] and len(version) == 3
+        assert version is None or type(version) in [list, tuple] and len(version) == 3
 
         # default library version. passed to libtool as "-release
         # <package-version>"
-        assert default_version is None or type(default_version) is types.StringType
+        assert default_version is None or type(default_version) is bytes
         
         LinkedBuilder.__init__(self)
 

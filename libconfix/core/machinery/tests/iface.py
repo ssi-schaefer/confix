@@ -85,7 +85,7 @@ class BuilderInterface(unittest.TestCase):
         sym4 = None
         sym5 = None
         for r in builder.dependency_info().requires():
-            self.assert_(isinstance(r, Require_Symbol))
+            self.assertTrue(isinstance(r, Require_Symbol))
             if r.symbol() == 'sym1':
                 sym1 = r
                 continue
@@ -140,7 +140,7 @@ class BuilderInterface(unittest.TestCase):
         sym4 = None
         sym5 = None
         for p in builder.dependency_info().provides():
-            self.assert_(isinstance(p, Provide_Symbol))
+            self.assertTrue(isinstance(p, Provide_Symbol))
             if p.symbol() == 'sym1':
                 sym1 = p
                 continue

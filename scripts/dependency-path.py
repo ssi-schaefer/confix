@@ -80,11 +80,11 @@ try:
     if to_node is None:
         raise Error('Module '+'.'.join(to_name)+' not found')
 
-    print ['.'.join(m.fullname()) for m in reached_from(graph, [from_node]).nodes()]
+    print(['.'.join(m.fullname()) for m in reached_from(graph, [from_node]).nodes()])
             
-except Error, e:
+except Error as e:
     sys.stderr.write('***ERROR***\n')
-    sys.stderr.write(`e`+'\n')
+    sys.stderr.write(repr(e)+'\n')
     sys.exit(1)
     pass
 

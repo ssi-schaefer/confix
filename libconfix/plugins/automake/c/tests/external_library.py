@@ -103,19 +103,19 @@ class ExternalLibraryTest(unittest.TestCase):
         # lolo must not be seen in lo's include path since nothing is
         # built there
         lodir_builder = self.__package.rootbuilder().find_entry_builder(['lo'])
-        self.failIf(lodir_builder is None) # paranoia
+        self.assertFalse(lodir_builder is None) # paranoia
         lodir_output_builder = find_automake_output_builder(lodir_builder)
-        self.failIf(lodir_output_builder is None)
+        self.assertFalse(lodir_output_builder is None)
         
-        self.failIf('-I/the/include/path/of/lolo' in lodir_output_builder.makefile_am().includepath())
+        self.assertFalse('-I/the/include/path/of/lolo' in lodir_output_builder.makefile_am().includepath())
         
         # hi is building something, so we should definitely see
         # include paths. lo must come before lolo in hi's include
         # path.
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidir_builder is None)
+        self.assertFalse(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hidir_output_builder is None)
+        self.assertFalse(hidir_output_builder is None)
         
         pos_lo = pos_lolo = None
         i = -1
@@ -128,49 +128,49 @@ class ExternalLibraryTest(unittest.TestCase):
                 pos_lo = i
                 continue
             pass
-        self.failIf(pos_lo is None)
-        self.failIf(pos_lolo is None)
+        self.assertFalse(pos_lo is None)
+        self.assertFalse(pos_lolo is None)
         
-        self.failUnless(pos_lo < pos_lolo)
+        self.assertTrue(pos_lo < pos_lolo)
         pass
 
     def test__cmdline_macros(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidir_builder is None)
+        self.assertFalse(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hidir_output_builder is None)
+        self.assertFalse(hidir_output_builder is None)
 
-        self.failIf(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') is None)
-        self.failUnless(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') == 'value_lolo')
-        self.failIf(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') is None)
-        self.failUnless(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') == 'value_lo')
+        self.assertFalse(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') is None)
+        self.assertTrue(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lolo') == 'value_lolo')
+        self.assertFalse(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') is None)
+        self.assertTrue(hidir_output_builder.makefile_am().cmdlinemacros().get('cmdlinemacro_lo') == 'value_lo')
         pass
 
     def test__cflags(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidir_builder is None)
+        self.assertFalse(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hidir_output_builder is None)
+        self.assertFalse(hidir_output_builder is None)
         
-        self.failUnless('lolo_cflags' in hidir_output_builder.makefile_am().am_cflags())
-        self.failUnless('lo_cflags' in hidir_output_builder.makefile_am().am_cflags())
+        self.assertTrue('lolo_cflags' in hidir_output_builder.makefile_am().am_cflags())
+        self.assertTrue('lo_cflags' in hidir_output_builder.makefile_am().am_cflags())
         pass
 
     def test__cxxflags(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidir_builder is None)
+        self.assertFalse(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hidir_output_builder is None)
+        self.assertFalse(hidir_output_builder is None)
 
-        self.failUnless('lolo_cxxflags' in hidir_output_builder.makefile_am().am_cxxflags())
-        self.failUnless('lo_cxxflags' in hidir_output_builder.makefile_am().am_cxxflags())
+        self.assertTrue('lolo_cxxflags' in hidir_output_builder.makefile_am().am_cxxflags())
+        self.assertTrue('lo_cxxflags' in hidir_output_builder.makefile_am().am_cxxflags())
         pass
 
     def test__linkery(self):
         hidir_builder = self.__package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidir_builder is None)
+        self.assertFalse(hidir_builder is None)
         hidir_output_builder = find_automake_output_builder(hidir_builder)
-        self.failIf(hidir_output_builder is None)
+        self.assertFalse(hidir_output_builder is None)
 
         # paths (-L): lo (first and second) must come before lolo
         # (first and second). the order of lo's and lolo's both paths
@@ -201,17 +201,17 @@ class ExternalLibraryTest(unittest.TestCase):
                 continue
             pass
 
-        self.failIf(pos_Llo_first is None)
-        self.failIf(pos_Llo_second is None)
-        self.failIf(pos_Llolo_first is None)
-        self.failIf(pos_Llolo_second is None)
-        self.failIf(pos_llolo is None)
-        self.failIf(pos_llo is None)
+        self.assertFalse(pos_Llo_first is None)
+        self.assertFalse(pos_Llo_second is None)
+        self.assertFalse(pos_Llolo_first is None)
+        self.assertFalse(pos_Llolo_second is None)
+        self.assertFalse(pos_llolo is None)
+        self.assertFalse(pos_llo is None)
         
-        self.failUnless(pos_Llo_first < pos_Llo_second)
-        self.failUnless(pos_Llo_second < pos_Llolo_first)
-        self.failUnless(pos_Llolo_first < pos_Llolo_second)
-        self.failUnless(pos_llo < pos_llolo)
+        self.assertTrue(pos_Llo_first < pos_Llo_second)
+        self.assertTrue(pos_Llo_second < pos_Llolo_first)
+        self.assertTrue(pos_Llolo_first < pos_Llolo_second)
+        self.assertTrue(pos_llo < pos_llolo)
         pass
     pass
 

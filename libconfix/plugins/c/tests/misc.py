@@ -48,7 +48,7 @@ class IgnoredEntriesTest(unittest.TestCase):
                                setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(['x.cc']) is not None)
+        self.assertFalse(package.rootbuilder().find_entry_builder(['x.cc']) is not None)
         pass
     pass
 
@@ -76,7 +76,7 @@ class NoInternalRequiresTest(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
-        self.failIf(len(package.rootbuilder().requires()) != 0)
+        self.assertFalse(len(package.rootbuilder().requires()) != 0)
         pass
     pass
 

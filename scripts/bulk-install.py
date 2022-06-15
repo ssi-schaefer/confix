@@ -48,7 +48,7 @@ def main():
         filenames_str, mode, dir = line.split(':')
         filenames = filenames_str.split(',')
         mode = eval(mode) # interpret octal string, f.e. 0755
-        assert type(mode) is types.IntType
+        assert type(mode) is int
 
         directories.add(dir)
         install_instructions.append(InstallationInstruction(

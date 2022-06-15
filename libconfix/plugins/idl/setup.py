@@ -18,7 +18,7 @@
 
 from libconfix.core.machinery.setup import Setup
 
-from creator import IDLCreator
+from .creator import IDLCreator
 
 class IDLSetup(Setup):
     def setup(self, dirbuilder):

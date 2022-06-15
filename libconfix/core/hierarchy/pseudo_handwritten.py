@@ -64,7 +64,7 @@ class PseudoHandWrittenFileManager(Builder):
                 existing_file.truncate()
                 return existing_file
             pass
-        except Error, e:
+        except Error as e:
             raise Error('Cannot add pseudo-handwritten file "'+filename+'"')
         pass
 
@@ -79,7 +79,7 @@ class PseudoHandWrittenFileManager(Builder):
             return
         try:
             self.__previous_registered_files = helper_pickle.load_object_from_lines(registry_file.lines())
-        except Error, e:
+        except Error as e:
             path = '/'.join(registry_file.relpath(package.rootdirectory()))
             raise Error('Cannot read pseudo-handwritten files '
                         'from file '+path+' though the file exists')

@@ -43,13 +43,13 @@ class HeaderInstallTest(unittest.TestCase):
         # installation of file.h goes directly to $(includedir); no
         # subdir involved.
         rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_output_builder is None)
+        self.assertFalse(rootdir_output_builder is None)
 
         directory_definition = rootdir_output_builder.makefile_am().install_directories().get('')
-        self.failIf(directory_definition is None)
-        self.failUnless(directory_definition.dirname() is None)
-        self.failIf(directory_definition.files('HEADERS') is None)
-        self.failUnless(directory_definition.files('HEADERS') == ['file.h'])
+        self.assertFalse(directory_definition is None)
+        self.assertTrue(directory_definition.dirname() is None)
+        self.assertFalse(directory_definition.files('HEADERS') is None)
+        self.assertTrue(directory_definition.files('HEADERS') == ['file.h'])
 
         # no local install is done; user will have his includepath
         # pointed to $(srcdir)
@@ -69,12 +69,12 @@ class HeaderInstallTest(unittest.TestCase):
         # public installation goes to $(includedir)/xxx; see if the
         # subdir stuff is handled correctly.
         rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_output_builder is None)
+        self.assertFalse(rootdir_output_builder is None)
         directory_definition = rootdir_output_builder.makefile_am().install_directories().get('publicheader_xxx')
-        self.failIf(directory_definition is None)
-        self.failUnless(directory_definition.dirname() == '$(includedir)/xxx')
-        self.failIf(directory_definition.files('HEADERS') is None)
-        self.failUnless(directory_definition.files('HEADERS') == ['file.h'])
+        self.assertFalse(directory_definition is None)
+        self.assertTrue(directory_definition.dirname() == '$(includedir)/xxx')
+        self.assertFalse(directory_definition.files('HEADERS') is None)
+        self.assertTrue(directory_definition.files('HEADERS') == ['file.h'])
 
         # private installation stuff.
 
@@ -89,11 +89,11 @@ class HeaderInstallTest(unittest.TestCase):
         mkdir = makefile.find_rule(
             targets=['$(top_builddir)/confix-include/xxx'],
             elements=rootdir_output_builder.makefile_am().elements())
-        self.failIf(confix_install_local is None)
-        self.failIf(install_file_h is None)
-        self.failIf(mkdir is None)
-        self.failUnless('confix-install-local' in rootdir_output_builder.makefile_am().all_local().prerequisites())
-        self.failUnless('$(top_builddir)/confix-include/xxx/file.h' in confix_install_local.prerequisites())
+        self.assertFalse(confix_install_local is None)
+        self.assertFalse(install_file_h is None)
+        self.assertFalse(mkdir is None)
+        self.assertTrue('confix-install-local' in rootdir_output_builder.makefile_am().all_local().prerequisites())
+        self.assertTrue('$(top_builddir)/confix-include/xxx/file.h' in confix_install_local.prerequisites())
 
         # clean-local -> confix-clean-local -> $(top_builddir)/confix-include/file.h-clean
 
@@ -103,10 +103,10 @@ class HeaderInstallTest(unittest.TestCase):
         clean_file_h = makefile.find_rule(
             targets=['$(top_builddir)/confix-include/xxx/file.h-clean'],
             elements=rootdir_output_builder.makefile_am().elements())
-        self.failIf(confix_clean_local is None)
-        self.failIf(clean_file_h is None)
-        self.failUnless('confix-clean-local' in rootdir_output_builder.makefile_am().clean_local().prerequisites())
-        self.failUnless('$(top_builddir)/confix-include/xxx/file.h-clean' in confix_clean_local.prerequisites())
+        self.assertFalse(confix_clean_local is None)
+        self.assertFalse(clean_file_h is None)
+        self.assertTrue('confix-clean-local' in rootdir_output_builder.makefile_am().clean_local().prerequisites())
+        self.assertTrue('$(top_builddir)/confix-include/xxx/file.h-clean' in confix_clean_local.prerequisites())
         
         pass
 
@@ -121,13 +121,13 @@ class HeaderInstallTest(unittest.TestCase):
         package.output()
 
         rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_output_builder is None)
+        self.assertFalse(rootdir_output_builder is None)
 
         directory_definition = rootdir_output_builder.makefile_am().install_directories().get('publicheader_xxxyyy')
-        self.failIf(directory_definition is None)
-        self.failUnless(directory_definition.dirname() == '$(includedir)/xxx/yyy')
-        self.failIf(directory_definition.files('HEADERS') is None)
-        self.failUnless(directory_definition.files('HEADERS') == ['file.h'])
+        self.assertFalse(directory_definition is None)
+        self.assertTrue(directory_definition.dirname() == '$(includedir)/xxx/yyy')
+        self.assertFalse(directory_definition.files('HEADERS') is None)
+        self.assertTrue(directory_definition.files('HEADERS') == ['file.h'])
         pass
         
     pass

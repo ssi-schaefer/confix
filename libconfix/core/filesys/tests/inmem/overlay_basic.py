@@ -131,44 +131,44 @@ class OverlayBasicTest(PersistentTestCase):
         union = OverlayFileSystem(original=original, overlay=overlay)
 
         # root has d10 from original and d11 from overlay
-        self.failUnless(len([e for e in union.rootdirectory().entries()]) == 2)
+        self.assertTrue(len([e for e in union.rootdirectory().entries()]) == 2)
         union_d10 = union.rootdirectory().find(['d10'])
         union_d11 = union.rootdirectory().find(['d11'])
-        self.failIf(union_d10 is None)
-        self.failIf(union_d11 is None)
+        self.assertFalse(union_d10 is None)
+        self.assertFalse(union_d11 is None)
 
         # d10 has d20 and f0 from first and f1 from second. we search
         # these using three different ways: using the directory
         # union_d10 directly (get() and find()), and using the root
         # directory (the "absolute path", so to say)
-        self.failUnless(len([ e for e in union_d10.entries()]) == 3)
+        self.assertTrue(len([ e for e in union_d10.entries()]) == 3)
 
         found_f0_0 = union_d10.find(['f0'])
         found_f0_1 = union_d10.get('f0')
         found_f0_2 = union.rootdirectory().find(['d10', 'f0'])
-        self.failIf(found_f0_0 is None)
-        self.failIf(found_f0_1 is None)
-        self.failIf(found_f0_2 is None)
-        self.failUnless(isinstance(found_f0_0, VFSFile))
-        self.failUnless(found_f0_0 is found_f0_1 is found_f0_2) 
+        self.assertFalse(found_f0_0 is None)
+        self.assertFalse(found_f0_1 is None)
+        self.assertFalse(found_f0_2 is None)
+        self.assertTrue(isinstance(found_f0_0, VFSFile))
+        self.assertTrue(found_f0_0 is found_f0_1 is found_f0_2) 
 
         found_f1_0 = union_d10.find(['f1'])
         found_f1_1 = union_d10.get('f1')
         found_f1_2 = union.rootdirectory().find(['d10', 'f1'])
-        self.failIf(found_f1_0 is None)
-        self.failIf(found_f1_1 is None)
-        self.failIf(found_f1_2 is None)
-        self.failUnless(isinstance(found_f1_0, VFSFile))
-        self.failUnless(found_f1_0 is found_f1_1 is found_f1_2)
+        self.assertFalse(found_f1_0 is None)
+        self.assertFalse(found_f1_1 is None)
+        self.assertFalse(found_f1_2 is None)
+        self.assertTrue(isinstance(found_f1_0, VFSFile))
+        self.assertTrue(found_f1_0 is found_f1_1 is found_f1_2)
 
         found_d20_0 = union_d10.find(['d20'])
         found_d20_1 = union_d10.get('d20')
         found_d20_2 = union.rootdirectory().find(['d10', 'd20'])
-        self.failIf(found_d20_0 is None)
-        self.failIf(found_d20_1 is None)
-        self.failIf(found_d20_2 is None)
-        self.failUnless(isinstance(found_d20_0, VFSDirectory))
-        self.failUnless(found_d20_0 is found_d20_1 is found_d20_2)
+        self.assertFalse(found_d20_0 is None)
+        self.assertFalse(found_d20_1 is None)
+        self.assertFalse(found_d20_2 is None)
+        self.assertTrue(isinstance(found_d20_0, VFSDirectory))
+        self.assertTrue(found_d20_0 is found_d20_1 is found_d20_2)
 
         pass
 
@@ -179,13 +179,13 @@ class OverlayBasicTest(PersistentTestCase):
         union = OverlayFileSystem(original=self.first(), overlay=self.second())
         union.sync()
 
-        self.failUnless(os.path.exists(os.sep.join(self.first_first_file().abspath())))
-        self.failUnless(os.path.exists(os.sep.join(self.first_subdir().abspath())))
-        self.failUnless(os.path.exists(os.sep.join(self.first_subdir_first_file().abspath())))
+        self.assertTrue(os.path.exists(os.sep.join(self.first_first_file().abspath())))
+        self.assertTrue(os.path.exists(os.sep.join(self.first_subdir().abspath())))
+        self.assertTrue(os.path.exists(os.sep.join(self.first_subdir_first_file().abspath())))
 
-        self.failIf(os.path.exists(os.sep.join(self.second_second_file().abspath())))
-        self.failIf(os.path.exists(os.sep.join(self.second_subdir().abspath())))
-        self.failIf(os.path.exists(os.sep.join(self.second_subdir_second_file().abspath())))
+        self.assertFalse(os.path.exists(os.sep.join(self.second_second_file().abspath())))
+        self.assertFalse(os.path.exists(os.sep.join(self.second_subdir().abspath())))
+        self.assertFalse(os.path.exists(os.sep.join(self.second_subdir_second_file().abspath())))
 
         pass
 
@@ -201,11 +201,11 @@ class OverlayBasicTest(PersistentTestCase):
 
         # the unioned filesystem must have it at the appropriate
         # place.
-        self.failUnless(union.rootdirectory().get('added_file'))
+        self.assertTrue(union.rootdirectory().get('added_file'))
         # the first fs must have received it through the union.
-        self.failUnless(self.first().rootdirectory().get('added_file'))
+        self.assertTrue(self.first().rootdirectory().get('added_file'))
         # the second is read only.
-        self.failIf(self.second().rootdirectory().get('added_file'))
+        self.assertFalse(self.second().rootdirectory().get('added_file'))
 
         pass
 
@@ -218,8 +218,8 @@ class OverlayBasicTest(PersistentTestCase):
             name='newdir',
             entry=Directory())
         first_newdir = self.first().rootdirectory().get('newdir')
-        self.failUnless(first_newdir)
-        self.failIf(self.second().rootdirectory().get('newdir'))
+        self.assertTrue(first_newdir)
+        self.assertFalse(self.second().rootdirectory().get('newdir'))
 
         # file and directory addition to union_newdir must show up in
         # but union_newdir and first_newdir (and cannot show up in
@@ -230,10 +230,10 @@ class OverlayBasicTest(PersistentTestCase):
         union_newdir_file = union_newdir.add(
             name='file',
             entry=Directory())
-        self.failUnless(union_newdir.get('dir'))
-        self.failUnless(union_newdir.get('file'))
-        self.failUnless(first_newdir.get('dir'))
-        self.failUnless(first_newdir.get('file'))
+        self.assertTrue(union_newdir.get('dir'))
+        self.assertTrue(union_newdir.get('file'))
+        self.assertTrue(first_newdir.get('dir'))
+        self.assertTrue(first_newdir.get('file'))
         pass
 
     def test__sync_2(self):
@@ -241,14 +241,14 @@ class OverlayBasicTest(PersistentTestCase):
 
         # sync the union; first is synced, and second is not.
         union.sync()
-        self.failUnless(os.path.exists(os.sep.join(self.first().rootdirectory().abspath())))
-        self.failUnless(os.path.exists(os.sep.join(self.first_first_file().abspath())))
-        self.failUnless(os.path.exists(os.sep.join(self.first_subdir().abspath())))
-        self.failUnless(os.path.exists(os.sep.join(self.first_subdir_first_file().abspath())))
-        self.failIf(os.path.exists(os.sep.join(self.second().rootdirectory().abspath())))
-        self.failIf(os.path.exists(os.sep.join(self.second_second_file().abspath())))
-        self.failIf(os.path.exists(os.sep.join(self.second_subdir().abspath())))
-        self.failIf(os.path.exists(os.sep.join(self.second_subdir_second_file().abspath())))
+        self.assertTrue(os.path.exists(os.sep.join(self.first().rootdirectory().abspath())))
+        self.assertTrue(os.path.exists(os.sep.join(self.first_first_file().abspath())))
+        self.assertTrue(os.path.exists(os.sep.join(self.first_subdir().abspath())))
+        self.assertTrue(os.path.exists(os.sep.join(self.first_subdir_first_file().abspath())))
+        self.assertFalse(os.path.exists(os.sep.join(self.second().rootdirectory().abspath())))
+        self.assertFalse(os.path.exists(os.sep.join(self.second_second_file().abspath())))
+        self.assertFalse(os.path.exists(os.sep.join(self.second_subdir().abspath())))
+        self.assertFalse(os.path.exists(os.sep.join(self.second_subdir_second_file().abspath())))
 
         # add file and dir here and there, sync and check again.
         union.rootdirectory().add(
@@ -263,12 +263,12 @@ class OverlayBasicTest(PersistentTestCase):
 
         union.sync()
 
-        self.failUnless(os.path.exists(os.sep.join(self.first().rootdirectory().abspath()+['newfile'])))
-        self.failUnless(os.path.exists(os.sep.join(self.first().rootdirectory().abspath()+['newdir'])))
-        self.failUnless(os.path.exists(os.sep.join(self.first().rootdirectory().abspath()+['newdir', 'newfile'])))
-        self.failIf(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newfile'])))
-        self.failIf(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newdir'])))
-        self.failIf(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newdir', 'newfile'])))
+        self.assertTrue(os.path.exists(os.sep.join(self.first().rootdirectory().abspath()+['newfile'])))
+        self.assertTrue(os.path.exists(os.sep.join(self.first().rootdirectory().abspath()+['newdir'])))
+        self.assertTrue(os.path.exists(os.sep.join(self.first().rootdirectory().abspath()+['newdir', 'newfile'])))
+        self.assertFalse(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newfile'])))
+        self.assertFalse(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newdir'])))
+        self.assertFalse(os.path.exists(os.sep.join(self.second().rootdirectory().abspath()+['newdir', 'newfile'])))
         pass
 
     def test__abspath(self):
@@ -276,7 +276,7 @@ class OverlayBasicTest(PersistentTestCase):
 
         # the path of the union filesystem itself is the first.
 
-        self.failUnlessEqual(union.path(), self.first().path())
+        self.assertEqual(union.path(), self.first().path())
 
         # the abspath of the entries is that of their respective
         # locations. files cannot exist in both filesystems, thus file
@@ -287,26 +287,26 @@ class OverlayBasicTest(PersistentTestCase):
 
         # <entries of first>
         union_first_file = union.rootdirectory().find(['first_file'])
-        self.failIf(union_first_file is None)
-        self.failUnlessEqual(self.first_first_file().abspath(), union_first_file.abspath())
+        self.assertFalse(union_first_file is None)
+        self.assertEqual(self.first_first_file().abspath(), union_first_file.abspath())
 
         union_subdir = union.rootdirectory().find(['subdir'])
-        self.failIf(union_subdir is None)
-        self.failUnlessEqual(self.first_subdir().abspath(), union_subdir.abspath())
+        self.assertFalse(union_subdir is None)
+        self.assertEqual(self.first_subdir().abspath(), union_subdir.abspath())
 
         union_subdir_first_file = union.rootdirectory().find(['subdir', 'first_file'])
-        self.failIf(union_subdir_first_file is None)
-        self.failUnlessEqual(self.first_subdir_first_file().abspath(), union_subdir_first_file.abspath())
+        self.assertFalse(union_subdir_first_file is None)
+        self.assertEqual(self.first_subdir_first_file().abspath(), union_subdir_first_file.abspath())
         # </entries of first>
 
         # <entries of second>
         union_second_file = union.rootdirectory().find(['second_file'])
-        self.failIf(union_second_file is None)
-        self.failUnlessEqual(self.second_second_file().abspath(), union_second_file.abspath())
+        self.assertFalse(union_second_file is None)
+        self.assertEqual(self.second_second_file().abspath(), union_second_file.abspath())
 
         union_subdir_second_file = union.rootdirectory().find(['subdir', 'second_file'])
-        self.failIf(union_subdir_second_file is None)
-        self.failUnlessEqual(self.second_subdir_second_file().abspath(), union_subdir_second_file.abspath())
+        self.assertFalse(union_subdir_second_file is None)
+        self.assertEqual(self.second_subdir_second_file().abspath(), union_subdir_second_file.abspath())
         # </entries of second>
 
         pass

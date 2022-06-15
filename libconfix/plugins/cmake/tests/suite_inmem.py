@@ -15,16 +15,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import cmakelists_inmem
-import toplevel_boilerplate
-import modules_inmem
-import hierarchy_inmem
-import intra_package_inmem
-import inter_package_inmem
-import iface_inmem
-import dependency_order_check_inmem
-import external_library_inmem
-import buildinfo_inmem
+from . import cmakelists_inmem
+from . import toplevel_boilerplate
+from . import modules_inmem
+from . import hierarchy_inmem
+from . import intra_package_inmem
+from . import inter_package_inmem
+from . import iface_inmem
+from . import dependency_order_check_inmem
+from . import external_library_inmem
+from . import buildinfo_inmem
 
 import unittest
 

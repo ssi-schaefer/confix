@@ -5,20 +5,20 @@ import pickle
 
 def print_module(m):
 
-    print '.'.join(m.name())
-    print '  Priority '+`m.priority()`
+    print('.'.join(m.name()))
+    print('  Priority '+repr(m.priority()))
     if len(m.provides()):
-        print '  Provides'
+        print('  Provides')
         for p in m.provides():
-            print '    '+`p`
+            print('    '+repr(p))
     if len(m.requires()):
-        print '  Requires'
+        print('  Requires')
         for r in m.requires():
-            print '    '+`r`
+            print('    '+repr(r))
     if len(m.contents()):
-        print '  Contents'
+        print('  Contents')
         for c in m.contents():
-            print '    '+`c`
+            print('    '+repr(c))
 
 
 for a in sys.argv[1:]:

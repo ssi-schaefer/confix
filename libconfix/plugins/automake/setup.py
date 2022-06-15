@@ -15,12 +15,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from iface import AutomakeInterfaceSetup
-from out_automake import AutomakeBackendOutputBuilder
-from out_idl import IDLOutputSetup
-from c.setup import CSetup
-from script.setup import AutomakeScriptSetup
-from plainfile.setup import AutomakePlainfileSetup
+from .iface import AutomakeInterfaceSetup
+from .out_automake import AutomakeBackendOutputBuilder
+from .out_idl import IDLOutputSetup
+from .c.setup import CSetup
+from .script.setup import AutomakeScriptSetup
+from .plainfile.setup import AutomakePlainfileSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.machinery.setup import Setup

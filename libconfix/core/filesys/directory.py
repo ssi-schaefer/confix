@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from vfs_directory import VFSDirectory
-from entry import Entry
+from .vfs_directory import VFSDirectory
+from .entry import Entry
 
 from libconfix.core.utils.error import NativeError
 from libconfix.core.utils.error import Error
@@ -58,8 +58,8 @@ class Directory(VFSDirectory, Entry):
                     pass
                 self.__state = DirectoryState.SYNC
                 pass
-            except OSError, err:
-                raise Error('Could not create directory '+path, [NativeError(err, sys.exc_traceback)])
+            except OSError as err:
+                raise Error('Could not create directory '+path, [NativeError(err, sys.exc_info()[2])])
             pass
         else:
             assert 0
@@ -71,7 +71,7 @@ class Directory(VFSDirectory, Entry):
             try:
                 entry.sync()
                 pass
-            except Error, err:
+            except Error as err:
                 child_errors.append(err)
                 pass
             pass

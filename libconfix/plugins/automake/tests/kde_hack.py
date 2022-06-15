@@ -67,11 +67,11 @@ class KDEHackTest(PersistentTestCase):
         package.output()
 
         autoconf_dir_builder = package.rootbuilder().find_entry_builder([const.ADMIN_DIR, 'automake'])
-        self.failIf(autoconf_dir_builder is None)
-        self.failUnless(isinstance(autoconf_dir_builder, AutoconfAuxDirBuilder))
+        self.assertFalse(autoconf_dir_builder is None)
+        self.assertTrue(isinstance(autoconf_dir_builder, AutoconfAuxDirBuilder))
 
-        self.failUnless(source.find([const.ADMIN_DIR, 'automake', 'conf.change.pl']))
-        self.failUnless(source.find([const.ADMIN_DIR, 'automake', 'config.pl']))
+        self.assertTrue(source.find([const.ADMIN_DIR, 'automake', 'conf.change.pl']))
+        self.assertTrue(source.find([const.ADMIN_DIR, 'automake', 'config.pl']))
 
         fs.sync()
 

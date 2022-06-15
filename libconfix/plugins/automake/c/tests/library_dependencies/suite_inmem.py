@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dirstructure import DirectoryStructure
+from .dirstructure import DirectoryStructure
 
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.machinery.builder import Builder
@@ -65,26 +65,26 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
         # so here, finally, go the tests ...
 
         exedir_builder = third_local_package.rootbuilder().find_entry_builder(['exe'])
-        self.failIf(exedir_builder is None)
+        self.assertFalse(exedir_builder is None)
         exedir_output_builder = find_automake_output_builder(exedir_builder)
 
         # see if we have the convenience item in makefile_am()
         convenience_deps = exedir_output_builder.makefile_am().compound_dependencies('ThirdPackage_exe_exe')
-        self.failIf(convenience_deps is None)
+        self.assertFalse(convenience_deps is None)
 
         # see if the convenience item has all it should have
-        self.failUnless('$(top_builddir)/library/libThirdPackage_library.a' in convenience_deps)
-        self.failUnless('@installeddeplib_FirstPackage@' in convenience_deps)
-        self.failUnless('@installeddeplib_SecondPackage@' in convenience_deps)
+        self.assertTrue('$(top_builddir)/library/libThirdPackage_library.a' in convenience_deps)
+        self.assertTrue('@installeddeplib_FirstPackage@' in convenience_deps)
+        self.assertTrue('@installeddeplib_SecondPackage@' in convenience_deps)
 
         # see if it got correctly written to the Makefile.am
         real_deps = makefile.find_list(
             elements=makefile.parse_makefile(exedir_output_builder.makefile_am().lines()),
             name='ThirdPackage_exe_exe_DEPENDENCIES')
-        self.failIf(real_deps is None)
-        self.failUnless('$(top_builddir)/library/libThirdPackage_library.a' in real_deps)
-        self.failUnless('@installeddeplib_FirstPackage@' in real_deps)
-        self.failUnless('@installeddeplib_SecondPackage@' in real_deps)
+        self.assertFalse(real_deps is None)
+        self.assertTrue('$(top_builddir)/library/libThirdPackage_library.a' in real_deps)
+        self.assertTrue('@installeddeplib_FirstPackage@' in real_deps)
+        self.assertTrue('@installeddeplib_SecondPackage@' in real_deps)
         
         pass
 
@@ -167,7 +167,7 @@ class LibraryDependenciesInMemoryTest(PersistentTestCase):
         guide = TestGuide(exename='exe')
         package.rootbuilder().add_builder(guide)
         package.boil(external_nodes=[])
-        self.failUnlessEqual(guide.state(), guide.DEPFINDER_DISAPPEARED)
+        self.assertEqual(guide.state(), guide.DEPFINDER_DISAPPEARED)
         pass
     pass
 

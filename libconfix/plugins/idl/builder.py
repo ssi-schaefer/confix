@@ -16,10 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dependency import \
+from .dependency import \
      Require_IDL, \
      Provide_IDL
-from buildinfo import \
+from .buildinfo import \
      BuildInfo_IDL_NativeLocal, \
      BuildInfo_IDL_NativeInstalled
 

@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from out_automake import find_automake_output_builder
+from .out_automake import find_automake_output_builder
 
 from libconfix.plugins.idl.builder import IDLBuilder
 

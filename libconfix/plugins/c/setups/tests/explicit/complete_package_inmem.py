@@ -111,11 +111,11 @@ class CompletePackageInMemoryTest(unittest.TestCase):
 
         # see if we have got the directories right
         found_lodir_builder = package.rootbuilder().find_entry_builder(['lolibrary'])
-        self.failIf(found_lodir_builder is None)
+        self.assertFalse(found_lodir_builder is None)
         found_hidir_builder = package.rootbuilder().find_entry_builder(['hilibrary'])
-        self.failIf(found_hidir_builder is None)
+        self.assertFalse(found_hidir_builder is None)
         found_exedir_builder = package.rootbuilder().find_entry_builder(['executable'])
-        self.failIf(found_exedir_builder is None)
+        self.assertFalse(found_exedir_builder is None)
 
         # lodirectory has lolibrary has H(lo.h), C(lo1.c), C(lo2.c)
         # ---------------------------------------------------------
@@ -137,21 +137,21 @@ class CompletePackageInMemoryTest(unittest.TestCase):
                 found_lo_lo2_c = b
                 pass
             pass
-        self.failIf(found_lo_lo_h is None)
-        self.failIf(found_lo_lo1_c is None)
-        self.failIf(found_lo_lo2_c is None)
+        self.assertFalse(found_lo_lo_h is None)
+        self.assertFalse(found_lo_lo1_c is None)
+        self.assertFalse(found_lo_lo2_c is None)
 
         # find the library itself and see if it has the right
         # properties.
         found_lolib_builder = None
         for b in found_lodir_builder.iter_builders():
             if type(b) is LibraryBuilder:
-                self.failUnless(found_lolib_builder is None, str(b)) # we build only one library
+                self.assertTrue(found_lolib_builder is None, str(b)) # we build only one library
                 found_lolib_builder = b
                 pass
             pass
-        self.failIf(found_lolib_builder is None)
-        self.failUnless(found_lolib_builder.basename() == 'hansi')
+        self.assertFalse(found_lolib_builder is None)
+        self.assertTrue(found_lolib_builder.basename() == 'hansi')
 
         # see if it has the right members
         found_lo_lo_h = None
@@ -168,9 +168,9 @@ class CompletePackageInMemoryTest(unittest.TestCase):
                 found_lo_lo2_c = b
                 continue
             pass
-        self.failIf(found_lo_lo_h is None)
-        self.failIf(found_lo_lo1_c is None)
-        self.failIf(found_lo_lo2_c is None)
+        self.assertFalse(found_lo_lo_h is None)
+        self.assertFalse(found_lo_lo1_c is None)
+        self.assertFalse(found_lo_lo2_c is None)
 
         pass
     pass

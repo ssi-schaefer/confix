@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import dfs
+from . import dfs
 
 def find_path(digraph, from_node, to_node):
     assert from_node in digraph.nodes()

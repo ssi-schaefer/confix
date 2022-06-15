@@ -56,12 +56,12 @@ class LibrarySetupBasic(unittest.TestCase):
                 library_builder = b
                 pass
             pass
-        self.failUnless(isinstance(file_h_builder, HeaderBuilder))
-        self.failUnless(isinstance(file_c_builder, CBuilder)) 
-        self.failUnless(isinstance(library_builder, LibraryBuilder)) 
+        self.assertTrue(isinstance(file_h_builder, HeaderBuilder))
+        self.assertTrue(isinstance(file_c_builder, CBuilder)) 
+        self.assertTrue(isinstance(library_builder, LibraryBuilder)) 
 
-        self.failUnless(file_h_builder in library_builder.members())
-        self.failUnless(file_c_builder in library_builder.members())
+        self.assertTrue(file_h_builder in library_builder.members())
+        self.assertTrue(file_c_builder in library_builder.members())
         pass
     pass
 
@@ -87,12 +87,12 @@ class LibraryNames(unittest.TestCase):
         dir3lib_builder = None
         for b in package.rootbuilder().find_entry_builder(['dir1', 'dir2', 'dir3']).iter_builders():
             if isinstance(b, LibraryBuilder):
-                self.failIf(dir3lib_builder is not None)
+                self.assertFalse(dir3lib_builder is not None)
                 dir3lib_builder = b
                 pass
             pass
 
-        self.failUnlessEqual(dir3lib_builder.basename(),
+        self.assertEqual(dir3lib_builder.basename(),
                              '_'.join([package.name()]+self.dir3_.relpath(self.fs_.rootdirectory())))
         pass
     
@@ -115,7 +115,7 @@ class LibraryNames(unittest.TestCase):
 
         for b in package.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
-                self.failUnlessEqual(b.basename(), 'myownname')
+                self.assertEqual(b.basename(), 'myownname')
                 break
             pass
         else:

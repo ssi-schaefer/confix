@@ -29,47 +29,47 @@ if sys.platform.startswith('interix'):
     import pickle
     mypickle = pickle
 else:
-    import cPickle
+    import pickle
     mypickle = cPickle
     pass
 
 def load_object_from_file(filename):
     try:
         file = open(filename, 'r')
-    except IOError, e:
+    except IOError as e:
         raise Error('Cannot open file '+filename+' for reading', [e])
 
     try:
         object = mypickle.load(file)
-    except Exception, e:
-        raise Error('Cannot read Python object from file '+filename, [NativeError(e, sys.exc_traceback)])
+    except Exception as e:
+        raise Error('Cannot read Python object from file '+filename, [NativeError(e, sys.exc_info()[2])])
 
     return object
 
 def dump_object_to_file(object, filename):
     try:
         file = open(filename, 'w')
-    except IOError, e:
+    except IOError as e:
         raise Error('Cannot open file '+filename+' for writing', [e])
     try:
         mypickle.dump(object, file)
-    except Exception, e:
-        raise Error('Cannot dump Python object "'+str(object)+'" to file '+filename, [NativeError(e, sys.exc_traceback)])
+    except Exception as e:
+        raise Error('Cannot dump Python object "'+str(object)+'" to file '+filename, [NativeError(e, sys.exc_info()[2])])
     pass
 
 def load_object_from_string(string):
     try:
         object = mypickle.loads(string)
-    except Exception, e:
-        raise Error('Cannot read Python object from string', [NativeError(e, sys.exc_traceback)])
+    except Exception as e:
+        raise Error('Cannot read Python object from string', [NativeError(e, sys.exc_info()[2])])
 
     return object
 
 def dump_object_to_string(object):
     try:
         return mypickle.dumps(object)
-    except Exception, e:
-        raise Error('Cannot dump Python object to string', [NativeError(e, sys.exc_traceback)])
+    except Exception as e:
+        raise Error('Cannot dump Python object to string', [NativeError(e, sys.exc_info()[2])])
     pass
 
 def load_object_from_lines(lines):

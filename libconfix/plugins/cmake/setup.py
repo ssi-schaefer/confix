@@ -15,13 +15,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from readonly_prefixes import ReadonlyPrefixesSetup
-from out_cmake import CMakeBackendOutputBuilder
-from out_c import COutputSetup
-from out_plainfile import PlainfileOutputSetup
-from out_idl import IDLOutputSetup
-from out_script import ScriptOutputSetup
-from iface import CMakeInterfaceSetup
+from .readonly_prefixes import ReadonlyPrefixesSetup
+from .out_cmake import CMakeBackendOutputBuilder
+from .out_c import COutputSetup
+from .out_plainfile import PlainfileOutputSetup
+from .out_idl import IDLOutputSetup
+from .out_script import ScriptOutputSetup
+from .iface import CMakeInterfaceSetup
 
 from libconfix.core.machinery.setup import CompositeSetup
 from libconfix.core.machinery.setup import Setup

@@ -201,7 +201,7 @@ class DependencyOrderTest(unittest.TestCase):
             pass
 
         cmake_output_builder = find_cmake_output_builder(final_package.rootbuilder().find_entry_builder(['bin']))
-        self.failUnlessEqual(cmake_output_builder.local_cmakelists().get_include_directories(),
+        self.assertEqual(cmake_output_builder.local_cmakelists().get_include_directories(),
                              ['${CMAKE_CURRENT_BINARY_DIR}',
                               '${final_BINARY_DIR}/local2',
                               '${final_SOURCE_DIR}/local2',
@@ -211,12 +211,12 @@ class DependencyOrderTest(unittest.TestCase):
                               'ext2-incpath1', 'ext2-incpath2',
                               'ext1-incpath1', 'ext1-incpath2'])
 
-        self.failUnlessEqual(cmake_output_builder.local_cmakelists().get_link_directories(),
+        self.assertEqual(cmake_output_builder.local_cmakelists().get_link_directories(),
                              ['${CMAKE_INSTALL_PREFIX}/lib',
                               'ext2-libpath1', 'ext2-libpath2',
                               'ext1-libpath1', 'ext1-libpath2'])
 
-        self.failUnlessEqual(cmake_output_builder.local_cmakelists().get_target_link_libraries('exe'),
+        self.assertEqual(cmake_output_builder.local_cmakelists().get_target_link_libraries('exe'),
                              ['local2', 'local1', 'native2', 'native1',
                               'ext2-lib1', 'ext2-lib2', 'ext1-lib1', 'ext1-lib2'])
         pass

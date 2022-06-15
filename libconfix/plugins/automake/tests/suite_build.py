@@ -15,21 +15,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import simple_build
-import kde_hack
-import autoconf_archive
-import exename.suite_build as exename
-import readonly_prefixes.suite_build as readonly_prefixes
-import interix_link
-import inter_package_build
-import intra_package_build
-import check.suite_build as check_build
-import relocated_headers.suite_build as relocated_headers_build
-import explicit_package_build
+from . import simple_build
+from . import kde_hack
+from . import autoconf_archive
+from . import exename.suite_build as exename
+from . import readonly_prefixes.suite_build as readonly_prefixes
+from . import interix_link
+from . import inter_package_build
+from . import intra_package_build
+from . import check.suite_build as check_build
+from . import relocated_headers.suite_build as relocated_headers_build
+from . import explicit_package_build
 
 import libconfix.plugins.automake.c.tests.suite_build as automake_c_build
 import libconfix.plugins.automake.plainfile.tests.suite_build as plainfile_build
-import idl_build
+from . import idl_build
 import libconfix.plugins.automake.script.tests.suite_build as script_build
 
 import unittest

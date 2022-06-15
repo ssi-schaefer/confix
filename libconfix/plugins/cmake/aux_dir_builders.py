@@ -49,7 +49,7 @@ class ScriptsDirectoryBuilder(DirectoryBuilder):
         my_lines = helper.normalize_lines(lines)
         existing_file = self.directory().get(name)
         if existing_file is None:
-            self.directory().add(name=name, entry=File(lines=my_lines, mode=0755))
+            self.directory().add(name=name, entry=File(lines=my_lines, mode=0o755))
         elif helper.md5_hexdigest_from_lines(my_lines) != helper.md5_hexdigest_from_lines(existing_file.lines()):
             debug.warn('Script file '+name+' already exists with different content')
             existing_file.truncate()

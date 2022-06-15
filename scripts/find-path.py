@@ -52,13 +52,13 @@ if to_node is None:
     pass
 
 path = libconfix.digraph.find_path.find_path(digraph, from_node, to_node)
-for i in xrange(len(path) - 1):
+for i in range(len(path) - 1):
     tail = path[i]
     head = path[i+1]
-    print str(tail) + ' -> ' + str(head)
+    print(str(tail) + ' -> ' + str(head))
     edge = digraph.find_edge(tail, head)
     assert edge is not None
     for a in edge.annotations():
-        print '    '+str(a)
+        print('    '+str(a))
         pass
     pass

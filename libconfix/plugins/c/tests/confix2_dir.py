@@ -58,7 +58,7 @@ class ProvideRequireInclude(unittest.TestCase):
         lo_builder = package.rootbuilder().find_entry_builder(['lo'])
         hi_builder = package.rootbuilder().find_entry_builder(['hi'])
 
-        self.failUnless(lo_builder in package.digraph().successors(hi_builder))
+        self.assertTrue(lo_builder in package.digraph().successors(hi_builder))
         pass
     pass
 

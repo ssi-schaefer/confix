@@ -45,4 +45,4 @@ for n in topo_nodes:
 if len(linkline) != 0:
     linkline = '-L'+os.path.join(prefix, 'lib') + linkline
 
-print linkline
+print(linkline)

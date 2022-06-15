@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from builder import PlainFileBuilder
+from .builder import PlainFileBuilder
 
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.machinery.builder import Builder
@@ -37,7 +37,7 @@ class ADD_PLAINFILE(InterfaceProxy):
         pass
 
     def ADD_PLAINFILE(self, filename, datadir=None, prefixdir=None):
-        if type(filename) is not types.StringType:
+        if type(filename) is not bytes:
             raise Error('ADD_PLAINFILE(): filename must be a string')
         if (datadir is not None and prefixdir is not None) or \
                (datadir is None and prefixdir is None):
@@ -46,13 +46,13 @@ class ADD_PLAINFILE(InterfaceProxy):
         if datadir is not None:
             try:
                 the_datadir = helper.make_path(datadir)
-            except Error, e:
+            except Error as e:
                 raise Error('ADD_PLAINFILE('+filename+'): datadir', [e])
             pass
         if prefixdir is not None:
             try:
                 the_prefixdir = helper.make_path(prefixdir)
-            except Error, e:
+            except Error as e:
                 raise Error('ADD_PLAINFILE('+filename+'): prefixdir', [e])
             pass
 

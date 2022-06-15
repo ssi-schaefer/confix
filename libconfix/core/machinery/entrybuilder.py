@@ -18,7 +18,7 @@
 
 import os
 
-from builder import Builder
+from .builder import Builder
 
 class EntryBuilder(Builder):
     def __init__(self, entry):

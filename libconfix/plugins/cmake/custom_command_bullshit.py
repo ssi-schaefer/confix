@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from aux_dir_builders import ScriptsDirectoryBuilder
-import cmake_consts
+from .aux_dir_builders import ScriptsDirectoryBuilder
+from . import cmake_consts
 
 from libconfix.core.utils.error import Error
 

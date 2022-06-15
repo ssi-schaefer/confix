@@ -371,7 +371,7 @@ class BuilderSet:
         pass
 
     def iter_builders(self):
-        return self.__builders.itervalues()
+        return iter(self.__builders.values())
 
     def add_builder(self, b):
         id = b.locally_unique_id()

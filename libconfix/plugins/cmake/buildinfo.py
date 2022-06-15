@@ -134,7 +134,7 @@ class BuildInfo_CommandlineMacros_CMake(BuildInformation):
     def __str__(self): return self.unique_key()
     def unique_key(self):
         ret = self.__class__.__name__ + ':'
-        for k, v in self.__macros.iteritems():
+        for k, v in self.__macros.items():
             ret += k
             if v is not None:
                 ret += v

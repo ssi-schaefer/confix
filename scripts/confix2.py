@@ -83,7 +83,7 @@ def main():
             pass
         pass
         
-    except Error, e:
+    except Error as e:
         sys.stderr.write('***ERROR***\n')
         sys.stderr.write(str(e)+'\n')
         sys.exit(1)

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from h import HeaderBuilder
+from .h import HeaderBuilder
 
 from libconfix.core.machinery.builder import Builder
 from libconfix.core.machinery.setup import Setup
@@ -72,7 +72,7 @@ class INSTALLDIR_H(InterfaceProxy):
     def INSTALLDIR_H(self, dir):
         try:
             the_dir = helper.make_path(dir)
-        except Error, e:
+        except Error as e:
             raise Error('INSTALLDIR_H(): dir argument must either '
                         'be a string or a list of path components', [e])
         self.__dirbuilder.add_builder(ExplicitInstaller(installdir=the_dir))

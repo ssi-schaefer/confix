@@ -125,15 +125,15 @@ class PublicInstallTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failUnless(install.find(['include', 'flat-header.h']))
-        self.failUnless(install.find(['include', 'subdir', 'subdir-header.h']))
+        self.assertTrue(install.find(['include', 'flat-header.h']))
+        self.assertTrue(install.find(['include', 'subdir', 'subdir-header.h']))
 
         # if this fails, then you probably are running on Windows.
-        self.failUnless(install.find(['lib', 'library.a']))
-        self.failUnless(install.find(['bin', 'exe']))
-        self.failIf(install.find(['bin', 'test']))
+        self.assertTrue(install.find(['lib', 'library.a']))
+        self.assertTrue(install.find(['bin', 'exe']))
+        self.assertFalse(install.find(['bin', 'test']))
 
-        self.failUnless(install.find(['share', 'confix-%s' % const.REPO_VERSION, 'repo', package.repofilename()]))
+        self.assertTrue(install.find(['share', 'confix-%s' % const.REPO_VERSION, 'repo', package.repofilename()]))
         
         pass
 

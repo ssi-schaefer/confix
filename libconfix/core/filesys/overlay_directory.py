@@ -15,10 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from vfs_directory import VFSDirectory
-from vfs_file import VFSFile
-from overlay_entry import OverlayEntry
-from overlay_file import OverlayFile
+from .vfs_directory import VFSDirectory
+from .vfs_file import VFSFile
+from .overlay_entry import OverlayEntry
+from .overlay_file import OverlayFile
 
 from libconfix.core.utils.error import Error
 
@@ -58,7 +58,7 @@ class OverlayDirectory(VFSDirectory, OverlayEntry):
             pass
 
         # create entries, and recurse
-        for name, pair in compound_entries.iteritems():
+        for name, pair in compound_entries.items():
             original_entry = pair[0]
             overlay_entry = pair[1]
             assert not (original_entry is None and overlay_entry is None)

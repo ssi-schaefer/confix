@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import helper
+from . import helper
 
 from libconfix.core.utils.error import Error
 
@@ -137,7 +137,7 @@ class Set(MakefileElement):
 
 class Rule(MakefileElement):
     def __init__(self, targets, prerequisites=[], commands=[]):
-        assert type(targets) is types.ListType
+        assert type(targets) is list
         assert len(targets)
         self.targets_ = targets[:]
         self.prerequisites_ = prerequisites[:]
@@ -167,9 +167,9 @@ class Rule(MakefileElement):
         commandlist = []
         if self.commands_ is not None:
             for c in self.commands_:
-                if type(c) is types.StringType:
+                if type(c) is bytes:
                     commandlist.append('\t'+c)
-                elif (type(c) is types.ListType) or (type(c) is types.TupleType):
+                elif (type(c) is list) or (type(c) is tuple):
                     commandlist.extend(['\t'+l for l in helper.format_word_list(c)])
                 else: assert 0
                 pass

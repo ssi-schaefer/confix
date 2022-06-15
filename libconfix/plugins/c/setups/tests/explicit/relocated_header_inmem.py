@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import relocated_header
+from . import relocated_header
 
 from libconfix.core.machinery.local_package import LocalPackage
 from libconfix.core.hierarchy.explicit_setup import ExplicitDirectorySetup
@@ -32,12 +32,12 @@ class RelocatedHeaderInMemoryTest(unittest.TestCase):
         exe_builder = package.rootbuilder().find_entry_builder(['exe'])
         lib_implementation_builder = package.rootbuilder().find_entry_builder(['lib_implementation'])
         include_builder = package.rootbuilder().find_entry_builder(['include'])
-        self.failIf(exe_builder is None)
-        self.failIf(lib_implementation_builder is None)
-        self.failIf(include_builder is None)
+        self.assertFalse(exe_builder is None)
+        self.assertFalse(lib_implementation_builder is None)
+        self.assertFalse(include_builder is None)
 
-        self.failUnless(lib_implementation_builder in package.digraph().successors(exe_builder))
-        self.failUnless(include_builder in package.digraph().successors(lib_implementation_builder))
+        self.assertTrue(lib_implementation_builder in package.digraph().successors(exe_builder))
+        self.assertTrue(include_builder in package.digraph().successors(lib_implementation_builder))
 
         pass
     pass

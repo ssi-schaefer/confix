@@ -17,7 +17,7 @@
 # USA
 
 #import autoconf_archive
-import kde_hack
+from . import kde_hack
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils import external_cmd
@@ -115,7 +115,7 @@ def autoconf(packageroot, path):
 def _using_libtool(packageroot):
     try:
         configure_ac_lines = helper.lines_of_file(os.sep.join(packageroot+['configure.ac']))
-    except Error, e:
+    except Error as e:
         raise Error('Determining whether to libtoolize or not', [e])
 
     for l in configure_ac_lines:

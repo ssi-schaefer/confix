@@ -177,8 +177,8 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             commands.make(builddir=self.__one_readonly_builddir.abspath(), args=['install'])
 
             # paranoia
-            self.failUnless(os.path.isdir(os.sep.join(self.__one_readonly_installdir.abspath()+['lib'])))
-            self.failUnless(os.path.isfile(os.sep.join(self.__one_readonly_installdir.abspath()+['include', 'one_readonly.h'])))
+            self.assertTrue(os.path.isdir(os.sep.join(self.__one_readonly_installdir.abspath()+['lib'])))
+            self.assertTrue(os.path.isfile(os.sep.join(self.__one_readonly_installdir.abspath()+['include', 'one_readonly.h'])))
             pass
 
         if True:
@@ -194,8 +194,8 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             commands.make(builddir=self.__two_readonly_builddir.abspath(), args=['install'])
 
             # paranoia
-            self.failUnless(os.path.isdir(os.sep.join(self.__two_readonly_installdir.abspath()+['lib'])))
-            self.failUnless(os.path.isfile(os.sep.join(self.__two_readonly_installdir.abspath()+['include', 'two_readonly.h'])))
+            self.assertTrue(os.path.isdir(os.sep.join(self.__two_readonly_installdir.abspath()+['lib'])))
+            self.assertTrue(os.path.isfile(os.sep.join(self.__two_readonly_installdir.abspath()+['include', 'two_readonly.h'])))
             pass
 
         if True:
@@ -211,8 +211,8 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             commands.make(builddir=self.__three_regular_builddir.abspath(), args=['install'])
 
             # paranoia
-            self.failUnless(os.path.isdir(os.sep.join(self.__regular_installdir.abspath()+['lib'])))
-            self.failUnless(os.path.isfile(os.sep.join(self.__regular_installdir.abspath()+['include', 'three_regular.h'])))
+            self.assertTrue(os.path.isdir(os.sep.join(self.__regular_installdir.abspath()+['lib'])))
+            self.assertTrue(os.path.isfile(os.sep.join(self.__regular_installdir.abspath()+['include', 'three_regular.h'])))
             pass
         
         pass
@@ -238,7 +238,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
                              '/'.join(self.__two_readonly_installdir.abspath())])
         commands.make(builddir=self.__linked_builddir.abspath(), args=[])
 
-        self.failUnless(os.path.isfile(os.sep.join(self.__linked_builddir.abspath()+['exe'])))
+        self.assertTrue(os.path.isfile(os.sep.join(self.__linked_builddir.abspath()+['exe'])))
         pass
 
     def test__library_dependencies_with_readonly_prefixes(self):
@@ -276,7 +276,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             # exe is rebuilt as it depends on libone.a
             if True:
                 commands.make(builddir=self.__linked_builddir.abspath(), args=[])
-                self.failUnless(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libone_stat.st_mtime)
+                self.assertTrue(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libone_stat.st_mtime)
                 pass
             pass
 
@@ -290,7 +290,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             # exe is rebuilt as it depends on libtwo.a
             if True:
                 commands.make(builddir=self.__linked_builddir.abspath(), args=[])
-                self.failUnless(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libtwo_stat.st_mtime)
+                self.assertTrue(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libtwo_stat.st_mtime)
                 pass
             pass
 
@@ -304,7 +304,7 @@ class ReadonlyPrefixesBuildTest(PersistentTestCase):
             # exe is rebuilt as it depends on libthree.a
             if True:
                 commands.make(builddir=self.__linked_builddir.abspath(), args=[])
-                self.failUnless(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libthree_stat.st_mtime)
+                self.assertTrue(os.stat(os.sep.join(self.__linked_builddir.abspath()+['exe'])).st_mtime >= libthree_stat.st_mtime)
                 pass
             pass
 
@@ -491,9 +491,9 @@ class ReadonlyPrefixesUtilityBuildTest(PersistentTestCase):
             builddir=test_build.abspath())
 
         scan.rescan_dir(test_build)
-        self.failUnless(test_build.get('flatfile-copy.h'))
-        self.failUnless(test_build.get('subdirfile-copy.h'))
-        self.failUnless(test_build.get('prefixsubdirfile-copy.h'))
+        self.assertTrue(test_build.get('flatfile-copy.h'))
+        self.assertTrue(test_build.get('subdirfile-copy.h'))
+        self.assertTrue(test_build.get('prefixsubdirfile-copy.h'))
 
         pass
     pass

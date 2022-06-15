@@ -48,22 +48,22 @@ class RelateBasic(unittest.TestCase):
         package.boil(external_nodes=[])
 
         lodirbuilder = package.rootbuilder().find_entry_builder(['lo'])
-        self.failIf(lodirbuilder is None)
+        self.assertFalse(lodirbuilder is None)
         hidirbuilder = package.rootbuilder().find_entry_builder(['hi'])
-        self.failIf(hidirbuilder is None)
+        self.assertFalse(hidirbuilder is None)
         lofilebuilder = package.rootbuilder().find_entry_builder(['lo', 'lo.iface'])
-        self.failIf(lofilebuilder is None)
+        self.assertFalse(lofilebuilder is None)
         hifilebuilder = package.rootbuilder().find_entry_builder(['hi', 'hi.iface'])
-        self.failIf(hifilebuilder is None)
+        self.assertFalse(hifilebuilder is None)
 
-        self.failIf(lofilebuilder.successors() is None)
-        self.failUnlessEqual(len(lofilebuilder.successors()), 0)
-        self.failUnlessEqual(len(hifilebuilder.successors()), 1)
-        self.failUnless(lodirbuilder in hifilebuilder.successors())
-        self.failUnless(lofilebuilder.node() is lodirbuilder)
-        self.failUnless(hifilebuilder.node() is hidirbuilder)
-        self.failUnlessEqual(lofilebuilder.relate_calls(), 1)
-        self.failUnlessEqual(hifilebuilder.relate_calls(), 1)
+        self.assertFalse(lofilebuilder.successors() is None)
+        self.assertEqual(len(lofilebuilder.successors()), 0)
+        self.assertEqual(len(hifilebuilder.successors()), 1)
+        self.assertTrue(lodirbuilder in hifilebuilder.successors())
+        self.assertTrue(lofilebuilder.node() is lodirbuilder)
+        self.assertTrue(hifilebuilder.node() is hidirbuilder)
+        self.assertEqual(lofilebuilder.relate_calls(), 1)
+        self.assertEqual(hifilebuilder.relate_calls(), 1)
         
         pass
     pass
@@ -88,7 +88,7 @@ class InternalRequires(unittest.TestCase):
                                        FileInterfaceTestSetup()])
         package.boil(external_nodes=[])
 
-        self.failUnlessEqual(len(package.rootbuilder().requires()), 0)
+        self.assertEqual(len(package.rootbuilder().requires()), 0)
         pass
     pass
 

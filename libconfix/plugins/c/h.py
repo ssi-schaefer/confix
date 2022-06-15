@@ -16,10 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from base import CBaseBuilder
-from dependency import Provide_CInclude
-from buildinfo import BuildInfo_CIncludePath_NativeLocal
-import namespace
+from .base import CBaseBuilder
+from .dependency import Provide_CInclude
+from .buildinfo import BuildInfo_CIncludePath_NativeLocal
+from . import namespace
 
 from libconfix.core.machinery.interface import InterfaceProxy
 from libconfix.core.machinery.dependency_utils import DependencyInformation
@@ -243,7 +243,7 @@ class HeaderBuilder(CBaseBuilder):
         if self.__namespace_install_path is None:
             try:
                 self.__namespace_install_path = namespace.find_unique_namespace(self.file().lines())
-            except Error, e:
+            except Error as e:
                 self.__namespace_error = BadNamespace(
                     path=self.file().relpath(from_dir=self.package().rootdirectory()),
                     error=e)

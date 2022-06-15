@@ -152,7 +152,7 @@ class Configure_ac:
         lines.append('AM_INIT_AUTOMAKE([foreign])')
 
         if len(self.ac_config_headers_):
-            lines.append('AC_CONFIG_HEADERS('+' '.join(self.ac_config_headers_.keys())+')')
+            lines.append('AC_CONFIG_HEADERS('+' '.join(list(self.ac_config_headers_.keys()))+')')
             pass
 
         if len(self.ac_config_files_):

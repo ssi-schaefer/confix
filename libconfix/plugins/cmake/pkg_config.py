@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from external_library import ExternalLibraryBuilder
-from buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
+from .external_library import ExternalLibraryBuilder
+from .buildinfo import BuildInfo_Toplevel_CMakeLists_FindCall
 
 from libconfix.core.machinery.builder import Builder
 

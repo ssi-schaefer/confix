@@ -49,11 +49,11 @@ class PackageFileTest(unittest.TestCase):
         repo = PackageFile(file=pkgfile)
         package = repo.load()
 
-        self.failUnless(len(package.nodes()) == 1)
+        self.assertTrue(len(package.nodes()) == 1)
         node = package.nodes()[0]
-        self.failUnless(len(node.provides()) == 1)
-        self.failUnless(len(node.requires()) == 1)
-        self.failUnlessRaises(StopIteration, node.iter_buildinfos().next)
+        self.assertTrue(len(node.provides()) == 1)
+        self.assertTrue(len(node.requires()) == 1)
+        self.assertRaises(StopIteration, node.iter_buildinfos().__next__)
         
         pass
     pass

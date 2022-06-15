@@ -73,7 +73,7 @@ class ExecutableWatcher(Builder):
 
         # kick depfinders whose exe has disappeared
         rem_exes = []
-        for exe, depfinder in self.__library_dependency_finder_by_exe.iteritems():
+        for exe, depfinder in self.__library_dependency_finder_by_exe.items():
             if exe not in current_exes:
                 self.parentbuilder().remove_builder(depfinder)
                 rem_exes.append(exe)

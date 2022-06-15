@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dependency import RequireRelocatedHeader
+from .dependency import RequireRelocatedHeader
 
 from libconfix.plugins.c.dependency import Provide_CInclude
 

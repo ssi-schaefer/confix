@@ -42,7 +42,7 @@ def write_graph(graph):
         cluster.add(n)
         pass
 
-    for package, nodes in clusters.iteritems():
+    for package, nodes in clusters.items():
         lines.append('  subgraph cluster_'+automake_name(package.name())+' {')
         for n in nodes:
             lines.append('    '+automake_name('_'.join([package.name()]+n.name()))+\
@@ -75,10 +75,10 @@ def main():
         
         graph = DirectedGraph(nodes=nodes, edgefinder=EdgeFinder(nodes=nodes))
         
-        print '\n'.join(write_graph(graph))
+        print('\n'.join(write_graph(graph)))
 
-    except Error, e:
-        print `e`
+    except Error as e:
+        print(repr(e))
 
 if __name__ == "__main__":
     main()

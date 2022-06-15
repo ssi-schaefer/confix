@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from vfs_filesys import VFSFileSystem
-from overlay_directory import OverlayDirectory
+from .vfs_filesys import VFSFileSystem
+from .overlay_directory import OverlayDirectory
 
 class OverlayFileSystem(VFSFileSystem):
     """

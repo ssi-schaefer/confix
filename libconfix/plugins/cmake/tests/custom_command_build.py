@@ -97,14 +97,14 @@ class CustomCommandBuildTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        self.failUnless(build.find(['greater_file']))
-        self.failUnless(build.find(['greater_sideeffect']))
-        self.failIf(build.find(['>']))
+        self.assertTrue(build.find(['greater_file']))
+        self.assertTrue(build.find(['greater_sideeffect']))
+        self.assertFalse(build.find(['>']))
 
         less_file = build.find(['less_file'])
-        self.failUnless(less_file)
-        self.failUnlessEqual(len(less_file.lines()), 1)
-        self.failUnlessEqual(less_file.lines()[0], 'xxx')
+        self.assertTrue(less_file)
+        self.assertEqual(len(less_file.lines()), 1)
+        self.assertEqual(less_file.lines()[0], 'xxx')
 
         pass
 

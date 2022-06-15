@@ -53,17 +53,17 @@ class IgnoredEntriesTest(unittest.TestCase):
             setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored.h']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored.c']))
-        self.failUnless(package.rootbuilder().find_entry_builder(path=['not-ignored.h']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['ignored.h']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['ignored.c']))
+        self.assertTrue(package.rootbuilder().find_entry_builder(path=['not-ignored.h']))
 
         for librarybuilder in package.rootbuilder().iter_builders():
             if isinstance(librarybuilder, LibraryBuilder):
                 break
             pass
 
-        self.failIf('ignored.c' in (member.entry().name() for member in librarybuilder.members()))
-        self.failIf('ignored.h' in (member.entry().name() for member in librarybuilder.members()))
+        self.assertFalse('ignored.c' in (member.entry().name() for member in librarybuilder.members()))
+        self.assertFalse('ignored.h' in (member.entry().name() for member in librarybuilder.members()))
         pass
 
     def test_subdirectory(self):
@@ -96,10 +96,10 @@ class IgnoredEntriesTest(unittest.TestCase):
             setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.h']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.c']))
-        self.failUnless(package.rootbuilder().find_entry_builder(path=['subdirectory', 'not-ignored.h']))
-        self.failUnless(package.rootbuilder().find_entry_builder(path=['subdirectory', 'not-ignored.c']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.h']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['subdirectory', 'ignored.c']))
+        self.assertTrue(package.rootbuilder().find_entry_builder(path=['subdirectory', 'not-ignored.h']))
+        self.assertTrue(package.rootbuilder().find_entry_builder(path=['subdirectory', 'not-ignored.c']))
 
         for librarybuilder in package.rootbuilder().find_entry_builder(['subdirectory']).iter_builders():
             if isinstance(librarybuilder, LibraryBuilder):
@@ -109,8 +109,8 @@ class IgnoredEntriesTest(unittest.TestCase):
             self.fail()
             pass
 
-        self.failIf('ignored.c' in (member.entry().name() for member in librarybuilder.members()))
-        self.failIf('ignored.h' in (member.entry().name() for member in librarybuilder.members()))
+        self.assertFalse('ignored.c' in (member.entry().name() for member in librarybuilder.members()))
+        self.assertFalse('ignored.h' in (member.entry().name() for member in librarybuilder.members()))
         pass
     pass
 

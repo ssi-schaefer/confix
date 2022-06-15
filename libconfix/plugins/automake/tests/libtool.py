@@ -55,14 +55,14 @@ class LibtoolTest(unittest.TestCase):
         library_builder = None
         for b in package.rootbuilder().iter_builders():
             if isinstance(b, LibraryBuilder):
-                self.failUnless(library_builder is None)
+                self.assertTrue(library_builder is None)
                 library_builder = b
                 pass
             pass
-        self.failIf(library_builder is None)
+        self.assertFalse(library_builder is None)
 
         automake_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failUnless('lib'+library_builder.basename()+'.la' in automake_output_builder.makefile_am().ltlibraries())
+        self.assertTrue('lib'+library_builder.basename()+'.la' in automake_output_builder.makefile_am().ltlibraries())
         pass
     
     def test__see_through_headers(self):
@@ -137,32 +137,32 @@ class LibtoolTest(unittest.TestCase):
         package.output()
 
         userlib_builder = package.rootbuilder().find_entry_builder(['userlib'])
-        self.failIf(userlib_builder is None)
+        self.assertFalse(userlib_builder is None)
         userlib_automake_builder = find_automake_output_builder(userlib_builder)
 
         # if we foolishly didn't see through the seethrough1 and
         # seethrough2 nodes until we see a real library, the we'd not
         # have anything to link in.
-        self.failIf(userlib_automake_builder.makefile_am().compound_libadd(
+        self.assertFalse(userlib_automake_builder.makefile_am().compound_libadd(
             'libLibtoolLinklineSeeThroughHeaders_userlib_la') is None)
 
         # when we see through both seethrough1 and seethrough2, then
         # we see the 'lo' library. we see it twice because we have two
         # paths, and we're expected to sort this out.
-        self.failUnlessEqual(
+        self.assertEqual(
             userlib_automake_builder.makefile_am().compound_libadd('libLibtoolLinklineSeeThroughHeaders_userlib_la'),
             ['-L$(top_builddir)/lib', '-lLibtoolLinklineSeeThroughHeaders_lib'])
 
         userexe_builder = package.rootbuilder().find_entry_builder(['userexe'])
-        self.failIf(userexe_builder is None)
+        self.assertFalse(userexe_builder is None)
         userexe_automake_builder = find_automake_output_builder(userexe_builder)
 
         # for the executables holds the same as for libraries, so this
         # is basically a copy of above, with a few things exchanged.
-        self.failIf(userexe_automake_builder.makefile_am().compound_ldadd(
+        self.assertFalse(userexe_automake_builder.makefile_am().compound_ldadd(
             'LibtoolLinklineSeeThroughHeaders_userexe_main') is None)
 
-        self.failUnlessEqual(
+        self.assertEqual(
             userexe_automake_builder.makefile_am().compound_ldadd('LibtoolLinklineSeeThroughHeaders_userexe_main'),
             ['-L$(top_builddir)/lib', '-lLibtoolLinklineSeeThroughHeaders_lib'])
 

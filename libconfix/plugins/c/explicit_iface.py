@@ -16,15 +16,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from h import HeaderBuilder
-from c import CBuilder
-from cxx import CXXBuilder
-from lex import LexBuilder
-from yacc import YaccBuilder
-from library import LibraryBuilder
-from executable import ExecutableBuilder
-from clusterer import LongNameFinder
-from relocated_headers.master import Master
+from .h import HeaderBuilder
+from .c import CBuilder
+from .cxx import CXXBuilder
+from .lex import LexBuilder
+from .yacc import YaccBuilder
+from .library import LibraryBuilder
+from .executable import ExecutableBuilder
+from .clusterer import LongNameFinder
+from .relocated_headers.master import Master
 
 from libconfix.core.hierarchy.dirbuilder import DirectoryBuilder
 from libconfix.core.machinery.interface import InterfaceProxy
@@ -77,7 +77,7 @@ class ExplicitInterfaceProxy(InterfaceProxy):
         if relocate_to is not None:
             try:
                 the_path_to_relocate_to = helper.make_path(relocate_to)
-            except Error, e:
+            except Error as e:
                 raise Error('H(): invalid "relocate_to" value', [e])
             self.__dirbuilder.add_builder(
                 Master(filename=filename, directory=the_path_to_relocate_to))

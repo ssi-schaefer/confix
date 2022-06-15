@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import relocated_header_build
-import check_build
+from . import relocated_header_build
+from . import check_build
 
 import unittest
 

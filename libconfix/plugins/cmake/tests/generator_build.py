@@ -99,7 +99,7 @@ class GeneratorBuildTest(PersistentTestCase):
 
         # I doubt that this will hold under Windows :-) if it becomes
         # an issue we will skip this check
-        self.failUnless(build.find(['exe']))
+        self.assertTrue(build.find(['exe']))
 
         pass
 
@@ -154,7 +154,7 @@ class GeneratorBuildTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failUnless(install.find(['include', 'generated.h']))
+        self.assertTrue(install.find(['include', 'generated.h']))
 
         pass
 
@@ -232,7 +232,7 @@ class GeneratorBuildTest(PersistentTestCase):
         scan.rescan_dir(install)
         scan.rescan_dir(build)
 
-        self.failUnless(install.find(['include', 'a', 'generated.h']))
+        self.assertTrue(install.find(['include', 'a', 'generated.h']))
 
         pass
 
@@ -295,8 +295,8 @@ class GeneratorBuildTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failUnless(install.find(['prefixdir', 'prefixfile']))
-        self.failUnless(install.find(['share', 'datadir', 'datafile']))
+        self.assertTrue(install.find(['prefixdir', 'prefixfile']))
+        self.assertTrue(install.find(['share', 'datadir', 'datafile']))
 
         pass
     

@@ -46,7 +46,7 @@ class CURRENT_BUILDER_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failUnless(package.rootdirectory().get('ok'))
+        self.assertTrue(package.rootdirectory().get('ok'))
         pass
     pass
         
@@ -86,9 +86,9 @@ class CWD_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failUnless(package.rootdirectory().get('ok'))
-        self.failUnless(package.rootdirectory().find(['subdir']).get('ok'))
-        self.failUnless(package.rootdirectory().find(['subdir', 'subdir']).get('ok'))
+        self.assertTrue(package.rootdirectory().get('ok'))
+        self.assertTrue(package.rootdirectory().find(['subdir']).get('ok'))
+        self.assertTrue(package.rootdirectory().find(['subdir', 'subdir']).get('ok'))
         pass
     pass
         
@@ -109,7 +109,7 @@ class CURRENT_DIRECTORY_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failUnless(package.rootdirectory().get('ok'))
+        self.assertTrue(package.rootdirectory().get('ok'))
         pass
     pass
         
@@ -128,8 +128,8 @@ class ADD_DIRECTORY_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootdirectory().get('dir') is None)
-        self.failUnless(type(package.rootdirectory().get('dir')) is Directory)
+        self.assertFalse(package.rootdirectory().get('dir') is None)
+        self.assertTrue(type(package.rootdirectory().get('dir')) is Directory)
         pass
     pass
         
@@ -155,7 +155,7 @@ class FIND_ENTRY_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failUnless(package.rootdirectory().get('ok'))
+        self.assertTrue(package.rootdirectory().get('ok'))
         pass
     pass
         
@@ -182,7 +182,7 @@ class GET_ENTRIES_Test(unittest.TestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failUnless(package.rootdirectory().get('ok'))
+        self.assertTrue(package.rootdirectory().get('ok'))
         pass
     pass
 
@@ -207,7 +207,7 @@ class RESCAN_CURRENT_DIRECTORY_Test(PersistentTestCase):
                                setups=[ExplicitSetup(use_libtool=True)])
         package.boil(external_nodes=[])
 
-        self.failUnless(package.rootdirectory().get('ok'))
+        self.assertTrue(package.rootdirectory().get('ok'))
         pass
     pass
         
@@ -258,9 +258,9 @@ class SET_FILE_PROPERTIES_Test(unittest.TestCase):
         package.boil(external_nodes=[])
 
         f = fs.rootdirectory().get('file')
-        self.failIf(f is None)
-        self.failUnless(f.get_property('a') == 1)
-        self.failUnless(f.get_property('b') == 2)
+        self.assertFalse(f is None)
+        self.assertTrue(f.get_property('a') == 1)
+        self.assertTrue(f.get_property('b') == 2)
         pass
     pass
         
@@ -283,8 +283,8 @@ class SET_FILE_PROPERTY_Test(unittest.TestCase):
         package.boil(external_nodes=[])
 
         f = fs.rootdirectory().get('file')
-        self.failIf(f is None)
-        self.failUnless(f.get_property('a') == 1)
+        self.assertFalse(f is None)
+        self.assertTrue(f.get_property('a') == 1)
         pass
     pass
 
@@ -361,7 +361,7 @@ class BUILDINFORMATION_propagates_Test(PersistentTestCase):
             self.fail()
             pass
 
-        self.failUnless(receiver.seen_buildinfo)
+        self.assertTrue(receiver.seen_buildinfo)
         pass
     pass
         

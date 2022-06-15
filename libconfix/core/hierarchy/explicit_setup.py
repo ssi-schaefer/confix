@@ -15,9 +15,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from common_iface import DirectoryBuilderInterfaceProxy
-from explicit_iface import ExplicitDirectoryBuilderInterfaceProxy
-from confix2_dir_creator import Confix2_dir_Creator
+from .common_iface import DirectoryBuilderInterfaceProxy
+from .explicit_iface import ExplicitDirectoryBuilderInterfaceProxy
+from .confix2_dir_creator import Confix2_dir_Creator
 
 from libconfix.core.machinery.setup import Setup
 

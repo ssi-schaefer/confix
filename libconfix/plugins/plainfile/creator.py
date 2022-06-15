@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from builder import PlainFileBuilder
+from .builder import PlainFileBuilder
 
 from libconfix.core.filesys.vfs_file import VFSFile
 from libconfix.core.machinery.builder import Builder
@@ -39,7 +39,7 @@ class PlainFileCreator(Builder):
         
         try:
             self.__compiled_regex = re.compile(regex)
-        except Exception, e:
+        except Exception as e:
             raise Error('Error compiling regex "'+regex+'"', [e])
 
         pass

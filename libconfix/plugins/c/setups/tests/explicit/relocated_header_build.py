@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import relocated_header
+from . import relocated_header
 
 from libconfix.core.filesys.filesys import FileSystem
 from libconfix.core.filesys.directory import Directory

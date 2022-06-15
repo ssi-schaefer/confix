@@ -53,7 +53,7 @@ class NearestProperty(unittest.TestCase):
         bad = Node(Node.BAD)
         digraph = DirectedGraph(nodes=[root, bad],
                                 edges=[Edge(root, bad)])
-        self.failUnlessEqual(set(),
+        self.assertEqual(set(),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))
@@ -79,7 +79,7 @@ class NearestProperty(unittest.TestCase):
                                        Edge(tail=bad1, head=good),
                                        Edge(tail=bad2, head=good)])
 
-        self.failUnlessEqual(set([good]),
+        self.assertEqual(set([good]),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))
@@ -100,7 +100,7 @@ class NearestProperty(unittest.TestCase):
                                 edges=[Edge(root, bad),
                                        Edge(root, good),
                                        Edge(bad, good)])
-        self.failUnlessEqual(set([good]),
+        self.assertEqual(set([good]),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))
@@ -130,7 +130,7 @@ class NearestProperty(unittest.TestCase):
                                        Edge(bad1, good2),
                                        Edge(bad2, good2),
                                        Edge(good1, good3)])
-        self.failUnlessEqual(set([good1, good2]),
+        self.assertEqual(set([good1, good2]),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))
@@ -155,7 +155,7 @@ class NearestProperty(unittest.TestCase):
                                        Edge(bad, good2),
                                        Edge(root, good1),
                                        Edge(good1, good2)])
-        self.failUnlessEqual(set([good1]),
+        self.assertEqual(set([good1]),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))
@@ -181,7 +181,7 @@ class NearestProperty(unittest.TestCase):
                                        Edge(root, good1),
                                        Edge(bad, good2),
                                        Edge(good1, good2)])
-        self.failUnlessEqual(set([good1]),
+        self.assertEqual(set([good1]),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))
@@ -206,7 +206,7 @@ class NearestProperty(unittest.TestCase):
                                 edges=[Edge(root, bad),
                                        Edge(root, good1),
                                        Edge(bad, good2)])
-        self.failUnlessEqual(set([good1, good2]),
+        self.assertEqual(set([good1, good2]),
                             algorithm.nearest_property(digraph=digraph,
                                                        entrypoint=root,
                                                        property=GoodProperty()))
@@ -234,7 +234,7 @@ class NearestProperty(unittest.TestCase):
                                        Edge(root, good1),
                                        Edge(root, good2),
                                        Edge(good2, good1)])
-        self.failUnlessEqual(set([good1, good2]),
+        self.assertEqual(set([good1, good2]),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))
@@ -251,7 +251,7 @@ class NearestProperty(unittest.TestCase):
         digraph = DirectedGraph(nodes=[root, good1, good2],
                                 edges=[Edge(root, good1),
                                        Edge(good1, good2)])
-        self.failUnlessEqual(set([good1]),
+        self.assertEqual(set([good1]),
                              algorithm.nearest_property(digraph=digraph,
                                                         entrypoint=root,
                                                         property=GoodProperty()))

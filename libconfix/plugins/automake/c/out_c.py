@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from external_library import \
+from .external_library import \
      BuildInfo_IncludePath_External_AM, \
      BuildInfo_CFLAGS_AM, \
      BuildInfo_CXXFLAGS_AM, \
@@ -148,7 +148,7 @@ class CompiledOutputBuilder(Builder):
                 self.__external_cflags.extend(bi.cflags())
                 pass
             for bi in n.iter_buildinfos_type(BuildInfo_CommandlineMacros_AM):
-                for (k, v) in bi.macros().iteritems():
+                for (k, v) in bi.macros().items():
                     existing_value = self.__external_cmdlinemacros.get(k)
                     if existing_value is not None and existing_value != v:
                         raise Error(os.sep.join(self.file().relpath())+': '
@@ -172,7 +172,7 @@ class CompiledOutputBuilder(Builder):
             # first, do the core confix things. then, add the
             # automake/external include paths, macros, and whatnot.
 
-            for name, value in b.cmdlinemacros().iteritems():
+            for name, value in b.cmdlinemacros().items():
                 automake_output_builder.makefile_am().add_cmdlinemacro(name, value)
                 pass
             for f in b.cflags():
@@ -199,7 +199,7 @@ class CompiledOutputBuilder(Builder):
                 automake_output_builder.makefile_am().add_includepath('$('+readonly_prefixes.incpath_var+')')
                 pass
 
-            for name, value in self.__external_cmdlinemacros.iteritems():
+            for name, value in self.__external_cmdlinemacros.items():
                 automake_output_builder.makefile_am().add_cmdlinemacro(name, value)
                 pass
             for f in self.__external_cflags:

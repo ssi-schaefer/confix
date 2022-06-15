@@ -15,10 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from makefile_am import Makefile_am
-from file_installer import FileInstaller
-from buildinfo import BuildInfo_Configure_in
-from buildinfo import BuildInfo_ACInclude_m4
+from .makefile_am import Makefile_am
+from .file_installer import FileInstaller
+from .buildinfo import BuildInfo_Configure_in
+from .buildinfo import BuildInfo_ACInclude_m4
 
 from libconfix.plugins.automake import readonly_prefixes
 from libconfix.plugins.automake import repo_automake

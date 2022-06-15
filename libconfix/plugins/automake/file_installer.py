@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import helper
-import makefile
+from . import helper
+from . import makefile
 
 from libconfix.core.utils.error import Error
 from libconfix.core.utils.paragraph import Paragraph
@@ -241,6 +241,6 @@ class _InstallDirectoryContainer(object):
             pass
         return False
     def iterate_dirs(self):
-        return self.__directories.itervalues()
+        return iter(self.__directories.values())
     def __hash_dir(self, dir):
         return '/'.join(dir)

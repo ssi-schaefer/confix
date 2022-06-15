@@ -15,9 +15,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from configure_ac import Configure_ac
-from buildinfo import BuildInfo_Configure_in, BuildInfo_ACInclude_m4
-from out_automake import find_automake_output_builder
+from .configure_ac import Configure_ac
+from .buildinfo import BuildInfo_Configure_in, BuildInfo_ACInclude_m4
+from .out_automake import find_automake_output_builder
 
 from libconfix.core.utils.paragraph import Paragraph
 from libconfix.core.machinery.setup import Setup
@@ -61,7 +61,7 @@ class AutomakeInterfaceProxy(InterfaceProxy):
     AC_BUILDINFO_TRANSPORT_LOCAL = 0
     AC_BUILDINFO_TRANSPORT_PROPAGATE = 1
     def CONFIGURE_AC(self, lines, order, flags=None):
-        if type(order) not in [types.IntType or types.LongType]:
+        if type(order) not in [int or int]:
             raise Error('CONFIGURE_AC(): "order" parameter must be an integer')
         if flags is None or self.AC_BUILDINFO_TRANSPORT_LOCAL in flags:
             automake_output_builder = find_automake_output_builder(self.__dirbuilder)
@@ -115,9 +115,9 @@ class AutomakeInterfaceProxy(InterfaceProxy):
         pass
 
     def TESTS_ENVIRONMENT(self, name, value):
-        if type(name) is not types.StringType:
+        if type(name) is not bytes:
             raise Error('TESTS_ENVIRONMENT(): key must be a string')
-        if type(value) is not types.StringType:
+        if type(value) is not bytes:
             raise Error('TESTS_ENVIRONMENT(): value must be a string')
 
         automake_output_builder = find_automake_output_builder(self.__dirbuilder)

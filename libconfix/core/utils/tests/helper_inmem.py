@@ -21,11 +21,11 @@ import unittest
 
 class HelperTest(unittest.TestCase):
     def test_normalize_lines(self):
-        self.failUnlessEqual(helper.normalize_lines(['\nxxx\n', 'yyyy']),
+        self.assertEqual(helper.normalize_lines(['\nxxx\n', 'yyyy']),
                              ['', 'xxx', '', 'yyyy'])
-        self.failUnlessEqual(helper.normalize_lines(['xxx', 'yyy']), ['xxx', 'yyy'])
-        self.failUnlessEqual(helper.normalize_lines(['xxx', 'yyy\nzzz']), ['xxx', 'yyy', 'zzz'])
-        self.failUnlessEqual(helper.normalize_lines([]), [])
+        self.assertEqual(helper.normalize_lines(['xxx', 'yyy']), ['xxx', 'yyy'])
+        self.assertEqual(helper.normalize_lines(['xxx', 'yyy\nzzz']), ['xxx', 'yyy', 'zzz'])
+        self.assertEqual(helper.normalize_lines([]), [])
         pass
     pass
 

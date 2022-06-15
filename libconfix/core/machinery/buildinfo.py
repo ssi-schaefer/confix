@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from repo import Marshallable
-from repo import Unmarshallable
+from .repo import Marshallable
+from .repo import Unmarshallable
 
 class BuildInformation(Marshallable):
     def get_marshalling_data(self):
@@ -59,6 +59,6 @@ class BuildInformationSet(Unmarshallable):
         pass
 
     def __iter__(self):
-        return self.__dict.itervalues()
+        return iter(self.__dict.values())
 
     pass

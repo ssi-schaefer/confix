@@ -85,7 +85,7 @@ class NoPublicInstall(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failIf(install.find(['include', 'header.h']))
+        self.assertFalse(install.find(['include', 'header.h']))
         
         pass
     
@@ -137,7 +137,7 @@ class NoPublicInstall(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failIf(install.find(['include', 'header.h']))
+        self.assertFalse(install.find(['include', 'header.h']))
 
         pass
 

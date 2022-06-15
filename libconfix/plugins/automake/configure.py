@@ -22,10 +22,10 @@ import os
 import types
 
 def configure(packageroot, builddir, prefix, readonly_prefixes=None, args=None, env=None):
-    assert type(packageroot) in [types.ListType, types.TupleType]
-    assert type(builddir) in [types.ListType, types.TupleType]
-    assert type(prefix) in [types.NoneType, types.ListType, types.TupleType]
-    assert type(readonly_prefixes) in [types.NoneType, types.ListType, types.TupleType]
+    assert type(packageroot) in [list, tuple]
+    assert type(builddir) in [list, tuple]
+    assert type(prefix) in [type(None), list, tuple]
+    assert type(readonly_prefixes) in [type(None), list, tuple]
     
     argv = []
     if prefix is not None:
@@ -34,7 +34,7 @@ def configure(packageroot, builddir, prefix, readonly_prefixes=None, args=None, 
     if readonly_prefixes is not None:
         ro_args = []
         for rp in readonly_prefixes:
-            assert type(rp) in [types.ListType, types.TupleType], rp
+            assert type(rp) in [list, tuple], rp
             ro_args.append(os.sep.join(rp))
             pass
         if len(ro_args):

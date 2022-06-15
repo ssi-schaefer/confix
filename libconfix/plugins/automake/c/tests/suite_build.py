@@ -15,8 +15,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import library_dependencies.suite_build as library_dependencies_build
-import noinst_headers_build
+from . import library_dependencies.suite_build as library_dependencies_build
+from . import noinst_headers_build
 
 import unittest
 

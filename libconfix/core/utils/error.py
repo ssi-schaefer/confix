@@ -44,7 +44,7 @@ class Error(Exception):
             elif isinstance(e, NativeError):
                 ret.extend(self.format_standard_exception(e.exception(), e.traceback(), offset+2))
             else:
-                ret.extend(self.format_standard_exception(e, sys.exc_traceback, offset+2))
+                ret.extend(self.format_standard_exception(e, sys.exc_info()[2], offset+2))
                 pass
             pass
         return ret

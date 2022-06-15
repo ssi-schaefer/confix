@@ -65,18 +65,18 @@ class BasicTest(unittest.TestCase):
         package.output()
 
         maindir_builder = package.rootbuilder().find_entry_builder(['main'])
-        self.failIf(maindir_builder is None)
+        self.assertFalse(maindir_builder is None)
 
         maindir_output_builder = find_automake_output_builder(maindir_builder)
-        self.failIf(maindir_output_builder is None)
+        self.assertFalse(maindir_output_builder is None)
         
-        self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_output_builder.makefile_am().am_cflags())
-        self.failUnless('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_output_builder.makefile_am().am_cxxflags())
+        self.assertTrue('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_output_builder.makefile_am().am_cflags())
+        self.assertTrue('$(ext_lib_PKG_CONFIG_CFLAGS)' in maindir_output_builder.makefile_am().am_cxxflags())
 
         main_ldadd = maindir_output_builder.makefile_am().compound_ldadd(compound_name='the_exe')
-        self.failIf(main_ldadd is None)
+        self.assertFalse(main_ldadd is None)
         
-        self.failUnless('$(ext_lib_PKG_CONFIG_LIBS)' in main_ldadd)
+        self.assertTrue('$(ext_lib_PKG_CONFIG_LIBS)' in main_ldadd)
         pass
     pass
 

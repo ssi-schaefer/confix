@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import inter_package
+from . import inter_package
 
 from libconfix.plugins.cmake import commands
 from libconfix.plugins.cmake.setup import CMakeSetup
@@ -115,7 +115,7 @@ class LibraryDependenciesTest(PersistentTestCase):
         # exe is rebuilt as it depends on liblib.a
         if True:
             commands.make(builddir=build.abspath(), args=[])
-            self.failUnless(os.stat(os.sep.join(build.abspath()+['exe', 'exe'])).st_mtime >= lib_library_stat.st_mtime)
+            self.assertTrue(os.stat(os.sep.join(build.abspath()+['exe', 'exe'])).st_mtime >= lib_library_stat.st_mtime)
             pass
 
         pass
@@ -218,13 +218,13 @@ class LibraryDependenciesTest(PersistentTestCase):
         # libmid.a is not rebuilt.
         if True:
             commands.make(builddir=mid_build.abspath(), args=['install'])
-            self.failIf(os.stat(os.sep.join(install.abspath()+['lib', 'libmid.a'])).st_mtime >= lo_stat.st_mtime)
+            self.assertFalse(os.stat(os.sep.join(install.abspath()+['lib', 'libmid.a'])).st_mtime >= lo_stat.st_mtime)
             pass
 
         # exe is rebuilt as it has liblo.a linked in.
         if True:
             commands.make(builddir=hi_build.abspath(), args=['install'])
-            self.failUnless(os.stat(os.sep.join(install.abspath()+['bin', 'exe'])).st_mtime >= lo_stat.st_mtime)
+            self.assertTrue(os.stat(os.sep.join(install.abspath()+['bin', 'exe'])).st_mtime >= lo_stat.st_mtime)
             pass
 
         pass

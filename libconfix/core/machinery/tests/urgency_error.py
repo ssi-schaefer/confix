@@ -91,7 +91,7 @@ class UrgencyErrorTest(unittest.TestCase):
 
         package.boil(external_nodes=[])
 
-        self.failUnless(lodir_builder in package.digraph().successors(hidir_builder))
+        self.assertTrue(lodir_builder in package.digraph().successors(hidir_builder))
         pass
     pass
 

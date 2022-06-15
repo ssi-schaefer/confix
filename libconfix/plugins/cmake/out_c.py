@@ -15,12 +15,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from buildinfo import BuildInfo_IncludePath_External_CMake
-from buildinfo import BuildInfo_LibraryPath_External_CMake
-from buildinfo import BuildInfo_Library_External_CMake
-from buildinfo import BuildInfo_CommandlineMacros_CMake
-from buildinfo import BuildInfo_CFLAGS_CMake
-from buildinfo import BuildInfo_CXXFLAGS_CMake
+from .buildinfo import BuildInfo_IncludePath_External_CMake
+from .buildinfo import BuildInfo_LibraryPath_External_CMake
+from .buildinfo import BuildInfo_Library_External_CMake
+from .buildinfo import BuildInfo_CommandlineMacros_CMake
+from .buildinfo import BuildInfo_CFLAGS_CMake
+from .buildinfo import BuildInfo_CXXFLAGS_CMake
 
 from libconfix.plugins.cmake.out_cmake import find_cmake_output_builder
 
@@ -137,7 +137,7 @@ class CompiledOutputBuilder(Builder):
                     pass
                 pass
             for bi in n.iter_buildinfos_type(BuildInfo_CommandlineMacros_CMake):
-                for (k, v) in bi.macros().iteritems():
+                for (k, v) in bi.macros().items():
                     existing_value = self.__external_cmdlinemacros.get(k)
                     if existing_value is not None and existing_value != v:
                         raise Error(os.sep.join(self.file().relpath())+': '
@@ -237,7 +237,7 @@ class CompiledOutputBuilder(Builder):
 
         # commandline macros floating in by external library
         # definitions.
-        for macro, value in self.__external_cmdlinemacros.iteritems():
+        for macro, value in self.__external_cmdlinemacros.items():
             if value is None:
                 definition = '-D%s' % macro
             else:

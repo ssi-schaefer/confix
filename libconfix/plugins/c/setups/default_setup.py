@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from common_iface_setup import CommonInterfaceSetup
+from .common_iface_setup import CommonInterfaceSetup
 
 from libconfix.plugins.c.clusterer import CClustererSetup
 from libconfix.plugins.c.creator import CCreatorSetup

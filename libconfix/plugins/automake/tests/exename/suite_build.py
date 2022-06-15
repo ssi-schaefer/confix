@@ -80,7 +80,7 @@ class ExplicitExecutableNameBuildTest(PersistentTestCase):
         # re-reading the fs that has changed under the hood)
 
         exe_path = install.abspath() + ['bin', 'explicit-name']
-        self.failUnless(os.path.isfile(os.sep.join(exe_path)))
+        self.assertTrue(os.path.isfile(os.sep.join(exe_path)))
         
         pass
         

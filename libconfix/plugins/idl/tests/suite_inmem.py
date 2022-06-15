@@ -50,8 +50,8 @@ class IDLTest(unittest.TestCase):
                                setups=[IDLSetup()])
         package.boil(external_nodes=[])
         idl_builder = package.rootbuilder().find_entry_builder(['file.idl'])
-        self.failIf(idl_builder is None)
-        self.failUnlessEqual(idl_builder.install_path(), ['A', 'B'])
+        self.assertFalse(idl_builder is None)
+        self.assertEqual(idl_builder.install_path(), ['A', 'B'])
         pass
 
     def test__no_internal_requires(self):
@@ -74,7 +74,7 @@ class IDLTest(unittest.TestCase):
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[IDLSetup()])
         package.boil(external_nodes=[])
-        self.failIf(len(package.rootbuilder().requires()) != 0)
+        self.assertFalse(len(package.rootbuilder().requires()) != 0)
         pass
 
     def test__module_not_closed_is_flat(self):
@@ -96,8 +96,8 @@ class IDLTest(unittest.TestCase):
                                setups=[IDLSetup()])
         package.boil(external_nodes=[])
         idl_builder = package.rootbuilder().find_entry_builder(['file.idl'])
-        self.failIf(idl_builder is None)
-        self.failUnlessEqual(idl_builder.install_path(), [])
+        self.assertFalse(idl_builder is None)
+        self.assertEqual(idl_builder.install_path(), [])
         pass
 
     def test__creator(self):
@@ -120,9 +120,9 @@ class IDLTest(unittest.TestCase):
             setups=[ConfixSetup(use_libtool=False)])
         package.boil(external_nodes=[])
 
-        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored1.idl']))
-        self.failIf(package.rootbuilder().find_entry_builder(path=['ignored2.idl']))
-        self.failUnless(package.rootbuilder().find_entry_builder(path=['not-ignored.idl']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['ignored1.idl']))
+        self.assertFalse(package.rootbuilder().find_entry_builder(path=['ignored2.idl']))
+        self.assertTrue(package.rootbuilder().find_entry_builder(path=['not-ignored.idl']))
         pass
     pass
 

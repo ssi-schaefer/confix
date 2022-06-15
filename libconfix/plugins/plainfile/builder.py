@@ -34,13 +34,13 @@ class PlainFileBuilder(FileBuilder):
         if datadir is not None:        
             try:
                 self.datadir_ = helper.make_path(datadir)
-            except Error, e:
+            except Error as e:
                 raise Error('PlainFileBuilder: datadir conversion', [e])
             pass
         if prefixdir is not None:
             try:
                 self.prefixdir_ = helper.make_path(prefixdir)
-            except Error, e:
+            except Error as e:
                 raise Error('PlainFileBuilder: prefixdir conversion', [e])
             pass
         pass

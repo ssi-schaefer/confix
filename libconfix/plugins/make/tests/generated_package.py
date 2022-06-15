@@ -82,7 +82,7 @@ class GeneratedPackageTest(PersistentTestCase):
             builddir=build.abspath(),
             args=None)
 
-        self.failUnless(os.path.isfile(os.sep.join(build.abspath()+['the_executable_generated_by_a_call_to_make'])))
+        self.assertTrue(os.path.isfile(os.sep.join(build.abspath()+['the_executable_generated_by_a_call_to_make'])))
 
         pass
     pass

@@ -108,9 +108,9 @@ class ExecutableBase(unittest.TestCase):
     def test__common(self):
         exedir_automake_builder = find_automake_output_builder(self.exedir_builder_)
         
-        self.failUnless('blah_exe_main' in exedir_automake_builder.makefile_am().bin_programs())
-        self.failUnless('main.c' in exedir_automake_builder.makefile_am().compound_sources('blah_exe_main'))
-        self.failUnless('something.c' in exedir_automake_builder.makefile_am().compound_sources('blah_exe_main'))
+        self.assertTrue('blah_exe_main' in exedir_automake_builder.makefile_am().bin_programs())
+        self.assertTrue('main.c' in exedir_automake_builder.makefile_am().compound_sources('blah_exe_main'))
+        self.assertTrue('something.c' in exedir_automake_builder.makefile_am().compound_sources('blah_exe_main'))
         pass
     pass
 
@@ -122,9 +122,9 @@ class LibtoolExecutable(ExecutableBase):
 
     def test(self):
         exedir_output_builder = find_automake_output_builder(self.exedir_builder_)
-        self.failIf(exedir_output_builder is None)
+        self.assertFalse(exedir_output_builder is None)
         
-        self.failUnlessEqual(exedir_output_builder.makefile_am().compound_ldadd('blah_exe_main'),
+        self.assertEqual(exedir_output_builder.makefile_am().compound_ldadd('blah_exe_main'),
                              ['-L$(top_builddir)/hi',
                               '-lblah_hi'])
         pass
@@ -138,9 +138,9 @@ class StandardExecutable(ExecutableBase):
 
     def test(self):
         exedir_output_builder = find_automake_output_builder(self.exedir_builder_)
-        self.failIf(exedir_output_builder is None)
+        self.assertFalse(exedir_output_builder is None)
         
-        self.failUnlessEqual(exedir_output_builder.makefile_am().compound_ldadd('blah_exe_main'),
+        self.assertEqual(exedir_output_builder.makefile_am().compound_ldadd('blah_exe_main'),
                              ['-L$(top_builddir)/hi',
                               '-L$(top_builddir)/lo',
                               '-lblah_hi',
@@ -161,10 +161,10 @@ class CheckAndNoinstProgram(unittest.TestCase):
         package.output()
 
         rootdir_output_builder = find_automake_output_builder(package.rootbuilder())
-        self.failIf(rootdir_output_builder is None)
+        self.assertFalse(rootdir_output_builder is None)
 
-        self.failUnless('blah__check_proggy' in rootdir_output_builder.makefile_am().check_programs())
-        self.failUnless('blah__proggy' in rootdir_output_builder.makefile_am().noinst_programs())
+        self.assertTrue('blah__check_proggy' in rootdir_output_builder.makefile_am().check_programs())
+        self.assertTrue('blah__proggy' in rootdir_output_builder.makefile_am().noinst_programs())
         pass
     pass
 
@@ -210,11 +210,11 @@ class LDADD(unittest.TestCase):
         package.output()
 
         exedir_builder = package.rootbuilder().find_entry_builder(['exe'])
-        self.failIf(exedir_builder is None)
+        self.assertFalse(exedir_builder is None)
         exedir_output_builder = find_automake_output_builder(exedir_builder)
-        self.failIf(exedir_output_builder is None)
+        self.assertFalse(exedir_output_builder is None)
 
-        self.failUnless('-lLDADD_lib' in exedir_output_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
+        self.assertTrue('-lLDADD_lib' in exedir_output_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
         pass
 
     def test__no_libtool(self):
@@ -224,11 +224,11 @@ class LDADD(unittest.TestCase):
         package.output()
 
         exedir_builder = package.rootbuilder().find_entry_builder(['exe'])
-        self.failIf(exedir_builder is None)
+        self.assertFalse(exedir_builder is None)
         exedir_output_builder = find_automake_output_builder(exedir_builder)
-        self.failIf(exedir_output_builder is None)
+        self.assertFalse(exedir_output_builder is None)
 
-        self.failUnless('-lLDADD_lib' in exedir_output_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
+        self.assertTrue('-lLDADD_lib' in exedir_output_builder.makefile_am().compound_ldadd('LDADD_exe_exe'))
         pass
 
     pass

@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from dirbuilder import DirectoryBuilder
+from .dirbuilder import DirectoryBuilder
 
 from libconfix.core.filesys.vfs_directory import VFSDirectory
 from libconfix.core.filesys.vfs_file import VFSFile

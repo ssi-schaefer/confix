@@ -92,64 +92,64 @@ class MakefileAmTest(unittest.TestCase):
         lines = mf_am.lines()
         elements = makefile.parse_makefile(lines=lines)
 
-        self.failUnlessEqual(set(makefile.find_list(name='the_program_SOURCES', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='the_program_SOURCES', elements=elements).values()),
                              set(['source.h', 'source.c']))
-        self.failUnlessEqual(makefile.find_list(name='the_program_LDFLAGS', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='the_program_LDFLAGS', elements=elements).values()),
                              ['-some-flag', '-some-other-flag'])
-        self.failUnlessEqual(makefile.find_list(name='libsome_ltlibrary_la_LIBADD', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='libsome_ltlibrary_la_LIBADD', elements=elements).values()),
                              ['some_library', 'some_other_library'])
-        self.failUnlessEqual(makefile.find_list(name='the_program_LDADD', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='the_program_LDADD', elements=elements).values()),
                              ['some_library', 'some_other_library'])
-        self.failUnlessEqual(set(makefile.find_list(name='AM_CFLAGS', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='AM_CFLAGS', elements=elements).values()),
                              set(['-some-cflag', '-some-other-cflag']))
-        self.failUnlessEqual(set(makefile.find_list(name='AM_CXXFLAGS', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='AM_CXXFLAGS', elements=elements).values()),
                              set(['-some-cxxflag', '-some-other-cxxflag']))
-        self.failUnlessEqual(set(makefile.find_list(name='AM_LFLAGS', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='AM_LFLAGS', elements=elements).values()),
                              set(['-some-lflag', '-some-other-lflag']))
-        self.failUnlessEqual(set(makefile.find_list(name='AM_YFLAGS', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='AM_YFLAGS', elements=elements).values()),
                              set(['-some-yflag', '-some-other-yflag']))
-        self.failUnlessEqual(set(makefile.find_list(name='EXTRA_DIST', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='EXTRA_DIST', elements=elements).values()),
                              set(['some-extra-dist-file', 'some-other-extra-dist-file']))
-        self.failUnlessEqual(set(makefile.find_list(name='MOSTLYCLEANFILES', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='MOSTLYCLEANFILES', elements=elements).values()),
                              set(['some-mostlycleanfile', 'some-other-mostlycleanfile']))
-        self.failUnlessEqual(set(makefile.find_list(name='CLEANFILES', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='CLEANFILES', elements=elements).values()),
                              set(['some-cleanfile', 'some-other-cleanfile']))
-        self.failUnlessEqual(set(makefile.find_list(name='DISTCLEANFILES', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='DISTCLEANFILES', elements=elements).values()),
                              set(['some-distcleanfile', 'some-other-distcleanfile']))
-        self.failUnlessEqual(set(makefile.find_list(name='MAINTAINERCLEANFILES', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='MAINTAINERCLEANFILES', elements=elements).values()),
                              set(['some-maintainercleanfiles', 'some-other-maintainercleanfiles']))
-        self.failUnlessEqual(makefile.find_list(name='lib_LTLIBRARIES', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='lib_LTLIBRARIES', elements=elements).values()),
                              ['libsome-ltlibrary.la', 'libsome-other-ltlibrary.la'])
-        self.failUnlessEqual(makefile.find_list(name='lib_LIBRARIES', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='lib_LIBRARIES', elements=elements).values()),
                              ['libsome-library.a', 'libsome-other-library.a'])
-        self.failUnlessEqual(makefile.find_list(name='bin_PROGRAMS', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='bin_PROGRAMS', elements=elements).values()),
                              ['some-program', 'some-other-program'])
-        self.failUnlessEqual(makefile.find_list(name='bin_SCRIPTS', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='bin_SCRIPTS', elements=elements).values()),
                              ['some-script', 'some-other-script'])
-        self.failUnlessEqual(makefile.find_list(name='check_PROGRAMS', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='check_PROGRAMS', elements=elements).values()),
                              ['some-check-program', 'some-other-check-program'])
-        self.failUnlessEqual(makefile.find_list(name='xxx_YYY', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='xxx_YYY', elements=elements).values()),
                              ['some-xxx-YYY-thing', 'some-other-xxx-YYY-thing'])
-        self.failUnlessEqual(makefile.find_list(name='aaa_YYY', elements=elements).values(),
+        self.assertEqual(list(makefile.find_list(name='aaa_YYY', elements=elements).values()),
                              ['some-aaa-YYY-thing', 'some-other-aaa-YYY-thing'])
-        self.failUnlessEqual(set(makefile.find_list(name='BUILT_SOURCES', elements=elements).values()),
+        self.assertEqual(set(makefile.find_list(name='BUILT_SOURCES', elements=elements).values()),
                              set(['some-built-source', 'some-other-built-source']))
 
         # mf_am.add_includepath() and add_cmdlinemacro() goes into
         # AM_CPPFLAGS
-        am_cppflags = makefile.find_list(name='AM_CPPFLAGS', elements=elements).values()
-        self.failUnless('-Isome_path' in am_cppflags)
-        self.failUnless('-Isome_other_path' in am_cppflags)
-        self.failUnless('-Dkey1=value1' in am_cppflags)
-        self.failUnless('-Dkey2=value2' in am_cppflags)
-        self.failUnless('-Dkey3' in am_cppflags)
-        self.failUnless('-Dkey4' in am_cppflags)
+        am_cppflags = list(makefile.find_list(name='AM_CPPFLAGS', elements=elements).values())
+        self.assertTrue('-Isome_path' in am_cppflags)
+        self.assertTrue('-Isome_other_path' in am_cppflags)
+        self.assertTrue('-Dkey1=value1' in am_cppflags)
+        self.assertTrue('-Dkey2=value2' in am_cppflags)
+        self.assertTrue('-Dkey3' in am_cppflags)
+        self.assertTrue('-Dkey4' in am_cppflags)
 
         # TESTS_ENVIRONMENT
-        tests_environment = makefile.find_list(name='TESTS_ENVIRONMENT', elements=elements).values()
-        self.failUnlessEqual(len(tests_environment), 2)
-        self.failUnless('name1=value1' in tests_environment)
-        self.failUnless('name2=value2' in tests_environment)
+        tests_environment = list(makefile.find_list(name='TESTS_ENVIRONMENT', elements=elements).values())
+        self.assertEqual(len(tests_environment), 2)
+        self.assertTrue('name1=value1' in tests_environment)
+        self.assertTrue('name2=value2' in tests_environment)
         
         pass
 
@@ -178,8 +178,8 @@ class MakefileAmTest(unittest.TestCase):
         elements = makefile.parse_makefile(lines=lines)
         
         headerlist = makefile.find_list(name='include_HEADERS', elements=elements)
-        self.failIf(headerlist is None)
-        self.failUnless(headerlist.values() == ['defaultfile1.h', 'defaultfile2.h', 'defaultfile0.h'])
+        self.assertFalse(headerlist is None)
+        self.assertTrue(list(headerlist.values()) == ['defaultfile1.h', 'defaultfile2.h', 'defaultfile0.h'])
         
         pass
 
@@ -200,13 +200,13 @@ class MakefileAmTest(unittest.TestCase):
         elements = makefile.parse_makefile(lines=lines)
 
         dirdefinition = makefile.find_list(name='publicheaders_blahdir', elements=elements)
-        self.failIf(dirdefinition is None)
-        self.failUnless(len(dirdefinition) == 1)
-        self.failUnless(dirdefinition[0] == '$(includedir)/blah')
+        self.assertFalse(dirdefinition is None)
+        self.assertTrue(len(dirdefinition) == 1)
+        self.assertTrue(dirdefinition[0] == '$(includedir)/blah')
 
         headerlist = makefile.find_list(name='publicheaders_blah_HEADERS', elements=elements)
-        self.failIf(headerlist is None)
-        self.failUnless(headerlist.values() == ['nondefaultfile1.h', 'nondefaultfile2.h', 'nondefaultfile0.h'])
+        self.assertFalse(headerlist is None)
+        self.assertTrue(list(headerlist.values()) == ['nondefaultfile1.h', 'nondefaultfile2.h', 'nondefaultfile0.h'])
         
         pass
 

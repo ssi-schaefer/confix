@@ -16,12 +16,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from repo import Marshallable
-from repo import MarshalledVersionUnknownError
-from repo import update_marshalling_data
-from require import Require
-from require import Require_Symbol
-from require import Require_Callable
+from .repo import Marshallable
+from .repo import MarshalledVersionUnknownError
+from .repo import update_marshalling_data
+from .require import Require
+from .require import Require_Symbol
+from .require import Require_Callable
 
 from libconfix.core.utils import debug
 

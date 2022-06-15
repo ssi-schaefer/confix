@@ -85,7 +85,7 @@ class AutomakeIDLBuildTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        self.failUnless(build.find(['confix-include', 'file.idl']))
+        self.assertTrue(build.find(['confix-include', 'file.idl']))
 
         pass
 
@@ -138,7 +138,7 @@ class AutomakeIDLBuildTest(PersistentTestCase):
 
         scan.rescan_dir(build)
 
-        self.failUnless(build.find(['confix-include', 'A', 'B', 'file.idl']))
+        self.assertTrue(build.find(['confix-include', 'A', 'B', 'file.idl']))
 
         pass
 
@@ -190,7 +190,7 @@ class AutomakeIDLBuildTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failUnless(install.find(['include', 'file.idl']))
+        self.assertTrue(install.find(['include', 'file.idl']))
 
         pass
 
@@ -246,7 +246,7 @@ class AutomakeIDLBuildTest(PersistentTestCase):
 
         scan.rescan_dir(install)
 
-        self.failUnless(install.find(['include', 'A', 'B', 'file.idl']))
+        self.assertTrue(install.find(['include', 'A', 'B', 'file.idl']))
 
         pass
 

@@ -16,17 +16,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from setup import Setup
-from setup import CompositeSetup
-from package import Package
-from installed_package import InstalledPackage
-from edgefinder import EdgeFinder
-from filebuilder import FileBuilder
-from require import Require
-from resolve_error import NotResolved
-from interface import InterfaceProxy
-from interface import InterfaceExecutor
-from repo import PackageFile
+from .setup import Setup
+from .setup import CompositeSetup
+from .package import Package
+from .installed_package import InstalledPackage
+from .edgefinder import EdgeFinder
+from .filebuilder import FileBuilder
+from .require import Require
+from .resolve_error import NotResolved
+from .interface import InterfaceProxy
+from .interface import InterfaceExecutor
+from .repo import PackageFile
 
 from libconfix.core.digraph import algorithm
 from libconfix.core.digraph import toposort
@@ -250,7 +250,7 @@ class LocalPackage(Package):
         for b in builders:
             try:
                 b.enlarge()
-            except Error, e:
+            except Error as e:
                 raise Error("Builder "+b.shortname()+" of "+b.parentbuilder().shortname()+" encountered an error", [e])
             pass
 
@@ -304,19 +304,19 @@ class PackageInterfaceProxy(InterfaceProxy):
         pass
 
     def PACKAGE_NAME(self, name):
-        if type(name) is not types.StringType:
+        if type(name) is not bytes:
             raise Error('PACKAGE_NAME(): argument must be a string')
         self.__package.set_name(name)
         pass
 
     def PACKAGE_VERSION(self, version):
-        if type(version) is not types.StringType:
+        if type(version) is not bytes:
             raise Error('PACKAGE_VERSION(): argument must be a string')
         self.__package.set_version(version)
         pass
 
     def SETUP(self, setup):
-        if not isinstance(setup, Setup) and type(setup) not in [types.ListType, types.TupleType]:
+        if not isinstance(setup, Setup) and type(setup) not in [list, tuple]:
             raise Error('SETUP(): parameter must by a list or a Setup object')
         self.__package.set_setup(setup)
         pass

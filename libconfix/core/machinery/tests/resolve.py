@@ -76,7 +76,7 @@ class BasicResolveTest(unittest.TestCase):
 
         self.assertEqual(len(package.digraph().successors(hinode)), 1)
         self.assertEqual(len(package.digraph().successors(lonode)), 0)
-        self.assert_(lonode in package.digraph().successors(hinode))
+        self.assertTrue(lonode in package.digraph().successors(hinode))
             
         pass
     
@@ -89,7 +89,7 @@ class NotResolvedTest(unittest.TestCase):
                                       entry=File(lines=['REQUIRE_SYMBOL(symbol="unknown_symbol", urgency=URGENCY_ERROR)']))
         package = LocalPackage(rootdirectory=fs.rootdirectory(),
                                setups=[FileInterfaceTestSetup()])
-        self.failUnlessRaises(NotResolved, package.boil, external_nodes=[])
+        self.assertRaises(NotResolved, package.boil, external_nodes=[])
         pass
     
     pass
@@ -127,7 +127,7 @@ class AmbiguousResolveTest(unittest.TestCase):
         hi_builder.add_require(Require_Symbol(symbol='the_ambiguous_symbol', found_in=[]))
         package.rootbuilder().add_builder(hi_builder)
 
-        self.failUnlessRaises(Error, package.boil, external_nodes=[])
+        self.assertRaises(Error, package.boil, external_nodes=[])
         pass
     pass
 
