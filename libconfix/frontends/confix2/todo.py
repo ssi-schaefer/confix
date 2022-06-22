@@ -183,7 +183,7 @@ def DUMPGRAPH():
         pass
     digraph = DirectedGraph(nodes=modules, edgefinder=EdgeFinder(nodes=modules))
 
-    pickle.dump(DirectedGraph(nodes=digraph.nodes(), edges=digraph.edges()), sys.stdout)
+    pickle.dump(DirectedGraph(nodes=digraph.nodes(), edges=digraph.edges()), sys.stdout, protocol=0)
     return 0
 
 DONE_BOOTSTRAP = 0

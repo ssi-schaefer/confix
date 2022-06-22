@@ -18,20 +18,7 @@
 
 from libconfix.core.utils.error import Error, NativeError
 
-import sys
-
-# pickle segfaults on interix. this should be fixed in python 2.5, but
-# we leave it in for a while from now.
-mypickle = None
-if sys.platform.startswith('interix'):
-    from libconfix.core.utils import debug
-    debug.warn('using pickle instead of cPickle on interix')
-    import pickle
-    mypickle = pickle
-else:
-    import pickle
-    mypickle = cPickle
-    pass
+import sys, pickle
 
 def load_object_from_file(filename):
     try:
@@ -40,7 +27,7 @@ def load_object_from_file(filename):
         raise Error('Cannot open file '+filename+' for reading', [e])
 
     try:
-        object = mypickle.load(file)
+        object = pickle.load(file)
     except Exception as e:
         raise Error('Cannot read Python object from file '+filename, [NativeError(e, sys.exc_info()[2])])
 
@@ -52,22 +39,19 @@ def dump_object_to_file(object, filename):
     except IOError as e:
         raise Error('Cannot open file '+filename+' for writing', [e])
     try:
-        mypickle.dump(object, file)
+        pickle.dump(object, file, protocol=0)
     except Exception as e:
         raise Error('Cannot dump Python object "'+str(object)+'" to file '+filename, [NativeError(e, sys.exc_info()[2])])
     pass
 
 def load_object_from_string(string):
-    try:
-        object = mypickle.loads(string)
-    except Exception as e:
-        raise Error('Cannot read Python object from string', [NativeError(e, sys.exc_info()[2])])
+    object = pickle.loads(string.encode())
 
     return object
 
 def dump_object_to_string(object):
     try:
-        return mypickle.dumps(object)
+        return pickle.dumps(object, protocol=0)
     except Exception as e:
         raise Error('Cannot dump Python object to string', [NativeError(e, sys.exc_info()[2])])
     pass
