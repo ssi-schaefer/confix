@@ -38,7 +38,7 @@ def main():
     lineno = 0
     for line in sys.stdin:
         lineno += 1
-        line = line.rstrip('\n')
+        line = line.rstrip()
         if re_ignore.search(line):
             continue
         for v in variables:

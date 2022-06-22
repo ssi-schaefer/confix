@@ -37,7 +37,7 @@ class ADD_PLAINFILE(InterfaceProxy):
         pass
 
     def ADD_PLAINFILE(self, filename, datadir=None, prefixdir=None):
-        if type(filename) is not bytes:
+        if type(filename) is not str:
             raise Error('ADD_PLAINFILE(): filename must be a string')
         if (datadir is not None and prefixdir is not None) or \
                (datadir is None and prefixdir is None):

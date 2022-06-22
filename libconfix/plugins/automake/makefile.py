@@ -167,7 +167,7 @@ class Rule(MakefileElement):
         commandlist = []
         if self.commands_ is not None:
             for c in self.commands_:
-                if type(c) is bytes:
+                if type(c) is str:
                     commandlist.append('\t'+c)
                 elif (type(c) is list) or (type(c) is tuple):
                     commandlist.extend(['\t'+l for l in helper.format_word_list(c)])

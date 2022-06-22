@@ -55,8 +55,8 @@ class InstalledPackage(Package):
             pass
 
         # <paranoia>
-        assert type(name) is bytes
-        assert type(version) is bytes
+        assert type(name) is str
+        assert type(version) is str
         # </paranoia>
         pass
     def name(self):

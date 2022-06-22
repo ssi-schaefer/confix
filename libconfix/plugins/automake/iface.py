@@ -115,9 +115,9 @@ class AutomakeInterfaceProxy(InterfaceProxy):
         pass
 
     def TESTS_ENVIRONMENT(self, name, value):
-        if type(name) is not bytes:
+        if type(name) is not str:
             raise Error('TESTS_ENVIRONMENT(): key must be a string')
-        if type(value) is not bytes:
+        if type(value) is not str:
             raise Error('TESTS_ENVIRONMENT(): value must be a string')
 
         automake_output_builder = find_automake_output_builder(self.__dirbuilder)

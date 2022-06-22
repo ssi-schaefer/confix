@@ -304,13 +304,13 @@ class PackageInterfaceProxy(InterfaceProxy):
         pass
 
     def PACKAGE_NAME(self, name):
-        if type(name) is not bytes:
+        if type(name) is not str:
             raise Error('PACKAGE_NAME(): argument must be a string')
         self.__package.set_name(name)
         pass
 
     def PACKAGE_VERSION(self, version):
-        if type(version) is not bytes:
+        if type(version) is not str:
             raise Error('PACKAGE_VERSION(): argument must be a string')
         self.__package.set_version(version)
         pass

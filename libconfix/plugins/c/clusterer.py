@@ -225,7 +225,7 @@ class CClustererInterfaceProxy(InterfaceProxy):
         pass
 
     def LIBNAME(self, name):
-        if type(name) is not bytes:
+        if type(name) is not str:
             raise Error("LIBNAME(): 'name' argument must be a string")
         self.__clusterer.set_libname(name)
         pass

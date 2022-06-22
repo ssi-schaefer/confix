@@ -347,8 +347,8 @@ class Makefile_am(object):
 
     def tests_environment(self): return self.__tests_environment        
     def add_tests_environment(self, name, value):
-        assert type(name) is bytes
-        assert type(value) is bytes
+        assert type(name) is str
+        assert type(value) is str
         self.__tests_environment[name] = value
         pass
 
@@ -525,7 +525,7 @@ class CompoundList:
             pass
         pass
     def add(self, member):
-        assert type(member) is bytes, str(member)
+        assert type(member) is str
         if self.have_ is not None:
             if member in self.have_:
                 raise Error('Duplicate addition of "'+member+'"')

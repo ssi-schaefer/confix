@@ -34,7 +34,7 @@ class LibraryBuilder(LinkedBuilder):
 
         # default library version. passed to libtool as "-release
         # <package-version>"
-        assert default_version is None or type(default_version) is bytes
+        assert default_version is None or type(default_version) is str
         
         LinkedBuilder.__init__(self)
 

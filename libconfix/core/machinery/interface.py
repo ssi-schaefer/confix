@@ -39,7 +39,7 @@ class InterfaceExecutor:
         self.__context = {}
         for piece in iface_pieces:
             for n, v in piece.get_globals().items():
-                assert type(n) is bytes
+                assert type(n) is str
                 assert n not in self.__context, n
                 self.__context[n] = v
                 pass

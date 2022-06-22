@@ -19,6 +19,7 @@
 import types
 import hashlib
 import os
+from chardet import detect
 
 from libconfix.core.digraph.cycle import CycleError
 
@@ -128,34 +129,37 @@ def normalize_lines(lines):
 def md5_hexdigest_from_lines(lines):
     md5sum = hashlib.md5()
     for l in lines:
-        md5sum.update(l)
+        md5sum.update(l.encode())
         pass
     return md5sum.hexdigest()
 
 def write_lines_to_file(filename, lines):
 
-    """ Write lines to filename, appending newlines to each. """
+    """ Write lines to filename, appending newlines to each.
+        lines may also be bytes, so we have to encode everything
+        that is not bytes and write the file as binary
+        """
 
-    try:
-        file = open(filename, 'w')
-        for l in lines:
-            file.write(l+'\n')
-        file.close()
-    except Exception as e:
-        raise Error("Could not write "+filename+":", [e])
+    print('writing '+filename+'...')
+    file = open(filename, 'wb')
+    for l in lines:
+        if type(l) is str: l=l.encode()
+        file.write(l+b'\n')
+    file.close()
 
 def lines_of_file(filename):
 
     """ Return a list containing the lines of a file, with newlines
     stripped. """
 
-    try:
-        file = open(filename, 'r')
-    except IOError as e:
-        raise Error('Could not open file \'' + filename + '\' for reading', [e])
+    with open(filename, 'rb') as file:
+        c=file.read()
+    enc=detect(c)['encoding']
+    print('reading '+filename+'[' + enc + '] ...')
+    file = open(filename, 'r', encoding=enc)
 
-    lines = [l.rstrip('\n') for l in file]
-    
+    lines = [l.rstrip() for l in file]
+
     file.close()
     return lines
 
@@ -239,7 +243,7 @@ def read_boolean(b):
     if b is None: return False
     if type(b) in [int, bool]:
         return b
-    if type(b) is bytes:
+    if type(b) is str:
         b = b.lower()
         if b == 'yes' or b == 'y' or b == 'true' or b == 't' or b == '1':
             return True
@@ -281,7 +285,7 @@ def clone_value(v):
     return v
 
 def make_path(str_or_list):
-    if isinstance(str_or_list, bytes):
+    if isinstance(str_or_list, str):
         if len(str_or_list) == 0:
             return []
         else:

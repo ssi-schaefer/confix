@@ -50,13 +50,13 @@ class CustomCommandHelper(object):
         custom_command_md5 = hashlib.md5()
 
         for c in commands:
-            custom_command_md5.update(c[0])
+            custom_command_md5.update(c[0].encode())
             for a in c[1]:
-                custom_command_md5.update(a)
+                custom_command_md5.update(a.encode())
                 pass
             pass
         for o in outputs + self.__parent_builder.directory().relpath(self.__parent_builder.package().rootdirectory()):
-            custom_command_md5.update(o)
+            custom_command_md5.update(o.encode())
             pass
 
         custom_command_key = custom_command_md5.hexdigest()

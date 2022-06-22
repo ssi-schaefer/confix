@@ -45,7 +45,7 @@ class BuildInfo_IDL_Native(BuildInformation):
                  filename,
                  includes):
         BuildInformation.__init__(self)
-        assert filename.__class__ is bytes
+        assert filename.__class__ is str
         self.filename_ = filename
         self.includes_ = includes
         pass

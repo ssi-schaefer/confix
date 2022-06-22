@@ -35,7 +35,7 @@ class ADD_SCRIPT(InterfaceProxy):
         pass
 
     def ADD_SCRIPT(self, filename, what=ScriptBuilder.BIN):
-        if type(filename) is not bytes:
+        if type(filename) is not str:
             raise Error('ADD_SCRIPT(): filename must be a string')
         if not what in (ScriptBuilder.BIN, ScriptBuilder.CHECK):
             raise Error('ADD_SCRIPT('+filename+', ...): "what" parameter must be one of SCRIPT_BIN and SCRIPT_CHECK') 

@@ -58,7 +58,7 @@ class FileBuilderInterfaceProxy(InterfaceProxy):
         pass
 
     def SET_FILE_PROPERTY(self, name, value):
-        if type(name) is not bytes:
+        if type(name) is not str:
             raise Error("SET_FILE_PROPERTY(): 'name' must be a string")
         self.__builder.file().set_property(name, value)
         # we have modified a property, which at least *might* have

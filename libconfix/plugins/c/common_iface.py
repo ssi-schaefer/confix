@@ -43,7 +43,7 @@ class REQUIRE_H(InterfaceProxy):
     def REQUIRE_H(self, filename, urgency=Require.URGENCY_IGNORE):
         if not filename:
             raise Error("REQUIRE_H(): need a non-null 'filename' parameter")
-        if type(filename) is not bytes:
+        if type(filename) is not str:
             raise Error("REQUIRE_H(): 'filename' parameter must be a string")
         if len(filename)==0:
             raise Error("REQUIRE_H(): need a non-zero 'filename' parameter")

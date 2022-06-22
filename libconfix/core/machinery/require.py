@@ -59,7 +59,7 @@ class Require(Marshallable):
         self.__string = string
         self.__found_in = set()
 
-        if type(found_in) is bytes:
+        if type(found_in) is str:
             self.__found_in.add(found_in)
         elif type(found_in) in [list, tuple] and len(found_in):
             self.__found_in = set(found_in)

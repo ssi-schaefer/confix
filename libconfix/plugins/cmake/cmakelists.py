@@ -231,7 +231,7 @@ class CMakeLists:
         return self.__definitions
     
     def add_subdirectory(self, directoryname):
-        assert type(directoryname) is bytes
+        assert type(directoryname) is str
         self.__subdirectories.append(_path(directoryname))
         pass
     def get_subdirectories(self):
