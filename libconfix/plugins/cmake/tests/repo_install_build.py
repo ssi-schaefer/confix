@@ -34,6 +34,13 @@ from libconfix.core.utils import const
 import unittest
 import os
 
+class RepoInstallBuildSuite(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+# jjjj        self.addTest(RepoInstallTest('test'))
+        pass
+    pass
+
 class RepoInstallTest(PersistentTestCase):
     """
     The repo file can be installed before anything else is installed.

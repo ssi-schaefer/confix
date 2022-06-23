@@ -411,6 +411,8 @@ class LinkedOutputBuilder(Builder):
         """
         assert isinstance(linked_builder, LinkedBuilder)
         
+        local_paths = []
+        local_libraries = []
         native_paths = []
         native_libraries = []
         external_linkline = []
@@ -424,8 +426,11 @@ class LinkedOutputBuilder(Builder):
 
         for bi in native_libs_to_use:
             if isinstance(bi, BuildInfo_CLibrary_NativeLocal):
-                native_paths.append('-L'+'/'.join(['$(top_builddir)']+bi.dir()))
-                native_libraries.append('-l'+bi.basename())
+                if self.__use_libtool:
+                    local_libraries.append('/'.join(['$(top_builddir)']+bi.dir()+['lib'+bi.basename()+'.la']))
+                else:
+                    local_paths.append('-L'+'/'.join(['$(top_builddir)']+bi.dir()))
+                    local_libraries.append('-l'+bi.basename())
                 continue
             if isinstance(bi, BuildInfo_CLibrary_NativeInstalled):
                 using_installed_library = True
@@ -447,7 +452,7 @@ class LinkedOutputBuilder(Builder):
             external_linkline.extend(elem)
             pass
 
-        return native_paths + native_libraries + external_linkline
+        return local_paths + local_libraries + native_paths + native_libraries + external_linkline
 
     def external_libpath(self):
         """ For unit tests only. """

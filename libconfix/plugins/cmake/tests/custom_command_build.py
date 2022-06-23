@@ -39,8 +39,15 @@ from libconfix.core.utils import const
 
 import unittest
 
+class CustomCommandBuildSuite(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+        self.addTest(CustomCommandBuildTest('test_quoting'))
+        pass
+    pass
+
 class CustomCommandBuildTest(PersistentTestCase):
-    def test__quoting(self):
+    def test_quoting(self):
         fs = FileSystem(path=self.rootpath())
         source = fs.rootdirectory().add(
             name='source',
@@ -103,8 +110,6 @@ class CustomCommandBuildTest(PersistentTestCase):
 
     pass
 
-suite = unittest.defaultTestLoader.loadTestsFromTestCase(CustomCommandBuildTest)
-
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite)
+    unittest.TextTestRunner().run(CustomCommandBuildSuite())
     pass

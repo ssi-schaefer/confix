@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import autoconf_archive
+#import autoconf_archive
 import kde_hack
 
 from libconfix.core.utils.error import Error
@@ -29,7 +29,7 @@ import os
 
 def bootstrap(packageroot, use_kde_hack, argv0, path=None):
     aclocal_incdirs = []
-    aclocal_incdirs.append(autoconf_archive.include_path(argv0))
+    #aclocal_incdirs.append(autoconf_archive.include_path(argv0))
 
     # if package's configure.ac looks like using libtool, then we
     # assume that the package must be libtoolize'd.

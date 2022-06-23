@@ -32,6 +32,16 @@ from libconfix.testutils.persistent import PersistentTestCase
 
 import unittest
 
+class CMakeBug10082BuildSuite(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+        # self.addTest(CMakeBug10082BuildTest('test_reproduce_two_custom_targets'))
+        # self.addTest(CMakeBug10082BuildTest('test_reproduce_library_and_custom_target'))
+        # self.addTest(CMakeBug10082BuildTest('test_workaround_two_custom_targets'))
+        # self.addTest(CMakeBug10082BuildTest('test_workaround_library_and_custom_target'))
+        pass
+    pass
+
 class CMakeBug10082BuildTest(PersistentTestCase):
 
     # reproduces cmake bug #10082. hooking a custom command into the

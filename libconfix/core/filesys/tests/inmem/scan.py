@@ -24,6 +24,16 @@ from libconfix.testutils.persistent import PersistentTestCase
 import unittest
 import os
 
+class ScanSuite(unittest.TestSuite):
+    def __init__(self):
+        unittest.TestSuite.__init__(self)
+        self.addTest(Test('new_file'))
+        self.addTest(Test('new_directory'))
+        self.addTest(Test('new_file_in_existing_directory'))
+        self.addTest(Test('removed_file'))
+        pass
+    pass
+
 class Test(PersistentTestCase):
     def test__new_file(self):
         # use a filesystem instance to conveniently create the initial
@@ -82,7 +92,7 @@ class Test(PersistentTestCase):
         self.failUnless(fs_dup.rootdirectory().find(['dir', 'file']))
         pass
 
-    def test__removed_file(self):
+    def removed_file(self):
         # use a filesystem instance to conveniently create the initial
         # directory.
         fs = FileSystem(self.rootpath())
