@@ -35,7 +35,7 @@ def make_core_setups(linkednamefinder, has_undefined_symbols):
 class DefaultCSetup(CompositeSetup):
     def __init__(self,
                  linkednamefinder=None,
-                 has_undefined_symbols=True):
+                 has_undefined_symbols=False):
         setups = make_core_setups(linkednamefinder=linkednamefinder, has_undefined_symbols=has_undefined_symbols)
         setups.append(ImplicitInterfaceSetup())
         CompositeSetup.__init__(
