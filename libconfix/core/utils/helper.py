@@ -154,8 +154,14 @@ def lines_of_file(filename):
 
     with open(filename, 'rb') as file:
         c=file.read()
+
     enc=detect(c)['encoding']
-    print('reading '+filename+'[' + enc + '] ...')
+    if type(enc) is not str:
+        enc="ascii"
+        print('WARNING: reading '+filename+'[fallback to ' + enc + '] ...')
+    else:
+        print('reading '+filename+'[' + enc + '] ...')
+
     file = open(filename, 'r', encoding=enc)
 
     lines = [l.rstrip() for l in file]

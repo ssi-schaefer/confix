@@ -1,4 +1,5 @@
-build/*
+build
+libconfix.salxdev12
 *.pyc
 tags
 *.patch
